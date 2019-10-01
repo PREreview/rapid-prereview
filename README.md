@@ -5,11 +5,19 @@
 
 ## Development
 
+### Dependencies
+
+run:
+
+```sh
+npm install
+```
+
 ### App
 
 run:
 
-```
+```sh
 npm start
 ```
 
@@ -19,7 +27,7 @@ and visit [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
 
 run:
 
-```
+```sh
 npm run storybook
 ```
 
