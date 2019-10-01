@@ -26,7 +26,7 @@ const schema = {
   properties: {
     '@id': {
       type: 'string',
-      pattern: '^action:'
+      pattern: '^action:' // TODO action:<orcid>@<doi>
     },
     '@type': {
       type: 'string',
