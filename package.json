@@ -1,0 +1,155 @@
+{
+  "name": "rapid-prereview",
+  "version": "0.0.0",
+  "description": "rapid PREreview (outbreak science)",
+  "main": "index.js",
+  "scripts": {
+    "storybook": "start-storybook -p 3030 -h 127.0.0.1 --ci"
+  },
+  "prettier": {
+    "singleQuote": true
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": "> 0.25%, not dead"
+        }
+      ],
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime",
+      "@babel/plugin-transform-async-to-generator",
+      "@babel/plugin-proposal-class-properties"
+    ]
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "parserOptions": {
+      "ecmaVersion": 2018,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true
+      }
+    },
+    "env": {
+      "browser": true,
+      "es6": true,
+      "node": true,
+      "mocha": true
+    },
+    "globals": {
+      "chrome": "readonly"
+    },
+    "plugins": [
+      "react",
+      "import",
+      "react-hooks"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:import/errors",
+      "plugin:import/warnings"
+    ],
+    "rules": {
+      "no-console": [
+        "warn",
+        {
+          "allow": [
+            "error",
+            "warn",
+            "trace"
+          ]
+        }
+      ],
+      "no-unused-vars": [
+        "error",
+        {
+          "args": "none",
+          "ignoreRestSiblings": true
+        }
+      ],
+      "no-empty": [
+        "error",
+        {
+          "allowEmptyCatch": true
+        }
+      ],
+      "no-constant-condition": [
+        "error",
+        {
+          "checkLoops": false
+        }
+      ],
+      "no-bitwise": [
+        "error",
+        {
+          "allow": [
+            "~"
+          ]
+        }
+      ],
+      "no-cond-assign": [
+        "error",
+        "except-parens"
+      ],
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PREreview/rapid-prereview.git"
+  },
+  "keywords": [
+    "outbreak",
+    "science",
+    "preprint"
+  ],
+  "author": "Sebastien Ballesteros",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/PREreview/rapid-prereview/issues"
+  },
+  "homepage": "https://github.com/PREreview/rapid-prereview#readme",
+  "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-transform-async-to-generator": "^7.5.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.6.2",
+    "@storybook/react": "^5.2.1",
+    "babel-eslint": "^10.0.3",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^3.2.0",
+    "eslint": "^6.5.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-react": "^7.15.0",
+    "eslint-plugin-react-hooks": "^2.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^6.7.0",
+    "postcss-url": "^8.0.0",
+    "prettier": "^1.18.2",
+    "style-loader": "^1.0.0",
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.6.2",
+    "classnames": "^2.2.6",
+    "express": "^4.17.1",
+    "normalize.css": "^8.0.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.10.1",
+    "react-dom": "^16.10.1"
+  }
+}
