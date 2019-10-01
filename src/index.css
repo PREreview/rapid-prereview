@@ -1,1 +1,3 @@
+@import 'normalize.css';
 @import './components/app.css';
+@import './components/extension-fallback.css';
