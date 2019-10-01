@@ -60,3 +60,9 @@ typings/
 # next.js build output
 .next
 .DS_Store
+
+public/assets/.bundle.*
+public/assets/.bundle-manifest.json
+public/assets/bundle.*
+public/assets/bundle-manifest.json
+public/assets/hot

@@ -4,7 +4,13 @@
   "description": "rapid PREreview (outbreak science)",
   "main": "index.js",
   "scripts": {
-    "storybook": "start-storybook -p 3030 -h 127.0.0.1 --ci"
+    "start": "babel-node ./src/server.js",
+    "build:client": "rm -rf ./public/assets/* && cross-env NODE_ENV=production webpack --progress",
+    "build:server": "rm -rf dist; mkdir dist; babel src -d dist",
+    "build": "npm run build:client && npm run build:server",
+    "prepare": "npm run build",
+    "storybook": "start-storybook -p 3030 -h 127.0.0.1 --ci",
+    "postversion": "git push && git push --tags"
   },
   "prettier": {
     "singleQuote": true
@@ -20,7 +26,6 @@
       "@babel/preset-react"
     ],
     "plugins": [
-      "@babel/plugin-transform-runtime",
       "@babel/plugin-transform-async-to-generator",
       "@babel/plugin-proposal-class-properties"
     ]
@@ -116,36 +121,45 @@
   },
   "homepage": "https://github.com/PREreview/rapid-prereview#readme",
   "devDependencies": {
+    "@babel/cli": "^7.6.2",
     "@babel/core": "^7.6.2",
+    "@babel/node": "^7.6.2",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-transform-async-to-generator": "^7.5.0",
-    "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.6.2",
     "@storybook/react": "^5.2.1",
+    "assets-webpack-plugin": "^3.9.10",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^3.0.0",
+    "cross-env": "^6.0.0",
     "css-loader": "^3.2.0",
+    "duplicate-package-checker-webpack-plugin": "^3.0.0",
     "eslint": "^6.5.1",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-react": "^7.15.0",
     "eslint-plugin-react-hooks": "^2.1.1",
-    "html-webpack-plugin": "^3.2.0",
     "mini-css-extract-plugin": "^0.8.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
+    "postcss-nested": "^4.1.2",
     "postcss-preset-env": "^6.7.0",
     "postcss-url": "^8.0.0",
     "prettier": "^1.18.2",
     "style-loader": "^1.0.0",
     "webpack": "^4.41.0",
-    "webpack-cli": "^3.3.9"
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-middleware": "^3.7.2",
+    "webpack-hot-middleware": "^2.25.0"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.6.0",
     "@babel/runtime": "^7.6.2",
     "classnames": "^2.2.6",
+    "ejs": "^2.7.1",
     "express": "^4.17.1",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",

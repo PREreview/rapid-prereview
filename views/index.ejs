@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Rapid PREreview</title>
+
+
+    <!--TODO
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png" />
+    -->
+
+    <% if (locals.bundles && locals.bundles.main && locals.bundles.main.css) { %>
+      <link rel="stylesheet" href="/assets/<%-locals.bundles.main.css%>" />
+    <% } %>
+
+    <% if (locals.bundles && !locals.ssrOnly) {
+      [ 'vendor', 'main' ].forEach(function(name) {
+        if (locals.bundles[name]) {
+    %>
+      <script src="/assets/<%- locals.bundles[name] && locals.bundles[name].js %>"></script>
+    <% }})} %>
+
+    <script>
+     window.__CONFIG__ = <%- JSON.stringify({
+                           ssr: locals.ssr
+                         }) %>;
+     window.__INITIAL_STATE__ = <%- JSON.stringify(locals.initialState || {}) %>
+    </script>
+  </head>
+
+  <body>
+    <div id="app"><%- locals.html %></div>
+  </body>
+</html>
