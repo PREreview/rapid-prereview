@@ -1,0 +1,32 @@
+:root {
+  /* grid */
+  --xsgrd: 8px;
+  --sgrd: 16px;
+  --mgrd: 24px;
+  --lgrd: 32px;
+  --xlgrd: 40px;
+
+  /* standard dimensions */
+  --header-bar-height: 72px;
+  --search-bar-height: 72px;
+  --middle-column-default-width: 960px;
+
+  /* Fonts */
+  --ui-font-family: 'Roboto', 'Helvetic', 'sans-serif';
+  --ui-basic-font-color: #181818;
+  --ui-basic-font-size: 13px;
+  --ui-basic-font-leading: 18px;
+  --ui-basic-font: 400 var(--ui-basic-font-size) / var(--ui-basic-font-leading)
+    var(--ui-font-family);
+
+  --ui-header-menu-font-size: 16px;
+  --ui-header-menu-font-leading: 20px;
+  --ui-header-menu-font: 400 var(--ui-header-menu-font-size) /
+    var(--ui-header-menu-font-leading) var(--ui-font-family);
+
+  /* Colors */
+  --ruling-color: grey;
+  --ruling-color--light: lightgrey;
+
+  --focus-color: red;
+}

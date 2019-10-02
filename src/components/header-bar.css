@@ -1,0 +1,27 @@
+.header-bar {
+  background-color: white;
+  width: 100vw;
+  height: var(--header-bar-height);
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 var(--mgrd);
+
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+
+  & .header-bar__right {
+  }
+
+  & .header-bar__nav-item {
+    font: var(--ui-header-menu-font);
+    margin: 0 var(--sgrd);
+
+    &:last-of-type {
+      margin-right: 0;
+    }
+  }
+}
