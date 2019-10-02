@@ -44,7 +44,10 @@ module.exports = {
             loader: 'babel-loader',
             options: {
               presets: babel.presets,
-              plugins: babel.plugins
+              plugins: [
+                '@babel/plugin-transform-async-to-generator',
+                '@babel/plugin-proposal-class-properties'
+              ]
             }
           }
         ],
