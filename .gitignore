@@ -61,6 +61,8 @@ typings/
 .next
 .DS_Store
 
+dist/
+
 public/assets/.bundle.*
 public/assets/.bundle-manifest.json
 public/assets/bundle.*
