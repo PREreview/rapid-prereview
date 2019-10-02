@@ -1,0 +1,40 @@
+.icon-button {
+  border: none;
+  padding: 0;
+  margin: 0;
+
+  height: var(--lgrd);
+  min-width: var(--lgrd);
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    & .icon-button__contents {
+      background-color: var(--ui-basic-font-color);
+      color: white;
+    }
+  }
+
+  & .icon-button__contents {
+    height: 100%;
+    border: 2px solid transparent;
+    box-sizing: border-box;
+    background-color: white;
+    color: var(--ui-basic-font-color);
+
+    border-radius: var(--sgrd);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0);
+    transition: box-shadow 0.2s, background-color 0.1s;
+
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 0.9;
+      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+  }
+}

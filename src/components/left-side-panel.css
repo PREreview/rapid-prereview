@@ -1,0 +1,27 @@
+.left-side-panel {
+  height: 100vh;
+  flex: 1 1 10%;
+  position: relative;
+  background-color: white;
+  min-width: 220px;
+  z-index: 900;
+  border-top: 1px solid transparent;
+
+  @media (--narrow-screen) {
+    position: fixed;
+
+    top: var(--header-bar-height);
+    box-shadow: 3px 4px 4px rgba(0, 0, 0, 0.2);
+
+    border-top: 1px solid var(--ruling-color--light);
+    z-index: 1001;
+
+    /*
+    Note: the left-panel can only be in hidden state on narrow screens
+    */
+
+    &.left-side-panel--hidden {
+      margin-left: -100%;
+    }
+  }
+}

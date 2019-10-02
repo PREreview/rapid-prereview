@@ -1,5 +1,6 @@
 :root {
   /* grid */
+  --xxsgrd: 4px;
   --xsgrd: 8px;
   --sgrd: 16px;
   --mgrd: 24px;
@@ -27,6 +28,15 @@
   /* Colors */
   --ruling-color: grey;
   --ruling-color--light: lightgrey;
+  --button-background-color: var(--ui-basic-font-color);
+  --button-foreground-color: white;
 
   --focus-color: red;
 }
+
+/* Media Queries */
+@custom-media --mobile-portrait screen and (0px <= width <= 420px) and (0px <= height <= 850px);
+
+@custom-media --short-screen screen and (0px <= height <= 820px);
+
+@custom-media --narrow-screen screen and (0px <= width <= 900px);

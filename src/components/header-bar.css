@@ -12,6 +12,26 @@
   padding: 0 var(--mgrd);
 
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+
+  /* the hamburder is only visible on narrow screens */
+  & .header-bar__menu-button {
+    display: none;
+    margin-right: var(--sgrd);
+    @media (--narrow-screen) {
+      display: block;
+    }
+  }
+
+  & .header-bar__menu-button-icon {
+    width: var(--mgrd);
+    height: var(--mgrd);
+  }
+
+  & .header-bar__left {
+    display: flex;
+    align-items: center;
+  }
 
   & .header-bar__right {
   }

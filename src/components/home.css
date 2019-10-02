@@ -1,4 +1,25 @@
 .home {
   color: var(--ui-basic-font-color);
   font: var(--ui-basic-font);
+
+  & .home__main {
+    display: flex;
+    width: 100vw;
+    padding-top: calc(var(--header-bar-height) + var(--search-bar-height));
+
+    @media (--short-screen) {
+      padding-top: 0;
+    }
+    &__right {
+      flex: 1 1 10%;
+      background: cyan;
+    }
+  }
+  & .home__content {
+    background: pink;
+    min-height: 200vh;
+
+    flex: 1 1 var(--middle-column-default-width);
+    max-width: var(--middle-column-default-width);
+  }
 }
