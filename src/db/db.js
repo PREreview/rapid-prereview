@@ -1,4 +1,5 @@
 import Cloudant from '@cloudant/cloudant';
+import handleRegisterAction from './handle-register-action';
 
 export default class DB {
   constructor(config = {}) {
@@ -75,23 +76,27 @@ export default class DB {
 
   async search(query) {}
 
-  async post(action) {
+  async post(action, { userId, strict } = {}) {
     if (!action['@type']) {
       throw new Error('action must have a @type');
     }
 
     switch (action['@type']) {
       case 'RegisterAction':
-        break;
+        return handleRegisterAction.call(this, action, { userId, strict });
+
       case 'CreateRoleAction':
         break;
+
       case 'UpdateRoleAction':
         break;
+
       case 'DeanonymizeRoleAction':
         break;
 
       case 'RapidPREreviewAction':
         break;
+
       case 'RequestForRapidPREreviewAction':
         break;
 
