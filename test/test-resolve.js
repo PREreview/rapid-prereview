@@ -23,6 +23,9 @@ describe.only('resolve', function() {
     app.get('/crossref/:prefix/:suffix', (req, res, next) => {
       res.sendFile(path.resolve(__dirname, 'fixtures/crossref.json'));
     });
+    app.get('/openaire/:prefix/:suffix', (req, res, next) => {
+      res.sendFile(path.resolve(__dirname, 'fixtures/openaire.xml'));
+    });
     server = http.createServer(app);
     server.listen(port, done);
   });
@@ -46,6 +49,11 @@ describe.only('resolve', function() {
       datePosted: '2019-09-30T00:00:00.000Z',
       preprintServer: { '@type': 'PreprintServer', name: 'bioRxiv' }
     });
+  });
+
+  it.only('should resove an openAIRE DOI', async () => {
+    const data = await resolve('10.5281/zenodo.3356153', config);
+    console.log(data);
   });
 
   after(done => {

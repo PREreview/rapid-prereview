@@ -3,6 +3,9 @@ import fetch from 'node-fetch';
 import { DOMParser } from 'xmldom';
 import { unprefix, cleanup, arrayify } from './jsonld';
 
+// TODO https://europepmc.org/OaiService
+// e.g http://europepmc.org/oai.cgi?verb=GetRecord&metadataPrefix=pmc&identifier=oai:europepmc.org:2654146
+
 /**
  * Get metadata for `identifier`
  */
@@ -18,8 +21,11 @@ export default async function resolve(
 
   if (doi) {
     // try crossref and openAIRE
-    const crossrefData = await resolveCrossRefDoi(doi, baseUrlCrossref);
-    return crossrefData;
+    //const crossrefData = await resolveCrossRefDoi(doi, baseUrlCrossref);
+    //return crossrefData;
+
+    const openAireData = await resolveOpenAireDoi(doi, baseUrlOpenAire);
+    return openAireData;
   } else {
     // try arXiv
     return resolveArxivId(id, baseUrlArxiv);
@@ -107,6 +113,12 @@ async function resolveCrossRefDoi(
 }
 
 async function resolveOpenAireDoi(
-  id, // 10.5281/zenodo.3470648
+  id, // 10.5281/zenodo.3356153
   baseUrl = 'http://api.openaire.eu/search/publications?doi='
-) {}
+) {
+  const r = await fetch(`${baseUrl}${id}`);
+  const text = await r.text();
+  const doc = new DOMParser().parseFromString(text);
+
+  console.log(text);
+}
