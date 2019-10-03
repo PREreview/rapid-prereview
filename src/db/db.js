@@ -1,9 +1,11 @@
 import Cloudant from '@cloudant/cloudant';
 import handleRegisterAction from './handle-register-action';
+import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
 import ddocIndex from '../ddocs/ddoc-index';
 import { getId, cleanup, arrayify } from '../utils/jsonld';
+import { createError } from '../utils/errors';
 
 export default class DB {
   constructor(config = {}) {
@@ -144,8 +146,12 @@ export default class DB {
           include_docs: true,
           reduce: false
         });
-        const doc = body.rows[0].value;
+        const row = body.rows[0];
+        if (!row) {
+          throw createError(404, `Not found (${id})`);
+        }
 
+        const doc = row.value;
         return arrayify(doc.hasRole).find(role => getId(role) === id);
       }
 
@@ -179,7 +185,7 @@ export default class DB {
         break;
 
       case 'RapidPREreviewAction':
-        break;
+        return handleRapidPrereviewAction.call(this, action, { strict, user });
 
       case 'RequestForRapidPREreviewAction':
         break;
