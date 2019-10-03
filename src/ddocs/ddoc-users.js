@@ -14,7 +14,7 @@ const ddoc = {
           });
         }
       },
-      reduce: '_sum'
+      reduce: '_count'
     }
   }
 };

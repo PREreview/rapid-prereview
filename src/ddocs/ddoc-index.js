@@ -1,7 +1,22 @@
-/* global index */
+/* global index, emit */
 
 const ddoc = {
   _id: '_design/ddoc-index',
+  views: {
+    preprintsByIdentifier: {
+      map: function(doc) {
+        if (doc['@type'] === 'ScholarlyPreprint') {
+          if (doc.doi) {
+            emit(doc.doi, null);
+          }
+          if (doc.arXivId) {
+            emit(doc.arXivId, null);
+          }
+        }
+      },
+      reduce: '_count'
+    }
+  },
   indexes: {
     preprints: {
       index: function(doc) {

@@ -43,7 +43,7 @@ const schema = {
     },
     agent: {
       type: 'string',
-      pattern: '^orcid:|^anon:'
+      pattern: '^role:'
     },
     startTime: {
       type: 'string',
@@ -55,7 +55,7 @@ const schema = {
     },
     object: {
       type: 'string',
-      pattern: '^doi:'
+      pattern: '^doi:|^arXiv:'
     },
     resultReview: {
       type: 'object',

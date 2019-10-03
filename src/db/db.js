@@ -9,25 +9,27 @@ import { createError } from '../utils/errors';
 
 export default class DB {
   constructor(config = {}) {
+    this.config = config;
+
     const username =
-      config.couchUsername || process.env.COUCH_USERNAME || 'admin';
+      this.config.couchUsername || process.env.COUCH_USERNAME || 'admin';
     const password =
-      config.couchPassword || process.env.COUCH_PASSWORD || 'pass';
+      this.config.couchPassword || process.env.COUCH_PASSWORD || 'pass';
     const protocol =
-      config.couchProtocol || process.env.COUCH_PROTOCOL || 'http:';
-    const host = config.couchHost || process.env.COUCH_HOST || '127.0.0.1';
-    const port = config.couchPort || process.env.COUCH_PORT || '5984';
+      this.config.couchProtocol || process.env.COUCH_PROTOCOL || 'http:';
+    const host = this.config.couchHost || process.env.COUCH_HOST || '127.0.0.1';
+    const port = this.config.couchPort || process.env.COUCH_PORT || '5984';
 
     this.docsDbName =
-      config.couchDocsDbName ||
+      this.config.couchDocsDbName ||
       process.env.COUCH_DOCS_DB_NAME ||
       'rapid-prereview-docs';
     this.indexDbName =
-      config.couchIndexDbName ||
+      this.config.couchIndexDbName ||
       process.env.COUCH_INDEX_DB_NAME ||
       'rapid-prereview-index';
     this.usersDbName =
-      config.couchUsersDbName ||
+      this.config.couchUsersDbName ||
       process.env.COUCH_USERS_DB_NAME ||
       'rapid-prereview-users';
 
@@ -141,18 +143,8 @@ export default class DB {
       }
 
       case 'role': {
-        const body = await this.users.view('ddoc-users', 'usersByRoleId', {
-          key: id,
-          include_docs: true,
-          reduce: false
-        });
-        const row = body.rows[0];
-        if (!row) {
-          throw createError(404, `Not found (${id})`);
-        }
-
-        const doc = row.value;
-        return arrayify(doc.hasRole).find(role => getId(role) === id);
+        const user = await this.getUserByRoleId(id);
+        return arrayify(user.hasRole).find(role => getId(role) === id);
       }
 
       case 'review':
@@ -164,16 +156,35 @@ export default class DB {
     }
   }
 
+  // views
+  async getUserByRoleId(roleId) {
+    roleId = getId(roleId);
+    const body = await this.users.view('ddoc-users', 'usersByRoleId', {
+      key: roleId,
+      include_docs: true,
+      reduce: false
+    });
+    const row = body.rows[0];
+    if (!row) {
+      throw createError(404, `Not found (${roleId})`);
+    }
+
+    return row.value;
+  }
+
   async search(index, query, { user = null } = {}) {}
 
-  async post(action, { user = null, strict = true } = {}) {
+  async post(
+    action,
+    { user = null, strict = true, now = new Date().toISOString() } = {}
+  ) {
     if (!action['@type']) {
       throw new Error('action must have a @type');
     }
 
     switch (action['@type']) {
       case 'RegisterAction':
-        return handleRegisterAction.call(this, action, { strict });
+        return handleRegisterAction.call(this, action, { strict, now });
 
       case 'CreateRoleAction':
         break;
@@ -185,7 +196,11 @@ export default class DB {
         break;
 
       case 'RapidPREreviewAction':
-        return handleRapidPrereviewAction.call(this, action, { strict, user });
+        return handleRapidPrereviewAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
 
       case 'RequestForRapidPREreviewAction':
         break;
