@@ -182,6 +182,7 @@
     "react-dom": "^16.10.1",
     "react-icons": "^3.7.0",
     "react-router-dom": "^5.1.2",
+    "slug": "^1.1.0",
     "uuid": "^3.3.3",
     "xmldom": "^0.1.27"
   }

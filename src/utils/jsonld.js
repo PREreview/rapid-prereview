@@ -29,3 +29,10 @@ export function arrayify(value) {
   }
   return Array.isArray(value) ? value : [value];
 }
+
+export function nodeify(value) {
+  if (typeof value === 'string') {
+    return { '@id': value };
+  }
+  return value;
+}

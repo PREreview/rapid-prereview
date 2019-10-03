@@ -1,5 +1,4 @@
 const schema = {
-  $schema: 'https://json-schema.org/schema#',
   $id: 'https://rapid.prereview.org/schemas/rapid-prereview-action.json',
   definitions: {
     text: {
@@ -54,8 +53,41 @@ const schema = {
       format: 'date-time'
     },
     object: {
-      type: 'string',
-      pattern: '^doi:|^arXiv:'
+      oneOf: [
+        {
+          type: 'string',
+          pattern: '^doi:|^arXiv:'
+        },
+        {
+          type: 'object',
+          properties: {
+            '@id': {
+              type: 'string',
+              pattern: '^doi:|^arXiv:'
+            },
+            '@type': { type: 'string', const: 'ScholarlyPreprint' },
+            doi: {
+              type: 'string'
+            },
+            arXiv: {
+              type: 'string',
+              pattern: '^arXiv:'
+            },
+            name: { $ref: '#/definitions/text' },
+            datePosted: {
+              type: 'string',
+              format: 'date-time'
+            },
+            preprintServer: {
+              type: 'object',
+              properties: {
+                '@type': { type: 'string', const: 'PreprintServer' },
+                name: { type: 'string' }
+              }
+            }
+          }
+        }
+      ]
     },
     resultReview: {
       type: 'object',
@@ -66,7 +98,7 @@ const schema = {
         },
         '@type': {
           type: 'string',
-          const: 'RapidPREreviewAction'
+          const: 'RapidPREreview'
         },
         dateCreated: {
           type: 'string',
@@ -97,15 +129,27 @@ const schema = {
                 properties: {
                   '@type': { type: 'string', const: 'Answer' },
                   parentItem: {
-                    type: 'object',
-                    properties: {
-                      '@type': {
+                    oneOf: [
+                      {
                         type: 'string',
-                        const: 'Question'
+                        pattern: '^question:'
                       },
-                      text: { $ref: '#/definitions/text' }
-                    },
-                    required: ['@type', 'text']
+                      {
+                        type: 'object',
+                        properties: {
+                          '@id': {
+                            type: 'string',
+                            pattern: '^question:'
+                          },
+                          '@type': {
+                            type: 'string',
+                            const: 'Question'
+                          },
+                          text: { $ref: '#/definitions/text' }
+                        },
+                        required: ['@type', 'text']
+                      }
+                    ]
                   },
                   text: { $ref: '#/definitions/text' }
                 }
@@ -116,31 +160,43 @@ const schema = {
                 properties: {
                   '@type': { type: 'string', const: 'YesNoAnswer' },
                   parentItem: {
-                    type: 'object',
-                    properties: {
-                      '@type': {
+                    oneOf: [
+                      {
                         type: 'string',
-                        const: 'YesNoQuestion'
+                        pattern: '^question:'
                       },
-                      text: { $ref: '#/definitions/text' },
-                      suggestedAnswer: {
-                        type: 'array',
-                        items: {
-                          type: 'object',
-                          properties: {
-                            '@type': {
-                              type: 'string',
-                              const: 'Answer'
-                            },
-                            text: {
-                              type: 'string'
-                            }
+                      {
+                        type: 'object',
+                        properties: {
+                          '@id': {
+                            type: 'string',
+                            pattern: '^question:'
                           },
-                          required: ['@type', 'text']
-                        }
+                          '@type': {
+                            type: 'string',
+                            const: 'YesNoQuestion'
+                          },
+                          text: { $ref: '#/definitions/text' },
+                          suggestedAnswer: {
+                            type: 'array',
+                            items: {
+                              type: 'object',
+                              properties: {
+                                '@type': {
+                                  type: 'string',
+                                  const: 'Answer'
+                                },
+                                text: {
+                                  type: 'string'
+                                }
+                              },
+                              required: ['@type', 'text']
+                            }
+                          }
+                        },
+                        required: ['@type', 'text']
                       }
-                    },
-                    required: ['@type', 'text']
+                    ]
                   },
                   text: { $ref: '#/definitions/text' }
                 }

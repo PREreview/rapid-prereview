@@ -51,7 +51,8 @@ async function resolveArxivId(
   const doc = new DOMParser().parseFromString(text);
 
   const data = {
-    arXivId: `arXiv:${id}`,
+    '@type': 'ScholarlyPreprint',
+    arXivId: id,
     preprintServer: {
       '@type': 'PreprintServer',
       name: 'arXiv'
@@ -82,7 +83,7 @@ async function resolveCrossRefDoi(
     throw createError(r.status);
   }
   const body = await r.json();
-  const data = { doi: id };
+  const data = { '@type': 'ScholarlyPreprint', doi: id };
   const { message } = body;
   const title = arrayify(message.title)[0];
   if (title) {
@@ -135,7 +136,7 @@ async function resolveOpenAireDoi(
   const text = await r.text();
   const doc = new DOMParser().parseFromString(text);
 
-  const data = { doi: id };
+  const data = { '@type': 'ScholarlyPreprint', doi: id };
 
   const $metadata = doc.getElementsByTagName('metadata')[0];
   if ($metadata) {
