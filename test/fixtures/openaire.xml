@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+  <header>
+    <query>(oaftype exact result) and (resulttypeid exact publication) and (pidclassid exact "doi" and pid exact "10.5281/zenodo.3356153")</query>
+    <locale>en_US</locale>
+    <size>10</size>
+    <page>1</page>
+    <total>1</total>
+    <fields>
+    </fields>
+  </header>
+  <results>
+    <result xmlns:dri="http://www.driver-repository.eu/namespace/dri">
+      <header xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <dri:objIdentifier>od______2659::0e8022acd887fb50e2c69864d8f325d8</dri:objIdentifier>
+        <dri:dateOfCollection>2019-08-05T23:05:39.25Z</dri:dateOfCollection>
+        <dri:dateOfTransformation>2019-08-05T23:06:26.453Z</dri:dateOfTransformation>
+        <counters>
+	  <counter_doi value="2"/>
+	</counters>
+      </header>
+      <metadata>
+        <oaf:entity xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xmlns:oaf="http://namespace.openaire.eu/oaf"
+                    xsi:schemaLocation="http://namespace.openaire.eu/oaf https://www.openaire.eu/schema/1.0/oaf-1.0.xsd">
+	  <oaf:result>
+	    <creator rank="1">FABIO DIAZ PABON</creator>
+            <creator rank="2">Magda Catalina Jimenez</creator>
+            <description>The ability of the United States (U.S.) to influence policies in Colombia is indisputable. The U.S. is Colombia’s largest trading partner, and this alone provides the U.S. with great power with regards to Colombian policymaking. U.S. power is not only manifest within the economic realm, though, as Colombia is a consumer of many U.S. cultural products, but U.S. political decisions also greatly inform Colombian policymaking.
+
+	    However, the nature of decisions in the U.S., and their influence, only partially explains policies in Colombia. Domestic policies also remain shaped by the configuration of different actors, agendas, and interests within the country itself.
+
+	    In this chapter, we argue that although there are shifts in the agenda between both countries, we should not understand these changes as only due to the rhetoric and the style brought by the Trump government. The policy changes also relate to internal political processes within Colombia, alongside other external factors.</description>
+            <title classid="main title" classname="main title" schemeid="dnet:dataCite_title"
+                   schemename="dnet:dataCite_title">Trumping the agenda? The continuity and discontinuity in foreign affairs between the U.S. and Colombia</title>
+            <dateofacceptance>2019-12-31</dateofacceptance>
+            <journal issn="" eissn="" lissn="" ep="" iss="" sp="" vol=""/>
+            <embargoenddate/>
+            <subject classid="keyword" classname="keyword" schemeid="dnet:result_subject"
+                     schemename="dnet:result_subject">Colombia, US, USA, Foreign Policy, International affairs, Illicit crops, Venezuela, peace</subject>
+            <publisher>Routledge</publisher>
+            <resulttype classid="publication" classname="publication" schemeid="dnet:result_typologies"
+                        schemename="dnet:result_typologies"/>
+            <language classid="eng" classname="English" schemeid="dnet:languages"
+                      schemename="dnet:languages"/>
+            <country classid="" classname="" schemeid="" schemename=""/>
+            <relevantdate classid="" classname="" schemeid="" schemename=""/>
+            <source/>
+            <fulltext/>
+            <format/>
+            <contributor/>
+            <resourcetype classid="" classname="" schemeid="" schemename=""/>
+            <coverage/>
+            <refereed/>
+            <storagedate/>
+            <device/>
+            <size/>
+            <version/>
+            <lastmetadataupdate/>
+            <metadataversionnumber/>
+            <documentationUrl/>
+            <codeRepositoryUrl/>
+            <programmingLanguage classid="" classname="" schemeid="" schemename=""/>
+            <contactperson/>
+            <contactgroup/>
+            <tool/>
+            <collectedfrom name="ZENODO" id="opendoar____::358aee4cc897452c00244351e4d91f69"/>
+            <pid classid="doi" classname="doi" schemeid="dnet:pid_types"
+                 schemename="dnet:pid_types">10.5281/zenodo.3356152</pid>
+            <pid classid="doi" classname="doi" schemeid="dnet:pid_types"
+                 schemename="dnet:pid_types">10.5281/zenodo.3356153</pid>
+            <originalId>oai:zenodo.org:3356153</originalId>
+            <bestaccessright classid="OPEN" classname="Open Access" schemeid="dnet:access_modes"
+                             schemename="dnet:access_modes"/>
+            <datainfo>
+              <inferred>false</inferred>
+              <deletedbyinference>false</deletedbyinference>
+              <trust>0.9</trust>
+              <inferenceprovenance/>
+              <provenanceaction classid="sysimport:crosswalk:repository"
+                                classname="sysimport:crosswalk:repository"
+                                schemeid="dnet:provenanceActions"
+                                schemename="dnet:provenanceActions"/>
+            </datainfo>
+	    <rels>
+	    </rels>
+	    <children>
+	      <instance id="opendoar____::358aee4cc897452c00244351e4d91f69">
+		<instancetype classid="0016" classname="Preprint" schemeid="dnet:publication_resource"
+                              schemename="dnet:publication_resource"/>
+                <accessright classid="OPEN" classname="Open Access" schemeid="dnet:access_modes"
+                             schemename="dnet:access_modes"/>
+                <license>http://creativecommons.org/licenses/by/4.0/legalcode</license>
+                <hostedby name="ZENODO" id="opendoar____::358aee4cc897452c00244351e4d91f69"/>
+                <collectedfrom name="ZENODO" id="opendoar____::358aee4cc897452c00244351e4d91f69"/>
+                <dateofacceptance>2019-12-31</dateofacceptance>
+		<webresource>
+		  <url>https://zenodo.org/record/3356153</url>
+		</webresource>
+
+	      </instance>
+
+	    </children>
+	  </oaf:result>
+
+        </oaf:entity>
+      </metadata>
+    </result>
+  </results>
+  <browseResults>
+  </browseResults>
+</response>

@@ -2,6 +2,7 @@ import doiRegex from 'doi-regex';
 import fetch from 'node-fetch';
 import { DOMParser } from 'xmldom';
 import { unprefix, cleanup, arrayify } from './jsonld';
+import { createError } from './errors';
 
 // TODO https://europepmc.org/OaiService
 // e.g http://europepmc.org/oai.cgi?verb=GetRecord&metadataPrefix=pmc&identifier=oai:europepmc.org:2654146
@@ -21,11 +22,15 @@ export default async function resolve(
 
   if (doi) {
     // try crossref and openAIRE
-    //const crossrefData = await resolveCrossRefDoi(doi, baseUrlCrossref);
-    //return crossrefData;
+    const results = await Promise.all([
+      resolveCrossRefDoi(doi, baseUrlCrossref).catch(err => null),
+      resolveOpenAireDoi(doi, baseUrlOpenAire).catch(err => null)
+    ]);
 
-    const openAireData = await resolveOpenAireDoi(doi, baseUrlOpenAire);
-    return openAireData;
+    // keep the one with the most metadata
+    return results.filter(Boolean).sort((a, b) => {
+      return Object.keys(b).length - Object.keys(a).length;
+    })[0];
   } else {
     // try arXiv
     return resolveArxivId(id, baseUrlArxiv);
@@ -39,6 +44,9 @@ async function resolveArxivId(
   id = unprefix(id).trim();
 
   const r = await fetch(`${baseUrl}${id}`);
+  if (!r.ok) {
+    throw createError(r.status);
+  }
   const text = await r.text();
   const doc = new DOMParser().parseFromString(text);
 
@@ -70,6 +78,9 @@ async function resolveCrossRefDoi(
 ) {
   id = unprefix(id).trim();
   const r = await fetch(`${baseUrl}${id}`);
+  if (!r.ok) {
+    throw createError(r.status);
+  }
   const body = await r.json();
   const data = { doi: id };
   const { message } = body;
@@ -117,8 +128,40 @@ async function resolveOpenAireDoi(
   baseUrl = 'http://api.openaire.eu/search/publications?doi='
 ) {
   const r = await fetch(`${baseUrl}${id}`);
+  if (!r.ok) {
+    throw createError(r.status);
+  }
+
   const text = await r.text();
   const doc = new DOMParser().parseFromString(text);
 
-  console.log(text);
+  const data = { doi: id };
+
+  const $metadata = doc.getElementsByTagName('metadata')[0];
+  if ($metadata) {
+    const $title = $metadata.getElementsByTagName('title')[0];
+    if ($title) {
+      data.name = $title.textContent.trim();
+    }
+
+    const $date = $metadata.getElementsByTagName('dateofacceptance')[0];
+    if ($date) {
+      data.datePosted = new Date($date.textContent.trim()).toISOString();
+    }
+
+    for (const localName of ['hostedby', 'collectedfrom']) {
+      const $el = $metadata.getElementsByTagName(localName)[0];
+      if ($el) {
+        const name = $el.getAttribute('name');
+        if (name) {
+          data.preprintServer = {
+            '@type': 'PreprintServer',
+            name: name.trim()
+          };
+          break;
+        }
+      }
+    }
+  }
+  return cleanup(data);
 }
