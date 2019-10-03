@@ -1,11 +1,11 @@
 import Ajv from 'ajv';
-import schema from '../schemas/rapid-prereview-action';
+import schema from '../schemas/request-for-rapid-prereview-action';
 import resolve from '../utils/resolve';
 import { getId, arrayify, unprefix, nodeify } from '../utils/jsonld';
 import { createPreprintId } from '../utils/ids';
 import { createError } from '../utils/errors';
 
-export default async function handleRapidPrereviewAction(
+export default async function handleRequestForRapidPrereviewAction(
   action,
   { strict = true, user = null, now = new Date().toISOString() } = {}
 ) {
@@ -45,7 +45,7 @@ export default async function handleRapidPrereviewAction(
   const preprintId = createPreprintId(identifier);
 
   const handledAction = Object.assign({}, action, {
-    '@id': `review:${unprefix(getId(action.agent))}@${unprefix(preprintId)}`,
+    '@id': `request:${unprefix(getId(action.agent))}@${unprefix(preprintId)}`,
     startTime: now,
     endTime: now,
     actionStatus: 'CompletedActionStatus',

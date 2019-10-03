@@ -1,6 +1,7 @@
 import Cloudant from '@cloudant/cloudant';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
+import handleRequestForRapidPrereviewAction from './handle-request-for-rapid-prereview-action';
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
 import ddocIndex from '../ddocs/ddoc-index';
@@ -203,7 +204,11 @@ export default class DB {
         });
 
       case 'RequestForRapidPREreviewAction':
-        break;
+        return handleRequestForRapidPrereviewAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
 
       default:
         break;
