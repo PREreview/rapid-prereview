@@ -4,7 +4,7 @@ import { getId, unprefix, cleanup } from '../utils/jsonld';
 
 export default async function handleRegisterAction(
   action,
-  { strict = true, userId = null } = {}
+  { strict = true } = {}
 ) {
   const orcid = unprefix(getId(action.agent));
 

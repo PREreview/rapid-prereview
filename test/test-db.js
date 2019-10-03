@@ -5,7 +5,7 @@ describe('db', function() {
 
   it('should init', async () => {
     const db = new DB();
-    await db.init({ reset: true });
-    await db.ddoc();
+    console.log(await db.init({ reset: true }));
+    console.log(await db.ddoc());
   });
 });

@@ -3,6 +3,7 @@ import handleRegisterAction from './handle-register-action';
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
 import ddocIndex from '../ddocs/ddoc-index';
+import { getId, cleanup, arrayify } from '../utils/jsonld';
 
 export default class DB {
   constructor(config = {}) {
@@ -41,11 +42,7 @@ export default class DB {
   }
 
   async init({ reset = false } = {}) {
-    for (const dbName of [
-      this.docsDbName,
-      this.indexDbName,
-      this.usersDbName
-    ]) {
+    async function setup(dbName) {
       if (reset) {
         try {
           await this.cloudant.db.destroy(dbName);
@@ -56,14 +53,23 @@ export default class DB {
         }
       }
 
+      let resp;
       try {
-        await this.cloudant.db.create(dbName);
+        resp = await this.cloudant.db.create(dbName);
       } catch (err) {
         if (err.error !== 'file_exists') {
           throw err;
         }
       }
+
+      return Object.assign({ dbName }, resp);
     }
+
+    return Promise.all([
+      setup.call(this, this.docsDbName),
+      setup.call(this, this.indexDbName),
+      setup.call(this, this.usersDbName)
+    ]);
   }
 
   async ddoc() {
@@ -97,9 +103,12 @@ export default class DB {
       }, {});
     }
 
-    await this.docs.insert(stringify(ddocDocs));
-    await this.users.insert(stringify(ddocUsers));
-    await this.index.insert(stringify(ddocIndex));
+    const resps = await Promise.all([
+      this.docs.insert(stringify(ddocDocs)),
+      this.users.insert(stringify(ddocUsers)),
+      this.index.insert(stringify(ddocIndex))
+    ]);
+    return resps;
   }
 
   async secure() {
@@ -108,18 +117,57 @@ export default class DB {
     // we make the docs DB public for read
   }
 
-  async get(id) {}
+  async get(id, { user = null } = {}) {
+    const [prefix] = id.split(':');
 
-  async search(query) {}
+    switch (prefix) {
+      case 'user': {
+        const doc = await this.users.get(id);
+        if (getId(user) === getId(doc)) {
+          return doc;
+        } else {
+          // we need to remove the anonymous roles
+          return cleanup(
+            Object.assign({}, doc, {
+              hasRole: arrayify(doc.hasRole).filter(
+                role => role['@type'] !== 'AnonymousReviewerRole'
+              )
+            }),
+            { removeEmptyArray: true }
+          );
+        }
+      }
 
-  async post(action, { userId, strict } = {}) {
+      case 'role': {
+        const body = await this.users.view('ddoc-users', 'usersByRoleId', {
+          key: id,
+          include_docs: true,
+          reduce: false
+        });
+        const doc = body.rows[0].value;
+
+        return arrayify(doc.hasRole).find(role => getId(role) === id);
+      }
+
+      case 'review':
+      case 'request':
+        return this.docs.get(id);
+
+      case 'preprint':
+        return this.index.get(id);
+    }
+  }
+
+  async search(index, query, { user = null } = {}) {}
+
+  async post(action, { user = null, strict = true } = {}) {
     if (!action['@type']) {
       throw new Error('action must have a @type');
     }
 
     switch (action['@type']) {
       case 'RegisterAction':
-        return handleRegisterAction.call(this, action, { userId, strict });
+        return handleRegisterAction.call(this, action, { strict });
 
       case 'CreateRoleAction':
         break;

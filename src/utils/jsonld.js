@@ -9,6 +9,23 @@ export function unprefix(uri = '') {
   return uri.replace(/^.*:/, '');
 }
 
-export function cleanup(doc) {
-  return pickBy(doc, value => value !== undefined);
+export function cleanup(doc, { removeEmptyArray = false } = {}) {
+  return pickBy(doc, value => {
+    let optsOk = true;
+    if (removeEmptyArray) {
+      if (Array.isArray(value) && value.length === 0) {
+        optsOk = false;
+      }
+    }
+
+    return value !== undefined && optsOk;
+  });
+}
+
+export function arrayify(value) {
+  if (value === undefined) return [];
+  if (value) {
+    value = value['@list'] || value['@set'] || value;
+  }
+  return Array.isArray(value) ? value : [value];
 }
