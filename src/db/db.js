@@ -1,5 +1,8 @@
 import Cloudant from '@cloudant/cloudant';
 import handleRegisterAction from './handle-register-action';
+import ddocDocs from '../ddocs/ddoc-docs';
+import ddocUsers from '../ddocs/ddoc-users';
+import ddocIndex from '../ddocs/ddoc-index';
 
 export default class DB {
   constructor(config = {}) {
@@ -34,7 +37,7 @@ export default class DB {
     this.cloudant = cloudant;
     this.docs = cloudant.use(this.docsDbName);
     this.index = cloudant.use(this.indexDbName);
-    this.users = cloudant.use(this.userDbName);
+    this.users = cloudant.use(this.usersDbName);
   }
 
   async init({ reset = false } = {}) {
@@ -64,12 +67,45 @@ export default class DB {
   }
 
   async ddoc() {
-    // TODO
+    function toUnnamedString(f) {
+      const str = f.toString();
+      // we remove the function name as it creates issue
+      return 'function ' + str.slice(str.indexOf('('));
+    }
+
+    function stringify(ddoc) {
+      return Object.keys(ddoc).reduce((sddoc, key) => {
+        const value = ddoc[key];
+        if (key === 'indexes') {
+          sddoc[key] = Object.keys(value).reduce((sindexes, name) => {
+            sindexes[name] = Object.assign({}, value[name], {
+              index: toUnnamedString(value[name].index)
+            });
+            return sindexes;
+          }, {});
+        } else if (key === 'views') {
+          sddoc[key] = Object.keys(value).reduce((sviews, name) => {
+            sviews[name] = Object.assign({}, value[name], {
+              map: toUnnamedString(value[name].map)
+            });
+            return sviews;
+          }, {});
+        } else {
+          sddoc[key] = value;
+        }
+        return sddoc;
+      }, {});
+    }
+
+    await this.docs.insert(stringify(ddocDocs));
+    await this.users.insert(stringify(ddocUsers));
+    await this.index.insert(stringify(ddocIndex));
   }
 
   async secure() {
     // TODO see https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-authorization
     // and set_security method
+    // we make the docs DB public for read
   }
 
   async get(id) {}
