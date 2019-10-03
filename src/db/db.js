@@ -1,6 +1,7 @@
 import Cloudant from '@cloudant/cloudant';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
+import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
 import handleRequestForRapidPrereviewAction from './handle-request-for-rapid-prereview-action';
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
@@ -165,12 +166,13 @@ export default class DB {
       include_docs: true,
       reduce: false
     });
+
     const row = body.rows[0];
     if (!row) {
       throw createError(404, `Not found (${roleId})`);
     }
 
-    return row.value;
+    return row.doc;
   }
 
   async search(index, query, { user = null } = {}) {}
@@ -180,7 +182,7 @@ export default class DB {
     { user = null, strict = true, now = new Date().toISOString() } = {}
   ) {
     if (!action['@type']) {
-      throw new Error('action must have a @type');
+      throw createError(400, 'action must have a @type');
     }
 
     switch (action['@type']) {
@@ -188,13 +190,19 @@ export default class DB {
         return handleRegisterAction.call(this, action, { strict, now });
 
       case 'CreateRoleAction':
+        // TODO
         break;
 
       case 'UpdateRoleAction':
+        // TODO
         break;
 
       case 'DeanonymizeRoleAction':
-        break;
+        return handleDeanonimyzeRoleAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
 
       case 'RapidPREreviewAction':
         return handleRapidPrereviewAction.call(this, action, {
@@ -211,7 +219,7 @@ export default class DB {
         });
 
       default:
-        break;
+        throw createError(400, `invalid action @type ${action['@type']}`);
     }
   }
 }

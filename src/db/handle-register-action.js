@@ -17,6 +17,7 @@ export default async function handleRegisterAction(
 
   const user = cleanup({
     '@id': `user:${orcidUtils.toDashFormat(orcid)}`,
+    '@type': 'Person',
     orcid: orcidUtils.toDashFormat(orcid),
     name: action.agent.name,
     hasRole: [
