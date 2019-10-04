@@ -53,7 +53,7 @@ export default async function handleRequestForRapidPrereviewAction(
     )
   });
 
-  const resp = await this.docs.insert(handledAction, getId(action));
+  const resp = await this.docs.insert(handledAction, getId(handledAction));
 
   return Object.assign(handledAction, { _id: resp.id, _rev: resp.rev });
 }
