@@ -345,7 +345,7 @@ export default class DB {
         })
       );
 
-    const resps = await this.index.bulk(docs);
+    const resps = await this.index.bulk({ docs });
     const revMap = resps.reduce((revMap, resp) => {
       if (resp.ok) {
         revMap[resp.id] = resp.rev;
