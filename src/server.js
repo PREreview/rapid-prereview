@@ -7,6 +7,10 @@ import webpackConfig from '../webpack.config';
 import DB from '../src/db/db';
 import Feed from '../src/db/feed';
 import { rapid, assets } from './index';
+import {
+  setIntervalAsync,
+  clearIntervalAsync
+} from './utils/set-interval-async';
 
 const compiler = webpack(webpackConfig);
 
@@ -21,13 +25,13 @@ feed.on('error', err => {
   console.error(err);
 });
 
-const intervalId = setInterval(async () => {
-  try {
-    await db.updateScores();
-  } catch (err) {
-    console.error(err);
-  }
-}, 60000);
+const intervalId = setIntervalAsync(
+  () => {
+    return db.updateScores();
+  },
+  60000,
+  err => console.error(err)
+);
 
 const app = express();
 app.use(
@@ -49,7 +53,7 @@ server.listen(port, () => {
 
 process.once('SIGINT', function() {
   server.close(() => {
-    clearInterval(intervalId);
+    clearIntervalAsync(intervalId);
     feed.stop(); // TODO store latest seq to disk ?
     process.exit();
   });

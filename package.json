@@ -7,6 +7,7 @@
     "cloudant": "docker restart cloudant-developer",
     "log-cloudant": "docker logs cloudant-developer",
     "start": "babel-node ./src/server.js",
+    "init": "babel-node ./scripts/init.js",
     "build:client": "rm -rf ./public/assets/* && cross-env NODE_ENV=production webpack --progress",
     "build:server": "rm -rf dist; mkdir dist; babel src -d dist",
     "build": "npm run build:client && npm run build:server",
