@@ -9,7 +9,7 @@ import {
   crossrefDoi
 } from './utils/create-preprint-server';
 
-describe('update scores', function() {
+describe('feed', function() {
   this.timeout(40000);
 
   let user;
@@ -40,7 +40,7 @@ describe('update scores', function() {
     });
   });
 
-  it('should sync index', done => {
+  it('follow the changes feed and sync index DB', done => {
     const feed = new Feed(db);
     feed.start();
 
@@ -49,6 +49,11 @@ describe('update scores', function() {
       const lastSeq = feed.stop();
       assert.equal(lastSeq, seq);
       done();
+    });
+
+    feed.on('error', err => {
+      feed.stop();
+      done(err);
     });
 
     const action = db

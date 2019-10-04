@@ -31,13 +31,15 @@ export default class Feed extends EventEmitter {
         try {
           preprint = await this.db.syncIndex(doc);
         } catch (err) {
+          err.source = 'syncIndex';
           this.emit('error', err);
         }
         this.emit('sync', change.seq, preprint);
       }
     });
     this.feed.on('error', function(err) {
-      throw err;
+      err.source = 'follow';
+      this.emit('error', err);
     });
     this.feed.follow();
   }
