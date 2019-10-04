@@ -15,6 +15,14 @@ const ddoc = {
         }
       },
       reduce: '_count'
+    },
+    preprintsByScoreAndNegativeDatePosted: {
+      map: function(doc) {
+        if (doc['@type'] === 'ScholarlyPreprint') {
+          emit([doc.score, -1 * new Date(doc.datePosted).getTime()], null);
+        }
+      },
+      reduce: '_count'
     }
   },
   indexes: {

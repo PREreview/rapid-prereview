@@ -10,7 +10,7 @@ import ddocIndex from '../ddocs/ddoc-index';
 import { getId, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import { INDEXED_PREPRINT_PROPS } from '../constants';
-import { getScore } from '../utils/score';
+import { getScore, SCORE_THRESHOLD } from '../utils/score';
 
 export default class DB {
   constructor(config = {}) {
@@ -310,6 +310,39 @@ export default class DB {
 
   async updateScores({ now = new Date().toISOString() } = {}) {
     // get all docs with score > 0
+    const body = await this.index.view(
+      'ddoc-index',
+      'preprintsByScoreAndNegativeDatePosted',
+      {
+        startkey: [SCORE_THRESHOLD],
+        reduce: false,
+        include_docs: true
+      }
+    );
+
+    const docs = body.rows
+      .filter(row => row.doc)
+      .map(({ doc }) =>
+        Object.assign({}, doc, {
+          dateScoreLastUpdated: now,
+          score: getScore(doc.potentialAction, { now })
+        })
+      );
+
+    const resps = await this.index.bulk(docs);
+    const revMap = resps.reduce((revMap, resp) => {
+      if (resp.ok) {
+        revMap[resp.id] = resp.rev;
+      }
+      return revMap;
+    }, {});
+
+    return docs.map(doc => {
+      if (doc._id in revMap) {
+        return Object.assign({}, doc, { _rev: revMap[doc._id] });
+      }
+      return doc;
+    });
   }
 
   async post(

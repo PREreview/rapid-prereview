@@ -1,5 +1,7 @@
 import { arrayify } from './jsonld';
 
+export const SCORE_THRESHOLD = 1e-5;
+
 /**
  * See https://medium.com/hacking-and-gonzo/how-hacker-news-ranking-algorithm-works-1d9b0cf2c08d
  */
@@ -8,7 +10,7 @@ export function getScore(
   { now = new Date().toISOString() } = {},
   {
     g = 1.8, // gravity factor
-    threshold = 1e-5 // if a score is below `threshold` with set it to 0
+    threshold = SCORE_THRESHOLD // if a score is below `threshold` with set it to 0
   } = {}
 ) {
   // sort by date posted (`startTime`)
@@ -45,5 +47,5 @@ export function getScore(
   const score =
     (nReviews + nRequests) / Math.pow(timeSinceFirstActivityHours + 1, g);
 
-  return score < threshold ? 0 : score;
+  return score <= threshold ? 0 : score;
 }
