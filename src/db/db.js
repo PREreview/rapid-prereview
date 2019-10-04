@@ -213,23 +213,53 @@ export default class DB {
     }, {});
 
     const docId = getId(action.object);
-    const body = await this.index.get(docId, { open_revs: 'all' });
+    let body;
+    try {
+      body = await this.index.get(docId, { open_revs: 'all' });
+    } catch (err) {
+      if (err.statusCode === 404) {
+        body = [];
+      } else {
+        throw err;
+      }
+    }
     const docs = body.filter(entry => entry.ok && !entry.ok._deleted);
 
     // merge all leaf docs (conflicting)
     const merged = docs.reduce((merged, doc) => {
       // score: latest wins
+      if (
+        new Date(merged.dateScoreLastUpdated).getTime() <
+        new Date(doc.dateScoreLastUpdated).getTime()
+      ) {
+        merged.dateScoreLastUpdated = doc.dateScoreLastUpdated;
+        merged.score = doc.score;
+      }
 
-      // indexed preprint props, latest wins
+      // indexed preprint props: higher number of `sdRetrievedFields` wins and
+      // if equal, latest `sdDateRetrieved` wins
+      if (
+        merged.sdRetrievedFields.length < doc.sdRetrievedFields.length ||
+        (merged.sdRetrievedFields.length === doc.sdRetrievedFields.length &&
+          new Date(merged.sdDateRetrieved).getTime() <
+            new Date(doc.sdDateRetrieved).getTime())
+      ) {
+        INDEXED_PREPRINT_PROPS.forEach(p => {
+          merged[p] = doc[p];
+        });
+      }
 
-      // potential action, we merge all distincts
+      // potential action: we merge all distincts
       merged.potentialAction = uniqBy(
         arrayify(merged.potentialAction).concat(arrayify(doc.potentialAction)),
         getId
       );
-    }, {});
 
-    // add action to the merged document
+      return merged;
+    }, Object.assign({}, docs[0]));
+
+    // add action to the merged document (and update score, just the numerator
+    // as all the denominators are updated jointly)
 
     // bulk update
   }
