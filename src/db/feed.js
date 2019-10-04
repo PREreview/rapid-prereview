@@ -45,7 +45,7 @@ export default class Feed extends EventEmitter {
   }
 
   stop() {
-    if (!this.feed) return;
+    if (!this.feed) return this.seq;
 
     this.feed.stop();
     this.feed = null;
