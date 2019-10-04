@@ -1,4 +1,5 @@
 import Cloudant from '@cloudant/cloudant';
+import uniqBy from 'lodash/uniqBy';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
@@ -8,6 +9,7 @@ import ddocUsers from '../ddocs/ddoc-users';
 import ddocIndex from '../ddocs/ddoc-index';
 import { getId, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
+import { INDEXED_PREPRINT_PROPS } from '../constants';
 
 export default class DB {
   constructor(config = {}) {
@@ -175,7 +177,64 @@ export default class DB {
     return row.doc;
   }
 
-  async search(index, query, { user = null } = {}) {}
+  // search
+  async searchPreprints(query, { user = null } = {}) {}
+  async searchReviews(query, { user = null } = {}) {}
+  async searchRequests(query, { user = null } = {}) {}
+
+  async syncIndex(action, { now = new Date().toISOString() } = {}) {
+    // we compact the action to reduce the space used by the index
+    action = Object.keys(action).reduce((compacted, key) => {
+      switch (key) {
+        case 'agent':
+        case 'object':
+          compacted[key] = getId(action[key]);
+          break;
+
+        case 'resultReview':
+          compacted[key] = cleanup(
+            Object.assign({}, action[key], {
+              reviewAnswer: arrayify(action[key].reviewAnswer).map(answer =>
+                Object.assign({}, answer, {
+                  parentItem: getId(answer.parentItem)
+                })
+              )
+            }),
+            { removeEmptyArray: true }
+          );
+          break;
+
+        default:
+          compacted[key] = action[key];
+          break;
+      }
+
+      return compacted;
+    }, {});
+
+    const docId = getId(action.object);
+    const body = await this.index.get(docId, { open_revs: 'all' });
+    const docs = body.filter(entry => entry.ok && !entry.ok._deleted);
+
+    // merge all leaf docs (conflicting)
+    const merged = docs.reduce((merged, doc) => {
+      // score: latest wins
+
+      // indexed preprint props, latest wins
+
+      // potential action, we merge all distincts
+      merged.potentialAction = uniqBy(
+        arrayify(merged.potentialAction).concat(arrayify(doc.potentialAction)),
+        getId
+      );
+    }, {});
+
+    // add action to the merged document
+
+    // bulk update
+  }
+
+  async updateScores({ now = new Date().toISOString() } = {}) {}
 
   async post(
     action,

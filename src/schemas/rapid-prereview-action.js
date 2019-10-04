@@ -69,9 +69,8 @@ const schema = {
             doi: {
               type: 'string'
             },
-            arXiv: {
-              type: 'string',
-              pattern: '^arXiv:'
+            arXivId: {
+              type: 'string'
             },
             name: { $ref: '#/definitions/text' },
             datePosted: {

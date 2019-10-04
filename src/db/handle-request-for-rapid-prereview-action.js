@@ -24,25 +24,14 @@ export default async function handleRequestForRapidPrereviewAction(
   }
 
   const identifier = getId(action.object);
-
-  let object;
-  try {
-    object = await resolve(identifier, this.config);
-    object = Object.assign(object, {
-      sdRetrievedFields: Object.keys(object),
-      sdDateRetrieved: now
-    });
-  } catch (err) {
-    object = Object.assign(
-      {
-        '@type': 'ScholarlyPreprint',
-        [identifier.startsWith('arXiv:') ? 'arXivId' : 'doi']: identifier
-      },
-      nodeify(action.object)
-    );
-  }
-
   const preprintId = createPreprintId(identifier);
+
+  let retrieved;
+  try {
+    retrieved = await resolve(identifier, this.config);
+  } catch (err) {
+    retrieved = {};
+  }
 
   const handledAction = Object.assign({}, action, {
     '@id': `request:${unprefix(getId(action.agent))}@${unprefix(preprintId)}`,
@@ -51,9 +40,16 @@ export default async function handleRequestForRapidPrereviewAction(
     actionStatus: 'CompletedActionStatus',
     object: Object.assign(
       {
-        '@id': preprintId
+        '@type': 'ScholarlyPreprint',
+        [identifier.startsWith('arXiv:') ? 'arXivId' : 'doi']: identifier
       },
-      object
+      nodeify(action.object),
+      retrieved,
+      {
+        '@id': preprintId,
+        sdRetrievedFields: Object.keys(retrieved),
+        sdDateRetrieved: now
+      }
     )
   });
 

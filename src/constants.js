@@ -98,3 +98,13 @@ export const QUESTIONS = [
     type: 'Question'
   }
 ];
+
+export const INDEXED_PREPRINT_PROPS = [
+  '@id',
+  '@type',
+  'doi',
+  'arXivId',
+  'name',
+  'preprintServer',
+  'datePosted'
+];

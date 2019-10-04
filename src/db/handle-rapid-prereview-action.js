@@ -23,26 +23,18 @@ export default async function handleRapidPrereviewAction(
     throw createError(403, 'Forbidden');
   }
 
+  // TODO validate that all questions are answered and that there are no more
+  // questions
+
   const identifier = getId(action.object);
-
-  let object;
-  try {
-    object = await resolve(identifier, this.config);
-    object = Object.assign(object, {
-      sdRetrievedFields: Object.keys(object),
-      sdDateRetrieved: now
-    });
-  } catch (err) {
-    object = Object.assign(
-      {
-        '@type': 'ScholarlyPreprint',
-        [identifier.startsWith('arXiv:') ? 'arXivId' : 'doi']: identifier
-      },
-      nodeify(action.object)
-    );
-  }
-
   const preprintId = createPreprintId(identifier);
+
+  let retrieved;
+  try {
+    retrieved = await resolve(identifier, this.config);
+  } catch (err) {
+    retrieved = {};
+  }
 
   const handledAction = Object.assign({}, action, {
     '@id': `review:${unprefix(getId(action.agent))}@${unprefix(preprintId)}`,
@@ -51,9 +43,16 @@ export default async function handleRapidPrereviewAction(
     actionStatus: 'CompletedActionStatus',
     object: Object.assign(
       {
-        '@id': preprintId
+        '@type': 'ScholarlyPreprint',
+        [identifier.startsWith('arXiv:') ? 'arXivId' : 'doi']: identifier
       },
-      object
+      nodeify(action.object),
+      retrieved,
+      {
+        '@id': preprintId,
+        sdRetrievedFields: Object.keys(retrieved),
+        sdDateRetrieved: now
+      }
     )
   });
 
