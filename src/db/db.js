@@ -1,4 +1,6 @@
 import Cloudant from '@cloudant/cloudant';
+import omit from 'lodash/omit';
+import pick from 'lodash/pick';
 import uniqBy from 'lodash/uniqBy';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
@@ -7,7 +9,7 @@ import handleRequestForRapidPrereviewAction from './handle-request-for-rapid-pre
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
 import ddocIndex from '../ddocs/ddoc-index';
-import { getId, cleanup, arrayify } from '../utils/jsonld';
+import { getId, nodeify, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import { INDEXED_PREPRINT_PROPS } from '../constants';
 import { getScore, SCORE_THRESHOLD } from '../utils/score';
@@ -185,18 +187,26 @@ export default class DB {
 
   async syncIndex(action, { now = new Date().toISOString() } = {}) {
     // we compact the action to reduce the space used by the index
-    action = Object.keys(action).reduce((compacted, key) => {
+    const compactedAction = Object.keys(action).reduce((compacted, key) => {
       switch (key) {
         case 'agent':
-        case 'object':
           compacted[key] = getId(action[key]);
+          break;
+
+        case '_id':
+        case '_rev':
+        case 'actionStatus':
+        case 'object':
           break;
 
         case 'resultReview':
           compacted[key] = cleanup(
             Object.assign({}, action[key], {
+              about: arrayify(action[key].about)
+                .filter(about => about.name)
+                .map(about => pick(about, ['name'])),
               reviewAnswer: arrayify(action[key].reviewAnswer).map(answer =>
-                Object.assign({}, answer, {
+                Object.assign({}, omit(answer, ['@type']), {
                   parentItem: getId(answer.parentItem)
                 })
               )
@@ -224,12 +234,15 @@ export default class DB {
         throw err;
       }
     }
-    const docs = body.filter(entry => entry.ok && !entry.ok._deleted);
+
+    const docs = body
+      .filter(entry => entry.ok && !entry.ok._deleted)
+      .map(entry => entry.ok);
 
     let merged;
     if (docs.length) {
       // merge all leaf docs (conflicting)
-      const merged = docs.reduce((merged, doc) => {
+      merged = docs.reduce((merged, doc) => {
         // score: latest wins
         if (
           new Date(merged.dateScoreLastUpdated).getTime() <
@@ -283,7 +296,7 @@ export default class DB {
           _action => getId(_action) === getId(action)
         )
       ) {
-        merged.potentialAction.push(action);
+        merged.potentialAction.push(compactedAction);
 
         merged.score = getScore(merged.potentialAction, {
           now: merged.dateScoreLastUpdated
@@ -291,18 +304,21 @@ export default class DB {
         merged.dateScoreLastUpdated = now;
       }
     } else {
-      merged = Object.assign({}, action.object, {
+      merged = Object.assign({}, nodeify(action.object), {
         _id: getId(action.object),
         score: getScore(action, { now }),
         dateScoreLastUpdated: now,
-        potentialAction: [action]
+        potentialAction: [compactedAction]
       });
     }
+
+    merged = cleanup(merged);
 
     // bulk update
     const payload = [merged].concat(
       docs.slice(1).map(doc => Object.assign({}, doc, { _deleted: true }))
     );
+
     const resp = await this.index.bulk({ docs: payload });
 
     return Object.assign({}, merged, { _rev: resp[0].rev });
