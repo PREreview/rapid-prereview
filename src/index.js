@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import appRoutes from './routes/app-routes';
+import addDb from './middlewares/add-db';
 
 export function rapid(config = {}) {
   const app = express();
@@ -9,6 +10,7 @@ export function rapid(config = {}) {
   app.set('views', path.join(path.dirname(__dirname), 'views'));
   app.set('view engine', 'ejs');
 
+  app.use(addDb(config));
   app.use('/', appRoutes);
 
   return app;

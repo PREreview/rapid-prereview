@@ -21,7 +21,6 @@ export default class Feed extends EventEmitter {
 
     this.feed = this.db.docs.follow({ since, include_docs: true });
     this.feed.on('change', async change => {
-      this.seq = change.seq;
       const { doc } = change;
       if (
         doc['@type'] === 'RequestForRapidPREreviewAction' ||
@@ -31,17 +30,24 @@ export default class Feed extends EventEmitter {
         try {
           preprint = await this.db.syncIndex(doc);
         } catch (err) {
+          err.seq = change.seq;
           err.source = 'syncIndex';
           this.emit('error', err);
         }
-        this.emit('sync', change.seq, preprint);
+        this.seq = change.seq;
+        this.emit('sync', this.seq, preprint);
+      } else {
+        this.seq = change.seq;
       }
     });
     this.feed.on('error', function(err) {
       err.source = 'follow';
+      err.seq = this.seq;
       this.emit('error', err);
     });
     this.feed.follow();
+
+    return since;
   }
 
   stop() {
