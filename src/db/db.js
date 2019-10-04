@@ -10,6 +10,7 @@ import ddocIndex from '../ddocs/ddoc-index';
 import { getId, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import { INDEXED_PREPRINT_PROPS } from '../constants';
+import { getScore } from '../utils/score';
 
 export default class DB {
   constructor(config = {}) {
@@ -264,16 +265,47 @@ export default class DB {
 
       // add action to the merged document (and update score, just the numerator
       // as all the denominators are updated jointly)
+      if (
+        merged.sdRetrievedFields.length <
+          action.object.sdRetrievedFields.length ||
+        (merged.sdRetrievedFields.length ===
+          action.object.sdRetrievedFields.length &&
+          new Date(merged.sdDateRetrieved).getTime() <
+            new Date(action.object.sdDateRetrieved).getTime())
+      ) {
+        INDEXED_PREPRINT_PROPS.forEach(p => {
+          merged[p] = action.object[p];
+        });
+      }
+
+      if (
+        !merged.potentialAction.some(
+          _action => getId(_action) === getId(action)
+        )
+      ) {
+        merged.potentialAction.push(action);
+
+        merged.score = getScore(merged.potentialAction, {
+          now: merged.dateScoreLastUpdated
+        });
+        merged.dateScoreLastUpdated = now;
+      }
     } else {
       merged = Object.assign({}, action.object, {
         _id: getId(action.object),
-        score: 0,
+        score: getScore(action, { now }),
         dateScoreLastUpdated: now,
         potentialAction: [action]
       });
     }
 
     // bulk update
+    const payload = [merged].concat(
+      docs.slice(1).map(doc => Object.assign({}, doc, { _deleted: true }))
+    );
+    const resp = await this.index.bulk({ docs: payload });
+
+    return Object.assign({}, merged, { _rev: resp[0].rev });
   }
 
   async updateScores({ now = new Date().toISOString() } = {}) {}
