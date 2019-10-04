@@ -308,7 +308,9 @@ export default class DB {
     return Object.assign({}, merged, { _rev: resp[0].rev });
   }
 
-  async updateScores({ now = new Date().toISOString() } = {}) {}
+  async updateScores({ now = new Date().toISOString() } = {}) {
+    // get all docs with score > 0
+  }
 
   async post(
     action,

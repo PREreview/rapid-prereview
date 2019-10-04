@@ -16,7 +16,7 @@ describe('score', function() {
       {
         now: '2019-10-04T01:00:00.515Z'
       },
-      { g: 1 }
+      { g: 1, threshold: 1e-5 }
     );
     assert.equal(score, 0.5);
   });
@@ -36,8 +36,21 @@ describe('score', function() {
       {
         now: '2019-10-04T01:00:00.515Z'
       },
-      { g: 1 }
+      { g: 1, threshold: 1e-5 }
     );
     assert.equal(score, 1);
+  });
+
+  it('should set score to 0 past the threshold', () => {
+    const score = getScore(
+      {
+        '@type': 'RapidPREreviewAction',
+        startTime: '2018-10-04T00:00:00.515Z'
+      },
+      {
+        now: '2019-10-04T01:00:00.515Z'
+      }
+    );
+    assert.equal(score, 0);
   });
 });

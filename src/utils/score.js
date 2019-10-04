@@ -6,7 +6,10 @@ import { arrayify } from './jsonld';
 export function getScore(
   actions, // list of `RapidPREreviewAction` or `RequestForRapidPREreviewAction`
   { now = new Date().toISOString() } = {},
-  { g = 1.8 } = {} // gravity factor
+  {
+    g = 1.8, // gravity factor
+    threshold = 1e-5 // if a score is below `threshold` with set it to 0
+  } = {}
 ) {
   // sort by date posted (`startTime`)
   actions = arrayify(actions).sort((a, b) => {
@@ -39,5 +42,8 @@ export function getScore(
     return n;
   }, 0);
 
-  return (nReviews + nRequests) / Math.pow(timeSinceFirstActivityHours + 1, g);
+  const score =
+    (nReviews + nRequests) / Math.pow(timeSinceFirstActivityHours + 1, g);
+
+  return score < threshold ? 0 : score;
 }
