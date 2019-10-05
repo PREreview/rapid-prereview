@@ -189,11 +189,16 @@ export default class DB {
   }
 
   // search
-  async searchPreprints(query, { user = null } = {}) {}
-  async searchReviews(query, { user = null } = {}) {}
-  async searchRequests(query, { user = null } = {}) {}
-  async searchUsers(query, { user = null } = {}) {}
-  async searchRoles(query, { user = null } = {}) {}
+  async searchPreprints(params, { user = null } = {}) {
+    const results = await this.index.search('ddoc-index', 'preprints', params);
+
+    return results;
+  }
+
+  async searchReviews(params, { user = null } = {}) {}
+  async searchRequests(params, { user = null } = {}) {}
+  async searchUsers(params, { user = null } = {}) {}
+  async searchRoles(params, { user = null } = {}) {}
 
   async syncIndex(action, { now = new Date().toISOString() } = {}) {
     // we compact the action to reduce the space used by the index

@@ -1,5 +1,4 @@
 import assert from 'assert';
-import fetch from 'node-fetch';
 import DB from '../src/db/db';
 import { QUESTIONS } from '../src/constants';
 import { getId, unprefix } from '../src/utils/jsonld';
@@ -12,7 +11,7 @@ import {
   openAireDoi
 } from './utils/create-preprint-server';
 
-describe('API', function() {
+describe('search', function() {
   this.timeout(40000);
 
   let user, server;
@@ -21,7 +20,6 @@ describe('API', function() {
   const port = 3333;
   const config = createConfig(port);
   const db = new DB(config);
-  const baseUrl = `http://127.0.0.1:${port}/api`;
 
   before(async () => {
     await db.init({ reset: true });
@@ -98,43 +96,12 @@ describe('API', function() {
     }
   });
 
-  it('should get a user', async () => {
-    const resp = await fetch(`${baseUrl}/user/${unprefix(getId(user))}`);
-    const body = await resp.json();
-    assert.equal(getId(body), getId(user));
+  describe('searchPreprints', () => {
+    it.only('should search preprints', async () => {
+      const results = await db.searchPreprints({ q: '*:*' });
+      console.log(results);
+    });
   });
-
-  it('should get a role', async () => {
-    const resp = await fetch(
-      `${baseUrl}/role/${unprefix(getId(user.hasRole[0]))}`
-    );
-    const body = await resp.json();
-    assert.equal(getId(body), getId(user.hasRole[0]));
-  });
-
-  it('should get a review', async () => {
-    const [review] = reviews;
-    const resp = await fetch(`${baseUrl}/review/${unprefix(getId(review))}`);
-    const body = await resp.json();
-    assert.equal(getId(body), getId(review));
-  });
-
-  it('should get a request', async () => {
-    const [request] = requests;
-    const resp = await fetch(`${baseUrl}/request/${unprefix(getId(request))}`);
-    const body = await resp.json();
-    assert.equal(getId(body), getId(request));
-  });
-
-  it('should get a preprint', async () => {
-    const [request] = requests;
-    const preprintId = getId(request.object);
-    const resp = await fetch(`${baseUrl}/preprint/${unprefix(preprintId)}`);
-    const body = await resp.json();
-    assert.equal(getId(body), preprintId);
-  });
-
-  it.skip('should search preprints', async () => {});
 
   after(done => {
     server.close(done);

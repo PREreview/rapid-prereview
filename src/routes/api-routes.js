@@ -1,11 +1,12 @@
 import { Router } from 'express';
+import parseQuery from '../middlewares/parse-query';
 
 const router = new Router({ caseSensitive: true });
 
 /**
  * Search for preprints with reviews or requests for reviews
  */
-router.get('/preprint', (req, res, next) => {
+router.get('/preprint', parseQuery, (req, res, next) => {
   next();
 });
 
@@ -24,7 +25,7 @@ router.get('/preprint/:preprintId', async (req, res, next) => {
 /**
  * Search for reviews
  */
-router.get('/review', (req, res, next) => {
+router.get('/review', parseQuery, (req, res, next) => {
   next();
 });
 
@@ -43,7 +44,7 @@ router.get('/review/:reviewId', async (req, res, next) => {
 /**
  * Search for requests
  */
-router.get('/request', (req, res, next) => {
+router.get('/request', parseQuery, (req, res, next) => {
   next();
 });
 
@@ -62,7 +63,7 @@ router.get('/request/:requestId', async (req, res, next) => {
 /**
  * Search for users
  */
-router.get('/user', (req, res, next) => {
+router.get('/user', parseQuery, (req, res, next) => {
   next();
 });
 
@@ -81,7 +82,7 @@ router.get('/user/:userId', async (req, res, next) => {
 /**
  * Search for roles
  */
-router.get('/role', (req, res, next) => {
+router.get('/role', parseQuery, (req, res, next) => {
   next();
 });
 
