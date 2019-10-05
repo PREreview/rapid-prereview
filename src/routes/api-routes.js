@@ -98,7 +98,7 @@ router.get('/role/:roleId', async (req, res, next) => {
 });
 
 /**
- * Post and action (side effects)
+ * Post an action (side effects)
  */
 router.post('/action', (req, res, next) => {
   next();

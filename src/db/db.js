@@ -13,6 +13,7 @@ import { getId, nodeify, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import { INDEXED_PREPRINT_PROPS } from '../constants';
 import { getScore, SCORE_THRESHOLD } from '../utils/score';
+import striptags from '../utils/striptags';
 
 export default class DB {
   constructor(config = {}) {
@@ -85,7 +86,10 @@ export default class DB {
 
   async ddoc() {
     function toUnnamedString(f) {
-      const str = f.toString();
+      const str = f
+        .toString()
+        .replace('// @inject(striptags)', striptags.toString());
+
       // we remove the function name as it creates issue
       return 'function ' + str.slice(str.indexOf('('));
     }
@@ -131,6 +135,7 @@ export default class DB {
   async get(id, { user = null } = {}) {
     const [prefix] = id.split(':');
 
+    // TODO `question:`
     switch (prefix) {
       case 'user': {
         const doc = await this.users.get(id);
@@ -160,6 +165,9 @@ export default class DB {
 
       case 'preprint':
         return this.index.get(id);
+
+      default:
+        throw createError(400, `invalid id`);
     }
   }
 
@@ -184,6 +192,8 @@ export default class DB {
   async searchPreprints(query, { user = null } = {}) {}
   async searchReviews(query, { user = null } = {}) {}
   async searchRequests(query, { user = null } = {}) {}
+  async searchUsers(query, { user = null } = {}) {}
+  async searchRoles(query, { user = null } = {}) {}
 
   async syncIndex(action, { now = new Date().toISOString() } = {}) {
     // we compact the action to reduce the space used by the index
