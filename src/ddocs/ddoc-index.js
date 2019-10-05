@@ -16,10 +16,10 @@ const ddoc = {
       },
       reduce: '_count'
     },
-    preprintsByScoreAndNegativeDatePosted: {
+    preprintsByScoreAndDatePosted: {
       map: function(doc) {
         if (doc['@type'] === 'ScholarlyPreprint') {
-          emit([doc.score, -1 * new Date(doc.datePosted).getTime()], null);
+          emit([doc.score, new Date(doc.datePosted).getTime()], null);
         }
       },
       reduce: '_count'

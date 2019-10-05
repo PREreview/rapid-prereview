@@ -328,9 +328,10 @@ export default class DB {
     // get all docs with score > 0
     const body = await this.index.view(
       'ddoc-index',
-      'preprintsByScoreAndNegativeDatePosted',
+      'preprintsByScoreAndDatePosted',
       {
-        startkey: [SCORE_THRESHOLD],
+        endkey: [SCORE_THRESHOLD],
+        descending: true,
         reduce: false,
         include_docs: true
       }
