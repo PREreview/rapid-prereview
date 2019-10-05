@@ -2,10 +2,27 @@
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
+Rapid PREreview focuses on providing the best infrastructure to request /
+provide / analyze feedback (structured reviews) on _existing_ preprints relevant
+to the outbreak community.
 
-**NOTE: this project is under very active development and is not currently accepting contributions.** Thanks for taking an interest 😊. Feel free to star/watch the repo and we'll remove this notice once we have processes and documentation in place to allow people to collaborate productively.
+The feedback should be of use to:
+1. the outbreak community (academics)
+2. workers, editors, journalists (visualization etc.)
 
-**[Join our PREreview Slack Channel](https://join.slack.com/t/prereview/shared_invite/enQtMzYwMjQzMTk3ODMxLTZhOWQ5M2FmMTY5OTYzZDNhNDg2ZDdhODE2Y2Y4MTVjY2U0OWRiZTA5ZjM3MWM1ZTY0N2E1ODYyNWM1NTc2NDg)**
+Rapid PREreview does _not_ focus on:
+- coordinating research effort / data analysis / calling for research during
+  emergency situations
+- becoming / being a preprint server
+
+
+**NOTE: this project is under very active development and is not currently
+accepting contributions.** Thanks for taking an interest 😊. Feel free to
+star/watch the repo and we'll remove this notice once we have processes and
+documentation in place to allow people to collaborate productively.
+
+**[Join our PREreview Slack
+Channel](https://join.slack.com/t/prereview/shared_invite/enQtMzYwMjQzMTk3ODMxLTZhOWQ5M2FmMTY5OTYzZDNhNDg2ZDdhODE2Y2Y4MTVjY2U0OWRiZTA5ZjM3MWM1ZTY0N2E1ODYyNWM1NTc2NDg)**
 
 
 ## Development
