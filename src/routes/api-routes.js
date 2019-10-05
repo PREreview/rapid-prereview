@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
 
 const router = new Router({ caseSensitive: true });
@@ -7,7 +8,25 @@ const router = new Router({ caseSensitive: true });
  * Search for preprints with reviews or requests for reviews
  */
 router.get('/preprint', parseQuery, (req, res, next) => {
-  next();
+  res.setHeader('content-type', 'application/json');
+
+  let hasErrored = false;
+
+  const s = req.db.streamPreprints(req.query);
+  s.on('error', err => {
+    if (!hasErrored) {
+      hasErrored = true;
+      next(err);
+    }
+
+    try {
+      s.destroy();
+    } catch (err) {
+      // noop
+    }
+  });
+
+  s.pipe(res);
 });
 
 /**
@@ -26,7 +45,7 @@ router.get('/preprint/:preprintId', async (req, res, next) => {
  * Search for reviews
  */
 router.get('/review', parseQuery, (req, res, next) => {
-  next();
+  next(createError(500, 'Not implemented yet'));
 });
 
 /**
@@ -45,7 +64,7 @@ router.get('/review/:reviewId', async (req, res, next) => {
  * Search for requests
  */
 router.get('/request', parseQuery, (req, res, next) => {
-  next();
+  next(createError(500, 'Not implemented yet'));
 });
 
 /**
@@ -64,7 +83,7 @@ router.get('/request/:requestId', async (req, res, next) => {
  * Search for users
  */
 router.get('/user', parseQuery, (req, res, next) => {
-  next();
+  next(createError(500, 'Not implemented yet'));
 });
 
 /**
@@ -83,7 +102,7 @@ router.get('/user/:userId', async (req, res, next) => {
  * Search for roles
  */
 router.get('/role', parseQuery, (req, res, next) => {
-  next();
+  next(createError(500, 'Not implemented yet'));
 });
 
 /**
@@ -102,7 +121,7 @@ router.get('/role/:roleId', async (req, res, next) => {
  * Post an action (side effects)
  */
 router.post('/action', (req, res, next) => {
-  next();
+  next(createError(500, 'Not implemented yet'));
 });
 
 export default router;

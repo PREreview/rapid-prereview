@@ -171,6 +171,7 @@
     "@cloudant/cloudant": "^4.2.1",
     "ajv": "^6.10.2",
     "classnames": "^2.2.6",
+    "concat-stream": "^2.0.0",
     "doi-regex": "^0.1.10",
     "ejs": "^2.7.1",
     "express": "^4.17.1",

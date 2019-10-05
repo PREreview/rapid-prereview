@@ -1,7 +1,8 @@
 import assert from 'assert';
+import concatStream from 'concat-stream';
 import DB from '../src/db/db';
 import { QUESTIONS } from '../src/constants';
-import { getId, unprefix } from '../src/utils/jsonld';
+import { getId } from '../src/utils/jsonld';
 import { createRandomOrcid } from '../src/utils/orcid';
 import {
   createPreprintServer,
@@ -97,9 +98,59 @@ describe('search', function() {
   });
 
   describe('searchPreprints', () => {
-    it.only('should search preprints', async () => {
-      const results = await db.searchPreprints({ q: '*:*' });
-      console.log(results);
+    it('should search preprints', async () => {
+      const results = await db.searchPreprints({
+        q: '*:*',
+        include_docs: true,
+        sort: ['-score<number>', '-datePosted<number>'],
+        counts: [
+          'hasData',
+          'hasCode',
+          'hasReviews',
+          'hasRequests',
+          'subjectName'
+        ]
+      });
+      // console.log(require('util').inspect(results, { depth: null }));
+      assert.deepEqual(results.counts, {
+        hasCode: { true: 3 },
+        hasData: { true: 3 },
+        hasRequests: { true: 3 },
+        hasReviews: { true: 3 },
+        subjectName: { zika: 3 }
+      });
+    });
+
+    it('should stream preprints', done => {
+      const s = db.streamPreprints(
+        {
+          q: '*:*',
+          include_docs: true,
+          sort: ['-score<number>', '-datePosted<number>'],
+          counts: [
+            'hasData',
+            'hasCode',
+            'hasReviews',
+            'hasRequests',
+            'subjectName'
+          ]
+        },
+        { stream: true }
+      );
+      s.pipe(
+        concatStream(results => {
+          results = JSON.parse(results);
+          // console.log(require('util').inspect(results, { depth: null }));
+          assert.deepEqual(results.counts, {
+            hasCode: { true: 3 },
+            hasData: { true: 3 },
+            hasRequests: { true: 3 },
+            hasReviews: { true: 3 },
+            subjectName: { zika: 3 }
+          });
+          done();
+        })
+      );
     });
   });
 

@@ -1,5 +1,6 @@
 import assert from 'assert';
 import fetch from 'node-fetch';
+import querystring from 'querystring';
 import DB from '../src/db/db';
 import { QUESTIONS } from '../src/constants';
 import { getId, unprefix } from '../src/utils/jsonld';
@@ -134,7 +135,35 @@ describe('API', function() {
     assert.equal(getId(body), preprintId);
   });
 
-  it.skip('should search preprints', async () => {});
+  it('should search preprints', async () => {
+    const qs = {
+      q: '*:*',
+      include_docs: true,
+      sort: JSON.stringify(['-score<number>', '-datePosted<number>']),
+      counts: JSON.stringify([
+        'hasData',
+        'hasCode',
+        'hasReviews',
+        'hasRequests',
+        'subjectName'
+      ])
+    };
+
+    const resp = await fetch(
+      `${baseUrl}/preprint?${querystring.stringify(qs)}`
+    );
+    const body = await resp.json();
+
+    // console.log(require('util').inspect(body, { depth: null }));
+
+    assert.deepEqual(body.counts, {
+      hasCode: { true: 3 },
+      hasData: { true: 3 },
+      hasRequests: { true: 3 },
+      hasReviews: { true: 3 },
+      subjectName: { zika: 3 }
+    });
+  });
 
   after(done => {
     server.close(done);

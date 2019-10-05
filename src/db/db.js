@@ -195,6 +195,10 @@ export default class DB {
     return results;
   }
 
+  streamPreprints(params, { user = null } = {}) {
+    return this.index.searchAsStream('ddoc-index', 'preprints', params);
+  }
+
   async searchReviews(params, { user = null } = {}) {}
   async searchRequests(params, { user = null } = {}) {}
   async searchUsers(params, { user = null } = {}) {}

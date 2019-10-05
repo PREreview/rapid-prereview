@@ -11,7 +11,7 @@ export default function parseQuery(req, res, next) {
 
       switch (key) {
         // Boleans
-        case 'includeDocs':
+        case 'include_docs':
         case 'descending':
           parsed = String(value) === 'true';
           break;
@@ -21,7 +21,7 @@ export default function parseQuery(req, res, next) {
         case 'counts':
         case 'ranges':
         case 'drilldown':
-        case 'includeFields':
+        case 'include_fields':
         case 'hydrate':
           if (value) {
             try {
