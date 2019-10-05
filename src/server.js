@@ -29,7 +29,7 @@ const intervalId = setIntervalAsync(
   () => {
     return db.updateScores();
   },
-  60000,
+  5 * 60 * 1000,
   err => console.error(err)
 );
 

@@ -1,6 +1,7 @@
 import path from 'path';
 import express from 'express';
 import appRoutes from './routes/app-routes';
+import apiRoutes from './routes/api-routes';
 import addDb from './middlewares/add-db';
 
 export function rapid(config = {}) {
@@ -11,6 +12,7 @@ export function rapid(config = {}) {
   app.set('view engine', 'ejs');
 
   app.use(addDb(config));
+  app.use('/api', apiRoutes);
   app.use('/', appRoutes);
 
   return app;
