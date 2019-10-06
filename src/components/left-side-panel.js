@@ -1,8 +1,6 @@
 import React from 'react';
 
-export default function LeftSidePanel(props) {
-  const { visible } = props;
-
+export default function LeftSidePanel({ visible, children }) {
   return (
     <div
       className={`left-side-panel ${
@@ -11,6 +9,8 @@ export default function LeftSidePanel(props) {
     >
       <div className="left-side-panel__content">
         <h2>left side panel</h2>
+
+        {children}
       </div>
     </div>
   );

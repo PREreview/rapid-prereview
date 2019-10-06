@@ -3,6 +3,7 @@ import HeaderBar from './header-bar';
 import SearchBar from './search-bar';
 import LeftSidePanel from './left-side-panel';
 import PreprintCard from './preprint-card';
+import Facets from './facets';
 
 export default function Home() {
   const [showLeftPanel, setShowLeftPanel] = useState(true);
@@ -45,7 +46,10 @@ export default function Home() {
       />
       <SearchBar />
       <div className="home__main">
-        <LeftSidePanel visible={showLeftPanel} />
+        <LeftSidePanel visible={showLeftPanel}>
+          <Facets counts={results.counts} />
+        </LeftSidePanel>
+
         <div className="home__content">
           <h1>Hello home</h1>
 
