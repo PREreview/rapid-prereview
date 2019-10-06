@@ -41,10 +41,11 @@ export default async function handleRegisterAction(
 
   let merged;
   if (docs.length) {
-    const specialProps = ['token', 'hasRole', '_rev'];
+    const specialProps = ['token', 'hasRole', '_rev']; // those need special logic to be merged
 
     // merge all leaf docs (conflicting)
     merged = docs.reduce((merged, doc) => {
+      // all props but `specialProps` (latest wins)
       if (
         new Date(merged.dateModified).getTime() <
         new Date(doc.dateModified).getTime()

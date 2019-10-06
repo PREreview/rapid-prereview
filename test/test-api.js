@@ -103,6 +103,7 @@ describe('API', function() {
     const resp = await fetch(`${baseUrl}/user/${unprefix(getId(user))}`);
     const body = await resp.json();
     assert.equal(getId(body), getId(user));
+    assert(!body.token);
   });
 
   it('should get a role', async () => {
