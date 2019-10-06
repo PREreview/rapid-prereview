@@ -1,9 +1,34 @@
 import http from 'http';
 import path from 'path';
+import fs from 'fs';
 import express from 'express';
 import { unprefix } from '../../src/utils/jsonld';
 import { rapid } from '../../src/';
 
+const filenames = fs
+  .readdirSync(path.resolve(__dirname, '../fixtures'))
+  .filter(
+    filename =>
+      filename.startsWith('arxiv-') ||
+      filename.startsWith('crossref-') ||
+      filename.startsWith('openaire-')
+  );
+
+export const id2path = filenames.reduce((map, filename) => {
+  const id = filename
+    .replace(/^arxiv-/, 'arXiv:')
+    .replace(/^crossref-/, 'doi:')
+    .replace(/^openaire-/, 'doi:')
+    .replace(/\.xml$/, '')
+    .replace(/\.json$/, '')
+    .replace(/-/g, '.')
+    .replace(/_/g, '/');
+
+  map[id] = path.resolve(__dirname, '../fixtures/', filename);
+  return map;
+}, {});
+
+// convenience exports
 export const arXivId = 'arXiv:1910.00585';
 export const crossrefDoi = 'doi:10.1101/674655';
 export const openAireDoi = 'doi:10.5281/zenodo.3356153';
@@ -13,14 +38,14 @@ export function createPreprintServer(config) {
 
   app.use(rapid(config));
 
-  app.get(`/arxiv/${unprefix(arXivId)}`, (req, res, next) => {
-    res.sendFile(path.resolve(__dirname, '../fixtures/arxiv.xml'));
-  });
-  app.get(`/crossref/${unprefix(crossrefDoi)}`, (req, res, next) => {
-    res.sendFile(path.resolve(__dirname, '../fixtures/crossref.json'));
-  });
-  app.get(`/openaire/${unprefix(openAireDoi)}`, (req, res, next) => {
-    res.sendFile(path.resolve(__dirname, '../fixtures/openaire.xml'));
+  Object.keys(id2path).forEach(id => {
+    const filepath = id2path[id];
+    const basename = path.basename(filepath);
+    const [server] = basename.split('-');
+
+    app.get(`/${server}/${unprefix(id)}`, (req, res, next) => {
+      res.sendFile(filepath);
+    });
   });
 
   return http.createServer(app);

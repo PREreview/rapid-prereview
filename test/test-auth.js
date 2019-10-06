@@ -25,9 +25,12 @@ describe('auth', function() {
     });
 
     assert.equal(res.status, 302);
-    assert.equal(res.headers.get('location'), `${baseUrl}/`);
+    const location = res.headers.get('location');
+    assert.equal(location, `${baseUrl}/`);
     const cookie = res.headers.raw()['set-cookie'][0];
     assert(cookie);
+
+    const res2 = await fetch(location, { headers: { cookie } });
   });
 
   after(done => {
