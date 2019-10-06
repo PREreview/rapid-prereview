@@ -20,9 +20,6 @@ const identifiers = Object.keys(id2path).filter(
   id => id !== arXivId && id !== crossrefDoi && id !== openAireDoi
 );
 
-const subjects = ['influenza', 'dengue', 'zika'];
-const answers = ['yes', 'no', 'n.a.', 'unsure'];
-
 (async function() {
   const port = 3333;
   const config = createConfig(port);
@@ -73,6 +70,7 @@ const answers = ['yes', 'no', 'n.a.', 'unsure'];
         },
         { user }
       );
+
       console.log(`\t  -> OK`);
       console.log(`\t- Syncing index for ${identifier}...`);
       await db.syncIndex(action);
@@ -92,7 +90,20 @@ const answers = ['yes', 'no', 'n.a.', 'unsure'];
             about: [
               {
                 '@type': 'OutbreakScienceEntity',
-                name: sample(subjects)
+                name:
+                  {
+                    'arXiv:1909.13766': 'influenza',
+                    'arXiv:1910.00274': 'influenza',
+                    'doi:10.1101/19001834': 'influenza',
+                    'doi:10.1101/19007971': 'dengue',
+                    'doi:10.1101/780627': 'influenza',
+                    'doi:10.1101/782680': 'influenza',
+                    'doi:10.1101/788968': 'influenza',
+                    'doi:10.1101/790493': 'cholera',
+                    'doi:10.1101/790642': 'dengue',
+                    'doi:10.1101/791004': 'influenza',
+                    'doi:10.1101/791038': 'influenza'
+                  }[identifier] || sample(['influenza', 'dengue', 'zika'])
               }
             ],
             reviewAnswer: QUESTIONS.map(question => {
@@ -102,8 +113,8 @@ const answers = ['yes', 'no', 'n.a.', 'unsure'];
                 parentItem: `question:${question.identifier}`,
                 text:
                   question.type === 'YesNoQuestion'
-                    ? sample(answers)
-                    : 'comment'
+                    ? sample(['yes', 'no', 'n.a.', 'unsure'])
+                    : faker.lorem.paragraph()
               };
             })
           }

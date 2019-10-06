@@ -81,6 +81,12 @@ npm run init
 
 to setup the databases.
 
+To seed the app with some data run:
+
+```sh
+npm run seed
+```
+
 After, run:
 
 ```sh
