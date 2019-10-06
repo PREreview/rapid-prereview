@@ -41,9 +41,9 @@ export default function PreprintCard({ preprint }) {
         <li>{hasCode ? 'code' : 'no code'}</li>
       </ul>
 
-      <button>upvote</button>
-      <span>{actions.length}</span>
       <button>request</button>
+      <span>{actions.length}</span>
+      <button>add review</button>
 
       <div>
         {/* the reviewers */}
