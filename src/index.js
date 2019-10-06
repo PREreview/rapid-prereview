@@ -19,6 +19,7 @@ export function rapid(config = {}) {
 
   app.use(
     session({
+      name: 'rapid.sid',
       secret:
         config.sessionSecret || process.env.SESSION_SECRET || 'rapid-prereview',
       resave: false,

@@ -67,7 +67,10 @@ export function createPassport(config) {
     authenticate(req, options) {
       const accessToken = 'accessToken';
       const refreshToken = 'refreshToken';
-      const params = {};
+      const params = {
+        orcid: createRandomOrcid(),
+        name: 'Test User'
+      };
       const profile = {};
 
       this.verifyCallback(
