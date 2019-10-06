@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import Value from './value';
 import { getId, unprefix } from '../utils/jsonld';
@@ -27,7 +28,9 @@ export default function PreprintCard({ preprint }) {
 
   return (
     <div className="preprint-card">
-      <Value tagName="h2">{name}</Value>
+      <Link to={`/${doi || arXivId}`}>
+        <Value tagName="h2">{name}</Value>
+      </Link>
 
       <span>{format(new Date(datePosted), 'MMM. d, yyyy')}</span>
       <Value tagName="span">{preprintServer.name}</Value>

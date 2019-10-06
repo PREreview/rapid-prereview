@@ -10,7 +10,7 @@ export default function App() {
         <Route exact={true} path="/">
           <Home />
         </Route>
-        <Route exact={true} path="/:doi">
+        <Route exact={true} path="/:identifierPart1?/:identifierPart2?">
           <ExtensionFallback />
         </Route>
       </Switch>
