@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import Value from './value';
 import { getId, unprefix } from '../utils/jsonld';
+import { getTags } from '../utils/stats';
 
 export default function PreprintCard({ preprint }) {
   const {
@@ -22,15 +23,27 @@ export default function PreprintCard({ preprint }) {
     action => action['@type'] === 'RequestForRapidPREreviewAction'
   );
 
+  const { hasData, hasCode, subjects } = getTags(actions);
+
   return (
     <div className="preprint-card">
       <Value tagName="h2">{name}</Value>
-      <button>upvote</button>
-      <span>{actions.length}</span>
-      <button>request</button>
+
       <span>{format(new Date(datePosted), 'MMM. d, yyyy')}</span>
       <Value tagName="span">{preprintServer.name}</Value>
       <Value tagName="span">{doi || arXivId}</Value>
+
+      <ul>
+        {subjects.map(subject => (
+          <li key="subject">{subject}</li>
+        ))}
+        <li>{hasData ? 'data' : 'no data'}</li>
+        <li>{hasCode ? 'code' : 'no code'}</li>
+      </ul>
+
+      <button>upvote</button>
+      <span>{actions.length}</span>
+      <button>request</button>
 
       <div>
         {/* the reviewers */}
