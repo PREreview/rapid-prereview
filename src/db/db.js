@@ -132,13 +132,21 @@ export default class DB {
     // we make the docs DB public for read
   }
 
-  async get(id, { user = null } = {}) {
+  async get(id, { user = null, acl = true } = {}) {
+    if (acl == null) {
+      acl = true;
+    }
+
     const [prefix] = id.split(':');
 
     // TODO `question:`
     switch (prefix) {
       case 'user': {
         const doc = await this.users.get(id);
+        if (acl) {
+          delete doc.token;
+        }
+
         if (getId(user) === getId(doc)) {
           return doc;
         } else {
