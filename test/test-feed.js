@@ -22,6 +22,11 @@ describe('feed', function() {
     await db.init({ reset: true });
     await db.ddoc();
 
+    server = createPreprintServer();
+    await new Promise((resolve, reject) => {
+      server.listen(port, resolve);
+    });
+
     const action = await db.post({
       '@type': 'RegisterAction',
       actionStatus: 'CompletedActionStatus',
@@ -33,11 +38,6 @@ describe('feed', function() {
     });
 
     user = action.result;
-
-    server = createPreprintServer();
-    await new Promise((resolve, reject) => {
-      server.listen(port, resolve);
-    });
   });
 
   it('follow the changes feed and sync index DB', done => {

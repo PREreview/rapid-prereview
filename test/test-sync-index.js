@@ -22,6 +22,11 @@ describe('sync index', function() {
     await db.init({ reset: true });
     await db.ddoc();
 
+    server = createPreprintServer();
+    await new Promise((resolve, reject) => {
+      server.listen(port, resolve);
+    });
+
     const action = await db.post({
       '@type': 'RegisterAction',
       actionStatus: 'CompletedActionStatus',
@@ -33,11 +38,6 @@ describe('sync index', function() {
     });
 
     user = action.result;
-
-    server = createPreprintServer();
-    await new Promise((resolve, reject) => {
-      server.listen(port, resolve);
-    });
   });
 
   it('should sync actions to the index', async () => {

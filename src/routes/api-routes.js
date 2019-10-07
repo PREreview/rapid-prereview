@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
+import resolve from '../utils/resolve';
 
 const router = new Router({ caseSensitive: true });
 
@@ -122,6 +123,26 @@ router.get('/role/:roleId', async (req, res, next) => {
  */
 router.post('/action', (req, res, next) => {
   next(createError(500, 'Not implemented yet'));
+});
+
+/**
+ * Resolve (get metadata) for an identifier passed as query string paramenter
+ * `identifier` (wrapped in `encodeURIComponent)
+ */
+router.get('/resolve', async (req, res, next) => {
+  const { identifier } = req.query;
+  if (!identifier) {
+    return next(createError(400, 'missing identifier query string parameter'));
+  }
+
+  const { config } = req.app.locals;
+
+  try {
+    const data = await resolve(identifier, config);
+    res.json(data);
+  } catch (err) {
+    next(err);
+  }
 });
 
 export default router;

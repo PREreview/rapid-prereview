@@ -34,6 +34,7 @@ export const id2path = filenames.reduce((map, filename) => {
 
 // convenience exports
 export const arXivId = 'arXiv:1910.00585';
+export const errorDoesNotExistArXivId = 'arXiv:1910.06444';
 export const crossrefDoi = 'doi:10.1101/674655';
 export const openAireDoi = 'doi:10.5281/zenodo.3356153';
 

@@ -5,6 +5,7 @@ import {
   createPreprintServer,
   createConfig,
   arXivId,
+  errorDoesNotExistArXivId,
   crossrefDoi,
   openAireDoi
 } from './utils/create-preprint-server';
@@ -21,7 +22,13 @@ describe('resolve', function() {
     server.listen(port, done);
   });
 
-  it('should resolve an arXiv ID', async () => {
+  it('should error on invalid identifier', async () => {
+    await assert.rejects(resolve('invalidId', config), {
+      statusCode: 400
+    });
+  });
+
+  it('should resolve an arXiv ID through the OAI-PMH API', async () => {
     const data = await resolve(arXivId, config);
     assert.deepEqual(data, {
       '@type': 'ScholarlyPreprint',
@@ -32,7 +39,13 @@ describe('resolve', function() {
     });
   });
 
-  it('should resolve a crossref DOI', async () => {
+  it('should 404 on inexisting arXiv ID  through the OAI-PMH API', async () => {
+    await assert.rejects(resolve(errorDoesNotExistArXivId, config), {
+      statusCode: 404
+    });
+  });
+
+  it('should resolve a crossref DOI through the crossref API', async () => {
     const data = await resolve(crossrefDoi, config);
     assert.deepEqual(data, {
       '@type': 'ScholarlyPreprint',
@@ -44,7 +57,7 @@ describe('resolve', function() {
     });
   });
 
-  it('should resove an openAIRE DOI', async () => {
+  it('should resolve a zenodo DOI through the openAIRE API', async () => {
     const data = await resolve(openAireDoi, config);
     assert.deepEqual(data, {
       '@type': 'ScholarlyPreprint',

@@ -4,6 +4,7 @@ import SearchBar from './search-bar';
 import LeftSidePanel from './left-side-panel';
 import PreprintCard from './preprint-card';
 import Facets from './facets';
+import NewPreprintCard from './new-preprint-card';
 
 export default function Home() {
   const [showLeftPanel, setShowLeftPanel] = useState(true);
@@ -13,6 +14,8 @@ export default function Home() {
     total_rows: 0,
     counts: {}
   });
+
+  const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -52,6 +55,23 @@ export default function Home() {
 
         <div className="home__content">
           <h1>Hello home</h1>
+
+          <button
+            onClick={e => {
+              setIsAdding(true);
+            }}
+            disabled={isAdding}
+          >
+            Start
+          </button>
+
+          {isAdding && (
+            <NewPreprintCard
+              onCancel={() => {
+                setIsAdding(false);
+              }}
+            />
+          )}
 
           <ul>
             {results.rows.map(row => (

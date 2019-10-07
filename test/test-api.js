@@ -28,6 +28,11 @@ describe('API', function() {
     await db.init({ reset: true });
     await db.ddoc();
 
+    server = createPreprintServer(config);
+    await new Promise((resolve, reject) => {
+      server.listen(port, resolve);
+    });
+
     const action = await db.post({
       '@type': 'RegisterAction',
       actionStatus: 'CompletedActionStatus',
@@ -39,11 +44,6 @@ describe('API', function() {
     });
 
     user = action.result;
-
-    server = createPreprintServer(config);
-    await new Promise((resolve, reject) => {
-      server.listen(port, resolve);
-    });
 
     for (const id of [crossrefDoi, arXivId, openAireDoi]) {
       const request = await db.post(
@@ -164,6 +164,14 @@ describe('API', function() {
       hasReviews: { true: 3 },
       subjectName: { zika: 3 }
     });
+  });
+
+  it('should get metadata about an identifier', async () => {
+    const resp = await fetch(
+      `${baseUrl}/resolve?identifier=${encodeURIComponent(crossrefDoi)}`
+    );
+    const body = await resp.json();
+    assert.equal(body.doi, unprefix(crossrefDoi));
   });
 
   after(done => {
