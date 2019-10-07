@@ -38,7 +38,8 @@ module.exports = async ({ config, mode }) => {
           }
         }
       }
-    ]
+    ],
+    include: [path.resolve(__dirname, 'src')]
   });
   return config;
 };
