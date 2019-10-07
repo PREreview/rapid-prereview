@@ -1,0 +1,74 @@
+.preprint-card {
+  background-color: white;
+  box-sizing: border-box;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+
+  font: var(--ui-basic-font);
+  margin: var(--sgrd) 0;
+  display: flex;
+
+  & .preprint-card__score-panel {
+    flex: 0 0 var(--xlgrd);
+    background-color: var(--card-color--tinted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+
+    & .preprint-card__score-panel__top {
+      flex: 0 0 var(--xlgrd);
+      justify-content: center;
+      padding-top: var(--xsgrd);
+    }
+    & .preprint-card__score-panel__middle {
+      flex: 1 1 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    & .preprint-card__score-panel__bottom {
+      flex: 0 0 var(--xlgrd);
+      justify-content: center;
+    }
+  }
+
+  & .preprint-card__up-request-icon {
+    width: var(--mgrd);
+    height: var(--mgrd);
+  }
+  & .preprint-card__contents {
+    flex: 1 1 100%;
+    padding: var(--sgrd) var(--mgrd);
+  }
+
+  & .preprint-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  & .preprint-card__title {
+    font: var(--ui-header-2-font);
+    &:any-link {
+      color: var(--ui-basic-font-color);
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  & .preprint-card__title-text {
+    font: inherit;
+    margin: 0;
+    margin-bottom: var(--xsgrd);
+  }
+
+  & .preprint-card__pub-date {
+    white-space: nowrap;
+    font: var(--ui-header-2-font);
+    color: var(--ui-basic-font-color--light);
+  }
+}

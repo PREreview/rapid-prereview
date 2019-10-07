@@ -1,0 +1,25 @@
+.score-badge {
+  box-sizing: border-box;
+  border: 2px solid var(--prereview-blue);
+  color: var(--prereview-blue);
+  border-radius: 50%;
+  width: var(--lgrd);
+  height: var(--lgrd);
+  flex: 0 0 var(--lgrd);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font: var(--ui-score-badge-font);
+  letter-spacing: -0.05em;
+
+  & .score-badge--needs-attention {
+    border-color: var(--prereview-coral);
+    color: var(--prereview-coral);
+  }
+
+  & .score-badge__score {
+    position: relative;
+    top: 0.05em; /* numbers don't have decenders - so compensate */
+  }
+}

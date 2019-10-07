@@ -17,6 +17,7 @@
     "pretest": "cross-env COUCH_DOCS_DB_NAME=test-rapid-prereview-docs COUCH_INDEX_DB_NAME=test-rapid-prereview-index COUCH_USERS_DB_NAME=test-rapid-prereview-users babel-node ./scripts/init.js",
     "prepare": "npm run build",
     "storybook": "start-storybook -p 3030 -h 127.0.0.1 --ci",
+    "build-storybook": "build-storybook -c .storybook -o .out",
     "postversion": "git push && git push --tags"
   },
   "prettier": {

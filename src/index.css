@@ -1,9 +1,12 @@
 @import 'normalize.css';
 @import './components/variables.css';
+
 @import './components/app.css';
-@import './components/home.css';
 @import './components/extension-fallback.css';
 @import './components/header-bar.css';
-@import './components/search-bar.css';
-@import './components/left-side-panel.css';
+@import './components/home.css';
 @import './components/icon-button.css';
+@import './components/left-side-panel.css';
+@import './components/preprint-card.css';
+@import './components/search-bar.css';
+@import './components/score-badge.css';

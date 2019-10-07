@@ -7,6 +7,29 @@
   --lgrd: 32px;
   --xlgrd: 40px;
 
+  /* Style Guide Colors */
+  --prereview-red: #ff3333;
+  --prereview-black: #000000;
+  --prereview-white: #ffffff;
+  --prereview-grey: #4b4949;
+  --prereview-blue: #197cf4;
+  --prereview-light-blue: #e4edf7;
+  --prereview-gold: #fcbd4c;
+  --prereview-coral: #f77463;
+  --prereview-spring-green: #66f785;
+
+  /* UI Colors */
+  --ui-basic-font-color: #181818;
+  --ui-basic-font-color--light: rgb(120, 120, 120);
+
+  --ruling-color: var(--prereview-grey);
+  --ruling-color--light: lightgrey;
+  --button-background-color: var(--ui-basic-font-color);
+  --button-foreground-color: var(--prereview-white);
+  --card-color: var(--prereview-white);
+  --card-color--tinted: rgb(245, 245, 245);
+  --focus-color: var(--prereview-blue);
+
   /* standard dimensions */
   --header-bar-height: 72px;
   --search-bar-height: 72px;
@@ -14,7 +37,7 @@
 
   /* Fonts */
   --ui-font-family: 'Roboto', 'Helvetic', 'sans-serif';
-  --ui-basic-font-color: #181818;
+
   --ui-basic-font-size: 13px;
   --ui-basic-font-leading: 18px;
   --ui-basic-font: 400 var(--ui-basic-font-size) / var(--ui-basic-font-leading)
@@ -25,13 +48,17 @@
   --ui-header-menu-font: 400 var(--ui-header-menu-font-size) /
     var(--ui-header-menu-font-leading) var(--ui-font-family);
 
-  /* Colors */
-  --ruling-color: grey;
-  --ruling-color--light: lightgrey;
-  --button-background-color: var(--ui-basic-font-color);
-  --button-foreground-color: white;
+  --ui-header-1-font-size: 20px;
+  --ui-header-1-font-leading: 1.3em;
+  --ui-header-1-font: 400 var(--ui-header-1-font-size) /
+    var(--ui-header-1-font-leading) var(--ui-font-family);
 
-  --focus-color: red;
+  --ui-header-2-font-size: 16px;
+  --ui-header-2-font-leading: 1.3em;
+  --ui-header-2-font: 400 var(--ui-header-2-font-size) /
+    var(--ui-header-2-font-leading) var(--ui-font-family);
+
+  --ui-score-badge-font: 600 16px / 16px var(--ui-font-family);
 }
 
 /* Media Queries */

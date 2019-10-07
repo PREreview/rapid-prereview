@@ -16,10 +16,21 @@
     }
   }
   & .home__content {
-    background: pink;
+    background: white;
     min-height: 200vh;
-
+    padding: var(--xsgrd);
     flex: 1 1 var(--middle-column-default-width);
     max-width: var(--middle-column-default-width);
+  }
+
+  & .home__preprint-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    & .home__preprint-list__item {
+      margin: 0;
+      padding: 0;
+    }
   }
 }
