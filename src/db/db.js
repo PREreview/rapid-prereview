@@ -15,6 +15,8 @@ import { INDEXED_PREPRINT_PROPS } from '../constants';
 import { getScore, SCORE_THRESHOLD } from '../utils/score';
 import striptags from '../utils/striptags';
 
+// TODO store the seq in the preprint doc so we know where to restart
+
 export default class DB {
   constructor(config = {}) {
     this.config = config;

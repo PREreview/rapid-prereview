@@ -7,6 +7,9 @@ import { createError } from './errors';
 // TODO https://europepmc.org/OaiService
 // e.g http://europepmc.org/oai.cgi?verb=GetRecord&metadataPrefix=pmc&identifier=oai:europepmc.org:2654146
 
+// TODO work directly with the meta tag from <head /> of the HTML
+// see https://scholar.google.com/intl/en/scholar/inclusion.html#indexing
+
 /**
  * Get metadata for `identifier`
  */
