@@ -1,53 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
-<responseDate>2019-10-06T16:54:26Z</responseDate>
-<request verb="GetRecord" identifier="oai:arXiv.org:1910.00274" metadataPrefix="oai_dc">http://export.arxiv.org/oai2</request>
-<GetRecord>
-<record>
-<header>
- <identifier>oai:arXiv.org:1910.00274</identifier>
- <datestamp>2019-10-02</datestamp>
- <setSpec>physics:nlin</setSpec>
- <setSpec>physics:physics</setSpec>
-</header>
-<metadata>
- <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
- <dc:title>Human prophylaxis driven by risk may cause oscillations in sexually
-  transmitted diseases</dc:title>
- <dc:creator>Steinegger, Benjamin</dc:creator>
- <dc:creator>Arenas, Alex</dc:creator>
- <dc:creator>G&#xf3;mez-Garde&#xf1;es, Jes&#xfa;s</dc:creator>
- <dc:creator>Granell, Clara</dc:creator>
- <dc:subject>Physics - Physics and Society</dc:subject>
- <dc:subject>Nonlinear Sciences - Adaptation and Self-Organizing Systems</dc:subject>
- <dc:description>  Infectious diseases often display oscillations in the number of infected
-cases through time. Sometimes the ups and downs are caused by seasonal,
-exogenous events, such as the increase of influenza cases in winter, or the
-increase of vector-borne diseases during rainy seasons. Other times, the
-infection displays non-seasonal periodic oscillations, like syphilis, which
-oscillates with a period of 8-11 years. Several mathematical models aim to
-capture these oscillations, either by including a period in the transmission
-rate, by allowing link rewiring in contact networks, or by considering models
-with temporary immunization. Here we present a stochastic, yet analytically
-solvable, epidemic spreading model where the individuals of the population
-decide whether to take preventive measures or not depending on the global
-extent of the disease, being this an assessment of their infection risk. We
-show that the combined feedback between the human decision on prophylaxis, and
-the perceived epidemic risk, are sufficient conditions for the emergence of
-self-sustained oscillations in diseases well-described by the
-Susceptible-Infected-Susceptible (SIS) compartmental model, as it is the case
-for many sexually transmitted diseases (STDs). Finally, we propose plausible
-mechanisms to damp out the oscillations. Our study prompts to the design of
-persistent prevention campaigns, substantiated on not only perceived but real
-risks, to improve human prophylactic behavior and contain the recently reported
-raise of STDs and the consequent re-emergence of HIV.
-</dc:description>
- <dc:description>Comment: 19 pages, 3 figures</dc:description>
- <dc:date>2019-10-01</dc:date>
- <dc:type>text</dc:type>
- <dc:identifier>http://arxiv.org/abs/1910.00274</dc:identifier>
- </oai_dc:dc>
-</metadata>
-</record>
-</GetRecord>
+  <responseDate>2019-10-06T16:54:26Z</responseDate>
+  <request verb="GetRecord" identifier="oai:arXiv.org:1910.00274" metadataPrefix="oai_dc">http://export.arxiv.org/oai2</request>
+  <GetRecord>
+    <record>
+      <header>
+        <identifier>oai:arXiv.org:1910.00274</identifier>
+        <datestamp>2019-10-02</datestamp>
+        <setSpec>physics:nlin</setSpec>
+        <setSpec>physics:physics</setSpec>
+      </header>
+      <metadata>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+          <dc:title>Human prophylaxis driven by risk may cause oscillations in sexually
+          transmitted diseases</dc:title>
+          <dc:creator>Steinegger, Benjamin</dc:creator>
+          <dc:creator>Arenas, Alex</dc:creator>
+          <dc:creator>G&#xf3;mez-Garde&#xf1;es, Jes&#xfa;s</dc:creator>
+          <dc:creator>Granell, Clara</dc:creator>
+          <dc:subject>Physics - Physics and Society</dc:subject>
+          <dc:subject>Nonlinear Sciences - Adaptation and Self-Organizing Systems</dc:subject>
+          <dc:description>  Infectious diseases often display oscillations in the number of infected
+          cases through time. Sometimes the ups and downs are caused by seasonal,
+          exogenous events, such as the increase of influenza cases in winter, or the
+          increase of vector-borne diseases during rainy seasons. Other times, the
+          infection displays non-seasonal periodic oscillations, like syphilis, which
+          oscillates with a period of 8-11 years. Several mathematical models aim to
+          capture these oscillations, either by including a period in the transmission
+          rate, by allowing link rewiring in contact networks, or by considering models
+          with temporary immunization. Here we present a stochastic, yet analytically
+          solvable, epidemic spreading model where the individuals of the population
+          decide whether to take preventive measures or not depending on the global
+          extent of the disease, being this an assessment of their infection risk. We
+          show that the combined feedback between the human decision on prophylaxis, and
+          the perceived epidemic risk, are sufficient conditions for the emergence of
+          self-sustained oscillations in diseases well-described by the
+          Susceptible-Infected-Susceptible (SIS) compartmental model, as it is the case
+          for many sexually transmitted diseases (STDs). Finally, we propose plausible
+          mechanisms to damp out the oscillations. Our study prompts to the design of
+          persistent prevention campaigns, substantiated on not only perceived but real
+          risks, to improve human prophylactic behavior and contain the recently reported
+          raise of STDs and the consequent re-emergence of HIV.
+          </dc:description>
+          <dc:description>Comment: 19 pages, 3 figures</dc:description>
+          <dc:date>2019-10-01</dc:date>
+          <dc:type>text</dc:type>
+          <dc:identifier>http://arxiv.org/abs/1910.00274</dc:identifier>
+        </oai_dc:dc>
+      </metadata>
+    </record>
+  </GetRecord>
 </OAI-PMH>

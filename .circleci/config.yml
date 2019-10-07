@@ -1,0 +1,22 @@
+
+version: 2
+jobs:
+  build:
+    working_directory: ~/rapid-prereview
+    docker:
+      - image: circleci/node:dubnium
+      - image: ibmcom/cloudant-developer
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-node_modules-{{ checksum "package-lock.json" }}
+            - v1-node_modules-
+      - run:
+          command: npm install
+          no_output_timeout: 5m
+      - save_cache:
+          key: v1-node_modules-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - run: npm test

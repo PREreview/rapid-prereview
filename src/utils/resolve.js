@@ -51,6 +51,7 @@ async function resolveArxivId(
     throw createError(r.status);
   }
   const text = await r.text();
+
   const doc = new DOMParser().parseFromString(text);
 
   const data = {
@@ -73,6 +74,7 @@ async function resolveArxivId(
       data.datePosted = new Date($date.textContent.trim()).toISOString();
     }
   }
+
   return cleanup(data);
 }
 
