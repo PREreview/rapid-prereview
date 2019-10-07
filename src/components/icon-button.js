@@ -1,5 +1,4 @@
 import React from 'react';
-import { MdSearch } from 'react-icons/md';
 
 export default function IconButton(props) {
   const { children, className, ...buttonProps } = props;

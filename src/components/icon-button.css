@@ -2,7 +2,7 @@
   border: none;
   padding: 0;
   margin: 0;
-
+  background-color: transparent;
   height: var(--lgrd);
   min-width: var(--lgrd);
   cursor: pointer;
@@ -19,7 +19,7 @@
     height: 100%;
     border: 2px solid transparent;
     box-sizing: border-box;
-    background-color: white;
+    /* background-color: white; */
     color: var(--ui-basic-font-color);
 
     border-radius: var(--sgrd);

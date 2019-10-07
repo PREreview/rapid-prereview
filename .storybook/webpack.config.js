@@ -1,6 +1,12 @@
 const path = require('path');
 
 module.exports = async ({ config, mode }) => {
+  console.log('__dirname', __dirname);
+  console.log(
+    "path.resolve(__dirname, 'src')]",
+    path.resolve(__dirname, 'src')
+  );
+
   config.module.rules.push({
     test: /\.css$/,
     sideEffects: true,
@@ -38,8 +44,7 @@ module.exports = async ({ config, mode }) => {
           }
         }
       }
-    ],
-    include: [path.resolve(__dirname, 'src')] // does this work with imports?
+    ]
   });
   return config;
 };

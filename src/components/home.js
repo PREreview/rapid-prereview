@@ -51,11 +51,9 @@ export default function Home() {
         </LeftSidePanel>
 
         <div className="home__content">
-          <h1>Hello home</h1>
-
-          <ul>
+          <ul className="home__preprint-list">
             {results.rows.map(row => (
-              <li key={row.id}>
+              <li key={row.id} className="home__preprint-list__item">
                 <PreprintCard preprint={row.doc} />
               </li>
             ))}
