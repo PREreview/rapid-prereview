@@ -40,8 +40,6 @@ export const openAireDoi = 'doi:10.5281/zenodo.3356153';
 export function createPreprintServer(config) {
   const app = express();
 
-  app.use(rapid(config));
-
   Object.keys(id2path).forEach(id => {
     const filepath = id2path[id];
     const basename = path.basename(filepath);
@@ -51,6 +49,8 @@ export function createPreprintServer(config) {
       res.sendFile(filepath);
     });
   });
+
+  app.use(rapid(config));
 
   return http.createServer(app);
 }

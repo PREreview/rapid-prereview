@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
-<responseDate>2019-10-06T16:54:27Z</responseDate>
-<request verb="GetRecord" identifier="oai:arXiv.org:1909.13766" metadataPrefix="oai_dc">http://export.arxiv.org/oai2</request>
-<GetRecord>
-<record>
-<header>
- <identifier>oai:arXiv.org:1909.13766</identifier>
- <datestamp>2019-10-01</datestamp>
- <setSpec>stat</setSpec>
-</header>
-<metadata>
- <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
- <dc:title>Multiscale Influenza Forecasting</dc:title>
- <dc:creator>Osthus, Dave</dc:creator>
- <dc:creator>Moran, Kelly R</dc:creator>
- <dc:subject>Statistics - Applications</dc:subject>
- <dc:description>  Influenza forecasting in the United States (US) is complex and challenging
-for reasons including substantial spatial and temporal variability, nested
-geographic scales of forecast interest, and heterogeneous surveillance
-participation. Here we present a flexible influenza forecasting model called
-Dante, a multiscale flu forecasting model that learns rather than prescribes
-spatial, temporal, and surveillance data structure. Forecasts at the Health and
-Human Services (HHS) regional and national scales are generated as linear
-combinations of state forecasts with weights proportional to US Census
-population estimates, resulting in coherent forecasts across nested geographic
-scales. We retrospectively compare Dante's short-term and seasonal forecasts at
-the state, regional, and national scales for the 2012 through 2017 flu seasons
-in the US to the Dynamic Bayesian Model (DBM), a leading flu forecasting model.
-Dante outperformed DBM for nearly all spatial units, flu seasons, geographic
-scales, and forecasting targets. The improved performance is due to Dante
-making forecasts, especially short-term forecasts, more confidently and
-accurately than DBM, suggesting Dante's improved forecast scores will also
-translate to more useful forecasts for the public health sector. Dante
-participated in the prospective 2018/19 FluSight challenge hosted by the
-Centers for Disease Control and Prevention and placed 1st in both the national
-and regional competition and the state competition. The methodology
-underpinning Dante can be used in other disease forecasting contexts where
-nested geographic scales of interest exist.
-</dc:description>
- <dc:date>2019-09-30</dc:date>
- <dc:type>text</dc:type>
- <dc:identifier>http://arxiv.org/abs/1909.13766</dc:identifier>
- </oai_dc:dc>
-</metadata>
-</record>
-</GetRecord>
+  <responseDate>2019-10-06T16:54:27Z</responseDate>
+  <request verb="GetRecord" identifier="oai:arXiv.org:1909.13766" metadataPrefix="oai_dc">http://export.arxiv.org/oai2</request>
+  <GetRecord>
+    <record>
+      <header>
+        <identifier>oai:arXiv.org:1909.13766</identifier>
+        <datestamp>2019-10-01</datestamp>
+        <setSpec>stat</setSpec>
+      </header>
+      <metadata>
+        <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd">
+          <dc:title>Multiscale Influenza Forecasting</dc:title>
+          <dc:creator>Osthus, Dave</dc:creator>
+          <dc:creator>Moran, Kelly R</dc:creator>
+          <dc:subject>Statistics - Applications</dc:subject>
+          <dc:description>  Influenza forecasting in the United States (US) is complex and challenging
+          for reasons including substantial spatial and temporal variability, nested
+          geographic scales of forecast interest, and heterogeneous surveillance
+          participation. Here we present a flexible influenza forecasting model called
+          Dante, a multiscale flu forecasting model that learns rather than prescribes
+          spatial, temporal, and surveillance data structure. Forecasts at the Health and
+          Human Services (HHS) regional and national scales are generated as linear
+          combinations of state forecasts with weights proportional to US Census
+          population estimates, resulting in coherent forecasts across nested geographic
+          scales. We retrospectively compare Dante's short-term and seasonal forecasts at
+          the state, regional, and national scales for the 2012 through 2017 flu seasons
+          in the US to the Dynamic Bayesian Model (DBM), a leading flu forecasting model.
+          Dante outperformed DBM for nearly all spatial units, flu seasons, geographic
+          scales, and forecasting targets. The improved performance is due to Dante
+          making forecasts, especially short-term forecasts, more confidently and
+          accurately than DBM, suggesting Dante's improved forecast scores will also
+          translate to more useful forecasts for the public health sector. Dante
+          participated in the prospective 2018/19 FluSight challenge hosted by the
+          Centers for Disease Control and Prevention and placed 1st in both the national
+          and regional competition and the state competition. The methodology
+          underpinning Dante can be used in other disease forecasting contexts where
+          nested geographic scales of interest exist.
+          </dc:description>
+          <dc:date>2019-09-30</dc:date>
+          <dc:type>text</dc:type>
+          <dc:identifier>http://arxiv.org/abs/1909.13766</dc:identifier>
+        </oai_dc:dc>
+      </metadata>
+    </record>
+  </GetRecord>
 </OAI-PMH>
