@@ -124,12 +124,17 @@ router.get('/role/:roleId', async (req, res, next) => {
 /**
  * Post an action (side effects)
  */
-router.post('/action', jsonParser, (req, res, next) => {
+router.post('/action', jsonParser, async (req, res, next) => {
   if (!req.isAuthenticated()) {
     return next(createError(401, 'Login required'));
   }
 
-  res.json({ ok: true });
+  try {
+    const body = await req.db.post(req.body, { user: req.user });
+    res.json(body);
+  } catch (err) {
+    next(err);
+  }
 });
 
 /**

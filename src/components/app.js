@@ -11,13 +11,13 @@ export default function App({ user }) {
     <UserProvider user={user}>
       <Router>
         <Switch>
-          <Route exact={true} path="/">
+          <Route path="/:new(new)?" exact={true}>
             <Home />
           </Route>
           <Route exact={true} path="/login">
             <Login />
           </Route>
-          <Route exact={true} path="/:identifierPart1?/:identifierPart2?">
+          <Route exact={true} path="/:identifierPart1/:identifierPart2?">
             <ExtensionFallback />
           </Route>
         </Switch>

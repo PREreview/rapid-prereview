@@ -65,3 +65,69 @@ export function usePostAction() {
 
   return [post, state];
 }
+
+/**
+ * Get Preprint metadata from `identifier`
+ */
+export function usePreprint(identifier) {
+  const [progress, setProgress] = useState({
+    isActive: false,
+    error: null
+  });
+
+  const [preprint, setPreprint] = useState(null);
+
+  useEffect(() => {
+    if (identifier) {
+      setProgress({
+        isActive: true,
+        error: null
+      });
+      setPreprint(null);
+
+      const controller = new AbortController();
+
+      fetch(`/api/resolve?identifier=${encodeURIComponent(identifier)}`, {
+        signal: controller.signal
+      })
+        .then(resp => {
+          if (resp.ok) {
+            return resp.json();
+          } else {
+            return resp.json().then(
+              body => {
+                throw createError(resp.status, body.description || body.name);
+              },
+              err => {
+                throw createError(resp.status, 'something went wrong');
+              }
+            );
+          }
+        })
+        .then(data => {
+          setPreprint(data);
+          setProgress({ isActive: false, error: null });
+        })
+        .catch(err => {
+          if (err.name !== 'AbortError') {
+            setProgress({ isActive: false, error: err });
+          }
+          setPreprint(null);
+        });
+
+      return () => {
+        setProgress({ isActive: false, error: null });
+        setPreprint(null);
+        controller.abort();
+      };
+    } else {
+      setProgress({
+        isActive: false,
+        error: null
+      });
+      setPreprint(null);
+    }
+  }, [identifier]);
+
+  return [preprint, progress];
+}

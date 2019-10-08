@@ -415,7 +415,7 @@ export default class DB {
   }
 
   async post(
-    action,
+    action = {},
     { user = null, strict = true, now = new Date().toISOString() } = {}
   ) {
     if (!action['@type']) {

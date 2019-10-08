@@ -1,82 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import identifiersArxiv from 'identifiers-arxiv';
 import doiRegex from 'doi-regex';
 import { format } from 'date-fns';
 import { unprefix } from '../utils/jsonld';
-import { createError } from '../utils/errors';
 import Value from './value';
 import { useUser } from '../contexts/user-context';
-import { usePostAction } from '../hooks/api-hooks';
+import { usePostAction, usePreprint } from '../hooks/api-hooks';
 
-export default function NewPreprint({ onCancel }) {
+export default function NewPreprint({
+  onCancel,
+  onReviewed,
+  onRequested,
+  onViewInContext
+}) {
   const [user] = useUser();
-
-  const [progress, setProgress] = useState({
-    status: 'iddle',
-    message: '',
-    error: null
-  });
-
   const [value, setValue] = useState('');
-
   const [identifier, setIdentifier] = useState('');
-
-  const [preprint, setPreprint] = useState(null);
-
+  const [preprint, resolvePreprintStatus] = usePreprint(identifier);
   const [post, postData] = usePostAction();
 
   console.log(postData);
-
-  useEffect(() => {
-    if (identifier) {
-      setProgress({
-        status: 'resolving',
-        message: `resolving ${identifier}`,
-        error: null
-      });
-
-      const controller = new AbortController();
-
-      fetch(`/api/resolve?identifier=${encodeURIComponent(identifier)}`, {
-        signal: controller.signal
-      })
-        .then(resp => {
-          if (resp.ok) {
-            return resp.json();
-          } else {
-            return resp.json().then(
-              body => {
-                throw createError(resp.status, body.description || body.name);
-              },
-              err => {
-                throw createError(resp.status, 'something went wrong');
-              }
-            );
-          }
-        })
-        .then(data => {
-          setPreprint(data);
-          setProgress({ status: 'resolved', message: '', error: null });
-        })
-        .catch(err => {
-          if (err.name !== 'AbortError') {
-            setProgress({ status: 'error', error: err, message: '' });
-          }
-          setPreprint(null);
-        });
-
-      return () => {
-        controller.abort();
-      };
-    } else {
-      setProgress({
-        status: 'iddle',
-        message: '',
-        error: null
-      });
-    }
-  }, [identifier]);
 
   return (
     <div className="new-preprint">
@@ -106,7 +50,6 @@ export default function NewPreprint({ onCancel }) {
 
           if (nextIdentifier !== identifier) {
             setIdentifier(nextIdentifier);
-            setPreprint(null);
           }
 
           setValue(value);
@@ -114,25 +57,17 @@ export default function NewPreprint({ onCancel }) {
         value={value}
       />
 
-      {!!identifier && (
-        <span>
-          {identifier.split(':')[0]}: {unprefix(identifier)}
-        </span>
-      )}
-
       <button
         onClick={e => {
           setValue('');
           setIdentifier('');
-          setPreprint(null);
-          setProgress({ status: 'iddle', message: '', error: null });
           onCancel();
         }}
       >
         Cancel
       </button>
 
-      {progress.status === 'resolved' && preprint ? (
+      {preprint ? (
         <div>
           {!!preprint.name && <Value tagName="h2">{preprint.name}</Value>}
 
@@ -142,15 +77,17 @@ export default function NewPreprint({ onCancel }) {
           {!!(preprint.preprintServer && preprint.preprintServer.name) && (
             <Value tagName="span">{preprint.preprintServer.name}</Value>
           )}
+
+          {!!identifier && <span>{unprefix(identifier)}</span>}
         </div>
-      ) : progress.message ? (
-        <p>{progress.message}</p>
-      ) : progress.error ? (
+      ) : resolvePreprintStatus.isActive ? (
+        <p>{`resolving ${identifier}`}</p>
+      ) : resolvePreprintStatus.error ? (
         <p>
           Error:{' '}
-          {progress.error.message ||
-            progress.error.name ||
-            progress.error.statusCode}
+          {resolvePreprintStatus.error.message ||
+            resolvePreprintStatus.error.name ||
+            resolvePreprintStatus.error.statusCode}
         </p>
       ) : null}
 
@@ -160,7 +97,7 @@ export default function NewPreprint({ onCancel }) {
             '@type': 'Action'
           });
         }}
-        disabled={!identifier || progress.status !== 'resolved'}
+        disabled={!identifier || !preprint}
       >
         Request reviews
       </button>
@@ -168,14 +105,25 @@ export default function NewPreprint({ onCancel }) {
         onClick={e => {
           // TODO
         }}
-        disabled={!identifier || progress.status !== 'resolved'}
+        disabled={!identifier || !preprint}
       >
         Add review
+      </button>
+      <button
+        onClick={e => {
+          onViewInContext(identifier, preprint);
+        }}
+        disabled={!identifier || !preprint}
+      >
+        View In Context
       </button>
     </div>
   );
 }
 
 NewPreprint.propTypes = {
-  onCancel: PropTypes.func.isRequired
+  onCancel: PropTypes.func.isRequired,
+  onReviewed: PropTypes.func.isRequired,
+  onRequested: PropTypes.func.isRequired,
+  onViewInContext: PropTypes.func.isRequired
 };

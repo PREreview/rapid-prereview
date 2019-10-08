@@ -174,6 +174,23 @@ describe('API', function() {
     assert.equal(body.doi, unprefix(crossrefDoi));
   });
 
+  it('should 401 when posting an action not logged in', async () => {
+    const resp = await fetch(`${baseUrl}/action`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        '@type': 'Action'
+      })
+    });
+    assert.equal(resp.status, 401);
+    const body = await resp.json();
+    assert.equal(body['@type'], 'Error');
+    assert.equal(body.statusCode, 401);
+  });
+
   after(done => {
     server.close(done);
   });

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { Route, useHistory, useLocation } from 'react-router-dom';
+import { unprefix } from '../utils/jsonld';
 import HeaderBar from './header-bar';
 import SearchBar from './search-bar';
 import LeftSidePanel from './left-side-panel';
 import PreprintCard from './preprint-card';
 import Facets from './facets';
 import NewPreprint from './new-preprint';
+import Modal from './modal';
 
 export default function Home() {
   const [showLeftPanel, setShowLeftPanel] = useState(true);
@@ -15,7 +18,8 @@ export default function Home() {
     counts: {}
   });
 
-  const [isAdding, setIsAdding] = useState(false);
+  const history = useHistory();
+  const location = useLocation();
 
   useEffect(() => {
     async function fetchData() {
@@ -56,20 +60,31 @@ export default function Home() {
         <div className="home__content">
           <button
             onClick={e => {
-              setIsAdding(true);
+              history.push('/new');
             }}
-            disabled={isAdding}
+            disabled={location.pathname === '/new'}
           >
             Start
           </button>
 
-          {isAdding && (
-            <NewPreprint
-              onCancel={() => {
-                setIsAdding(false);
-              }}
-            />
-          )}
+          <Route path="/new" exact={true}>
+            <Modal>
+              <NewPreprint
+                onCancel={() => {
+                  history.push('/');
+                }}
+                onReviewed={() => {
+                  history.push('/');
+                }}
+                onRequested={() => {
+                  history.push('/');
+                }}
+                onViewInContext={(identifier, preprint) => {
+                  history.push(`/${unprefix(identifier)}`, preprint);
+                }}
+              />
+            </Modal>
+          </Route>
 
           <ul className="home__preprint-list">
             {results.rows.map(row => (
