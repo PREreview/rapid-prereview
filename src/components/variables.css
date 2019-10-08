@@ -22,8 +22,8 @@
   --ui-basic-font-color: #181818;
   --ui-basic-font-color--light: rgb(120, 120, 120);
 
-  --ruling-color: var(--prereview-grey);
-  --ruling-color--light: lightgrey;
+  --ruling-color: var(--ui-basic-font-color--light);
+  --ruling-color--light: rgb(232, 232, 232);
   --button-background-color: var(--ui-basic-font-color);
   --button-foreground-color: var(--prereview-white);
   --card-color: var(--prereview-white);
@@ -42,6 +42,11 @@
   --ui-basic-font-leading: 18px;
   --ui-basic-font: 400 var(--ui-basic-font-size) / var(--ui-basic-font-leading)
     var(--ui-font-family);
+
+  --ui-basic-font-size--small: 11.5px;
+  --ui-basic-font-leading--small: 16px;
+  --ui-basic-font--small: 400 var(--ui-basic-font-size--small) /
+    var(--ui-basic-font-leading--small) var(--ui-font-family);
 
   --ui-header-menu-font-size: 16px;
   --ui-header-menu-font-leading: 20px;
