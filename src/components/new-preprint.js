@@ -8,6 +8,9 @@ import Value from './value';
 import { useUser } from '../contexts/user-context';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
 
+// TODO view in context is only available _after_ user selects request or review so that we know under which tab the shell should be open in the extension fallback?
+// Also only offer to view in context if we have a PDF URL
+
 export default function NewPreprint({
   onCancel,
   onReviewed,
@@ -19,8 +22,7 @@ export default function NewPreprint({
   const [identifier, setIdentifier] = useState('');
   const [preprint, resolvePreprintStatus] = usePreprint(identifier);
   const [post, postData] = usePostAction();
-
-  console.log(postData);
+  const [step, setStep] = useState('NEW_PREPRINT'); // 'NEW_REVIEW' | 'NEW_REQUEST'
 
   return (
     <div className="new-preprint">
@@ -93,9 +95,7 @@ export default function NewPreprint({
 
       <button
         onClick={e => {
-          post({
-            '@type': 'Action'
-          });
+          setStep('NEW_REQUEST');
         }}
         disabled={!identifier || !preprint}
       >
@@ -103,7 +103,7 @@ export default function NewPreprint({
       </button>
       <button
         onClick={e => {
-          // TODO
+          setStep('NEW_REVIEW');
         }}
         disabled={!identifier || !preprint}
       >

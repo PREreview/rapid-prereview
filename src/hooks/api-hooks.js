@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createError } from '../utils/errors';
+import { unprefix, getId } from '../utils/jsonld';
 
 /**
  * Use to POST an Action to the API and keep track of the request progress /
@@ -69,16 +70,22 @@ export function usePostAction() {
 /**
  * Get Preprint metadata from `identifier`
  */
-export function usePreprint(identifier) {
+export function usePreprint(identifier, prefetchedPreprint) {
   const [progress, setProgress] = useState({
     isActive: false,
     error: null
   });
 
-  const [preprint, setPreprint] = useState(null);
+  const [preprint, setPreprint] = useState(prefetchedPreprint || null);
 
   useEffect(() => {
-    if (identifier) {
+    if (
+      prefetchedPreprint &&
+      unprefix(getId(prefetchedPreprint.doi || prefetchedPreprint.arXivId)) ===
+        identifier
+    ) {
+      // noop
+    } else if (identifier) {
       setProgress({
         isActive: true,
         error: null
@@ -127,7 +134,7 @@ export function usePreprint(identifier) {
       });
       setPreprint(null);
     }
-  }, [identifier]);
+  }, [identifier, prefetchedPreprint]);
 
   return [preprint, progress];
 }
