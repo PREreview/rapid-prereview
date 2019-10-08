@@ -5,9 +5,9 @@ import Home from './home';
 import ExtensionFallback from './extension-fallback';
 import { UserProvider } from '../contexts/user-context';
 
-export default function App({ initialState = {} }) {
+export default function App({ user }) {
   return (
-    <UserProvider user={initialState.user}>
+    <UserProvider user={user}>
       <Router>
         <Switch>
           <Route exact={true} path="/">
@@ -23,10 +23,9 @@ export default function App({ initialState = {} }) {
 }
 
 App.propTypes = {
-  initialState: PropTypes.shape({
-    user: PropTypes.shape({
-      '@id': PropTypes.string,
-      hasRole: PropTypes.array
-    })
+  // `null` if user is not logged in
+  user: PropTypes.shape({
+    '@id': PropTypes.string,
+    hasRole: PropTypes.array
   })
 };

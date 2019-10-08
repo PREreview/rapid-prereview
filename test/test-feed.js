@@ -40,15 +40,22 @@ describe('feed', function() {
     user = action.result;
   });
 
-  it('follow the changes feed and sync index DB', done => {
+  it('follow the changes feed and sync index DB and make the latest triggering seq accessible via the getLatestTriggeringSeq view', done => {
     const feed = new Feed(db);
     feed.start();
 
     feed.on('sync', (seq, preprint) => {
       assert.equal(preprint['@type'], 'ScholarlyPreprint');
+      assert.equal(preprint.triggeringSeq, seq);
       const lastSeq = feed.stop();
       assert.equal(lastSeq, seq);
-      done();
+
+      db.getLatestTriggeringSeq()
+        .then(latestTriggeringSeq => {
+          assert.equal(latestTriggeringSeq, seq);
+          done();
+        })
+        .catch(done);
     });
 
     feed.on('error', err => {

@@ -20,7 +20,7 @@ const config = {
 
 const db = new DB(config);
 const feed = new Feed(db);
-feed.start(); // TODO start from latest seq recorded on disk ?
+feed.start(); // TODO use feed.resume()
 feed.on('error', err => {
   console.error(err);
 });

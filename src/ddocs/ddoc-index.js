@@ -3,6 +3,18 @@
 const ddoc = {
   _id: '_design/ddoc-index',
   views: {
+    triggeringSeqByDateSynced: {
+      map: function(doc) {
+        if (
+          doc['@type'] === 'ScholarlyPreprint' &&
+          doc.dateSynced &&
+          doc.triggeringSeq
+        ) {
+          emit(new Date(doc.dateSynced).getTime(), doc.triggeringSeq);
+        }
+      },
+      reduce: '_count'
+    },
     preprintsByIdentifier: {
       map: function(doc) {
         if (doc['@type'] === 'ScholarlyPreprint') {
