@@ -6,8 +6,10 @@ import { MdArrowUpward, MdSearch } from 'react-icons/md';
 import Value from './value';
 import { getId, unprefix } from '../utils/jsonld';
 import { getTags } from '../utils/stats';
+import CountBadge from './count-badge';
 import ScoreBadge from './score-badge';
 import IconButton from './icon-button';
+import AddPrereviewIcon from '../svgs/add_prereview_icon.svg';
 
 export default function PreprintCard({ preprint }) {
   const {
@@ -41,7 +43,9 @@ export default function PreprintCard({ preprint }) {
           <ScoreBadge score={actions.length} />
         </div>
         <div className="preprint-card__score-panel__bottom">
-          <IconButton>+</IconButton>
+          <IconButton>
+            <AddPrereviewIcon />
+          </IconButton>
         </div>
       </div>
       <div className="preprint-card__contents">
@@ -56,29 +60,47 @@ export default function PreprintCard({ preprint }) {
             {format(new Date(datePosted), 'MMM. d, yyyy')}
           </span>
         </div>
-        <Value tagName="span">{preprintServer.name}</Value>
-        <Value tagName="span">{doi || arXivId}</Value>
+        <div className="preprint-card__info-row">
+          <div className="preprint-card__info-row__left">
+            <Value tagName="span">{preprintServer.name}</Value>
+            <Value tagName="span">{doi || arXivId}</Value>
+          </div>
 
-        <ul>
-          {subjects.map(subject => (
-            <li key="subject">{subject}</li>
-          ))}
-          <li>{hasData ? 'data' : 'no data'}</li>
-          <li>{hasCode ? 'code' : 'no code'}</li>
-        </ul>
+          <div className="preprint-card__info-row__right">
+            <ul className="preprint-card__tag-list">
+              {subjects.map(subject => (
+                <li key="subject">{subject}</li>
+              ))}
+              <li>{hasData ? 'data' : 'no data'}</li>
+              <li>{hasCode ? 'code' : 'no code'}</li>
+            </ul>
+          </div>
+        </div>
 
-        <div>
+        <div className="preprint-card__expansion-header">
           {/* the reviewers */}
-          {reviews.length > 0 && (
+          {/*reviews.length > 0 && (
             <ul>
               {reviews.map(action => (
                 <li key={getId(action)}>{unprefix(getId(action.agent))}</li>
               ))}
             </ul>
-          )}
-          <span>{reviews.length}</span> review{reviews.length > 1 ? 's' : ''} (
-          <span>{requests.length}</span> request{requests.length > 1 ? 's' : ''}
-          )
+              )*/}
+
+          <CountBadge
+            count={reviews.length}
+            className="preprint-card__count-badge"
+          />
+          <div className="preprint-card__count-label">
+            review{reviews.length > 1 ? 's' : ''}
+          </div>
+          <CountBadge
+            count={requests.length}
+            className="preprint-card__count-badge"
+          />
+          <div className="preprint-card__count-label">
+            request{requests.length > 1 ? 's' : ''}
+          </div>
         </div>
       </div>
     </div>

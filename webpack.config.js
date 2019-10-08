@@ -97,6 +97,12 @@ module.exports = {
           }
         ],
         include: [path.resolve(__dirname, 'src')] // does this work with imports?
+      },
+
+      // SVG
+      {
+        test: /\.svg$/,
+        use: ['@svgr/webpack']
       }
     ]
   },

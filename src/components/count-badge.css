@@ -1,0 +1,31 @@
+.count-badge {
+  position: relative;
+  box-sizing: border-box;
+  position: relative;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--ui-basic-font-color--light);
+  color: white;
+  font-size: 1em;
+
+  & .count-badge__number {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    font-size: 0.8em;
+    line-height: 0;
+    display: flex;
+    vertical-align: middle;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: 0.1em;
+    letter-spacing: -0.1em;
+    white-space: nowrap;
+  }
+}

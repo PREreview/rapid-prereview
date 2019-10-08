@@ -1,13 +1,24 @@
 .preprint-card {
+  position: relative;
   background-color: white;
   box-sizing: border-box;
-  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.08);
+  color: var(--ui-basic-font-color);
 
   font: var(--ui-basic-font);
-  margin: var(--sgrd) 0;
+  margin: 0;
+  margin-bottom: 3px;
   display: flex;
+  border-top: 1px solid white;
+
+  &:hover {
+    z-index: 500;
+    /*outline: 1px solid red;*/
+    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.1);
+  }
 
   & .preprint-card__score-panel {
+    box-sizing: border-box;
     flex: 0 0 var(--xlgrd);
     background-color: var(--card-color--tinted);
     display: flex;
@@ -16,11 +27,15 @@
     flex-direction: column;
 
     & .preprint-card__score-panel__top {
-      flex: 0 0 var(--xlgrd);
+      box-sizing: border-box;
+      flex: 0 0 var(--lgrd);
+      display: flex;
       justify-content: center;
-      padding-top: var(--xsgrd);
+      align-items: center;
+      padding: var(--xxsgrd) 0;
     }
     & .preprint-card__score-panel__middle {
+      box-sizing: border-box;
       flex: 1 1 100%;
       display: flex;
       flex-direction: column;
@@ -29,24 +44,29 @@
     }
 
     & .preprint-card__score-panel__bottom {
-      flex: 0 0 var(--xlgrd);
+      box-sizing: border-box;
+      flex: 0 0 var(--lgrd);
+      display: flex;
       justify-content: center;
+      align-items: center;
+      padding: var(--xxsgrd) 0;
     }
   }
 
   & .preprint-card__up-request-icon {
-    width: var(--mgrd);
-    height: var(--mgrd);
+    width: 20px;
+    height: 20px;
   }
   & .preprint-card__contents {
     flex: 1 1 100%;
-    padding: var(--sgrd) var(--mgrd);
+    position: relative;
   }
 
   & .preprint-card__header {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    padding: var(--xsgrd) var(--sgrd);
   }
 
   & .preprint-card__title {
@@ -62,13 +82,51 @@
 
   & .preprint-card__title-text {
     font: inherit;
-    margin: 0;
-    margin-bottom: var(--xsgrd);
+    margin: 0 var(--sgrd) var(--xsgrd) 0;
   }
 
   & .preprint-card__pub-date {
     white-space: nowrap;
     font: var(--ui-header-2-font);
     color: var(--ui-basic-font-color--light);
+  }
+
+  & .preprint-card__info-row {
+    box-sizing: border-box;
+    padding: 0 var(--sgrd) var(--xsgrd);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  & .preprint-card__tag-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+  }
+
+  & .preprint-card__expansion-header {
+    box-sizing: border-box;
+    font: var(--ui-basic-font--small);
+    display: flex;
+    align-items: center;
+    border-top: 1px solid var(--ruling-color--light);
+    padding: var(--xsgrd);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+  }
+
+  & .preprint-card__count-badge {
+    height: 1.1em;
+    min-width: 1.1em;
+    margin-right: var(--xxsgrd);
+  }
+
+  & .preprint-card__count-label {
+    margin-right: var(--xsgrd);
+    color: var(--ui-basic-font-color--light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 }
