@@ -4,14 +4,14 @@ import passport from 'passport';
 const router = new Router({ caseSensitive: true });
 
 // start authenticating with ORCID
-router.get('/orcid/login', passport.authenticate('orcid'));
+router.get('/orcid', passport.authenticate('orcid'));
 
 // finish authenticating with ORCID
 router.get(
   '/orcid/callback',
   passport.authenticate('orcid', {
     successRedirect: '/',
-    failureRedirect: '/error'
+    failureRedirect: '/login?error=true'
   })
 );
 

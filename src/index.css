@@ -15,3 +15,6 @@
 @import './components/search-bar.css';
 @import './components/score-badge.css';
 @import './components/tag-pill.css';
+
+/* reach ui */
+@import '../node_modules/@reach/menu-button/styles.css';

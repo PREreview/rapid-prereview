@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Home from './home';
 import ExtensionFallback from './extension-fallback';
 import { UserProvider } from '../contexts/user-context';
+import Login from './login';
 
 export default function App({ user }) {
   return (
@@ -12,6 +13,9 @@ export default function App({ user }) {
         <Switch>
           <Route exact={true} path="/">
             <Home />
+          </Route>
+          <Route exact={true} path="/login">
+            <Login />
           </Route>
           <Route exact={true} path="/:identifierPart1?/:identifierPart2?">
             <ExtensionFallback />

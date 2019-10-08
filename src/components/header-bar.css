@@ -45,3 +45,7 @@
     }
   }
 }
+
+[data-reach-menu] {
+  z-index: 2000;
+}

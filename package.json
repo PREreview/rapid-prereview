@@ -172,6 +172,7 @@
     "@babel/polyfill": "^7.6.0",
     "@babel/runtime": "^7.6.2",
     "@cloudant/cloudant": "^4.2.1",
+    "@reach/menu-button": "^0.1.18",
     "ajv": "^6.10.2",
     "classnames": "^2.2.6",
     "concat-stream": "^2.0.0",
