@@ -58,10 +58,11 @@ export function createPassport(config) {
   }
 
   class MockStrategy extends Strategy {
-    constructor(name, verifyCallback) {
+    constructor(name, callbackURL, verifyCallback) {
       super();
       this.name = name;
-      this.verifyCallback = verifyCallback;
+      this._callbackURL = callbackURL;
+      this._verifyCallback = verifyCallback;
     }
 
     authenticate(req, options) {
@@ -73,19 +74,27 @@ export function createPassport(config) {
       };
       const profile = {};
 
-      this.verifyCallback(
-        accessToken,
-        refreshToken,
-        params,
-        profile,
-        (err, user) => {
-          this.success(user);
-        }
-      );
+      if (req.url === '/orcid') {
+        this.redirect(this._callbackURL);
+      } else {
+        this._verifyCallback(
+          accessToken,
+          refreshToken,
+          params,
+          profile,
+          (err, user) => {
+            this.success(user);
+          }
+        );
+      }
     }
   }
 
   let strategy;
+  const callbackURL = `${config.appRootUrl ||
+    process.env.APP_ROOT_URL ||
+    'http://127.0.0.1:3000'}/auth/orcid/callback`;
+
   if (process.env.NODE_ENV === 'production') {
     strategy = new OrcidStrategy(
       {
@@ -94,14 +103,12 @@ export function createPassport(config) {
         clientID: config.orcidClientId || process.env.ORCID_CLIENT_ID,
         clientSecret:
           config.orcidClientSecret || process.env.ORCID_CLIENT_SECRET,
-        callbackURL: `${config.appRootUrl ||
-          process.env.APP_ROOT_URL ||
-          'http://127.0.0.1:3000'}/orcid-callback`
+        callbackURL
       },
       verifyCallback
     );
   } else {
-    strategy = new MockStrategy('orcid', verifyCallback);
+    strategy = new MockStrategy('orcid', callbackURL, verifyCallback);
   }
 
   passport.serializeUser(function(user, done) {
