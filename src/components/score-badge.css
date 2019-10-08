@@ -11,6 +11,7 @@
   align-items: center;
 
   font: var(--ui-score-badge-font);
+  font-weight: 600;
   letter-spacing: -0.05em;
 
   & .score-badge--needs-attention {
@@ -20,6 +21,5 @@
 
   & .score-badge__score {
     position: relative;
-    top: 0.05em; /* numbers don't have decenders - so compensate */
   }
 }

@@ -2,13 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { MdArrowUpward, MdSearch } from 'react-icons/md';
+import { MdArrowUpward, MdSearch, MdCode } from 'react-icons/md';
 import Value from './value';
 import { getId, unprefix } from '../utils/jsonld';
 import { getTags } from '../utils/stats';
 import CountBadge from './count-badge';
 import ScoreBadge from './score-badge';
 import IconButton from './icon-button';
+import TagPill from './tag-pill';
 import AddPrereviewIcon from '../svgs/add_prereview_icon.svg';
 
 export default function PreprintCard({ preprint }) {
@@ -69,10 +70,38 @@ export default function PreprintCard({ preprint }) {
           <div className="preprint-card__info-row__right">
             <ul className="preprint-card__tag-list">
               {subjects.map(subject => (
-                <li key="subject">{subject}</li>
+                <li key="subject" className="preprint-card__tag-list__item">
+                  <TagPill>{subject}</TagPill>
+                </li>
               ))}
-              <li>{hasData ? 'data' : 'no data'}</li>
-              <li>{hasCode ? 'code' : 'no code'}</li>
+              <li className="preprint-card__tag-list__item">
+                <div
+                  className={`preprint-card__tag-icon ${
+                    hasData
+                      ? 'preprint-card__tag-icon--active'
+                      : 'preprint-card__tag-icon--inactive'
+                  }`}
+                >
+                  <MdCode
+                    className="preprint-card__tag-icon__icon"
+                    title="Has Data"
+                  />
+                </div>
+              </li>
+              <li className="preprint-card__tag-list__item">
+                <div
+                  className={`preprint-card__tag-icon ${
+                    hasCode
+                      ? 'preprint-card__tag-icon--active'
+                      : 'preprint-card__tag-icon--inactive'
+                  }`}
+                >
+                  <MdCode
+                    className="preprint-card__tag-icon__icon"
+                    title="Has Source Code"
+                  />
+                </div>
+              </li>
             </ul>
           </div>
         </div>
