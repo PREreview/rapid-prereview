@@ -10,3 +10,6 @@
 @import './components/preprint-card.css';
 @import './components/search-bar.css';
 @import './components/score-badge.css';
+
+/* reach ui */
+@import '../node_modules/@reach/menu-button/styles.css';
