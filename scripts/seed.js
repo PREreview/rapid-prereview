@@ -13,11 +13,16 @@ import {
   id2path,
   arXivId,
   crossrefDoi,
-  openAireDoi
+  openAireDoi,
+  errorDoesNotExistArXivId
 } from '../test/utils/create-preprint-server';
 
 const identifiers = Object.keys(id2path).filter(
-  id => id !== arXivId && id !== crossrefDoi && id !== openAireDoi
+  id =>
+    id !== arXivId &&
+    id !== crossrefDoi &&
+    id !== openAireDoi &&
+    id !== errorDoesNotExistArXivId
 );
 
 (async function() {

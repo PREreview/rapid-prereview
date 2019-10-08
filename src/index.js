@@ -1,4 +1,5 @@
 import path from 'path';
+import { STATUS_CODES } from 'http';
 import express from 'express';
 import session from 'express-session';
 import authRoutes from './routes/auth-routes';
@@ -33,6 +34,20 @@ export function rapid(config = {}) {
   app.use('/auth', authRoutes);
   app.use('/api', apiRoutes);
   app.use('/', appRoutes);
+
+  app.use((err, req, res, next) => {
+    if (res.headersSent) {
+      return next(err);
+    }
+
+    const statusCode = err.statusCode || 500;
+    res.status(err.statusCode || 500).json({
+      '@type': 'Error',
+      statusCode,
+      name: STATUS_CODES[statusCode],
+      description: err.message
+    });
+  });
 
   return app;
 }

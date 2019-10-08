@@ -1,4 +1,5 @@
 import doiRegex from 'doi-regex';
+import identifiersArxiv from 'identifiers-arxiv';
 import fetch from 'node-fetch';
 import { DOMParser } from 'xmldom';
 import { unprefix, cleanup, arrayify } from './jsonld';
@@ -30,13 +31,24 @@ export default async function resolve(
       resolveOpenAireDoi(doi, baseUrlOpenAire).catch(err => null)
     ]);
 
+    const valid = results.filter(Boolean);
+
+    if (!valid.length) {
+      throw createError(404);
+    }
+
     // keep the one with the most metadata
-    return results.filter(Boolean).sort((a, b) => {
+    return valid.sort((a, b) => {
       return Object.keys(b).length - Object.keys(a).length;
     })[0];
   } else {
     // try arXiv
-    return resolveArxivId(id, baseUrlArxiv);
+    const [arxivId] = identifiersArxiv.extract(id);
+    if (arxivId) {
+      return resolveArxivId(id, baseUrlArxiv);
+    } else {
+      throw createError(400, `Invalid identifier ${id}`);
+    }
   }
 }
 
@@ -53,6 +65,14 @@ async function resolveArxivId(
   const text = await r.text();
 
   const doc = new DOMParser().parseFromString(text);
+
+  const $error = doc.getElementsByTagName('error')[0];
+  if ($error) {
+    const code = $error.getAttribute('code');
+    if (code === 'idDoesNotExist') {
+      throw createError(404, $error.textContent);
+    }
+  }
 
   const data = {
     '@type': 'ScholarlyPreprint',
@@ -84,6 +104,7 @@ async function resolveCrossRefDoi(
 ) {
   id = unprefix(id).trim();
   const r = await fetch(`${baseUrl}${id}`);
+
   if (!r.ok) {
     throw createError(r.status);
   }
@@ -168,6 +189,9 @@ async function resolveOpenAireDoi(
         }
       }
     }
+  } else {
+    throw createError(404);
   }
+
   return cleanup(data);
 }
