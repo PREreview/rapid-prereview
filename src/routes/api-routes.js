@@ -122,6 +122,10 @@ router.get('/role/:roleId', async (req, res, next) => {
  * Post an action (side effects)
  */
 router.post('/action', (req, res, next) => {
+  if (!req.isAuthenticated()) {
+    return next(createError(401, 'Login required'));
+  }
+
   next(createError(500, 'Not implemented yet'));
 });
 

@@ -28,7 +28,9 @@ export default class Feed extends EventEmitter {
       ) {
         let preprint;
         try {
-          preprint = await this.db.syncIndex(doc);
+          preprint = await this.db.syncIndex(doc, {
+            triggeringSeq: change.seq
+          });
         } catch (err) {
           err.seq = change.seq;
           err.source = 'syncIndex';
@@ -48,6 +50,12 @@ export default class Feed extends EventEmitter {
     this.feed.follow();
 
     return since;
+  }
+
+  async resume() {
+    const seq = this.db.getLatestTriggeringSeq();
+
+    return this.start({ since: seq });
   }
 
   stop() {

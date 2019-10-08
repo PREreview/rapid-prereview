@@ -8,7 +8,11 @@ router.get('/:identiferPart1?/:identiferPart2?', (req, res, next) => {
     if (err) return next(err);
 
     res.render('index', {
-      bundles
+      bundles,
+      ssr: false,
+      initialState: {
+        user: req.user
+      }
     });
   });
 });

@@ -7,7 +7,7 @@ function render(config = {}, initialState = {}) {
   const App = require('./components/app').default;
 
   ReactDOM[config.ssr ? 'hydrate' : 'render'](
-    <App initialState={initialState} />,
+    <App {...initialState} />,
     document.getElementById('app')
   );
 }

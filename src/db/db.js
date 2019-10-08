@@ -1,6 +1,4 @@
 import Cloudant from '@cloudant/cloudant';
-import omit from 'lodash/omit';
-import pick from 'lodash/pick';
 import uniqBy from 'lodash/uniqBy';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
@@ -14,8 +12,7 @@ import { createError } from '../utils/errors';
 import { INDEXED_PREPRINT_PROPS } from '../constants';
 import { getScore, SCORE_THRESHOLD } from '../utils/score';
 import striptags from '../utils/striptags';
-
-// TODO store the seq in the preprint doc so we know where to restart
+import { dehydrateAction } from '../utils/preprints';
 
 export default class DB {
   constructor(config = {}) {
@@ -173,8 +170,31 @@ export default class DB {
       case 'request':
         return this.docs.get(id);
 
-      case 'preprint':
-        return this.index.get(id);
+      case 'preprint': {
+        // Note we don't use `this.index.get(id)` as it may be outdated
+
+        const actions = await this.getActionsByPreprintId(id);
+        if (!actions.length) {
+          throw createError(404);
+        }
+
+        const object = actions
+          .map(action => action.object)
+          .sort((a, b) => {
+            if (a.sdRetrievedFields.length !== b.sdRetrievedFields.length) {
+              return b.sdRetrievedFields.length - a.sdRetrievedFields.length;
+            } else {
+              return (
+                new Date(b.sdDateRetrieved).getTime() -
+                new Date(a.sdDateRetrieved).getTime()
+              );
+            }
+          })[0];
+
+        return Object.assign(object, {
+          potentialAction: actions.map(dehydrateAction)
+        });
+      }
 
       default:
         throw createError(400, `invalid id`);
@@ -198,6 +218,32 @@ export default class DB {
     return row.doc;
   }
 
+  async getActionsByPreprintId(preprintId) {
+    preprintId = getId(preprintId);
+    const body = await this.docs.view('ddoc-docs', 'actionsByPreprintId', {
+      key: preprintId,
+      include_docs: true,
+      reduce: false
+    });
+
+    return body.rows.map(row => row.doc);
+  }
+
+  async getLatestTriggeringSeq() {
+    const body = await this.index.view(
+      'ddoc-index',
+      'triggeringSeqByDateSynced',
+      {
+        include_docs: false,
+        reduce: false,
+        limit: 1,
+        descending: true
+      }
+    );
+
+    return body.rows && body.rows[0] ? body.rows[0].value : undefined;
+  }
+
   // search
   async searchPreprints(params, { user = null } = {}) {
     const results = await this.index.search('ddoc-index', 'preprints', params);
@@ -214,43 +260,15 @@ export default class DB {
   async searchUsers(params, { user = null } = {}) {}
   async searchRoles(params, { user = null } = {}) {}
 
-  async syncIndex(action, { now = new Date().toISOString() } = {}) {
+  async syncIndex(
+    action,
+    {
+      now = new Date().toISOString(),
+      triggeringSeq // passed when this is called by the changes feed so we can retry easily
+    } = {}
+  ) {
     // we compact the action to reduce the space used by the index
-    const compactedAction = Object.keys(action).reduce((compacted, key) => {
-      switch (key) {
-        case 'agent':
-          compacted[key] = getId(action[key]);
-          break;
-
-        case '_id':
-        case '_rev':
-        case 'actionStatus':
-        case 'object':
-          break;
-
-        case 'resultReview':
-          compacted[key] = cleanup(
-            Object.assign({}, action[key], {
-              about: arrayify(action[key].about)
-                .filter(about => about.name)
-                .map(about => pick(about, ['name'])),
-              reviewAnswer: arrayify(action[key].reviewAnswer).map(answer =>
-                Object.assign({}, omit(answer, ['@type']), {
-                  parentItem: getId(answer.parentItem)
-                })
-              )
-            }),
-            { removeEmptyArray: true }
-          );
-          break;
-
-        default:
-          compacted[key] = action[key];
-          break;
-      }
-
-      return compacted;
-    }, {});
+    const compactedAction = dehydrateAction(action);
 
     const docId = getId(action.object);
     let body;
@@ -339,6 +357,11 @@ export default class DB {
         dateScoreLastUpdated: now,
         potentialAction: [compactedAction]
       });
+    }
+
+    merged.dateSynced = now;
+    if (triggeringSeq) {
+      merged.triggeringSeq = triggeringSeq;
     }
 
     merged = cleanup(merged);
