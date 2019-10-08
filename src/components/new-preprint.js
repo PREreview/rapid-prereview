@@ -9,7 +9,7 @@ import Value from './value';
 import { useUser } from '../contexts/user-context';
 import { usePostAction } from '../hooks/api-hooks';
 
-export default function NewPreprintCard({ onCancel }) {
+export default function NewPreprint({ onCancel }) {
   const [user] = useUser();
 
   const [progress, setProgress] = useState({
@@ -79,13 +79,13 @@ export default function NewPreprintCard({ onCancel }) {
   }, [identifier]);
 
   return (
-    <div className="new-preprint-card">
-      <label htmlFor="new-preprint-card-input">
+    <div className="new-preprint">
+      <label htmlFor="new-preprint-input">
         Enter a <abbr title="Digital Object Identifier">DOI</abbr> or an arXiv
         ID
       </label>
       <input
-        id="new-preprint-card-input"
+        id="new-preprint-input"
         type="text"
         autoComplete="off"
         onChange={e => {
@@ -176,6 +176,6 @@ export default function NewPreprintCard({ onCancel }) {
   );
 }
 
-NewPreprintCard.propTypes = {
+NewPreprint.propTypes = {
   onCancel: PropTypes.func.isRequired
 };

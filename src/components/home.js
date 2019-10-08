@@ -4,7 +4,7 @@ import SearchBar from './search-bar';
 import LeftSidePanel from './left-side-panel';
 import PreprintCard from './preprint-card';
 import Facets from './facets';
-import NewPreprintCard from './new-preprint-card';
+import NewPreprint from './new-preprint';
 
 export default function Home() {
   const [showLeftPanel, setShowLeftPanel] = useState(true);
@@ -64,7 +64,7 @@ export default function Home() {
           </button>
 
           {isAdding && (
-            <NewPreprintCard
+            <NewPreprint
               onCancel={() => {
                 setIsAdding(false);
               }}
