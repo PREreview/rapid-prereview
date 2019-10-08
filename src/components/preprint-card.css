@@ -60,6 +60,9 @@
   & .preprint-card__contents {
     flex: 1 1 100%;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   & .preprint-card__header {
@@ -103,6 +106,35 @@
     padding: 0;
     margin: 0;
     display: flex;
+
+    & .preprint-card__tag-list__item {
+      flex: 0 0 auto;
+      margin-right: var(--xsgrd);
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  & .preprint-card__tag-icon {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 20px;
+    background-color: var(--light-grey);
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & .preprint-card__tag-icon--active {
+      background-color: var(--ui-basic-font-color--light);
+    }
+
+    & .preprint-card__tag-icon__icon {
+      width: 16px;
+      height: 16px;
+    }
   }
 
   & .preprint-card__expansion-header {
@@ -112,8 +144,6 @@
     align-items: center;
     border-top: 1px solid var(--ruling-color--light);
     padding: var(--xsgrd);
-    position: absolute;
-    bottom: 0;
     width: 100%;
   }
 

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
+
 @import 'normalize.css';
 @import './components/variables.css';
 
@@ -9,8 +11,10 @@
 @import './components/icon-button.css';
 @import './components/left-side-panel.css';
 @import './components/preprint-card.css';
+@import './components/rapid-pre-review-logo.css';
 @import './components/search-bar.css';
 @import './components/score-badge.css';
+@import './components/tag-pill.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';

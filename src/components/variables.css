@@ -18,12 +18,14 @@
   --prereview-coral: #f77463;
   --prereview-spring-green: #66f785;
 
+  --light-grey: rgb(232, 232, 232);
+
   /* UI Colors */
   --ui-basic-font-color: #181818;
   --ui-basic-font-color--light: rgb(120, 120, 120);
 
   --ruling-color: var(--ui-basic-font-color--light);
-  --ruling-color--light: rgb(232, 232, 232);
+  --ruling-color--light: var(--light-grey);
   --button-background-color: var(--ui-basic-font-color);
   --button-foreground-color: var(--prereview-white);
   --card-color: var(--prereview-white);
@@ -36,7 +38,7 @@
   --middle-column-default-width: 960px;
 
   /* Fonts */
-  --ui-font-family: 'Roboto', 'Helvetic', 'sans-serif';
+  --ui-font-family: 'Open Sans', 'sans-serif';
 
   --ui-basic-font-size: 13px;
   --ui-basic-font-leading: 18px;

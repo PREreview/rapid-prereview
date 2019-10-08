@@ -1,0 +1,9 @@
+.rapid-pre-review-logo {
+  height: var(--xlgrd);
+  width: 200px;
+
+  .rapid-pre-review-logo__svg {
+    height: 100%;
+    width: 100%;
+  }
+}
