@@ -1,7 +1,10 @@
 import { Router } from 'express';
+import bodyParser from 'body-parser';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
 import resolve from '../utils/resolve';
+
+const jsonParser = bodyParser.json({ limit: '2mb' });
 
 const router = new Router({ caseSensitive: true });
 
@@ -121,12 +124,12 @@ router.get('/role/:roleId', async (req, res, next) => {
 /**
  * Post an action (side effects)
  */
-router.post('/action', (req, res, next) => {
+router.post('/action', jsonParser, (req, res, next) => {
   if (!req.isAuthenticated()) {
     return next(createError(401, 'Login required'));
   }
 
-  next(createError(500, 'Not implemented yet'));
+  res.json({ ok: true });
 });
 
 /**

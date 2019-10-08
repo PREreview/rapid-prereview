@@ -7,12 +7,9 @@ import { unprefix } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import Value from './value';
 import { useUser } from '../contexts/user-context';
+import { usePostAction } from '../hooks/api-hooks';
 
-export default function NewPreprintCard({
-  onCancel
-  //  onRequest,
-  //  onStartReview
-}) {
+export default function NewPreprintCard({ onCancel }) {
   const [user] = useUser();
 
   const [progress, setProgress] = useState({
@@ -26,6 +23,10 @@ export default function NewPreprintCard({
   const [identifier, setIdentifier] = useState('');
 
   const [preprint, setPreprint] = useState(null);
+
+  const [post, postData] = usePostAction();
+
+  console.log(postData);
 
   useEffect(() => {
     if (identifier) {
@@ -49,7 +50,7 @@ export default function NewPreprintCard({
                 throw createError(resp.status, body.description || body.name);
               },
               err => {
-                throw createError(resp.status, 'smtg went wrong');
+                throw createError(resp.status, 'something went wrong');
               }
             );
           }
@@ -155,7 +156,9 @@ export default function NewPreprintCard({
 
       <button
         onClick={e => {
-          // onRequest(preprint);
+          post({
+            '@type': 'Action'
+          });
         }}
         disabled={!identifier || progress.status !== 'resolved'}
       >
@@ -163,7 +166,7 @@ export default function NewPreprintCard({
       </button>
       <button
         onClick={e => {
-          // onStartReview(preprint);
+          // TODO
         }}
         disabled={!identifier || progress.status !== 'resolved'}
       >
@@ -175,6 +178,4 @@ export default function NewPreprintCard({
 
 NewPreprintCard.propTypes = {
   onCancel: PropTypes.func.isRequired
-  //  onRequest: PropTypes.func.isRequired,
-  //  onStartReview: PropTypes.func.isRequired
 };
