@@ -4,10 +4,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 function render(config = {}, initialState = {}) {
-  const Provider = require('./components/app').default;
+  const App = require('./components/app').default;
 
   ReactDOM[config.ssr ? 'hydrate' : 'render'](
-    <Provider initialState={initialState} />,
+    <App initialState={initialState} />,
     document.getElementById('app')
   );
 }

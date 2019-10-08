@@ -6,8 +6,15 @@ import { format } from 'date-fns';
 import { unprefix } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import Value from './value';
+import { useUser } from '../contexts/user-context';
 
-export default function NewPreprintCard({ onCancel }) {
+export default function NewPreprintCard({
+  onCancel
+  //  onRequest,
+  //  onStartReview
+}) {
+  const [user] = useUser();
+
   const [progress, setProgress] = useState({
     status: 'iddle',
     message: '',
@@ -146,10 +153,20 @@ export default function NewPreprintCard({ onCancel }) {
         </p>
       ) : null}
 
-      <button disabled={!identifier || progress.status !== 'resolved'}>
+      <button
+        onClick={e => {
+          // onRequest(preprint);
+        }}
+        disabled={!identifier || progress.status !== 'resolved'}
+      >
         Request reviews
       </button>
-      <button disabled={!identifier || progress.status !== 'resolved'}>
+      <button
+        onClick={e => {
+          // onStartReview(preprint);
+        }}
+        disabled={!identifier || progress.status !== 'resolved'}
+      >
         Add review
       </button>
     </div>
@@ -158,4 +175,6 @@ export default function NewPreprintCard({ onCancel }) {
 
 NewPreprintCard.propTypes = {
   onCancel: PropTypes.func.isRequired
+  //  onRequest: PropTypes.func.isRequired,
+  //  onStartReview: PropTypes.func.isRequired
 };
