@@ -4,8 +4,10 @@ import identifiersArxiv from 'identifiers-arxiv';
 import doiRegex from 'doi-regex';
 import { format } from 'date-fns';
 import Value from './value';
-import { useUser } from '../contexts/user-context';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
+import RapidFormFragment from './rapid-form-fragment';
+import { useUser } from '../contexts/user-context';
+import { getId, arrayify } from '../utils/jsonld';
 
 export default function NewPreprint({
   onCancel,
@@ -181,6 +183,7 @@ function StepReview({
 }) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
+  const [answerMap, setAnswerMap] = useState({});
 
   return (
     <div className="step-review">
@@ -188,28 +191,50 @@ function StepReview({
 
       <NewPreprintPreview preprint={preprint} />
 
-      <button
-        onClick={e => {
-          onCancel();
+      <form
+        onSubmit={e => {
+          e.preventDefault();
         }}
       >
-        Cancel
-      </button>
-      <button
-        onClick={e => {
-          onReviewed(postData.body);
-        }}
-      >
-        Submit
-      </button>
-      <button
-        onClick={e => {
-          onViewInContext(identifier, preprint, 'review');
-        }}
-        disabled={!identifier || !preprint}
-      >
-        View In Context
-      </button>
+        <RapidFormFragment
+          answerMap={answerMap}
+          onChange={(key, value) => {
+            setAnswerMap(prev => {
+              return Object.assign({}, prev, { [key]: value });
+            });
+          }}
+        />
+
+        <button
+          onClick={e => {
+            onCancel();
+          }}
+          disabled={postData.isActive}
+        >
+          Cancel
+        </button>
+        <button
+          onClick={e => {
+            post(
+              answerMap, // TODO
+              body => {
+                onReviewed(body);
+              }
+            );
+          }}
+          disabled={postData.isActive}
+        >
+          Submit
+        </button>
+        <button
+          onClick={e => {
+            onViewInContext(identifier, preprint, 'review');
+          }}
+          disabled={postData.isActive}
+        >
+          View In Context
+        </button>
+      </form>
     </div>
   );
 }
@@ -228,7 +253,6 @@ function StepRequest({
   onCancel,
   onRequested
 }) {
-  const [user] = useUser();
   const [post, postData] = usePostAction();
 
   return (
@@ -241,6 +265,7 @@ function StepRequest({
         onClick={e => {
           onCancel();
         }}
+        disabled={postData.isActive}
       >
         Cancel
       </button>
@@ -248,6 +273,7 @@ function StepRequest({
         onClick={e => {
           onRequested(postData.body);
         }}
+        disabled={postData.isActive}
       >
         Submit
       </button>
@@ -255,7 +281,7 @@ function StepRequest({
         onClick={e => {
           onViewInContext(identifier, preprint, 'request');
         }}
-        disabled={!identifier || !preprint}
+        disabled={postData.isActive}
       >
         View In Context
       </button>

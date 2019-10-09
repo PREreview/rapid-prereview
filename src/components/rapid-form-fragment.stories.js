@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import faker from 'faker';
 import sample from 'lodash/sample';
-import RapidForm from './rapid-form';
+import RapidFormFragment from './rapid-form-fragment';
 import { QUESTIONS } from '../constants';
+import { getAnswerMap } from '../utils/actions';
 
-export default { title: 'RapidForm' };
+export default { title: 'RapidFormFragment' };
 
-export function empty() {
+export function Empty() {
+  const [answerMap, setAnswerMap] = useState({});
+
   return (
-    <RapidForm
-      onSubmit={nextAction => {
-        console.log(nextAction);
+    <RapidFormFragment
+      answerMap={answerMap}
+      onChange={(key, value) => {
+        setAnswerMap(prev => {
+          return Object.assign({}, prev, { [key]: value });
+        });
       }}
     />
   );
 }
 
-export function populated() {
+export function Populated() {
   const action = {
     '@type': 'RapidPREreviewAction',
     object: {
@@ -48,11 +54,15 @@ export function populated() {
     }
   };
 
+  const [answerMap, setAnswerMap] = useState(getAnswerMap(action));
+
   return (
-    <RapidForm
-      rapidPREreviewAction={action}
-      onSubmit={nextAction => {
-        console.log(nextAction);
+    <RapidFormFragment
+      answerMap={answerMap}
+      onChange={(key, value) => {
+        setAnswerMap(prev => {
+          return Object.assign({}, prev, { [key]: value });
+        });
       }}
     />
   );
