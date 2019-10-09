@@ -33,3 +33,7 @@ export function getReviewAnswers(answerMap = {}) {
     }
   );
 }
+
+export function checkIfAllAnswered(answerMap = {}) {
+  return QUESTIONS.every(({ identifier }) => answerMap[identifier]);
+}

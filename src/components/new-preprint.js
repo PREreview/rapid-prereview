@@ -8,7 +8,7 @@ import { getId, arrayify, unprefix } from '../utils/jsonld';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
 import RapidFormFragment from './rapid-form-fragment';
 import { useUser } from '../contexts/user-context';
-import { getReviewAnswers } from '../utils/actions';
+import { getReviewAnswers, checkIfAllAnswered } from '../utils/actions';
 import Controls from './controls';
 import Button from './button';
 
@@ -194,6 +194,8 @@ function StepReview({
   const [post, postData] = usePostAction();
   const [answerMap, setAnswerMap] = useState({});
 
+  const canSubmit = checkIfAllAnswered(answerMap);
+
   return (
     <div className="step-review">
       <header>Add a Rapid PREreview</header>
@@ -214,7 +216,7 @@ function StepReview({
           }}
         />
 
-        <Controls>
+        <Controls error={postData.error}>
           <Button
             onClick={e => {
               onCancel();
@@ -228,6 +230,7 @@ function StepReview({
               post(
                 {
                   '@type': 'RapidPREreviewAction',
+                  actionStatus: 'CompletedActionStatus',
                   agent: getId(arrayify(user.hasRole)[0]),
                   object: identifier,
                   resultReview: {
@@ -240,7 +243,7 @@ function StepReview({
                 }
               );
             }}
-            disabled={postData.isActive}
+            disabled={postData.isActive || !canSubmit}
           >
             Submit
           </Button>

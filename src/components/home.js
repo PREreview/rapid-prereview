@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Route, useHistory, useLocation } from 'react-router-dom';
+import { Route, useHistory, useLocation, Link } from 'react-router-dom';
+import { useUser } from '../contexts/user-context';
 import { unprefix } from '../utils/jsonld';
 import HeaderBar from './header-bar';
 import SearchBar from './search-bar';
@@ -11,7 +12,9 @@ import Modal from './modal';
 import Button from './button';
 
 export default function Home() {
+  const [user] = useUser();
   const [showLeftPanel, setShowLeftPanel] = useState(true);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [results, setResults] = useState({
     bookmark: null,
     rows: [],
@@ -65,7 +68,11 @@ export default function Home() {
               pill={true}
               primary={true}
               onClick={e => {
-                history.push('/new');
+                if (user) {
+                  history.push('/new');
+                } else {
+                  setIsLoginModalOpen(true);
+                }
               }}
               disabled={location.pathname === '/new'}
             >
@@ -80,17 +87,40 @@ export default function Home() {
                   history.push('/');
                 }}
                 onReviewed={action => {
+                  console.log(action);
                   history.push('/');
                 }}
                 onRequested={action => {
+                  console.log(action);
                   history.push('/');
                 }}
                 onViewInContext={(identifier, preprint, tab) => {
-                  history.push(`/${unprefix(identifier)}`, preprint);
+                  console.log(identifier, preprint, tab);
+                  history.push(`/${unprefix(identifier)}`, {
+                    identifier,
+                    preprint,
+                    tab
+                  });
                 }}
               />
             </Modal>
           </Route>
+
+          {isLoginModalOpen && (
+            <Modal
+              onClose={() => {
+                setIsLoginModalOpen(false);
+              }}
+            >
+              <header>Log in required</header>
+
+              <p>You need to be logged in to perform this action</p>
+
+              <p>
+                <Link to="login">log in with your ORCID</Link>
+              </p>
+            </Modal>
+          )}
 
           <ul className="home__preprint-list">
             {results.rows.map(row => (

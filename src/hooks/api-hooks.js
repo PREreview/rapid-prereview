@@ -41,6 +41,8 @@ export function usePostAction() {
     }
     controllerRef.current = controller;
 
+    console.log(action);
+
     fetch('/api/action', {
       signal: controller.signal,
       method: 'POST',
@@ -65,12 +67,14 @@ export function usePostAction() {
         }
       })
       .then(body => {
+        console.log(body);
         if (isMounted.current) {
           setState({ isActive: false, error: null, body });
           onSuccess(body);
         }
       })
       .catch(error => {
+        console.log(error);
         if (error.name !== 'AbortError' && isMounted.current) {
           setState({ isActive: false, error, body: null });
           onError(error);
