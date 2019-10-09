@@ -144,7 +144,7 @@ function StepPreprint({
         </p>
       ) : null}
 
-      <Controls>
+      <Controls className="step-preprint__button-bar">
         <Button
           onClick={e => {
             setValue('');

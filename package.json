@@ -175,6 +175,7 @@
     "@cloudant/cloudant": "^4.2.1",
     "@reach/dialog": "^0.2.9",
     "@reach/menu-button": "^0.1.18",
+    "@reach/visually-hidden": "^0.1.4",
     "ajv": "^6.10.2",
     "classnames": "^2.2.6",
     "concat-stream": "^2.0.0",
