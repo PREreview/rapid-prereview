@@ -10,14 +10,14 @@ import { getId } from '../src/utils/jsonld';
 import {
   createPreprintServer,
   createConfig,
-  id2path,
+  id2paths,
   arXivId,
   crossrefDoi,
   openAireDoi,
   errorDoesNotExistArXivId
 } from '../test/utils/create-preprint-server';
 
-const identifiers = Object.keys(id2path).filter(
+const identifiers = Object.keys(id2paths).filter(
   id =>
     id !== arXivId &&
     id !== crossrefDoi &&

@@ -58,7 +58,11 @@ async function resolveArxivId(
 ) {
   id = unprefix(id).trim();
 
-  const r = await fetch(`${baseUrl}${id}`);
+  const r = await fetch(`${baseUrl}${id}`, {
+    headers: {
+      Accept: 'application/xml, text/xml'
+    }
+  });
   if (!r.ok) {
     throw createError(r.status);
   }
@@ -103,7 +107,11 @@ async function resolveCrossRefDoi(
   baseUrl = 'https://api.crossref.org/works/'
 ) {
   id = unprefix(id).trim();
-  const r = await fetch(`${baseUrl}${id}`);
+  const r = await fetch(`${baseUrl}${id}`, {
+    headers: {
+      Accept: 'application/json'
+    }
+  });
 
   if (!r.ok) {
     throw createError(r.status);
@@ -154,7 +162,11 @@ async function resolveOpenAireDoi(
   id, // 10.5281/zenodo.3356153
   baseUrl = 'http://api.openaire.eu/search/publications?doi='
 ) {
-  const r = await fetch(`${baseUrl}${id}`);
+  const r = await fetch(`${baseUrl}${id}`, {
+    headers: {
+      Accept: 'application/xml, text/xml'
+    }
+  });
   if (!r.ok) {
     throw createError(r.status);
   }
@@ -192,6 +204,26 @@ async function resolveOpenAireDoi(
   } else {
     throw createError(404);
   }
+
+  return cleanup(data);
+}
+
+async function resolveHTML(id, baseUrl) {
+  const r = await fetch(`${baseUrl}${id}`, {
+    headers: {
+      Accept: 'text/html, application/xhtml+xml'
+    }
+  });
+  if (!r.ok) {
+    throw createError(r.status);
+  }
+
+  const text = await r.text();
+
+  const data = {
+    '@type': 'ScholarlyPreprint',
+    [doiRegex().test(id) ? 'doi' : 'arXivId']: id
+  };
 
   return cleanup(data);
 }
