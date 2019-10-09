@@ -1,4 +1,6 @@
 import React from 'react';
+import { action } from '@storybook/addon-actions';
+
 import Button from './button';
 
 export default {
@@ -23,7 +25,14 @@ export default {
 };
 
 export function basicButton() {
-  return <Button>Label</Button>;
+  return <Button onClick={action('button-click')}>My Button</Button>;
+}
+export function basicButtonDisabled() {
+  return (
+    <Button disabled onClick={action('button-click')}>
+      Disabled Button
+    </Button>
+  );
 }
 
 export function pillButton() {
@@ -32,6 +41,14 @@ export function pillButton() {
 
 export function PrimaryButton() {
   return <Button primary={true}>Label</Button>;
+}
+
+export function PrimaryButtonDisabled() {
+  return (
+    <Button disabled primary={true}>
+      Label
+    </Button>
+  );
 }
 
 export function PrimaryPillButton() {

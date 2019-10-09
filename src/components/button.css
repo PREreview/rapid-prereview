@@ -10,6 +10,11 @@
   cursor: pointer;
   opacity: 0.8;
 
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.65;
+  }
+
   &:focus {
     outline: none;
   }
@@ -27,7 +32,7 @@
   &:focus {
     & .button__contents {
       background-color: var(--button-background-focus-color);
-      color: var(-button-foreground-focus-color);
+      color: var(--button-foreground-focus-color);
     }
     &.button--primary .button__contents {
       background-color: var(--button-background-focus-color--primary);
@@ -42,7 +47,7 @@
     align-items: center;
     padding: var(--xxsgrd) var(--xsgrd);
     font: var(--ui-button-font);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.04em;
     border-radius: var(--xxsgrd);
     height: var(--mgrd);
     background-color: var(--button-background-color);
