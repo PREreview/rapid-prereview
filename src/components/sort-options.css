@@ -1,0 +1,25 @@
+.sort-options {
+  display: flex;
+  align-items: center;
+}
+
+.sort-options__item {
+  display: flex;
+  align-items: center;
+
+  & input {
+    display: none;
+  }
+
+  &:first-of-type {
+    margin-right: var(--sgrd);
+  }
+
+  &:last-of-type {
+    margin-left: auto;
+  }
+}
+
+.sort-options__icon--hidden {
+  visibility: hidden;
+}

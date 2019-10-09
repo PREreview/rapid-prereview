@@ -7,6 +7,7 @@ import SearchBar from './search-bar';
 import LeftSidePanel from './left-side-panel';
 import PreprintCard from './preprint-card';
 import Facets from './facets';
+import SortOptions from './sort-options';
 import NewPreprint from './new-preprint';
 import Modal from './modal';
 import Button from './button';
@@ -128,6 +129,13 @@ export default function Home() {
               </p>
             </Modal>
           )}
+
+          <SortOptions
+            value="score"
+            onChange={nextValue => {
+              console.log('TODO');
+            }}
+          />
 
           <ul className="home__preprint-list">
             {results.rows.map(row => (
