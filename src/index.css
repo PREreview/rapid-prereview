@@ -4,6 +4,7 @@
 @import './components/variables.css';
 
 @import './components/app.css';
+@import './components/button.css';
 @import './components/count-badge.css';
 @import './components/extension-fallback.css';
 @import './components/header-bar.css';

@@ -8,6 +8,7 @@ import PreprintCard from './preprint-card';
 import Facets from './facets';
 import NewPreprint from './new-preprint';
 import Modal from './modal';
+import Button from './button';
 
 export default function Home() {
   const [showLeftPanel, setShowLeftPanel] = useState(true);
@@ -58,14 +59,19 @@ export default function Home() {
         </LeftSidePanel>
 
         <div className="home__content">
-          <button
-            onClick={e => {
-              history.push('/new');
-            }}
-            disabled={location.pathname === '/new'}
-          >
-            Start
-          </button>
+          <div className="home__content-header">
+            <h3 className="home__content-title">Most Active Preprints</h3>
+            <Button
+              pill={true}
+              primary={true}
+              onClick={e => {
+                history.push('/new');
+              }}
+              disabled={location.pathname === '/new'}
+            >
+              Add Preprint
+            </Button>
+          </div>
 
           <Route path="/new" exact={true}>
             <Modal>

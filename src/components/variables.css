@@ -26,8 +26,19 @@
 
   --ruling-color: var(--ui-basic-font-color--light);
   --ruling-color--light: var(--light-grey);
-  --button-background-color: var(--ui-basic-font-color);
-  --button-foreground-color: var(--prereview-white);
+
+  /* standard button colors */
+  --button-background-color: transparent;
+  --button-foreground-color: var(-ui-basic-font-color);
+  --button-background-focus-color: var(--prereview-black);
+  --button-foreground-focus-color: var(--prereview-white);
+
+  /* primary-style button colors - these are buttons that need to stand out*/
+  --button-background-color--primary: var(--prereview-red);
+  --button-foreground-color--primary: var(--prereview-white);
+  --button-background-focus-color--primary: var(--prereview-black);
+  --button-foreground-focus-color--primary: var(--prereview-white);
+
   --card-color: var(--prereview-white);
   --card-color--tinted: rgb(245, 245, 245);
   --focus-color: var(--prereview-blue);
@@ -66,6 +77,17 @@
     var(--ui-header-2-font-leading) var(--ui-font-family);
 
   --ui-score-badge-font: 600 16px / 16px var(--ui-font-family);
+
+  /* button fonts */
+  --ui-button-font-size: var(--ui-basic-font-size);
+  --ui-button-font-leading: var(--ui-basic-font-size);
+  --ui-button-font: 400 var(--ui-button-font-size) /
+    var(--ui-button-font-leading) var(--ui-font-family);
+
+  --ui-button-font-size--primary: 16px;
+  --ui-button-font-leading--primary: 16px;
+  --ui-button-font--primary: 400 var(--ui-button-font-size--primary) /
+    var(--ui-button-font-leading--primary) var(--ui-font-family);
 }
 
 /* Media Queries */

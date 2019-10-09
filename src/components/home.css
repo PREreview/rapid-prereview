@@ -23,6 +23,15 @@
     max-width: var(--middle-column-default-width);
   }
 
+  & .home__content-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  & .home__content-title {
+    font: var(--ui-header-1-font);
+  }
+
   & .home__preprint-list {
     list-style: none;
     margin: 0;
