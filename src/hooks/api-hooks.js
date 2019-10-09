@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import noop from 'lodash/noop';
 import { createError } from '../utils/errors';
 import { unprefix, getId } from '../utils/jsonld';
 
@@ -15,13 +16,17 @@ export function usePostAction() {
     };
   }, []);
 
+  const controllerRef = useRef(null);
+
   const [state, setState] = useState({
     isActive: false,
     error: null,
     body: null
   });
 
-  function post(action) {
+  // Note: `onSuccess` and `onError` are only called if the component is still
+  // mounted
+  function post(action, onSuccess = noop, onError = noop) {
     if (isMounted.current) {
       setState({
         isActive: true,
@@ -30,7 +35,14 @@ export function usePostAction() {
       });
     }
 
+    const controller = new AbortController();
+    if (controllerRef.current) {
+      controllerRef.current.abort();
+    }
+    controllerRef.current = controller;
+
     fetch('/api/action', {
+      signal: controller.signal,
       method: 'POST',
       body: JSON.stringify(action),
       headers: {
@@ -55,11 +67,13 @@ export function usePostAction() {
       .then(body => {
         if (isMounted.current) {
           setState({ isActive: false, error: null, body });
+          onSuccess(body);
         }
       })
       .catch(error => {
-        if (isMounted.current) {
+        if (error.name !== 'AbortError' && isMounted.current) {
           setState({ isActive: false, error, body: null });
+          onError(error);
         }
       });
   }
