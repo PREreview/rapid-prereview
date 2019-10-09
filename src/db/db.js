@@ -162,8 +162,8 @@ export default class DB {
       }
 
       case 'role': {
-        const user = await this.getUserByRoleId(id);
-        return arrayify(user.hasRole).find(role => getId(role) === id);
+        const embedder = await this.getUserByRoleId(id);
+        return arrayify(embedder.hasRole).find(role => getId(role) === id);
       }
 
       case 'review':

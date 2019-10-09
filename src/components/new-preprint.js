@@ -234,13 +234,11 @@ function StepReview({
                   agent: getId(arrayify(user.hasRole)[0]),
                   object: identifier,
                   resultReview: {
-                    '@type': 'RapidPREreviewAction',
+                    '@type': 'RapidPREreview',
                     reviewAnswer: getReviewAnswers(answerMap)
                   }
                 },
-                body => {
-                  onReviewed(body);
-                }
+                onReviewed
               );
             }}
             disabled={postData.isActive || !canSubmit}
@@ -249,7 +247,12 @@ function StepReview({
           </Button>
           <Button
             onClick={e => {
-              onViewInContext(identifier, preprint, 'review');
+              onViewInContext({
+                identifier,
+                preprint,
+                tab: 'review',
+                answerMap
+              });
             }}
             disabled={postData.isActive}
           >
@@ -275,6 +278,7 @@ function StepRequest({
   onCancel,
   onRequested
 }) {
+  const [user] = useUser();
   const [post, postData] = usePostAction();
 
   return (
@@ -283,7 +287,7 @@ function StepRequest({
 
       <NewPreprintPreview preprint={preprint} />
 
-      <Controls>
+      <Controls error={postData.error}>
         <Button
           onClick={e => {
             onCancel();
@@ -294,7 +298,15 @@ function StepRequest({
         </Button>
         <Button
           onClick={e => {
-            onRequested(postData.body);
+            post(
+              {
+                '@type': 'RequestForRapidPREreviewAction',
+                actionStatus: 'CompletedActionStatus',
+                agent: getId(arrayify(user.hasRole)[0]),
+                object: identifier
+              },
+              onRequested
+            );
           }}
           disabled={postData.isActive}
         >
@@ -302,7 +314,7 @@ function StepRequest({
         </Button>
         <Button
           onClick={e => {
-            onViewInContext(identifier, preprint, 'request');
+            onViewInContext({ identifier, preprint, tab: 'request' });
           }}
           disabled={postData.isActive}
         >

@@ -6,7 +6,7 @@ export default function ExtensionFallback() {
   const pdfUrl =
     'https://www.biorxiv.org/content/biorxiv/early/2019/09/24/780577.full.pdf';
 
-  const location = useLocation(); // location.state can be {identifier, preprint, tab} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
+  const location = useLocation(); // location.state can be {identifier, preprint, tab, answerMap} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
   const { identifierPart1, identifierPart2 } = useParams();
   const identifier = [identifierPart1, identifierPart2]
     .filter(Boolean)

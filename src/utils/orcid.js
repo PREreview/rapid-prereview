@@ -116,7 +116,7 @@ export function createPassport(config) {
   });
 
   passport.deserializeUser(function(userId, done) {
-    db.get(userId, { acl: false })
+    db.get(userId, { user: userId })
       .then(user => done(null, user))
       .catch(done);
   });

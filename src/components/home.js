@@ -51,7 +51,6 @@ export default function Home() {
     <div className="home">
       <HeaderBar
         onClickMenuButton={() => {
-          console.log('toggle');
           setShowLeftPanel(!showLeftPanel);
         }}
       />
@@ -100,12 +99,13 @@ export default function Home() {
                   console.log(action);
                   history.push('/');
                 }}
-                onViewInContext={(identifier, preprint, tab) => {
-                  console.log(identifier, preprint, tab);
+                onViewInContext={({ identifier, preprint, tab, answerMap }) => {
+                  console.log({ identifier, preprint, tab, answerMap });
                   history.push(`/${unprefix(identifier)}`, {
                     identifier,
                     preprint,
-                    tab
+                    tab,
+                    answerMap
                   });
                 }}
               />
