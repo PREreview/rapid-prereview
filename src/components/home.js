@@ -73,13 +73,13 @@ export default function Home() {
                 onCancel={() => {
                   history.push('/');
                 }}
-                onReviewed={() => {
+                onReviewed={action => {
                   history.push('/');
                 }}
-                onRequested={() => {
+                onRequested={action => {
                   history.push('/');
                 }}
-                onViewInContext={(identifier, preprint) => {
+                onViewInContext={(identifier, preprint, tab) => {
                   history.push(`/${unprefix(identifier)}`, preprint);
                 }}
               />

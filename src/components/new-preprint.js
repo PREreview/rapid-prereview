@@ -3,13 +3,9 @@ import PropTypes from 'prop-types';
 import identifiersArxiv from 'identifiers-arxiv';
 import doiRegex from 'doi-regex';
 import { format } from 'date-fns';
-import { unprefix } from '../utils/jsonld';
 import Value from './value';
 import { useUser } from '../contexts/user-context';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
-
-// TODO view in context is only available _after_ user selects request or review so that we know under which tab the shell should be open in the extension fallback?
-// Also only offer to view in context if we have a PDF URL
 
 export default function NewPreprint({
   onCancel,
@@ -17,21 +13,88 @@ export default function NewPreprint({
   onRequested,
   onViewInContext
 }) {
-  const [user] = useUser();
-  const [value, setValue] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [preprint, resolvePreprintStatus] = usePreprint(identifier);
-  const [post, postData] = usePostAction();
   const [step, setStep] = useState('NEW_PREPRINT'); // 'NEW_REVIEW' | 'NEW_REQUEST'
 
   return (
     <div className="new-preprint">
-      <label htmlFor="new-preprint-input">
+      {step === 'NEW_PREPRINT' ? (
+        <StepPreprint
+          onCancel={onCancel}
+          onStep={setStep}
+          onIdentifier={setIdentifier}
+          identifier={identifier}
+          preprint={preprint}
+          resolvePreprintStatus={resolvePreprintStatus}
+        />
+      ) : step === 'NEW_REVIEW' ? (
+        <StepReview
+          onCancel={onCancel}
+          identifier={identifier}
+          preprint={preprint}
+          onReviewed={onReviewed}
+          onViewInContext={onViewInContext}
+        />
+      ) : (
+        <StepRequest
+          onCancel={onCancel}
+          identifier={identifier}
+          preprint={preprint}
+          onRequested={onRequested}
+          onViewInContext={onViewInContext}
+        />
+      )}
+    </div>
+  );
+}
+NewPreprint.propTypes = {
+  onCancel: PropTypes.func.isRequired,
+  onReviewed: PropTypes.func.isRequired,
+  onRequested: PropTypes.func.isRequired,
+  onViewInContext: PropTypes.func.isRequired
+};
+
+function NewPreprintPreview({ preprint }) {
+  return (
+    <div>
+      {!!preprint.name && <Value tagName="h2">{preprint.name}</Value>}
+
+      {!!preprint.datePosted && (
+        <span>{format(new Date(preprint.datePosted), 'MMM. d, yyyy')}</span>
+      )}
+      {!!(preprint.preprintServer && preprint.preprintServer.name) && (
+        <Value tagName="span">{preprint.preprintServer.name}</Value>
+      )}
+
+      {!!(preprint.doi || preprint.arXivId) && (
+        <span>{preprint.doi || preprint.arXivId}</span>
+      )}
+    </div>
+  );
+}
+NewPreprintPreview.propTypes = {
+  preprint: PropTypes.object.isRequired
+};
+
+function StepPreprint({
+  onCancel,
+  onStep,
+  onIdentifier,
+  identifier,
+  preprint,
+  resolvePreprintStatus
+}) {
+  const [value, setValue] = useState('');
+
+  return (
+    <div className="step-preprint">
+      <label htmlFor="step-preprint-input">
         Enter a <abbr title="Digital Object Identifier">DOI</abbr> or an arXiv
         ID
       </label>
       <input
-        id="new-preprint-input"
+        id="step-preprint-input"
         type="text"
         autoComplete="off"
         onChange={e => {
@@ -51,7 +114,7 @@ export default function NewPreprint({
           }
 
           if (nextIdentifier !== identifier) {
-            setIdentifier(nextIdentifier);
+            onIdentifier(nextIdentifier);
           }
 
           setValue(value);
@@ -59,29 +122,8 @@ export default function NewPreprint({
         value={value}
       />
 
-      <button
-        onClick={e => {
-          setValue('');
-          setIdentifier('');
-          onCancel();
-        }}
-      >
-        Cancel
-      </button>
-
       {preprint ? (
-        <div>
-          {!!preprint.name && <Value tagName="h2">{preprint.name}</Value>}
-
-          {!!preprint.datePosted && (
-            <span>{format(new Date(preprint.datePosted), 'MMM. d, yyyy')}</span>
-          )}
-          {!!(preprint.preprintServer && preprint.preprintServer.name) && (
-            <Value tagName="span">{preprint.preprintServer.name}</Value>
-          )}
-
-          {!!identifier && <span>{unprefix(identifier)}</span>}
-        </div>
+        <NewPreprintPreview preprint={preprint} />
       ) : resolvePreprintStatus.isActive ? (
         <p>{`resolving ${identifier}`}</p>
       ) : resolvePreprintStatus.error ? (
@@ -95,7 +137,16 @@ export default function NewPreprint({
 
       <button
         onClick={e => {
-          setStep('NEW_REQUEST');
+          setValue('');
+          onIdentifier('');
+          onCancel();
+        }}
+      >
+        Cancel
+      </button>
+      <button
+        onClick={e => {
+          onStep('NEW_REQUEST');
         }}
         disabled={!identifier || !preprint}
       >
@@ -103,15 +154,57 @@ export default function NewPreprint({
       </button>
       <button
         onClick={e => {
-          setStep('NEW_REVIEW');
+          onStep('NEW_REVIEW');
         }}
         disabled={!identifier || !preprint}
       >
         Add review
       </button>
+    </div>
+  );
+}
+StepPreprint.propTypes = {
+  onCancel: PropTypes.func.isRequired,
+  onStep: PropTypes.func.isRequired,
+  onIdentifier: PropTypes.func.isRequired,
+  identifier: PropTypes.string,
+  preprint: PropTypes.object,
+  resolvePreprintStatus: PropTypes.object.isRequired
+};
+
+function StepReview({
+  identifier,
+  preprint,
+  onViewInContext,
+  onCancel,
+  onReviewed
+}) {
+  const [user] = useUser();
+  const [post, postData] = usePostAction();
+
+  return (
+    <div className="step-review">
+      <header>Add a Rapid PREreview</header>
+
+      <NewPreprintPreview preprint={preprint} />
+
       <button
         onClick={e => {
-          onViewInContext(identifier, preprint);
+          onCancel();
+        }}
+      >
+        Cancel
+      </button>
+      <button
+        onClick={e => {
+          onReviewed(postData.body);
+        }}
+      >
+        Submit
+      </button>
+      <button
+        onClick={e => {
+          onViewInContext(identifier, preprint, 'review');
         }}
         disabled={!identifier || !preprint}
       >
@@ -120,10 +213,59 @@ export default function NewPreprint({
     </div>
   );
 }
-
-NewPreprint.propTypes = {
+StepReview.propTypes = {
+  identifier: PropTypes.string.isRequired,
+  preprint: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onReviewed: PropTypes.func.isRequired,
+  onViewInContext: PropTypes.func.isRequired
+};
+
+function StepRequest({
+  identifier,
+  preprint,
+  onViewInContext,
+  onCancel,
+  onRequested
+}) {
+  const [user] = useUser();
+  const [post, postData] = usePostAction();
+
+  return (
+    <div className="step-request">
+      <header>Request reviews</header>
+
+      <NewPreprintPreview preprint={preprint} />
+
+      <button
+        onClick={e => {
+          onCancel();
+        }}
+      >
+        Cancel
+      </button>
+      <button
+        onClick={e => {
+          onRequested(postData.body);
+        }}
+      >
+        Submit
+      </button>
+      <button
+        onClick={e => {
+          onViewInContext(identifier, preprint, 'request');
+        }}
+        disabled={!identifier || !preprint}
+      >
+        View In Context
+      </button>
+    </div>
+  );
+}
+StepRequest.propTypes = {
+  identifier: PropTypes.string.isRequired,
+  preprint: PropTypes.object.isRequired,
+  onCancel: PropTypes.func.isRequired,
   onRequested: PropTypes.func.isRequired,
   onViewInContext: PropTypes.func.isRequired
 };
