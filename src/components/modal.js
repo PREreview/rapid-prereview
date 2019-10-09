@@ -21,11 +21,7 @@ export default function Modal({
           <div className="modal__header-bar">
             {title ? <h3 className="modal__title">{title}</h3> : <span />}
             {showCloseButton && (
-              <IconButton
-                className="modal__close-button"
-                onClick={onClose}
-                aria
-              >
+              <IconButton className="modal__close-button" onClick={onClose}>
                 <VisuallyHidden>Close</VisuallyHidden>
                 <MdClose className="modal__close-button__icon" />
               </IconButton>
