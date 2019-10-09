@@ -4,10 +4,13 @@ import identifiersArxiv from 'identifiers-arxiv';
 import doiRegex from 'doi-regex';
 import { format } from 'date-fns';
 import Value from './value';
+import { getId, arrayify, unprefix } from '../utils/jsonld';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
 import RapidFormFragment from './rapid-form-fragment';
 import { useUser } from '../contexts/user-context';
-import { getId, arrayify } from '../utils/jsonld';
+import { getReviewAnswers } from '../utils/actions';
+import Controls from './controls';
+import Button from './button';
 
 export default function NewPreprint({
   onCancel,
@@ -32,7 +35,9 @@ export default function NewPreprint({
         />
       ) : step === 'NEW_REVIEW' ? (
         <StepReview
-          onCancel={onCancel}
+          onCancel={e => {
+            setStep('NEW_PREPRINT');
+          }}
           identifier={identifier}
           preprint={preprint}
           onReviewed={onReviewed}
@@ -40,7 +45,9 @@ export default function NewPreprint({
         />
       ) : (
         <StepRequest
-          onCancel={onCancel}
+          onCancel={e => {
+            setStep('NEW_PREPRINT');
+          }}
           identifier={identifier}
           preprint={preprint}
           onRequested={onRequested}
@@ -87,7 +94,7 @@ function StepPreprint({
   preprint,
   resolvePreprintStatus
 }) {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(unprefix(identifier));
 
   return (
     <div className="step-preprint">
@@ -137,31 +144,33 @@ function StepPreprint({
         </p>
       ) : null}
 
-      <button
-        onClick={e => {
-          setValue('');
-          onIdentifier('');
-          onCancel();
-        }}
-      >
-        Cancel
-      </button>
-      <button
-        onClick={e => {
-          onStep('NEW_REQUEST');
-        }}
-        disabled={!identifier || !preprint}
-      >
-        Request reviews
-      </button>
-      <button
-        onClick={e => {
-          onStep('NEW_REVIEW');
-        }}
-        disabled={!identifier || !preprint}
-      >
-        Add review
-      </button>
+      <Controls>
+        <Button
+          onClick={e => {
+            setValue('');
+            onIdentifier('');
+            onCancel();
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={e => {
+            onStep('NEW_REQUEST');
+          }}
+          disabled={!identifier || !preprint}
+        >
+          Request reviews
+        </Button>
+        <Button
+          onClick={e => {
+            onStep('NEW_REVIEW');
+          }}
+          disabled={!identifier || !preprint}
+        >
+          Add review
+        </Button>
+      </Controls>
     </div>
   );
 }
@@ -205,35 +214,45 @@ function StepReview({
           }}
         />
 
-        <button
-          onClick={e => {
-            onCancel();
-          }}
-          disabled={postData.isActive}
-        >
-          Cancel
-        </button>
-        <button
-          onClick={e => {
-            post(
-              answerMap, // TODO
-              body => {
-                onReviewed(body);
-              }
-            );
-          }}
-          disabled={postData.isActive}
-        >
-          Submit
-        </button>
-        <button
-          onClick={e => {
-            onViewInContext(identifier, preprint, 'review');
-          }}
-          disabled={postData.isActive}
-        >
-          View In Context
-        </button>
+        <Controls>
+          <Button
+            onClick={e => {
+              onCancel();
+            }}
+            disabled={postData.isActive}
+          >
+            Go Back
+          </Button>
+          <Button
+            onClick={e => {
+              post(
+                {
+                  '@type': 'RapidPREreviewAction',
+                  agent: getId(arrayify(user.hasRole)[0]),
+                  object: identifier,
+                  resultReview: {
+                    '@type': 'RapidPREreviewAction',
+                    reviewAnswer: getReviewAnswers(answerMap)
+                  }
+                },
+                body => {
+                  onReviewed(body);
+                }
+              );
+            }}
+            disabled={postData.isActive}
+          >
+            Submit
+          </Button>
+          <Button
+            onClick={e => {
+              onViewInContext(identifier, preprint, 'review');
+            }}
+            disabled={postData.isActive}
+          >
+            View In Context
+          </Button>
+        </Controls>
       </form>
     </div>
   );
@@ -261,30 +280,32 @@ function StepRequest({
 
       <NewPreprintPreview preprint={preprint} />
 
-      <button
-        onClick={e => {
-          onCancel();
-        }}
-        disabled={postData.isActive}
-      >
-        Cancel
-      </button>
-      <button
-        onClick={e => {
-          onRequested(postData.body);
-        }}
-        disabled={postData.isActive}
-      >
-        Submit
-      </button>
-      <button
-        onClick={e => {
-          onViewInContext(identifier, preprint, 'request');
-        }}
-        disabled={postData.isActive}
-      >
-        View In Context
-      </button>
+      <Controls>
+        <Button
+          onClick={e => {
+            onCancel();
+          }}
+          disabled={postData.isActive}
+        >
+          Go Back
+        </Button>
+        <Button
+          onClick={e => {
+            onRequested(postData.body);
+          }}
+          disabled={postData.isActive}
+        >
+          Submit
+        </Button>
+        <Button
+          onClick={e => {
+            onViewInContext(identifier, preprint, 'request');
+          }}
+          disabled={postData.isActive}
+        >
+          View In Context
+        </Button>
+      </Controls>
     </div>
   );
 }

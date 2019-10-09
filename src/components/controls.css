@@ -1,0 +1,7 @@
+.controls__body {
+  display: flex;
+}
+
+.controls__buttons {
+  margin-left: auto;
+}
