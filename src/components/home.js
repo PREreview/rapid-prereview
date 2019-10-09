@@ -114,6 +114,7 @@ export default function Home() {
 
           {isLoginModalOpen && (
             <Modal
+              showCloseButton={true}
               onClose={() => {
                 setIsLoginModalOpen(false);
               }}
