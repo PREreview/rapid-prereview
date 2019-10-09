@@ -1,0 +1,15 @@
+.new-preprint {
+  font: var(--ui-basic-font);
+}
+
+.step-preprint {
+  & .step-preprint__button-bar {
+    padding-top: var(--sgrd);
+    display: flex;
+    justify-content: flex-end;
+
+    & .button {
+      margin-left: var(--sgrd);
+    }
+  }
+}

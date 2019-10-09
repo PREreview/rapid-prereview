@@ -74,7 +74,13 @@ export default function Home() {
           </div>
 
           <Route path="/new" exact={true}>
-            <Modal>
+            <Modal
+              showCloseButton={true}
+              title="Add Preprint Review or Request for Review"
+              onClose={() => {
+                history.push('/');
+              }}
+            >
               <NewPreprint
                 onCancel={() => {
                   history.push('/');

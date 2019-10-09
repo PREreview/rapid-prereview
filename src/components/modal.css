@@ -1,3 +1,21 @@
 [data-reach-dialog-overlay] {
   z-index: 100000;
 }
+
+.modal {
+  & .modal__header-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--mgrd) var(--sgrd) var(--mgrd) var(--mgrd);
+    align-items: baseline;
+  }
+
+  & .modal__title {
+    font: var(--ui-header-1-font);
+    margin: 0;
+  }
+
+  & .modal__content {
+    padding: 0 var(--mgrd) var(--mgrd);
+  }
+}

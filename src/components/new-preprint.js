@@ -8,6 +8,7 @@ import { usePostAction, usePreprint } from '../hooks/api-hooks';
 import RapidFormFragment from './rapid-form-fragment';
 import { useUser } from '../contexts/user-context';
 import { getId, arrayify } from '../utils/jsonld';
+import Button from './button';
 
 export default function NewPreprint({
   onCancel,
@@ -137,31 +138,33 @@ function StepPreprint({
         </p>
       ) : null}
 
-      <button
-        onClick={e => {
-          setValue('');
-          onIdentifier('');
-          onCancel();
-        }}
-      >
-        Cancel
-      </button>
-      <button
-        onClick={e => {
-          onStep('NEW_REQUEST');
-        }}
-        disabled={!identifier || !preprint}
-      >
-        Request reviews
-      </button>
-      <button
-        onClick={e => {
-          onStep('NEW_REVIEW');
-        }}
-        disabled={!identifier || !preprint}
-      >
-        Add review
-      </button>
+      <div className="step-preprint__button-bar">
+        <Button
+          onClick={e => {
+            setValue('');
+            onIdentifier('');
+            onCancel();
+          }}
+        >
+          Cancel
+        </Button>
+        <Button
+          onClick={e => {
+            onStep('NEW_REQUEST');
+          }}
+          disabled={!identifier || !preprint}
+        >
+          Request reviews
+        </Button>
+        <Button
+          onClick={e => {
+            onStep('NEW_REVIEW');
+          }}
+          disabled={!identifier || !preprint}
+        >
+          Add review
+        </Button>
+      </div>
     </div>
   );
 }

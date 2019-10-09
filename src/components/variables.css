@@ -68,12 +68,12 @@
 
   --ui-header-1-font-size: 20px;
   --ui-header-1-font-leading: 1.3em;
-  --ui-header-1-font: 400 var(--ui-header-1-font-size) /
+  --ui-header-1-font: 600 var(--ui-header-1-font-size) /
     var(--ui-header-1-font-leading) var(--ui-font-family);
 
   --ui-header-2-font-size: 16px;
   --ui-header-2-font-leading: 1.3em;
-  --ui-header-2-font: 400 var(--ui-header-2-font-size) /
+  --ui-header-2-font: 600 var(--ui-header-2-font-size) /
     var(--ui-header-2-font-leading) var(--ui-font-family);
 
   --ui-score-badge-font: 600 16px / 16px var(--ui-font-family);

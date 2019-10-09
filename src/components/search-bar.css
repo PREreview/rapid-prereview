@@ -15,7 +15,6 @@
   box-sizing: border-box;
 
   @media (--short-screen) {
-    outline: 1px solid red;
     position: relative;
     z-index: 999;
     box-shadow: none;
