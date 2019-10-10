@@ -7,11 +7,7 @@ export default function LeftSidePanel({ visible, children }) {
         visible ? 'left-side-panel--visible' : 'left-side-panel--hidden'
       }`}
     >
-      <div className="left-side-panel__content">
-        <h2>left side panel</h2>
-
-        {children}
-      </div>
+      <div className="left-side-panel__content">{children}</div>
     </div>
   );
 }

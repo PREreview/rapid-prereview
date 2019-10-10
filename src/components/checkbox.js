@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import VisuallyHidden from '@reach/visually-hidden';
 import noop from 'lodash/noop';
 import { MdCheckBoxOutlineBlank, MdCheckBox } from 'react-icons/md';
@@ -56,8 +57,18 @@ export default function Checkbox({
             <MdCheckBoxOutlineBlank className="checkbox__icon" />
           )}
         </div>
-        <span>{label}</span>
+        <span className="checkbox__label">{label}</span>
       </label>
     </div>
   );
 }
+
+Checkbox.propTypes = {
+  inputId: PropTypes.string,
+  label: PropTypes.any,
+  onChange: PropTypes.func,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
+  className: PropTypes.string,
+  disabled: PropTypes.bool
+};

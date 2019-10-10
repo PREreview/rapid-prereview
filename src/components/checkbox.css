@@ -38,4 +38,8 @@
       outline: 1px solid green;
     }
   }
+
+  & .checkbox__label {
+    display: contents;
+  }
 }
