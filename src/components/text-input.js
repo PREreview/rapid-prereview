@@ -16,7 +16,7 @@ export default function TextInput({
    * see: https://www.smashingmagazine.com/2018/06/placeholder-attribute/
    */
 
-  const [empty, setEmpty] = useState(true);
+  const [empty, setEmpty] = useState();
 
   return (
     <div

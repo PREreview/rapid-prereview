@@ -1,5 +1,5 @@
 .facets {
-  padding: 0 var(--sgrd);
+  padding: 0 var(--mgrd) 0 var(--sgrd);
   width: 100%;
   max-width: calc(var(--left-panel-min-width));
   box-sizing: border-box;
@@ -18,6 +18,7 @@
     margin: var(--sgrd) 0;
     border-bottom: 1px solid var(--ruling-color--light);
     padding-bottom: var(--xxsgrd);
+    letter-spacing: 0.05em;
   }
 
   & .facets__list-item {
