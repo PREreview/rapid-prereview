@@ -60,6 +60,7 @@ export default function Shell({ children }) {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(rafIdRef.current);
+      needForRafRef.current = true;
     };
   }, [isDown]);
 
