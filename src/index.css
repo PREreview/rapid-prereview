@@ -5,21 +5,23 @@
 
 @import './components/app.css';
 @import './components/button.css';
+@import './components/checkbox.css';
+@import './components/controls.css';
 @import './components/count-badge.css';
 @import './components/extension-fallback.css';
 @import './components/header-bar.css';
 @import './components/home.css';
 @import './components/icon-button.css';
 @import './components/left-side-panel.css';
+@import './components/modal.css';
 @import './components/new-preprint.css';
 @import './components/preprint-card.css';
 @import './components/rapid-pre-review-logo.css';
 @import './components/search-bar.css';
 @import './components/score-badge.css';
-@import './components/tag-pill.css';
-@import './components/modal.css';
-@import './components/controls.css';
 @import './components/sort-options.css';
+@import './components/tag-pill.css';
+@import './components/text-input.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';

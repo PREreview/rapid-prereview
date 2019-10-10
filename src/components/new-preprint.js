@@ -11,6 +11,7 @@ import { useUser } from '../contexts/user-context';
 import { getReviewAnswers, checkIfAllAnswered } from '../utils/actions';
 import Controls from './controls';
 import Button from './button';
+import TextInput from './text-input';
 
 export default function NewPreprint({
   onCancel,
@@ -98,38 +99,82 @@ function StepPreprint({
 
   return (
     <div className="step-preprint">
-      <label htmlFor="step-preprint-input">
-        Enter a <abbr title="Digital Object Identifier">DOI</abbr> or an arXiv
-        ID
-      </label>
-      <input
-        id="step-preprint-input"
-        type="text"
-        autoComplete="off"
-        onChange={e => {
-          const value = e.target.value;
-          const [arxivId] = identifiersArxiv.extract(value);
-          let nextIdentifier;
-          if (arxivId) {
-            nextIdentifier = `arXiv:${arxivId}`;
-          } else {
-            const doiMatch = value.match(doiRegex());
-            const doi = doiMatch && doiMatch[0];
-            if (doi) {
-              nextIdentifier = `doi:${doi}`;
+      <div className="step-preprint__input-row">
+        <TextInput
+          inputId="step-preprint-input-new"
+          label={
+            <span>
+              {' '}
+              Enter a <abbr title="Digital Object Identifier">DOI</abbr> or an
+              arXiv ID
+            </span>
+          }
+          minimal={true}
+          autoComplete="off"
+          placeholder=""
+          onChange={e => {
+            const value = e.target.value;
+            const [arxivId] = identifiersArxiv.extract(value);
+            let nextIdentifier;
+            if (arxivId) {
+              nextIdentifier = `arXiv:${arxivId}`;
             } else {
-              nextIdentifier = '';
+              const doiMatch = value.match(doiRegex());
+              const doi = doiMatch && doiMatch[0];
+              if (doi) {
+                nextIdentifier = `doi:${doi}`;
+              } else {
+                nextIdentifier = '';
+              }
             }
-          }
 
-          if (nextIdentifier !== identifier) {
-            onIdentifier(nextIdentifier);
-          }
+            if (nextIdentifier !== identifier) {
+              onIdentifier(nextIdentifier);
+            }
 
-          setValue(value);
-        }}
-        value={value}
-      />
+            setValue(value);
+          }}
+          value={value}
+        />
+        {/* <label
+          htmlFor="step-preprint-input"
+          className="step-preprint__input-label step-preprint__input-label--large"
+        >
+          Enter a <abbr title="Digital Object Identifier">DOI</abbr> or an arXiv
+          ID
+        </label>
+
+        <input
+          id="step-preprint-input"
+          className="step-preprint__text-input"
+          type="text"
+          autoComplete="off"
+          placeholder=""
+          onChange={e => {
+            const value = e.target.value;
+            const [arxivId] = identifiersArxiv.extract(value);
+            let nextIdentifier;
+            if (arxivId) {
+              nextIdentifier = `arXiv:${arxivId}`;
+            } else {
+              const doiMatch = value.match(doiRegex());
+              const doi = doiMatch && doiMatch[0];
+              if (doi) {
+                nextIdentifier = `doi:${doi}`;
+              } else {
+                nextIdentifier = '';
+              }
+            }
+
+            if (nextIdentifier !== identifier) {
+              onIdentifier(nextIdentifier);
+            }
+
+            setValue(value);
+          }}
+          value={value}
+        /> */}
+      </div>
 
       {preprint ? (
         <NewPreprintPreview preprint={preprint} />

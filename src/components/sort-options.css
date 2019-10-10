@@ -1,6 +1,12 @@
 .sort-options {
   display: flex;
   align-items: center;
+  padding: var(--xsgrd) 0;
+  margin-bottom: var(--mgrd);
+  color: var(--ui-basic-font-color--light);
+  border-bottom: 1px solid var(--ruling-color--light);
+  text-transform: uppercase;
+  font: var(--ui-basic-font--small);
 }
 
 .sort-options__item {
@@ -20,6 +26,9 @@
   }
 }
 
+.sort-options__icon {
+  margin-left: var(--xxsgrd);
+}
 .sort-options__icon--hidden {
   visibility: hidden;
 }

@@ -9,7 +9,11 @@
     justify-content: flex-end;
 
     & .button {
-      margin-left: var(--sgrd);
+      margin-left: var(--mgrd);
     }
+  }
+
+  & .step-preprint__input-row {
+    margin-bottom: var(--mgrd);
   }
 }

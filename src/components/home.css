@@ -1,7 +1,9 @@
 .home {
   color: var(--ui-basic-font-color);
   font: var(--ui-basic-font);
-
+  &:any-link {
+    color: var(--link-color);
+  }
   & .home__main {
     display: flex;
     width: 100vw;
@@ -26,10 +28,13 @@
   & .home__content-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--mgrd);
   }
 
   & .home__content-title {
     font: var(--ui-header-1-font);
+    margin: 0;
   }
 
   & .home__preprint-list {
@@ -40,6 +45,20 @@
     & .home__preprint-list__item {
       margin: 0;
       padding: 0;
+    }
+  }
+}
+
+.home-login-modal {
+  & .home-login-modal__title {
+    display: flex;
+    align-items: center;
+
+    & .home-login-modal__title-icon {
+      width: var(--mgrd);
+      height: var(--mgrd);
+      margin-right: var(--xsgrd);
+      color: var(--ui-basic-font-color--light);
     }
   }
 }

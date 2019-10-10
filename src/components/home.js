@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Route, useHistory, useLocation, Link } from 'react-router-dom';
 import { useUser } from '../contexts/user-context';
 import { unprefix } from '../utils/jsonld';
+import { MdErrorOutline } from 'react-icons/md';
 import HeaderBar from './header-bar';
 import SearchBar from './search-bar';
 import LeftSidePanel from './left-side-panel';
@@ -115,17 +116,22 @@ export default function Home() {
 
           {isLoginModalOpen && (
             <Modal
+              className="home-login-modal"
               showCloseButton={true}
               onClose={() => {
                 setIsLoginModalOpen(false);
               }}
+              title={
+                <span className="home-login-modal__title">
+                  <MdErrorOutline className="home-login-modal__title-icon" />
+                  Log in required
+                </span>
+              }
             >
-              <header>Log in required</header>
-
               <p>You need to be logged in to perform this action</p>
 
               <p>
-                <Link to="login">log in with your ORCID</Link>
+                <Link to="login">Log in with your ORCID</Link>
               </p>
             </Modal>
           )}

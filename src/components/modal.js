@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
+import classNames from 'classnames';
 import { DialogOverlay, DialogContent } from '@reach/dialog';
 import VisuallyHidden from '@reach/visually-hidden';
 import { MdClose } from 'react-icons/md';
@@ -10,14 +11,19 @@ export default function Modal({
   onClose = noop,
   title,
   showCloseButton = false,
-  children
+  children,
+  className
 }) {
   return (
     <DialogOverlay onDismiss={onClose}>
       <DialogContent
-        style={{ padding: '0', boxShadow: '0 3px 10px rgba(0,0,0,.2)' }}
+        className="modal-container"
+        style={{
+          padding: '0',
+          boxShadow: '0 3px 10px rgba(0,0,0,.2)'
+        }}
       >
-        <div className="modal">
+        <div className={classNames('modal', className)}>
           <div className="modal__header-bar">
             {title ? <h3 className="modal__title">{title}</h3> : <span />}
             {showCloseButton && (
@@ -38,5 +44,6 @@ Modal.propTypes = {
   onClose: PropTypes.func,
   children: PropTypes.any,
   showCloseButton: PropTypes.bool,
-  title: PropTypes.string
+  title: PropTypes.any,
+  className: PropTypes.string
 };

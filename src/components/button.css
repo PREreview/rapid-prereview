@@ -29,7 +29,8 @@
     }
   }
 
-  &:focus {
+  &:focus,
+  &:active {
     & .button__contents {
       background-color: var(--button-background-focus-color);
       color: var(--button-foreground-focus-color);
@@ -40,6 +41,9 @@
     }
   }
 
+  &:active {
+  }
+
   & .button__contents {
     box-sizing: border-box;
     display: flex;
@@ -48,7 +52,7 @@
     padding: var(--xxsgrd) var(--xsgrd);
     font: var(--ui-button-font);
     letter-spacing: 0.04em;
-    border-radius: var(--xxsgrd);
+    border-radius: 2px;
     height: var(--mgrd);
     background-color: var(--button-background-color);
     color: var(--button-foreground-color);

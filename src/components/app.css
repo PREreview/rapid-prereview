@@ -3,4 +3,12 @@ body {
   margin: 0;
   border: 0;
   padding: 0;
+  color: var(--ui-basic-font-color);
+  font: var(--ui-basic-font);
+  & :any-link {
+    color: var(--link-color);
+    &:hover {
+      color: var(--prereview-black);
+    }
+  }
 }

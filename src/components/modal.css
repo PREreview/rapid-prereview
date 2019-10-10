@@ -2,20 +2,26 @@
   z-index: 100000;
 }
 
+.modal-container {
+  max-width: 800px;
+  min-width: 400px;
+}
 .modal {
+  font: var(--ui-basic-font--large);
   & .modal__header-bar {
     display: flex;
     justify-content: space-between;
-    padding: var(--mgrd) var(--sgrd) var(--mgrd) var(--mgrd);
+    padding: var(--mgrd) var(--mgrd) var(--mgrd) var(--lgrd);
     align-items: baseline;
   }
 
   & .modal__title {
     font: var(--ui-header-1-font);
     margin: 0;
+    display: block;
   }
 
   & .modal__content {
-    padding: 0 var(--mgrd) var(--mgrd);
+    padding: 0 var(--lgrd) var(--lgrd);
   }
 }

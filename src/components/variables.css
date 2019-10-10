@@ -43,6 +43,9 @@
   --card-color--tinted: rgb(245, 245, 245);
   --focus-color: var(--prereview-blue);
 
+  --link-color: var(--prereview-blue);
+  --link-color--hover: var(--prereview-light-blue);
+
   /* standard dimensions */
   --header-bar-height: 72px;
   --search-bar-height: 72px;
@@ -61,6 +64,11 @@
   --ui-basic-font--small: 400 var(--ui-basic-font-size--small) /
     var(--ui-basic-font-leading--small) var(--ui-font-family);
 
+  --ui-basic-font-size--large: 16px;
+  --ui-basic-font-leading--large: 20px;
+  --ui-basic-font--large: 400 var(--ui-basic-font-size--large) /
+    var(--ui-basic-font-leading--large) var(--ui-font-family);
+
   --ui-header-menu-font-size: 16px;
   --ui-header-menu-font-leading: 20px;
   --ui-header-menu-font: 400 var(--ui-header-menu-font-size) /
@@ -68,12 +76,12 @@
 
   --ui-header-1-font-size: 20px;
   --ui-header-1-font-leading: 1.3em;
-  --ui-header-1-font: 600 var(--ui-header-1-font-size) /
+  --ui-header-1-font: 500 var(--ui-header-1-font-size) /
     var(--ui-header-1-font-leading) var(--ui-font-family);
 
   --ui-header-2-font-size: 16px;
   --ui-header-2-font-leading: 1.3em;
-  --ui-header-2-font: 600 var(--ui-header-2-font-size) /
+  --ui-header-2-font: 500 var(--ui-header-2-font-size) /
     var(--ui-header-2-font-leading) var(--ui-font-family);
 
   --ui-score-badge-font: 600 16px / 16px var(--ui-font-family);
