@@ -30,9 +30,11 @@ export const id2paths = filenames.reduce((map, filename) => {
     .replace(/_/g, '/');
 
   if (!(id in map)) {
-    map[id] = [];
+    map[id] = {};
   }
-  map[id].push(path.resolve(__dirname, '../fixtures/', filename));
+
+  const format = path.extname(filename).substring(1);
+  map[id][format] = path.resolve(__dirname, '../fixtures/', filename);
 
   return map;
 }, {});
@@ -47,23 +49,30 @@ export function createPreprintServer(config) {
   const app = express();
 
   Object.keys(id2paths).forEach(id => {
-    const filepaths = id2paths[id];
-    const basename = path.basename(filepaths[0]);
-    const [vendor] = basename.split('-');
+    const formats = id2paths[id];
+    Object.keys(formats).forEach(format => {
+      const filepath = formats[format];
+      const basename = path.basename(filepath);
+      const [vendor] = basename.split('-');
 
-    app.get(`/${vendor}/${unprefix(id)}`, (req, res, next) => {
-      const filepathHtml = filepaths.find(filepath =>
-        filepath.endsWith('.html')
-      );
-      const filepathOther = filepaths.find(
-        filepath => !filepath.endsWith('.html')
-      );
-
-      if (req.accepts('html')) {
-        res.sendFile(filepathHtml);
+      let expressPath;
+      if (format === 'html') {
+        if (vendor === 'arxiv') {
+          expressPath = `/arxivhtml/${unprefix(id)}`;
+        } else {
+          expressPath = `/doi/${unprefix(id)}`;
+        }
       } else {
-        res.sendFile(filepathOther);
+        expressPath = `/${vendor}/${unprefix(id)}`;
       }
+
+      app.get(expressPath, (req, res, next) => {
+        if (req.accepts(format)) {
+          res.sendFile(filepath);
+        } else {
+          res.status(406).end();
+        }
+      });
     });
   });
 
@@ -74,6 +83,8 @@ export function createPreprintServer(config) {
 
 export function createConfig(port) {
   return {
+    baseUrlDoi: `http://127.0.0.1:${port}/doi/`,
+    baseUrlArxivHtml: `http://127.0.0.1:${port}/arxivhtml/`,
     baseUrlArxiv: `http://127.0.0.1:${port}/arxiv/`,
     baseUrlCrossref: `http://127.0.0.1:${port}/crossref/`,
     baseUrlOpenAire: `http://127.0.0.1:${port}/openaire/`

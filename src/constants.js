@@ -104,7 +104,9 @@ export const INDEXED_PREPRINT_PROPS = [
   '@type',
   'doi',
   'arXivId',
+  'url',
   'name',
   'preprintServer',
-  'datePosted'
+  'datePosted',
+  'encoding'
 ];
