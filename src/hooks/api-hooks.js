@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import noop from 'lodash/noop';
 import { createError } from '../utils/errors';
-import { unprefix, getId } from '../utils/jsonld';
+import { unprefix, getId, arrayify } from '../utils/jsonld';
 import { createPreprintId } from '../utils/ids';
 
 /**
@@ -158,13 +158,13 @@ export function usePreprint(identifier, prefetchedPreprint) {
  * Get all the `RapidPREreviewAction` and `RequestForRapidPREreviewAction`
  * associated with a preprint
  */
-export function useActions(identifier) {
+export function usePreprintActions(identifier) {
   const [progress, setProgress] = useState({
     isActive: false,
     error: null
   });
 
-  const [actions, setActions] = useState(null);
+  const [actions, setActions] = useState([]);
 
   useEffect(() => {
     if (identifier) {
@@ -172,7 +172,7 @@ export function useActions(identifier) {
         isActive: true,
         error: null
       });
-      setActions(null);
+      setActions([]);
 
       const controller = new AbortController();
 
@@ -194,19 +194,19 @@ export function useActions(identifier) {
           }
         })
         .then(data => {
-          setActions(data);
+          setActions(arrayify(data.potentialAction));
           setProgress({ isActive: false, error: null });
         })
         .catch(err => {
           if (err.name !== 'AbortError') {
             setProgress({ isActive: false, error: err });
           }
-          setActions(null);
+          setActions([]);
         });
 
       return () => {
         setProgress({ isActive: false, error: null });
-        setActions(null);
+        setActions([]);
         controller.abort();
       };
     } else {
@@ -214,7 +214,7 @@ export function useActions(identifier) {
         isActive: false,
         error: null
       });
-      setActions(null);
+      setActions([]);
     }
   }, [identifier]);
 

@@ -71,13 +71,9 @@ export default function Shell({ children }) {
   return (
     <Fragment>
       <div className="shell" style={{ maxHeight: `${maxHeight}vh` }}>
-        <div className="shell__top">
-          <div className="shell__controls">
-            <IconButton onMouseDown={handleMouseDown}>
-              <MdDragHandle />
-            </IconButton>
-          </div>
-        </div>
+        <IconButton className="shell__drag" onMouseDown={handleMouseDown}>
+          <MdDragHandle />
+        </IconButton>
 
         {children}
       </div>
