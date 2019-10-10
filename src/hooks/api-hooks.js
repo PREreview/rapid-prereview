@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import noop from 'lodash/noop';
 import { createError } from '../utils/errors';
 import { unprefix, getId } from '../utils/jsonld';
+import { createPreprintId } from '../utils/ids';
 
 /**
  * Use to POST an Action to the API and keep track of the request progress /
@@ -151,4 +152,71 @@ export function usePreprint(identifier, prefetchedPreprint) {
   }, [identifier, prefetchedPreprint]);
 
   return [preprint, progress];
+}
+
+/**
+ * Get all the `RapidPREreviewAction` and `RequestForRapidPREreviewAction`
+ * associated with a preprint
+ */
+export function useActions(identifier) {
+  const [progress, setProgress] = useState({
+    isActive: false,
+    error: null
+  });
+
+  const [actions, setActions] = useState(null);
+
+  useEffect(() => {
+    if (identifier) {
+      setProgress({
+        isActive: true,
+        error: null
+      });
+      setActions(null);
+
+      const controller = new AbortController();
+
+      fetch(`/api/preprint/${unprefix(createPreprintId(identifier))}`, {
+        signal: controller.signal
+      })
+        .then(resp => {
+          if (resp.ok) {
+            return resp.json();
+          } else {
+            return resp.json().then(
+              body => {
+                throw createError(resp.status, body.description || body.name);
+              },
+              err => {
+                throw createError(resp.status, 'something went wrong');
+              }
+            );
+          }
+        })
+        .then(data => {
+          setActions(data);
+          setProgress({ isActive: false, error: null });
+        })
+        .catch(err => {
+          if (err.name !== 'AbortError') {
+            setProgress({ isActive: false, error: err });
+          }
+          setActions(null);
+        });
+
+      return () => {
+        setProgress({ isActive: false, error: null });
+        setActions(null);
+        controller.abort();
+      };
+    } else {
+      setProgress({
+        isActive: false,
+        error: null
+      });
+      setActions(null);
+    }
+  }, [identifier]);
+
+  return [actions, progress];
 }

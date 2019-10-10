@@ -19,7 +19,7 @@ export default function NewPreprint({
   onRequested,
   onViewInContext
 }) {
-  const location = useLocation(); // location.state can be {identifier, preprint, tab, answerMap} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
+  const location = useLocation(); // location.state can be {preprint, tab} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
 
   const [identifier, setIdentifier] = useState(
     (location.state &&
@@ -43,8 +43,6 @@ export default function NewPreprint({
       ? 'NEW_REQUEST'
       : 'NEW_PREPRINT'
   );
-
-  console.log(location.state, step, preprint, identifier);
 
   return (
     <div className="new-preprint">
@@ -216,7 +214,7 @@ function StepReview({
 }) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
-  const [answerMap, setAnswerMap] = useState({});
+  const [answerMap, setAnswerMap] = useState({}); // TODO read from local storage ?
 
   const canSubmit = checkIfAllAnswered(answerMap);
 

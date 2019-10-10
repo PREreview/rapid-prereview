@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import omit from 'lodash/omit';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { MdArrowUpward, MdCode } from 'react-icons/md';
@@ -28,6 +29,8 @@ export default function PreprintCard({ preprint, onNewRequest, onNewReview }) {
   const requests = actions.filter(
     action => action['@type'] === 'RequestForRapidPREreviewAction'
   );
+
+  let hasReviewed, hasRequested;
 
   const { hasData, hasCode, subjects } = getTags(actions);
 
@@ -59,7 +62,13 @@ export default function PreprintCard({ preprint, onNewRequest, onNewReview }) {
       <div className="preprint-card__contents">
         <div className="preprint-card__header">
           <Link
-            to={{ pathname: `/${doi || arXivId}`, state: { preprint } }}
+            to={{
+              pathname: `/${doi || arXivId}`,
+              state: {
+                preprint: omit(preprint, ['potentialAction']),
+                tab: 'read'
+              }
+            }}
             className="preprint-card__title"
           >
             <Value tagName="h2" className="preprint-card__title-text">

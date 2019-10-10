@@ -5,7 +5,7 @@ import { getPdfUrl, getCanonicalUrl } from '../utils/preprints';
 import Shell from './shell';
 
 export default function ExtensionFallback() {
-  const location = useLocation(); // location.state can be {identifier, preprint, tab, answerMap} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
+  const location = useLocation(); // location.state can be {preprint, tab} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
   const { identifierPart1, identifierPart2 } = useParams();
   const identifier = [identifierPart1, identifierPart2]
     .filter(Boolean)
