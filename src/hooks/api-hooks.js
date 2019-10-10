@@ -32,7 +32,7 @@ export function usePostAction() {
       setState({
         isActive: true,
         error: null,
-        body: null
+        body: action
       });
     }
 
@@ -73,7 +73,7 @@ export function usePostAction() {
       })
       .catch(error => {
         if (error.name !== 'AbortError' && isMounted.current) {
-          setState({ isActive: false, error, body: null });
+          setState({ isActive: false, error, body: action });
           onError(error);
         }
       });

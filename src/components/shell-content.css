@@ -27,5 +27,5 @@
 }
 
 .shell-content__body {
-  padding-top: 52px;
+  padding: 52px var(--sgrd) var(--sgrd) var(--sgrd);
 }

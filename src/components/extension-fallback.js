@@ -17,7 +17,7 @@ export default function ExtensionFallback() {
     location.state && location.state.preprint
   );
 
-  const pdfUrl = getPdfUrl(preprint);
+  const pdfUrl = null; // getPdfUrl(preprint);
   const canonicalUrl = getCanonicalUrl(preprint);
 
   return (
@@ -34,7 +34,14 @@ export default function ExtensionFallback() {
         </object>
       )}
 
-      <Shell>{!!preprint && <ShellContent preprint={preprint} />}</Shell>
+      <Shell>
+        {!!preprint && (
+          <ShellContent
+            preprint={preprint}
+            defaultTab={location.state && location.state.tab}
+          />
+        )}
+      </Shell>
     </div>
   );
 }
