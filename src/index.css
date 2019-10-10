@@ -20,6 +20,7 @@
 @import './components/modal.css';
 @import './components/controls.css';
 @import './components/sort-options.css';
+@import './components/shell.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';
