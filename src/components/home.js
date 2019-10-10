@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, useHistory, useLocation, Link } from 'react-router-dom';
+import omit from 'lodash/omit';
 import { useUser } from '../contexts/user-context';
 import { unprefix } from '../utils/jsonld';
 import { MdErrorOutline } from 'react-icons/md';
@@ -91,6 +92,7 @@ export default function Home() {
             >
               <NewPreprint
                 onCancel={() => {
+                  // TODO clear local storage entry ?
                   history.push('/');
                 }}
                 onReviewed={action => {
@@ -101,13 +103,10 @@ export default function Home() {
                   console.log(action);
                   history.push('/');
                 }}
-                onViewInContext={({ identifier, preprint, tab, answerMap }) => {
-                  console.log({ identifier, preprint, tab, answerMap });
+                onViewInContext={({ identifier, preprint, tab }) => {
                   history.push(`/${unprefix(identifier)}`, {
-                    identifier,
                     preprint,
-                    tab,
-                    answerMap
+                    tab
                   });
                 }}
               />
@@ -146,7 +145,29 @@ export default function Home() {
           <ul className="home__preprint-list">
             {results.rows.map(row => (
               <li key={row.id} className="home__preprint-list__item">
-                <PreprintCard preprint={row.doc} />
+                <PreprintCard
+                  preprint={row.doc}
+                  onNewRequest={preprint => {
+                    if (user) {
+                      history.push('/new', {
+                        preprint: omit(preprint, ['potentialAction']),
+                        tab: 'request'
+                      });
+                    } else {
+                      setIsLoginModalOpen(true);
+                    }
+                  }}
+                  onNewReview={preprint => {
+                    if (user) {
+                      history.push('/new', {
+                        preprint: omit(preprint, ['potentialAction']),
+                        tab: 'review'
+                      });
+                    } else {
+                      setIsLoginModalOpen(true);
+                    }
+                  }}
+                />
               </li>
             ))}
           </ul>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useLocation } from 'react-router-dom';
 import identifiersArxiv from 'identifiers-arxiv';
 import doiRegex from 'doi-regex';
 import { format } from 'date-fns';
@@ -19,9 +20,30 @@ export default function NewPreprint({
   onRequested,
   onViewInContext
 }) {
-  const [identifier, setIdentifier] = useState('');
-  const [preprint, resolvePreprintStatus] = usePreprint(identifier);
-  const [step, setStep] = useState('NEW_PREPRINT'); // 'NEW_REVIEW' | 'NEW_REQUEST'
+  const location = useLocation(); // location.state can be {preprint, tab} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
+
+  const [identifier, setIdentifier] = useState(
+    (location.state &&
+      location.state.preprint &&
+      location.state.preprint.doi) ||
+      (location.state &&
+        location.state.preprint &&
+        location.state.preprint.arXivId) ||
+      ''
+  );
+
+  const [preprint, resolvePreprintStatus] = usePreprint(
+    identifier,
+    location.state && location.state.preprint
+  );
+
+  const [step, setStep] = useState(
+    location.state && location.state.tab === 'review'
+      ? 'NEW_REVIEW'
+      : location.state && location.state.tab === 'request'
+      ? 'NEW_REQUEST'
+      : 'NEW_PREPRINT'
+  );
 
   return (
     <div className="new-preprint">
@@ -237,7 +259,7 @@ function StepReview({
 }) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
-  const [answerMap, setAnswerMap] = useState({});
+  const [answerMap, setAnswerMap] = useState({}); // TODO read from local storage ?
 
   const canSubmit = checkIfAllAnswered(answerMap);
 
