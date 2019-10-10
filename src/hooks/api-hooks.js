@@ -4,6 +4,9 @@ import { createError } from '../utils/errors';
 import { unprefix, getId, arrayify } from '../utils/jsonld';
 import { createPreprintId } from '../utils/ids';
 
+// TODO stores directory each store inherit from EventEmitter and store object in LRU
+// addListenner and removeListenner in useEffect
+
 /**
  * Use to POST an Action to the API and keep track of the request progress /
  * error

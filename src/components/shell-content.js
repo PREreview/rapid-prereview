@@ -9,6 +9,8 @@ import RapidFormFragment from './rapid-form-fragment';
 import { getReviewAnswers, checkIfAllAnswered } from '../utils/actions';
 import { getId, arrayify } from '../utils/jsonld';
 
+// TODO required login modal
+
 export default function ShellContent({ preprint, defaultTab = 'read' }) {
   const [actions, fetchActionsProgress] = usePreprintActions(
     preprint.doi || preprint.arXivId
