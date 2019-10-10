@@ -1,11 +1,9 @@
 import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { usePreprint } from '../hooks/api-hooks';
+import { getPdfUrl, getCanonicalUrl } from '../utils/preprints';
 
 export default function ExtensionFallback() {
-  const pdfUrl =
-    'https://www.biorxiv.org/content/biorxiv/early/2019/09/24/780577.full.pdf';
-
   const location = useLocation(); // location.state can be {identifier, preprint, tab, answerMap} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
   const { identifierPart1, identifierPart2 } = useParams();
   const identifier = [identifierPart1, identifierPart2]
@@ -17,14 +15,22 @@ export default function ExtensionFallback() {
     location.state && location.state.preprint
   );
 
+  const pdfUrl = getPdfUrl(preprint);
+  const canonicalUrl = getCanonicalUrl(preprint);
+
   return (
     <div>
-      <h1>Hello extension fallback</h1>
-
-      {/*
-      <object data={pdfUrl} type="application/pdf">
-        <a href={pdfUrl}>Download PDF</a>
-      </object>*/}
+      {pdfUrl && (
+        <object key={pdfUrl} data={pdfUrl} type="application/pdf">
+          {/* fallback text in case we can't load the PDF */}
+          Could not retrieve the PDF.
+          {!!canonicalUrl && (
+            <span>
+              You can visit {<a href={canonicalUrl}>{canonicalUrl}</a>} instead.
+            </span>
+          )}
+        </object>
+      )}
     </div>
   );
 }
