@@ -140,7 +140,23 @@ export default function Home() {
           <ul className="home__preprint-list">
             {results.rows.map(row => (
               <li key={row.id} className="home__preprint-list__item">
-                <PreprintCard preprint={row.doc} />
+                <PreprintCard
+                  preprint={row.doc}
+                  onNewRequest={preprint => {
+                    if (user) {
+                      history.push('/new', { preprint, tab: 'request' });
+                    } else {
+                      setIsLoginModalOpen(true);
+                    }
+                  }}
+                  onNewReview={preprint => {
+                    if (user) {
+                      history.push('/new', { preprint, tab: 'review' });
+                    } else {
+                      setIsLoginModalOpen(true);
+                    }
+                  }}
+                />
               </li>
             ))}
           </ul>

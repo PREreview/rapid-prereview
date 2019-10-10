@@ -2,9 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { MdArrowUpward, MdSearch, MdCode } from 'react-icons/md';
+import { MdArrowUpward, MdCode } from 'react-icons/md';
 import Value from './value';
-import { getId, unprefix } from '../utils/jsonld';
 import { getTags } from '../utils/stats';
 import CountBadge from './count-badge';
 import ScoreBadge from './score-badge';
@@ -12,7 +11,7 @@ import IconButton from './icon-button';
 import TagPill from './tag-pill';
 import AddPrereviewIcon from '../svgs/add_prereview_icon.svg';
 
-export default function PreprintCard({ preprint }) {
+export default function PreprintCard({ preprint, onNewRequest, onNewReview }) {
   const {
     name,
     preprintServer,
@@ -36,7 +35,11 @@ export default function PreprintCard({ preprint }) {
     <div className="preprint-card">
       <div className="preprint-card__score-panel">
         <div className="preprint-card__score-panel__top">
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              onNewRequest(preprint);
+            }}
+          >
             <MdArrowUpward className="preprint-card__up-request-icon" />
           </IconButton>
         </div>
@@ -44,14 +47,21 @@ export default function PreprintCard({ preprint }) {
           <ScoreBadge score={actions.length} />
         </div>
         <div className="preprint-card__score-panel__bottom">
-          <IconButton>
+          <IconButton
+            onClick={() => {
+              onNewReview(preprint);
+            }}
+          >
             <AddPrereviewIcon />
           </IconButton>
         </div>
       </div>
       <div className="preprint-card__contents">
         <div className="preprint-card__header">
-          <Link to={`/${doi || arXivId}`} className="preprint-card__title">
+          <Link
+            to={{ pathname: `/${doi || arXivId}`, state: { preprint } }}
+            className="preprint-card__title"
+          >
             <Value tagName="h2" className="preprint-card__title-text">
               {name}
             </Value>
@@ -109,11 +119,11 @@ export default function PreprintCard({ preprint }) {
         <div className="preprint-card__expansion-header">
           {/* the reviewers */}
           {/*reviews.length > 0 && (
-            <ul>
+              <ul>
               {reviews.map(action => (
-                <li key={getId(action)}>{unprefix(getId(action.agent))}</li>
+              <li key={getId(action)}>{unprefix(getId(action.agent))}</li>
               ))}
-            </ul>
+              </ul>
               )*/}
 
           <CountBadge
@@ -167,5 +177,7 @@ PreprintCard.propTypes = {
         })
       ])
     ).isRequired
-  })
+  }),
+  onNewRequest: PropTypes.func.isRequired,
+  onNewReview: PropTypes.func.isRequired
 };
