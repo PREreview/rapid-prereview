@@ -38,24 +38,36 @@ export function checkIfAllAnswered(answerMap = {}) {
   return QUESTIONS.every(({ identifier }) => answerMap[identifier]);
 }
 
-export function checkIfHasReviewed(user = {}, actions = []) {
-  return arrayify(user.hasRole).some(role => {
-    return arrayify(actions).some(action => {
-      return (
-        action['@type'] === 'RapidPREreviewAction' &&
-        getId(action.agent) === getId(role)
-      );
+export function checkIfHasReviewed(
+  user = {}, // can be a role (or list thereof) too
+  actions = []
+) {
+  return arrayify(user)
+    .concat(arrayify(user.hasRole))
+    .filter(role => getId(role))
+    .some(role => {
+      return arrayify(actions).some(action => {
+        return (
+          action['@type'] === 'RapidPREreviewAction' &&
+          getId(action.agent) === getId(role)
+        );
+      });
     });
-  });
 }
 
-export function checkIfHasRequested(user = {}, actions = []) {
-  return arrayify(user.hasRole).some(role => {
-    return arrayify(actions).some(action => {
-      return (
-        action['@type'] === 'RequestForRapidPREreviewAction' &&
-        getId(action.agent) === getId(role)
-      );
+export function checkIfHasRequested(
+  user = {}, // can be a role (or list thereof) too
+  actions = []
+) {
+  return arrayify(user)
+    .concat(arrayify(user.hasRole))
+    .filter(role => getId(role))
+    .some(role => {
+      return arrayify(actions).some(action => {
+        return (
+          action['@type'] === 'RequestForRapidPREreviewAction' &&
+          getId(action.agent) === getId(role)
+        );
+      });
     });
-  });
 }
