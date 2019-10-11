@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { MdArrowUpward, MdCode } from 'react-icons/md';
+import { MdArrowUpward, MdCode, MdChevronRight } from 'react-icons/md';
 import Value from './value';
 import { getTags } from '../utils/stats';
 import CountBadge from './count-badge';
@@ -82,8 +82,13 @@ export default function PreprintCard({ preprint, onNewRequest, onNewReview }) {
         </div>
         <div className="preprint-card__info-row">
           <div className="preprint-card__info-row__left">
-            <Value tagName="span">{preprintServer.name}</Value>
-            <Value tagName="span">{doi || arXivId}</Value>
+            <Value tagName="span" className="preprint-card__server-name">
+              {preprintServer.name}
+            </Value>
+            <MdChevronRight className="preprint-card__server-arrow-icon" />
+            <Value tagName="span" className="preprint-card__server-id">
+              {doi || arXivId}
+            </Value>
           </div>
 
           <div className="preprint-card__info-row__right">

@@ -99,8 +99,27 @@
     padding: 0 var(--sgrd) var(--xsgrd);
     display: flex;
     justify-content: space-between;
+
+    & .preprint-card__info-row__left {
+      display: flex;
+    }
   }
 
+  & .preprint-card__server-name {
+    color: var(--ui-basic-font-color--light);
+    vertical-align: baseline;
+  }
+  & .preprint-card__server-arrow-icon {
+    color: var(--ui-basic-font-color--light);
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: baseline;
+    display: inline-block;
+  }
+  & .preprint-card__server-id {
+    color: var(--ui-basic-font-color--light);
+    vertical-align: baseline;
+  }
   & .preprint-card__tag-list {
     list-style: none;
     padding: 0;
