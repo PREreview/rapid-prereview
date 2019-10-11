@@ -13,7 +13,7 @@
 }
 
 .shell__drag {
-  z-index: 100;
+  z-index: 1000001;
   position: fixed;
   left: 50vw;
 }

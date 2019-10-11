@@ -15,6 +15,8 @@ import {
 import { getId, arrayify } from '../utils/jsonld';
 import { createPreprintIdentifierCurie } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
+import { getYesNoStats } from '../utils/stats';
+import Barplot from './barplot';
 
 export default function ShellContent({ preprint, defaultTab = 'read' }) {
   const [user] = useUser();
@@ -133,7 +135,11 @@ ShellContent.propTypes = {
 };
 
 function ShellContentRead({ preprint, actions }) {
-  return <div>Read</div>;
+  return (
+    <div>
+      <Barplot stats={getYesNoStats(actions)} />
+    </div>
+  );
 }
 ShellContentRead.propTypes = {
   preprint: PropTypes.object.isRequired,

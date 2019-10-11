@@ -1,10 +1,11 @@
 import assert from 'assert';
+import pick from 'lodash/pick';
 import { QUESTIONS } from '../src/constants';
 import { getYesNoStats } from '../src/utils/stats';
 
 describe('stats utils', function() {
   describe('getYesNoStats', () => {
-    it('should work', () => {
+    it('should get yes no stats', () => {
       const actions = [
         {
           '@type': 'RapidPREreviewAction',
@@ -46,6 +47,41 @@ describe('stats utils', function() {
       ];
 
       const stats = getYesNoStats(actions);
+      assert.deepEqual(
+        stats
+          .slice(0, 4)
+          .map(stat => pick(stat, ['nReviews', 'yes', 'no', 'na', 'unsure'])),
+        [
+          {
+            nReviews: 1,
+            yes: ['role:roleId'],
+            no: [],
+            na: [],
+            unsure: []
+          },
+          {
+            nReviews: 1,
+            yes: [],
+            no: ['role:roleId'],
+            na: [],
+            unsure: []
+          },
+          {
+            nReviews: 1,
+            yes: [],
+            no: [],
+            na: ['role:roleId'],
+            unsure: []
+          },
+          {
+            nReviews: 1,
+            yes: [],
+            no: [],
+            na: [],
+            unsure: ['role:roleId']
+          }
+        ]
+      );
     });
   });
 });
