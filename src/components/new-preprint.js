@@ -5,6 +5,7 @@ import identifiersArxiv from 'identifiers-arxiv';
 import doiRegex from 'doi-regex';
 import { format } from 'date-fns';
 import Value from './value';
+import { createPreprintIdentifierCurie } from '../utils/ids';
 import { getId, arrayify, unprefix } from '../utils/jsonld';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
 import RapidFormFragment from './rapid-form-fragment';
@@ -45,6 +46,8 @@ export default function NewPreprint({
       : 'NEW_PREPRINT'
   );
 
+  if (!preprint) return null;
+
   return (
     <div className="new-preprint">
       {step === 'NEW_PREPRINT' ? (
@@ -61,7 +64,6 @@ export default function NewPreprint({
           onCancel={e => {
             setStep('NEW_PREPRINT');
           }}
-          identifier={identifier}
           preprint={preprint}
           onReviewed={onReviewed}
           onViewInContext={onViewInContext}
@@ -71,7 +73,6 @@ export default function NewPreprint({
           onCancel={e => {
             setStep('NEW_PREPRINT');
           }}
-          identifier={identifier}
           preprint={preprint}
           onRequested={onRequested}
           onViewInContext={onViewInContext}
@@ -159,43 +160,43 @@ function StepPreprint({
           value={value}
         />
         {/* <label
-          htmlFor="step-preprint-input"
-          className="step-preprint__input-label step-preprint__input-label--large"
-        >
-          Enter a <abbr title="Digital Object Identifier">DOI</abbr> or an arXiv
-          ID
-        </label>
+            htmlFor="step-preprint-input"
+            className="step-preprint__input-label step-preprint__input-label--large"
+            >
+            Enter a <abbr title="Digital Object Identifier">DOI</abbr> or an arXiv
+            ID
+            </label>
 
-        <input
-          id="step-preprint-input"
-          className="step-preprint__text-input"
-          type="text"
-          autoComplete="off"
-          placeholder=""
-          onChange={e => {
+            <input
+            id="step-preprint-input"
+            className="step-preprint__text-input"
+            type="text"
+            autoComplete="off"
+            placeholder=""
+            onChange={e => {
             const value = e.target.value;
             const [arxivId] = identifiersArxiv.extract(value);
             let nextIdentifier;
             if (arxivId) {
-              nextIdentifier = `arXiv:${arxivId}`;
+            nextIdentifier = `arXiv:${arxivId}`;
             } else {
-              const doiMatch = value.match(doiRegex());
-              const doi = doiMatch && doiMatch[0];
-              if (doi) {
-                nextIdentifier = `doi:${doi}`;
-              } else {
-                nextIdentifier = '';
-              }
+            const doiMatch = value.match(doiRegex());
+            const doi = doiMatch && doiMatch[0];
+            if (doi) {
+            nextIdentifier = `doi:${doi}`;
+            } else {
+            nextIdentifier = '';
+            }
             }
 
             if (nextIdentifier !== identifier) {
-              onIdentifier(nextIdentifier);
+            onIdentifier(nextIdentifier);
             }
 
             setValue(value);
-          }}
-          value={value}
-        /> */}
+            }}
+            value={value}
+            /> */}
       </div>
 
       {preprint ? (
@@ -250,13 +251,7 @@ StepPreprint.propTypes = {
   resolvePreprintStatus: PropTypes.object.isRequired
 };
 
-function StepReview({
-  identifier,
-  preprint,
-  onViewInContext,
-  onCancel,
-  onReviewed
-}) {
+function StepReview({ preprint, onViewInContext, onCancel, onReviewed }) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
   const [answerMap, setAnswerMap] = useState({}); // TODO read from local storage ?
@@ -299,7 +294,7 @@ function StepReview({
                   '@type': 'RapidPREreviewAction',
                   actionStatus: 'CompletedActionStatus',
                   agent: getId(arrayify(user.hasRole)[0]),
-                  object: identifier,
+                  object: createPreprintIdentifierCurie(preprint),
                   resultReview: {
                     '@type': 'RapidPREreview',
                     reviewAnswer: getReviewAnswers(answerMap)
@@ -315,7 +310,6 @@ function StepReview({
           <Button
             onClick={e => {
               onViewInContext({
-                identifier,
                 preprint,
                 tab: 'review',
                 answerMap
@@ -331,20 +325,13 @@ function StepReview({
   );
 }
 StepReview.propTypes = {
-  identifier: PropTypes.string.isRequired,
   preprint: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onReviewed: PropTypes.func.isRequired,
   onViewInContext: PropTypes.func.isRequired
 };
 
-function StepRequest({
-  identifier,
-  preprint,
-  onViewInContext,
-  onCancel,
-  onRequested
-}) {
+function StepRequest({ preprint, onViewInContext, onCancel, onRequested }) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
 
@@ -370,7 +357,7 @@ function StepRequest({
                 '@type': 'RequestForRapidPREreviewAction',
                 actionStatus: 'CompletedActionStatus',
                 agent: getId(arrayify(user.hasRole)[0]),
-                object: identifier
+                object: createPreprintIdentifierCurie(preprint)
               },
               onRequested
             );
@@ -381,7 +368,7 @@ function StepRequest({
         </Button>
         <Button
           onClick={e => {
-            onViewInContext({ identifier, preprint, tab: 'request' });
+            onViewInContext({ preprint, tab: 'request' });
           }}
           disabled={postData.isActive}
         >
@@ -392,7 +379,6 @@ function StepRequest({
   );
 }
 StepRequest.propTypes = {
-  identifier: PropTypes.string.isRequired,
   preprint: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onRequested: PropTypes.func.isRequired,

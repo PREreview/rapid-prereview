@@ -61,12 +61,12 @@ class PreprintsWithActionsStore extends EventEmitter {
         action['@type'] === 'RequestForRapidPREreviewAction') &&
       getId(action.object)
     ) {
-      const preprint = this.peek(createPreprintId(getId(action.object)));
+      const preprint = this.peek(createPreprintId(action.object));
 
       if (preprint) {
         const nextPreprint = Object.assign({}, preprint, {
           potentialAction: arrayify(preprint.potentialAction)
-            .filter(_action => getId(_action) === getId(action))
+            .filter(_action => getId(_action) !== getId(action))
             .concat(action)
         });
         this.set(nextPreprint);

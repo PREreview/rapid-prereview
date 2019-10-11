@@ -77,11 +77,14 @@ export default function Home() {
                   console.log(action);
                   history.push('/');
                 }}
-                onViewInContext={({ identifier, preprint, tab }) => {
-                  history.push(`/${unprefix(identifier)}`, {
-                    preprint,
-                    tab
-                  });
+                onViewInContext={({ preprint, tab }) => {
+                  history.push(
+                    `/${unprefix(preprint.doi || preprint.arXivId)}`,
+                    {
+                      preprint,
+                      tab
+                    }
+                  );
                 }}
               />
             </Modal>

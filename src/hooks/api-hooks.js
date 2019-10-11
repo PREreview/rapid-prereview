@@ -282,6 +282,32 @@ export function usePreprintSearchResults(
   const [results, setResults] = useState(defaultResults);
 
   useEffect(() => {
+    // keep `results` up-to-date
+    function update(preprint) {
+      if (
+        arrayify(results.rows).some(row => getId(row.doc) === getId(preprint))
+      ) {
+        setResults(prevResults => {
+          return Object.assign({}, prevResults, {
+            rows: arrayify(prevResults.rows).map(row => {
+              if (!row.doc || getId(row.doc) !== getId(preprint)) {
+                return row;
+              }
+              return Object.assign({}, row, { doc: preprint });
+            })
+          });
+        });
+      }
+    }
+
+    preprintsWithActionsStore.addListener('SET', update);
+
+    return () => {
+      preprintsWithActionsStore.removeListener('SET', update);
+    };
+  }, [results]);
+
+  useEffect(() => {
     setProgress({
       isActive: true,
       error: null
@@ -310,7 +336,7 @@ export function usePreprintSearchResults(
       .then(data => {
         arrayify(data.rows).forEach(row => {
           if (row.doc) {
-            preprintsWithActionsStore.set(row.doc, { emit: !false });
+            preprintsWithActionsStore.set(row.doc, { emit: false });
           }
         });
 

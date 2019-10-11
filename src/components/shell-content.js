@@ -8,6 +8,7 @@ import Button from './button';
 import RapidFormFragment from './rapid-form-fragment';
 import { getReviewAnswers, checkIfAllAnswered } from '../utils/actions';
 import { getId, arrayify } from '../utils/jsonld';
+import { createPreprintIdentifierCurie } from '../utils/ids';
 
 // TODO required login modal
 
@@ -137,7 +138,7 @@ function ShellContentReview({ preprint, onSubmit, disabled, error }) {
                 '@type': 'RapidPREreviewAction',
                 actionStatus: 'CompletedActionStatus',
                 agent: getId(arrayify(user.hasRole)[0]),
-                object: preprint.doi || preprint.arXivId,
+                object: createPreprintIdentifierCurie(preprint),
                 resultReview: {
                   '@type': 'RapidPREreview',
                   reviewAnswer: getReviewAnswers(answerMap)
@@ -173,7 +174,7 @@ function ShellContentRequest({ preprint, onSubmit, disabled, error }) {
               '@type': 'RequestForRapidPREreviewAction',
               actionStatus: 'CompletedActionStatus',
               agent: getId(arrayify(user.hasRole)[0]),
-              object: preprint.doi || preprint.arXivId
+              object: createPreprintIdentifierCurie(preprint)
             });
           }}
         >

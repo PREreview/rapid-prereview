@@ -43,3 +43,30 @@ export function createPreprintId(
 
   return `preprint:${vendor}-${slug(unprefix(id).replace('/', '-'))}`;
 }
+
+export function createPreprintIdentifierCurie(
+  value // preprint or identifer (arXivId or DOI, unprefixed)
+) {
+  if (!value) {
+    throw createError(500, `invalid value for createIdentifierCurie`);
+  }
+
+  if (value.doi) {
+    return `doi:${value.doi}`;
+  } else if (value.arXivId) {
+    return `arXiv:${value.arXivId}`;
+  } else {
+    const id = getId(value);
+    if (!id) {
+      throw createError(500, `invalid value for createIdentifierCurie`);
+    }
+
+    if (doiRegex().test(id)) {
+      return `doi:${value.doi}`;
+    } else if (identifiersArxiv.extract(id)[0]) {
+      return `arXiv:${value.arXivId}`;
+    } else {
+      throw createError(500, `invalid value for createIdentifierCurie`);
+    }
+  }
+}
