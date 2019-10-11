@@ -1,6 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export default function Barplot() {
+export default function Barplot({ stats }) {
   return (
     <div className="barplot">
       <ul>
@@ -51,3 +52,7 @@ export default function Barplot() {
     </div>
   );
 }
+
+Barplot.propTypes = {
+  stats: PropTypes.array.isRequired
+};

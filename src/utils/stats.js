@@ -1,4 +1,50 @@
+import { QUESTIONS } from '../constants';
 import { getId } from './jsonld';
+import { getAnswerMap } from './actions';
+
+function isYes(textOrAnswer) {
+  const text =
+    typeof textOrAnswer === 'string'
+      ? textOrAnswer
+      : textOrAnswer
+      ? textOrAnswer.text
+      : '';
+
+  return (text || '').toLowerCase().trim() === 'yes';
+}
+
+function isNo(textOrAnswer) {
+  const text =
+    typeof textOrAnswer === 'string'
+      ? textOrAnswer
+      : textOrAnswer
+      ? textOrAnswer.text
+      : '';
+
+  return (text || '').toLowerCase().trim() === 'no';
+}
+
+function isNa(textOrAnswer) {
+  const text =
+    typeof textOrAnswer === 'string'
+      ? textOrAnswer
+      : textOrAnswer
+      ? textOrAnswer.text
+      : '';
+
+  return (text || '').toLowerCase().trim() === 'n.a.';
+}
+
+function isUnsure(textOrAnswer) {
+  const text =
+    typeof textOrAnswer === 'string'
+      ? textOrAnswer
+      : textOrAnswer
+      ? textOrAnswer.text
+      : '';
+
+  return (text || '').toLowerCase().trim() === 'unsure';
+}
 
 /**
  * Tags are computed following a majority rule
@@ -28,7 +74,7 @@ export function getTags(actions) {
         if (answer.parentItem) {
           const questionId = getId(answer.parentItem);
           if (questionId === 'question:ynAvailableData') {
-            return (answer.text || '').toLowerCase().trim() === 'yes';
+            return isYes(answer);
           }
         }
       }
@@ -48,7 +94,7 @@ export function getTags(actions) {
         if (answer.parentItem) {
           const questionId = getId(answer.parentItem);
           if (questionId === 'question:ynAvailableCode') {
-            return (answer.text || '').toLowerCase().trim() === 'yes';
+            return isYes(answer);
           }
         }
       }
@@ -80,4 +126,47 @@ export function getTags(actions) {
   });
 
   return { hasReviews, hasRequests, hasData, hasCode, subjects };
+}
+
+export function getYesNoStats(actions = []) {
+  const pairs = actions
+    .filter(action => action['@type'] === 'RapidPREreviewAction')
+    .map(action => {
+      return {
+        roleId: getId(action.agent),
+        answerMap: getAnswerMap(action)
+      };
+    });
+
+  const nReviews = pairs.length;
+
+  return QUESTIONS.filter(({ type }) => type === 'YesNoQuestion').map(
+    ({ identifier, type, question }) => {
+      return {
+        questionId: `question:${identifier}`,
+        nReviews,
+        question,
+        yes: pairs
+          .filter(({ answerMap }) => {
+            return isYes(answerMap[identifier]);
+          })
+          .map(({ roleId }) => roleId),
+        no: pairs
+          .filter(({ answerMap }) => {
+            return isNo(answerMap[identifier]);
+          })
+          .map(({ roleId }) => roleId),
+        na: pairs
+          .filter(({ answerMap }) => {
+            return isNa(answerMap[identifier]);
+          })
+          .map(({ roleId }) => roleId),
+        unsure: pairs
+          .filter(({ answerMap }) => {
+            return isUnsure(answerMap[identifier]);
+          })
+          .map(({ roleId }) => roleId)
+      };
+    }
+  );
 }

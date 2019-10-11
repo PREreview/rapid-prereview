@@ -1,3 +1,24 @@
 .barplot {
-  background-color: red;
+  & table {
+    display: block;
+    position: relative;
+  }
+
+  & caption {
+    position: absolute;
+    left: 0;
+    top: 3px;
+  }
+
+  & thead {
+    height: 0;
+    overflow: hidden;
+    display: block;
+    margin-left: 90px;
+  }
+
+  & tbody {
+    display: block;
+    margin-left: 90px;
+  }
 }
