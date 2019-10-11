@@ -70,18 +70,16 @@ export default function Home() {
                   history.push('/');
                 }}
                 onReviewed={action => {
-                  console.log(action);
                   history.push('/');
                 }}
                 onRequested={action => {
-                  console.log(action);
                   history.push('/');
                 }}
                 onViewInContext={({ preprint, tab }) => {
                   history.push(
                     `/${unprefix(preprint.doi || preprint.arXivId)}`,
                     {
-                      preprint,
+                      preprint: omit(preprint, ['potentialAction']),
                       tab
                     }
                   );
@@ -101,6 +99,7 @@ export default function Home() {
           <SortOptions
             value="score"
             onChange={nextValue => {
+              // TODO
               console.log('TODO');
             }}
           />

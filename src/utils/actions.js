@@ -43,7 +43,7 @@ export function checkIfHasReviewed(
   actions = []
 ) {
   return arrayify(user)
-    .concat(arrayify(user.hasRole))
+    .concat(arrayify((user || {}).hasRole))
     .filter(role => getId(role))
     .some(role => {
       return arrayify(actions).some(action => {
@@ -60,7 +60,7 @@ export function checkIfHasRequested(
   actions = []
 ) {
   return arrayify(user)
-    .concat(arrayify(user.hasRole))
+    .concat(arrayify((user || {}).hasRole))
     .filter(role => getId(role))
     .some(role => {
       return arrayify(actions).some(action => {
