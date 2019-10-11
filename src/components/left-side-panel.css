@@ -7,6 +7,21 @@
   z-index: 900;
   border-top: 1px solid transparent;
 
+  & .left-side-panel__content {
+    position: fixed;
+    width: var(--left-panel-min-width);
+    height: calc(100vh - var(--header-bar-height) - var(--search-bar-height));
+    background-color: white;
+    overflow-y: auto;
+  }
+
+  @media (--short-screen) {
+    & .left-side-panel__content {
+      top: var(--header-bar-height);
+      height: calc(100vh - var(--header-bar-height));
+    }
+  }
+
   @media (--narrow-screen) {
     position: fixed;
 
