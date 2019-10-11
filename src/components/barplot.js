@@ -46,25 +46,25 @@ export default function Barplot({ stats }) {
                       className="barplot__bar-segment barplot__bar-segment--yes"
                       style={{ width: `${(yes.length / nReviews) * 100}%` }}
                     >
-                      10%
+                      {`${((yes.length / nReviews) * 100).toFixed(1)}%`}
                     </td>
                     <td
                       className="barplot__bar-segment barplot__bar-segment--no"
                       style={{ width: `${(no.length / nReviews) * 100}%` }}
                     >
-                      20%
+                      {`${((no.length / nReviews) * 100).toFixed(1)}%`}
                     </td>
                     <td
                       className="barplot__bar-segment barplot__bar-segment--unsure"
                       style={{ width: `${(unsure.length / nReviews) * 100}%` }}
                     >
-                      30%
+                      {`${((unsure.length / nReviews) * 100).toFixed(1)}%`}
                     </td>
                     <td
                       className="barplot__bar-segment barplot__bar-segment--na"
                       style={{ width: `${(na.length / nReviews) * 100}%` }}
                     >
-                      40%
+                      {`${((na.length / nReviews) * 100).toFixed(1)}%`}
                     </td>
                   </tr>
                 </tbody>
