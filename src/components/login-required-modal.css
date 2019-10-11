@@ -1,0 +1,13 @@
+.login-required-modal {
+  & .login-required__title {
+    display: flex;
+    align-items: center;
+
+    & .login-required__title-icon {
+      width: var(--mgrd);
+      height: var(--mgrd);
+      margin-right: var(--xsgrd);
+      color: var(--ui-basic-font-color--light);
+    }
+  }
+}

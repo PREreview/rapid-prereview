@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Route, useHistory, useLocation, Link } from 'react-router-dom';
+import { Route, useHistory, useLocation } from 'react-router-dom';
 import omit from 'lodash/omit';
 import { usePreprintSearchResults } from '../hooks/api-hooks';
 import { useUser } from '../contexts/user-context';
 import { unprefix } from '../utils/jsonld';
-import { MdErrorOutline } from 'react-icons/md';
 import HeaderBar from './header-bar';
 import SearchBar from './search-bar';
 import LeftSidePanel from './left-side-panel';
@@ -14,6 +13,7 @@ import SortOptions from './sort-options';
 import NewPreprint from './new-preprint';
 import Modal from './modal';
 import Button from './button';
+import LoginRequiredModal from './login-required-modal';
 
 export default function Home() {
   const [user] = useUser();
@@ -88,25 +88,11 @@ export default function Home() {
           </Route>
 
           {isLoginModalOpen && (
-            <Modal
-              className="home-login-modal"
-              showCloseButton={true}
+            <LoginRequiredModal
               onClose={() => {
                 setIsLoginModalOpen(false);
               }}
-              title={
-                <span className="home-login-modal__title">
-                  <MdErrorOutline className="home-login-modal__title-icon" />
-                  Log in required
-                </span>
-              }
-            >
-              <p>You need to be logged in to perform this action</p>
-
-              <p>
-                <Link to="login">Log in with your ORCID</Link>
-              </p>
-            </Modal>
+            />
           )}
 
           <SortOptions
