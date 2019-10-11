@@ -12,15 +12,19 @@
     @media (--short-screen) {
       padding-top: 0;
     }
-    &__right {
+    & .home__main__right {
       flex: 1 1 10%;
       background: white;
+
+      @media (--narrow-screen) {
+        flex: 0 0 0px;
+      }
     }
   }
   & .home__content {
     background: white;
     min-height: 200vh;
-    padding: var(--xsgrd);
+    padding: var(--sgrd);
     flex: 1 1 var(--middle-column-default-width);
     max-width: var(--middle-column-default-width);
   }
