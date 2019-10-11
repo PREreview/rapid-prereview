@@ -223,3 +223,83 @@ export function usePreprintActions(identifier) {
 
   return [actions, progress];
 }
+
+const defaultResults = {
+  bookmark: null,
+  rows: [],
+  total_rows: 0,
+  counts: {}
+};
+
+/**
+ * Get all the `RapidPREreviewAction` and `RequestForRapidPREreviewAction`
+ * associated with a preprint
+ */
+export function usePreprintSearchResults(
+  search // the ?qs part of the url
+) {
+  if (!search || search === '?') {
+    search = `?q=*:*&sort=${JSON.stringify([
+      '-score<number>',
+      '-datePosted<number>'
+    ])}&include_docs=true&counts=${JSON.stringify([
+      'hasData',
+      'hasCode',
+      'hasReviews',
+      'hasRequests',
+      'subjectName'
+    ])}`;
+  }
+
+  const [progress, setProgress] = useState({
+    isActive: false,
+    error: null
+  });
+
+  const [results, setResults] = useState(defaultResults);
+
+  useEffect(() => {
+    setProgress({
+      isActive: true,
+      error: null
+    });
+    setResults(defaultResults);
+
+    const controller = new AbortController();
+
+    fetch(`/api/preprint/${search}`, {
+      signal: controller.signal
+    })
+      .then(resp => {
+        if (resp.ok) {
+          return resp.json();
+        } else {
+          return resp.json().then(
+            body => {
+              throw createError(resp.status, body.description || body.name);
+            },
+            err => {
+              throw createError(resp.status, 'something went wrong');
+            }
+          );
+        }
+      })
+      .then(data => {
+        setResults(data);
+        setProgress({ isActive: false, error: null });
+      })
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          setProgress({ isActive: false, error: err });
+        }
+        setResults(defaultResults);
+      });
+
+    return () => {
+      setProgress({ isActive: false, error: null });
+      controller.abort();
+    };
+  }, [search]);
+
+  return [results, progress];
+}

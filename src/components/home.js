@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Route, useHistory, useLocation, Link } from 'react-router-dom';
 import omit from 'lodash/omit';
+import { usePreprintSearchResults } from '../hooks/api-hooks';
 import { useUser } from '../contexts/user-context';
 import { unprefix } from '../utils/jsonld';
 import { MdErrorOutline } from 'react-icons/md';
@@ -18,37 +19,10 @@ export default function Home() {
   const [user] = useUser();
   const [showLeftPanel, setShowLeftPanel] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [results, setResults] = useState({
-    bookmark: null,
-    rows: [],
-    total_rows: 0,
-    counts: {}
-  });
+  const [results, progress] = usePreprintSearchResults();
 
   const history = useHistory();
   const location = useLocation();
-
-  useEffect(() => {
-    async function fetchData() {
-      const r = await fetch(
-        `/api/preprint?q=*:*&sort=${JSON.stringify([
-          '-score<number>',
-          '-datePosted<number>'
-        ])}&include_docs=true&counts=${JSON.stringify([
-          'hasData',
-          'hasCode',
-          'hasReviews',
-          'hasRequests',
-          'subjectName'
-        ])}`
-      );
-      if (r.ok) {
-        const results = await r.json();
-        setResults(results);
-      }
-    }
-    fetchData();
-  }, []);
 
   return (
     <div className="home">
