@@ -170,3 +170,29 @@ export function getYesNoStats(actions = []) {
     }
   );
 }
+
+export function getTextAnswers(actions = []) {
+  const pairs = actions
+    .filter(action => action['@type'] === 'RapidPREreviewAction')
+    .map(action => {
+      return {
+        roleId: getId(action.agent),
+        answerMap: getAnswerMap(action)
+      };
+    });
+
+  return QUESTIONS.filter(({ type }) => {
+    return type === 'Question';
+  }).map(({ question, identifier }) => {
+    return {
+      questionId: `question:${identifier}`,
+      question,
+      answers: pairs.map(({ roleId, answerMap }) => {
+        return {
+          roleId,
+          text: answerMap[identifier]
+        };
+      })
+    };
+  });
+}
