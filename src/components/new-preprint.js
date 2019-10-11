@@ -46,8 +46,6 @@ export default function NewPreprint({
       : 'NEW_PREPRINT'
   );
 
-  if (!preprint) return null;
-
   return (
     <div className="new-preprint">
       {step === 'NEW_PREPRINT' ? (
@@ -59,7 +57,7 @@ export default function NewPreprint({
           preprint={preprint}
           resolvePreprintStatus={resolvePreprintStatus}
         />
-      ) : step === 'NEW_REVIEW' ? (
+      ) : preprint && step === 'NEW_REVIEW' ? (
         <StepReview
           onCancel={e => {
             setStep('NEW_PREPRINT');
@@ -68,7 +66,7 @@ export default function NewPreprint({
           onReviewed={onReviewed}
           onViewInContext={onViewInContext}
         />
-      ) : (
+      ) : preprint && step === 'NEW_REQUEST' ? (
         <StepRequest
           onCancel={e => {
             setStep('NEW_PREPRINT');
@@ -77,7 +75,7 @@ export default function NewPreprint({
           onRequested={onRequested}
           onViewInContext={onViewInContext}
         />
-      )}
+      ) : null}
     </div>
   );
 }

@@ -109,6 +109,7 @@ export default function Home() {
             {results.rows.map(row => (
               <li key={row.id} className="home__preprint-list__item">
                 <PreprintCard
+                  user={user}
                   preprint={row.doc}
                   onNewRequest={preprint => {
                     if (user) {

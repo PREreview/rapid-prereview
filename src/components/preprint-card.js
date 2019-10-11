@@ -6,13 +6,19 @@ import { format } from 'date-fns';
 import { MdArrowUpward, MdCode } from 'react-icons/md';
 import Value from './value';
 import { getTags } from '../utils/stats';
+import { checkIfHasReviewed, checkIfHasRequested } from '../utils/actions';
 import CountBadge from './count-badge';
 import ScoreBadge from './score-badge';
 import IconButton from './icon-button';
 import TagPill from './tag-pill';
 import AddPrereviewIcon from '../svgs/add_prereview_icon.svg';
 
-export default function PreprintCard({ preprint, onNewRequest, onNewReview }) {
+export default function PreprintCard({
+  user,
+  preprint,
+  onNewRequest,
+  onNewReview
+}) {
   const {
     name,
     preprintServer,
@@ -30,7 +36,8 @@ export default function PreprintCard({ preprint, onNewRequest, onNewReview }) {
     action => action['@type'] === 'RequestForRapidPREreviewAction'
   );
 
-  let hasReviewed, hasRequested;
+  const hasReviewed = checkIfHasReviewed(user, reviews);
+  const hasRequested = checkIfHasRequested(user, requests);
 
   const { hasData, hasCode, subjects } = getTags(actions);
 
@@ -39,6 +46,7 @@ export default function PreprintCard({ preprint, onNewRequest, onNewReview }) {
       <div className="preprint-card__score-panel">
         <div className="preprint-card__score-panel__top">
           <IconButton
+            disabled={hasRequested}
             onClick={() => {
               onNewRequest(preprint);
             }}
@@ -51,6 +59,7 @@ export default function PreprintCard({ preprint, onNewRequest, onNewReview }) {
         </div>
         <div className="preprint-card__score-panel__bottom">
           <IconButton
+            disabled={hasReviewed}
             onClick={() => {
               onNewReview(preprint);
             }}
@@ -59,6 +68,7 @@ export default function PreprintCard({ preprint, onNewRequest, onNewReview }) {
           </IconButton>
         </div>
       </div>
+
       <div className="preprint-card__contents">
         <div className="preprint-card__header">
           <Link
@@ -156,6 +166,7 @@ export default function PreprintCard({ preprint, onNewRequest, onNewReview }) {
 }
 
 PreprintCard.propTypes = {
+  user: PropTypes.object,
   preprint: PropTypes.shape({
     doi: PropTypes.string,
     arXivId: PropTypes.string,
