@@ -192,6 +192,21 @@ export function usePreprintActions(identifier) {
   const [actions, setActions] = useState([]);
 
   useEffect(() => {
+    // keep `actions` up-to-date
+    function update(preprint) {
+      if (createPreprintId(preprint) === createPreprintId(identifier)) {
+        setActions(arrayify(preprint.potentialAction));
+      }
+    }
+
+    preprintsWithActionsStore.addListener('SET', update);
+
+    return () => {
+      preprintsWithActionsStore.removeListener('SET', update);
+    };
+  }, [identifier]);
+
+  useEffect(() => {
     if (identifier) {
       setProgress({
         isActive: true,

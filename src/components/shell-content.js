@@ -6,13 +6,19 @@ import RapidPreReviewLogo from './rapid-pre-review-logo';
 import Controls from './controls';
 import Button from './button';
 import RapidFormFragment from './rapid-form-fragment';
-import { getReviewAnswers, checkIfAllAnswered } from '../utils/actions';
+import {
+  getReviewAnswers,
+  checkIfAllAnswered,
+  checkIfHasReviewed,
+  checkIfHasRequested
+} from '../utils/actions';
 import { getId, arrayify } from '../utils/jsonld';
 import { createPreprintIdentifierCurie } from '../utils/ids';
-
-// TODO required login modal
+import LoginRequiredModal from './login-required-modal';
 
 export default function ShellContent({ preprint, defaultTab = 'read' }) {
+  const [user] = useUser();
+
   const [actions, fetchActionsProgress] = usePreprintActions(
     preprint.doi || preprint.arXivId
   );
@@ -20,6 +26,11 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
   const [post, postProgress] = usePostAction();
 
   const [tab, setTab] = useState(defaultTab);
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const hasReviewed = checkIfHasReviewed(user, actions);
+  const hasRequested = checkIfHasRequested(user, actions);
 
   return (
     <div className="shell-content">
@@ -37,16 +48,28 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
             </li>
             <li>
               <Button
-                disabled={postProgress.isActive}
-                onClick={() => setTab('review')}
+                disabled={postProgress.isActive || hasReviewed}
+                onClick={() => {
+                  if (user) {
+                    setTab('review');
+                  } else {
+                    setIsLoginModalOpen(true);
+                  }
+                }}
               >
                 Add Review
               </Button>
             </li>
             <li>
               <Button
-                disabled={postProgress.isActive}
-                onClick={() => setTab('request')}
+                disabled={postProgress.isActive || hasRequested}
+                onClick={() => {
+                  if (user) {
+                    setTab('request');
+                  } else {
+                    setIsLoginModalOpen(true);
+                  }
+                }}
               >
                 Add Request
               </Button>
@@ -55,11 +78,20 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
         </nav>
       </header>
 
+      {isLoginModalOpen && (
+        <LoginRequiredModal
+          onClose={() => {
+            setIsLoginModalOpen(false);
+          }}
+        />
+      )}
+
       <div className="shell-content__body">
         {tab === 'read' ? (
           <ShellContentRead preprint={preprint} actions={actions} />
         ) : tab === 'request' ? (
           <ShellContentRequest
+            user={user}
             preprint={preprint}
             onSubmit={action => {
               post(action, () => {
@@ -75,6 +107,7 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
           />
         ) : (
           <ShellContentReview
+            user={user}
             preprint={preprint}
             onSubmit={action => {
               post(action, () => {
@@ -107,8 +140,7 @@ ShellContentRead.propTypes = {
   actions: PropTypes.array.isRequired
 };
 
-function ShellContentReview({ preprint, onSubmit, disabled, error }) {
-  const [user] = useUser();
+function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
   const [answerMap, setAnswerMap] = useState({}); // TODO read from local storage ?
 
   const canSubmit = checkIfAllAnswered(answerMap);
@@ -154,15 +186,14 @@ function ShellContentReview({ preprint, onSubmit, disabled, error }) {
   );
 }
 ShellContentReview.propTypes = {
+  user: PropTypes.object,
   preprint: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   error: PropTypes.instanceOf(Error)
 };
 
-function ShellContentRequest({ preprint, onSubmit, disabled, error }) {
-  const [user] = useUser();
-
+function ShellContentRequest({ user, preprint, onSubmit, disabled, error }) {
   return (
     <div>
       Request
@@ -185,6 +216,7 @@ function ShellContentRequest({ preprint, onSubmit, disabled, error }) {
   );
 }
 ShellContentRequest.propTypes = {
+  user: PropTypes.object,
   preprint: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
