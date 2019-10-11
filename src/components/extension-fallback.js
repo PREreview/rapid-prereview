@@ -23,7 +23,12 @@ export default function ExtensionFallback() {
   return (
     <div>
       {pdfUrl && (
-        <object key={pdfUrl} data={pdfUrl} type="application/pdf">
+        <object
+          key={pdfUrl}
+          data={pdfUrl}
+          type="application/pdf"
+          typemustmatch="true" // Note typeMustMatch doesn't seem to be currently supported by react
+        >
           {/* fallback text in case we can't load the PDF */}
           Could not retrieve the PDF.
           {!!canonicalUrl && (

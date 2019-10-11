@@ -139,12 +139,12 @@ function StepPreprint({
             const [arxivId] = identifiersArxiv.extract(value);
             let nextIdentifier;
             if (arxivId) {
-              nextIdentifier = `arXiv:${arxivId}`;
+              nextIdentifier = arxivId;
             } else {
               const doiMatch = value.match(doiRegex());
               const doi = doiMatch && doiMatch[0];
               if (doi) {
-                nextIdentifier = `doi:${doi}`;
+                nextIdentifier = doi;
               } else {
                 nextIdentifier = '';
               }

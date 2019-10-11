@@ -19,7 +19,7 @@ export default function Home() {
   const [user] = useUser();
   const [showLeftPanel, setShowLeftPanel] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [results, progress] = usePreprintSearchResults();
+  const [results, fetchResultsProgress] = usePreprintSearchResults();
 
   const history = useHistory();
   const location = useLocation();

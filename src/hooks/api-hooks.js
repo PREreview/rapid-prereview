@@ -3,6 +3,7 @@ import noop from 'lodash/noop';
 import { createError } from '../utils/errors';
 import { unprefix, getId, arrayify } from '../utils/jsonld';
 import { createPreprintId } from '../utils/ids';
+import { preprintsWithActionsStore } from '../stores/preprint-stores';
 
 // TODO stores directory each store inherit from EventEmitter and store object in LRU
 // addListenner and removeListenner in useEffect
@@ -69,6 +70,7 @@ export function usePostAction() {
         }
       })
       .then(body => {
+        preprintsWithActionsStore.upsertAction(action);
         if (isMounted.current) {
           setState({ isActive: false, error: null, body });
           onSuccess(body);
@@ -88,63 +90,83 @@ export function usePostAction() {
 /**
  * Get Preprint metadata from `identifier`
  */
-export function usePreprint(identifier, prefetchedPreprint) {
+export function usePreprint(
+  identifier, // arXivId or DOI
+  prefetchedPreprint
+) {
+  identifier = unprefix(identifier);
+
   const [progress, setProgress] = useState({
     isActive: false,
     error: null
   });
 
-  const [preprint, setPreprint] = useState(prefetchedPreprint || null);
+  const [preprint, setPreprint] = useState(null);
 
   useEffect(() => {
-    if (
-      prefetchedPreprint &&
-      unprefix(getId(prefetchedPreprint.doi || prefetchedPreprint.arXivId)) ===
-        identifier
-    ) {
-      // noop
-    } else if (identifier) {
-      setProgress({
-        isActive: true,
-        error: null
-      });
-      setPreprint(null);
+    if (identifier) {
+      let cached;
+      if (
+        prefetchedPreprint &&
+        unprefix(prefetchedPreprint.doi || prefetchedPreprint.arXivId) ===
+          identifier
+      ) {
+        cached = prefetchedPreprint;
+      } else if (preprintsWithActionsStore.has(identifier)) {
+        cached = preprintsWithActionsStore.get(identifier, { actions: false });
+      }
 
-      const controller = new AbortController();
-
-      fetch(`/api/resolve?identifier=${encodeURIComponent(identifier)}`, {
-        signal: controller.signal
-      })
-        .then(resp => {
-          if (resp.ok) {
-            return resp.json();
-          } else {
-            return resp.json().then(
-              body => {
-                throw createError(resp.status, body.description || body.name);
-              },
-              err => {
-                throw createError(resp.status, 'something went wrong');
-              }
-            );
-          }
-        })
-        .then(data => {
-          setPreprint(data);
-          setProgress({ isActive: false, error: null });
-        })
-        .catch(err => {
-          if (err.name !== 'AbortError') {
-            setProgress({ isActive: false, error: err });
-          }
-          setPreprint(null);
+      if (cached) {
+        setProgress({
+          isActive: false,
+          error: null
         });
-
-      return () => {
-        setProgress({ isActive: false, error: null });
+        setPreprint(cached);
+      } else {
+        setProgress({
+          isActive: true,
+          error: null
+        });
         setPreprint(null);
-        controller.abort();
-      };
+
+        const controller = new AbortController();
+
+        fetch(`/api/resolve?identifier=${encodeURIComponent(identifier)}`, {
+          signal: controller.signal
+        })
+          .then(resp => {
+            if (resp.ok) {
+              return resp.json();
+            } else {
+              return resp.json().then(
+                body => {
+                  throw createError(resp.status, body.description || body.name);
+                },
+                err => {
+                  throw createError(resp.status, 'something went wrong');
+                }
+              );
+            }
+          })
+          .then(data => {
+            preprintsWithActionsStore.set(data, {
+              onlyIfNotExisting: true,
+              emit: false
+            });
+            setPreprint(data);
+            setProgress({ isActive: false, error: null });
+          })
+          .catch(err => {
+            if (err.name !== 'AbortError') {
+              setProgress({ isActive: false, error: err });
+              setPreprint(null);
+            }
+          });
+
+        return () => {
+          controller.abort();
+        };
+      }
     } else {
       setProgress({
         isActive: false,
@@ -175,7 +197,7 @@ export function usePreprintActions(identifier) {
         isActive: true,
         error: null
       });
-      setActions([]);
+      setActions(preprintsWithActionsStore.getActions(identifier));
 
       const controller = new AbortController();
 
@@ -197,6 +219,7 @@ export function usePreprintActions(identifier) {
           }
         })
         .then(data => {
+          preprintsWithActionsStore.set(data);
           setActions(arrayify(data.potentialAction));
           setProgress({ isActive: false, error: null });
         })
@@ -285,6 +308,12 @@ export function usePreprintSearchResults(
         }
       })
       .then(data => {
+        arrayify(data.rows).forEach(row => {
+          if (row.doc) {
+            preprintsWithActionsStore.set(row.doc, { emit: !false });
+          }
+        });
+
         setResults(data);
         setProgress({ isActive: false, error: null });
       })
@@ -303,3 +332,6 @@ export function usePreprintSearchResults(
 
   return [results, progress];
 }
+
+// TODO useRole(roleId)
+// one per role and cache server side
