@@ -5,6 +5,7 @@ import React, {
   useState,
   useCallback
 } from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { MdDragHandle } from 'react-icons/md';
 import IconButton from './icon-button';
@@ -70,14 +71,15 @@ export default function Shell({ children }) {
 
   return (
     <Fragment>
-      <div className="shell" style={{ maxHeight: `${maxHeight}vh` }}>
-        <div className="shell__top">
-          <div className="shell__controls">
-            <IconButton onMouseDown={handleMouseDown}>
-              <MdDragHandle />
-            </IconButton>
-          </div>
-        </div>
+      <div
+        className={classNames('shell', {
+          'shell--iddle': !isDown // TODO? use that class to do CSS transition when shell is iddle in cases where we switch tabs
+        })}
+        style={{ maxHeight: `${maxHeight}vh` }}
+      >
+        <IconButton className="shell__drag" onMouseDown={handleMouseDown}>
+          <MdDragHandle />
+        </IconButton>
 
         {children}
       </div>

@@ -12,15 +12,10 @@
   border-right:1px solid red;
 }
 
-.shell__top {
+.shell__drag {
+  z-index: 100;
   position: fixed;
-  width: inherit;
-  height: inherit;
-
-  & .shell__controls {
-    display: flex;
-    justify-content: center;
-  }
+  left: 50vw;
 }
 
 .shell__mask {

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Route, useHistory, useLocation, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Route, useHistory, useLocation } from 'react-router-dom';
 import omit from 'lodash/omit';
+import { usePreprintSearchResults } from '../hooks/api-hooks';
 import { useUser } from '../contexts/user-context';
 import { unprefix } from '../utils/jsonld';
-import { MdErrorOutline } from 'react-icons/md';
 import HeaderBar from './header-bar';
 import SearchBar from './search-bar';
 import LeftSidePanel from './left-side-panel';
@@ -13,42 +13,16 @@ import SortOptions from './sort-options';
 import NewPreprint from './new-preprint';
 import Modal from './modal';
 import Button from './button';
+import LoginRequiredModal from './login-required-modal';
 
 export default function Home() {
   const [user] = useUser();
   const [showLeftPanel, setShowLeftPanel] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [results, setResults] = useState({
-    bookmark: null,
-    rows: [],
-    total_rows: 0,
-    counts: {}
-  });
+  const [results, fetchResultsProgress] = usePreprintSearchResults();
 
   const history = useHistory();
   const location = useLocation();
-
-  useEffect(() => {
-    async function fetchData() {
-      const r = await fetch(
-        `/api/preprint?q=*:*&sort=${JSON.stringify([
-          '-score<number>',
-          '-datePosted<number>'
-        ])}&include_docs=true&counts=${JSON.stringify([
-          'hasData',
-          'hasCode',
-          'hasReviews',
-          'hasRequests',
-          'subjectName'
-        ])}`
-      );
-      if (r.ok) {
-        const results = await r.json();
-        setResults(results);
-      }
-    }
-    fetchData();
-  }, []);
 
   return (
     <div className="home">
@@ -103,36 +77,25 @@ export default function Home() {
                   console.log(action);
                   history.push('/');
                 }}
-                onViewInContext={({ identifier, preprint, tab }) => {
-                  history.push(`/${unprefix(identifier)}`, {
-                    preprint,
-                    tab
-                  });
+                onViewInContext={({ preprint, tab }) => {
+                  history.push(
+                    `/${unprefix(preprint.doi || preprint.arXivId)}`,
+                    {
+                      preprint,
+                      tab
+                    }
+                  );
                 }}
               />
             </Modal>
           </Route>
 
           {isLoginModalOpen && (
-            <Modal
-              className="home-login-modal"
-              showCloseButton={true}
+            <LoginRequiredModal
               onClose={() => {
                 setIsLoginModalOpen(false);
               }}
-              title={
-                <span className="home-login-modal__title">
-                  <MdErrorOutline className="home-login-modal__title-icon" />
-                  Log in required
-                </span>
-              }
-            >
-              <p>You need to be logged in to perform this action</p>
-
-              <p>
-                <Link to="login">Log in with your ORCID</Link>
-              </p>
-            </Modal>
+            />
           )}
 
           <SortOptions

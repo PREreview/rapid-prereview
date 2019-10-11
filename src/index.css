@@ -24,6 +24,8 @@
 @import './components/sort-options.css';
 @import './components/tag-pill.css';
 @import './components/text-input.css';
+@import './components/shell-content.css';
+@import './components/login-required-modal.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';

@@ -1,0 +1,31 @@
+.shell-content {
+  width: inherit;
+
+  & header  {
+    padding-top: var(--xsgrd);
+    z-index: 1;
+    background-color: white;
+    width: inherit;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    padding-bottom: var(--xsgrd);
+
+    & nav {
+      margin-left: auto;
+      &  ul {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        list-style-type: none;
+        & li {
+          margin-right: var(--sgrd);
+        }
+      }
+    }
+  }
+}
+
+.shell-content__body {
+  padding: 52px var(--sgrd) var(--sgrd) var(--sgrd);
+}

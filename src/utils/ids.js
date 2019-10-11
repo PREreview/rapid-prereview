@@ -5,26 +5,32 @@ import { getId, unprefix } from '../utils/jsonld';
 import { createError } from './errors';
 
 export function createPreprintId(
-  identifier // doi or arXiv (prefixed or not)
+  value // doi or arXiv (prefixed or not) or preprint
 ) {
-  identifier = getId(identifier);
+  let id = getId(value);
 
-  if (!identifier) {
-    throw createError(500, `invalid identifier for create preprint id`);
+  if (!id) {
+    // value may be a preprint
+    if (value) {
+      id = value.doi || value.arXivId;
+    }
+    if (!id) {
+      throw createError(500, `invalid identifier for create preprint id`);
+    }
   }
 
-  if (identifier.startsWith('preprint:')) {
-    return identifier;
+  if (id.startsWith('preprint:')) {
+    return id;
   }
 
   let vendor;
-  if (identifier.startsWith('doi:')) {
+  if (id.startsWith('doi:')) {
     vendor = 'doi';
-  } else if (identifier.startsWith('arXiv:')) {
+  } else if (id.startsWith('arXiv:')) {
     vendor = 'arxiv';
-  } else if (doiRegex().test(identifier)) {
+  } else if (doiRegex().test(id)) {
     vendor = 'doi';
-  } else if (identifiersArxiv.extract(identifier)[0]) {
+  } else if (identifiersArxiv.extract(id)[0]) {
     vendor = 'arxiv';
   }
 
@@ -35,5 +41,32 @@ export function createPreprintId(
     );
   }
 
-  return `preprint:${vendor}-${slug(unprefix(identifier).replace('/', '-'))}`;
+  return `preprint:${vendor}-${slug(unprefix(id).replace('/', '-'))}`;
+}
+
+export function createPreprintIdentifierCurie(
+  value // preprint or identifer (arXivId or DOI, unprefixed)
+) {
+  if (!value) {
+    throw createError(500, `invalid value for createIdentifierCurie`);
+  }
+
+  if (value.doi) {
+    return `doi:${value.doi}`;
+  } else if (value.arXivId) {
+    return `arXiv:${value.arXivId}`;
+  } else {
+    const id = getId(value);
+    if (!id) {
+      throw createError(500, `invalid value for createIdentifierCurie`);
+    }
+
+    if (doiRegex().test(id)) {
+      return `doi:${value.doi}`;
+    } else if (identifiersArxiv.extract(id)[0]) {
+      return `arXiv:${value.arXivId}`;
+    } else {
+      throw createError(500, `invalid value for createIdentifierCurie`);
+    }
+  }
 }

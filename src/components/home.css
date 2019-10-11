@@ -52,17 +52,3 @@
     }
   }
 }
-
-.home-login-modal {
-  & .home-login-modal__title {
-    display: flex;
-    align-items: center;
-
-    & .home-login-modal__title-icon {
-      width: var(--mgrd);
-      height: var(--mgrd);
-      margin-right: var(--xsgrd);
-      color: var(--ui-basic-font-color--light);
-    }
-  }
-}
