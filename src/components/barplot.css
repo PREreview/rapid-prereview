@@ -1,3 +1,146 @@
 .barplot {
-  background-color: red;
+  padding-top: var(--lgrd);
+  background-color: white;
+  outline: 1px solid coral;
+  font: var(--ui-basic-font);
+  color: var(--ui-basic-font-color);
+
+  & .barplot__question-list {
+    list-style: none;
+    padding: 0;
+    padding-top: var(--lgrd);
+    margin: 0;
+    width: 100%;
+
+    grid-template-columns: 50% 50%;
+    grid-template-areas: 'questions responses';
+    grid-template-rows: repeat(auto-fill);
+    justify-items: start;
+    outline: 1px solid pink;
+
+    & .barplot__question-list__item {
+      position: relative;
+      &:hover,
+      &:focus {
+        z-index: 1000;
+      }
+    }
+  }
+
+  & .barplot__question-table {
+    display: flex;
+    z-index: 10;
+  }
+
+  & .barplot__question {
+    width: 50%;
+    text-align: left;
+    padding: var(--xxsgrd);
+    box-sizing: border-box;
+  }
+
+  & .barplot__responses {
+    width: 50%;
+    padding-right: var(--mgrd);
+    box-sizing: border-box;
+    z-index: 30;
+  }
+  & .barplot__question-table:focus {
+    & .barplot__bar-segments {
+      background-color: black;
+    }
+  }
+  & .barplot__bar-segments {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    color: white;
+    display: flex;
+    padding: var(--xxsgrd);
+
+    & .barplot__bar-segment {
+      display: block;
+      padding: var(--xsgrd);
+      height: var(--mgrd);
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      color: transparent;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      &:hover {
+        color: white;
+      }
+    }
+
+    & .barplot__bar-segment--yes {
+      background-color: var(--prereview-blue);
+    }
+    & .barplot__bar-segment--no {
+      background-color: var(--prereview-coral);
+    }
+    & .barplot__bar-segment--unsure {
+      background-color: var(--prereview-spring-green);
+    }
+    & .barplot__bar-segment--na {
+      background-color: var(--prereview-grey);
+    }
+  }
+  & .barplot__question-table:focus {
+    & .barplot__bar-segment {
+      color: white;
+    }
+  }
+
+  & .barplot__table-header {
+    height: 24px;
+    overflow: visible;
+    box-sizing: border-box;
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    right: 0;
+    z-index: 10;
+  }
+  & .barplot__question-table:hover,
+  & .barplot__question-table:focus {
+    & .barplot__table-header {
+    }
+  }
+  & .barplot__segment-titles {
+    width: calc(100% - var(--mgrd));
+    display: flex;
+    padding: 0 var(--xxsgrd) 0 var(--xxsgrd);
+    margin-right: var(--mgrd);
+    position: relative;
+    top: -12px;
+    opacity: 0;
+    box-sizing: border-box;
+    background-color: white;
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    transition: top 0.3s ease-out, opacity 0.3s ease-out;
+    pointer-events: none;
+    z-index: 20;
+  }
+  & .barplot__question-table:hover,
+  & .barplot__question-table:focus {
+    outline: none;
+    & .barplot__segment-titles {
+      top: -28px;
+      opacity: 0.95;
+    }
+  }
+  & .barplot__segment-title {
+    padding: var(--xxsgrd) var(--xsgrd);
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    border-right: 1px solid var(--ruling-color--light);
+    font: var(--ui-basic-font-size);
+    &:last-child {
+      border-right: none;
+    }
+  }
 }
