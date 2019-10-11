@@ -15,8 +15,9 @@ import {
 import { getId, arrayify } from '../utils/jsonld';
 import { createPreprintIdentifierCurie } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
-import { getYesNoStats } from '../utils/stats';
+import { getYesNoStats, getTextAnswers } from '../utils/stats';
 import Barplot from './barplot';
+import TextAnswers from './text-answers';
 
 export default function ShellContent({ preprint, defaultTab = 'read' }) {
   const [user] = useUser();
@@ -138,6 +139,7 @@ function ShellContentRead({ preprint, actions }) {
   return (
     <div>
       <Barplot stats={getYesNoStats(actions)} />
+      <TextAnswers answers={getTextAnswers(actions)} />
     </div>
   );
 }
