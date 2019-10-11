@@ -1,6 +1,20 @@
 const path = require('path');
 
 module.exports = async ({ config, mode }) => {
+  // See https://medium.com/@derek_19900/config-storybook-4-to-use-svgr-webpack-plugin-22cb1152f004
+  const fileLoaderRule = config.module.rules.find(rule =>
+    rule.test.test('.svg')
+  );
+  fileLoaderRule.exclude = [path.resolve(__dirname, '../src')];
+
+  config.module.rules.unshift(
+    // SVG
+    {
+      test: /\.svg$/,
+      use: ['@svgr/webpack']
+    }
+  );
+
   config.module.rules.push({
     test: /\.css$/,
     sideEffects: true,
