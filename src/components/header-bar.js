@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { MdMenu } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-import { Menu, MenuList, MenuButton, MenuLink } from '@reach/menu-button';
+import { MenuLink } from '@reach/menu-button';
 import RapidPreReviewLogo from './rapid-pre-review-logo';
 import IconButton from './icon-button';
 import { useUser } from '../contexts/user-context';
+import UserBadge from './user-badge';
 
 export default function HeaderBar({ onClickMenuButton }) {
   const [user] = useUser();
@@ -28,12 +29,9 @@ export default function HeaderBar({ onClickMenuButton }) {
         <span className="header-bar__nav-item">PREreview</span>
         <span className="header-bar__nav-item">
           {user ? (
-            <Menu>
-              <MenuButton>{user.name}</MenuButton>
-              <MenuList>
-                <MenuLink href="/auth/logout">Logout</MenuLink>
-              </MenuList>
-            </Menu>
+            <UserBadge user={user}>
+              <MenuLink href="/auth/logout">Logout</MenuLink>
+            </UserBadge>
           ) : (
             <Link to="/login">Login</Link>
           )}
