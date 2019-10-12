@@ -6,16 +6,16 @@ export default function Collapse({ isOpened, children }) {
   const [height, setHeight] = useState(isOpened ? 'auto' : '0px');
   const [isClosing, setIsClosing] = useState(false);
 
-  const prevIsOpenedRef = useRef();
+  const prevIsOpenedRef = useRef(null);
   useEffect(() => {
     prevIsOpenedRef.current = isOpened;
   });
 
   useLayoutEffect(() => {
-    if (isOpened && prevIsOpenedRef !== true) {
+    if (isOpened) {
       // opening case (transitionning from close)
       const $el = ref.current;
-      if ($el) {
+      if ($el && prevIsOpenedRef.current !== null) {
         // transition from 0px to the height of the element inner content
         // (the element height is 0px when closed)
         // This is because CSS transition on height doesn't work with `auto`
@@ -32,6 +32,7 @@ export default function Collapse({ isOpened, children }) {
           // remove "height" from the element's inline styles, so it can return to its initial value
           setHeight('auto');
         };
+        $el.addEventListener('transitionend', handleTransitionEnd);
 
         return () => {
           $el.removeEventListener('transitionend', handleTransitionEnd);
@@ -47,8 +48,19 @@ export default function Collapse({ isOpened, children }) {
           // we prepare the transition by setting the height of the element to
           // the height of its inner content
           const height = $el.scrollHeight;
+
+          const transition = $el.style.transition;
+          $el.style.transition = '';
           setHeight(`${height}px`);
-          setIsClosing(true);
+
+          const rafId = requestAnimationFrame(() => {
+            $el.style.transition = transition;
+            setIsClosing(true);
+          });
+
+          return () => {
+            cancelAnimationFrame(rafId);
+          };
         } else if (isClosing) {
           // the closing transition
           const handleTransitionEnd = e => {
@@ -71,9 +83,21 @@ export default function Collapse({ isOpened, children }) {
     }
   }, [isOpened, isClosing]);
 
+  console.log({
+    isOpened,
+    isClosing,
+    height,
+    prevIsOpened: prevIsOpenedRef.current,
+    children: isOpened || isClosing
+  });
+
   return (
     <div className="collapse" ref={ref} style={{ height }}>
-      {isOpened || isClosing ? children : null}
+      {isOpened ||
+      isClosing ||
+      (prevIsOpenedRef.current && !isOpened && !isClosing)
+        ? children
+        : null}
     </div>
   );
 }
