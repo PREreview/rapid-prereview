@@ -1,17 +1,26 @@
-import React from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { MdArrowUpward, MdCode, MdChevronRight } from 'react-icons/md';
+import {
+  MdArrowUpward,
+  MdCode,
+  MdChevronRight,
+  MdExpandLess,
+  MdExpandMore
+} from 'react-icons/md';
 import Value from './value';
-import { getTags } from '../utils/stats';
+import { getTags, getYesNoStats, getTextAnswers } from '../utils/stats';
 import { checkIfHasReviewed, checkIfHasRequested } from '../utils/actions';
 import CountBadge from './count-badge';
 import ScoreBadge from './score-badge';
 import IconButton from './icon-button';
 import TagPill from './tag-pill';
 import AddPrereviewIcon from '../svgs/add_prereview_icon.svg';
+import Collapse from './collapse';
+import Barplot from './barplot';
+import TextAnswers from './text-answers';
 
 export default function PreprintCard({
   user,
@@ -19,6 +28,8 @@ export default function PreprintCard({
   onNewRequest,
   onNewReview
 }) {
+  const [isOpened, setIsOpened] = useState(false);
+
   const {
     name,
     preprintServer,
@@ -42,131 +53,148 @@ export default function PreprintCard({
   const { hasData, hasCode, subjects } = getTags(actions);
 
   return (
-    <div className="preprint-card">
-      <div className="preprint-card__score-panel">
-        <div className="preprint-card__score-panel__top">
-          <IconButton
-            disabled={hasRequested}
-            onClick={() => {
-              onNewRequest(preprint);
-            }}
-          >
-            <MdArrowUpward className="preprint-card__up-request-icon" />
-          </IconButton>
-        </div>
-        <div className="preprint-card__score-panel__middle">
-          <ScoreBadge score={actions.length} />
-        </div>
-        <div className="preprint-card__score-panel__bottom">
-          <IconButton
-            disabled={hasReviewed}
-            onClick={() => {
-              onNewReview(preprint);
-            }}
-          >
-            <AddPrereviewIcon />
-          </IconButton>
-        </div>
-      </div>
-
-      <div className="preprint-card__contents">
-        <div className="preprint-card__header">
-          <Link
-            to={{
-              pathname: `/${doi || arXivId}`,
-              state: {
-                preprint: omit(preprint, ['potentialAction']),
-                tab: 'read'
-              }
-            }}
-            className="preprint-card__title"
-          >
-            <Value tagName="h2" className="preprint-card__title-text">
-              {name}
-            </Value>
-          </Link>
-
-          <span className="preprint-card__pub-date">
-            {format(new Date(datePosted), 'MMM. d, yyyy')}
-          </span>
-        </div>
-        <div className="preprint-card__info-row">
-          <div className="preprint-card__info-row__left">
-            <Value tagName="span" className="preprint-card__server-name">
-              {preprintServer.name}
-            </Value>
-            <MdChevronRight className="preprint-card__server-arrow-icon" />
-            <Value tagName="span" className="preprint-card__server-id">
-              {doi || arXivId}
-            </Value>
+    <Fragment>
+      <div className="preprint-card">
+        <div className="preprint-card__score-panel">
+          <div className="preprint-card__score-panel__top">
+            <IconButton
+              disabled={hasRequested}
+              onClick={() => {
+                onNewRequest(preprint);
+              }}
+            >
+              <MdArrowUpward className="preprint-card__up-request-icon" />
+            </IconButton>
           </div>
+          <div className="preprint-card__score-panel__middle">
+            <ScoreBadge score={actions.length} />
+          </div>
+          <div className="preprint-card__score-panel__bottom">
+            <IconButton
+              disabled={hasReviewed}
+              onClick={() => {
+                onNewReview(preprint);
+              }}
+            >
+              <AddPrereviewIcon />
+            </IconButton>
+          </div>
+        </div>
 
-          <div className="preprint-card__info-row__right">
-            <ul className="preprint-card__tag-list">
-              {subjects.map(subject => (
-                <li key="subject" className="preprint-card__tag-list__item">
-                  <TagPill>{subject}</TagPill>
+        <div className="preprint-card__contents">
+          <div className="preprint-card__header">
+            <Link
+              to={{
+                pathname: `/${doi || arXivId}`,
+                state: {
+                  preprint: omit(preprint, ['potentialAction']),
+                  tab: 'read'
+                }
+              }}
+              className="preprint-card__title"
+            >
+              <Value tagName="h2" className="preprint-card__title-text">
+                {name}
+              </Value>
+            </Link>
+
+            <span className="preprint-card__pub-date">
+              {format(new Date(datePosted), 'MMM. d, yyyy')}
+            </span>
+          </div>
+          <div className="preprint-card__info-row">
+            <div className="preprint-card__info-row__left">
+              <Value tagName="span" className="preprint-card__server-name">
+                {preprintServer.name}
+              </Value>
+              <MdChevronRight className="preprint-card__server-arrow-icon" />
+              <Value tagName="span" className="preprint-card__server-id">
+                {doi || arXivId}
+              </Value>
+            </div>
+
+            <div className="preprint-card__info-row__right">
+              <ul className="preprint-card__tag-list">
+                {subjects.map(subject => (
+                  <li key="subject" className="preprint-card__tag-list__item">
+                    <TagPill>{subject}</TagPill>
+                  </li>
+                ))}
+                <li className="preprint-card__tag-list__item">
+                  <div
+                    className={`preprint-card__tag-icon ${
+                      hasData
+                        ? 'preprint-card__tag-icon--active'
+                        : 'preprint-card__tag-icon--inactive'
+                    }`}
+                  >
+                    <MdCode
+                      className="preprint-card__tag-icon__icon"
+                      title="Has Data"
+                    />
+                  </div>
                 </li>
-              ))}
-              <li className="preprint-card__tag-list__item">
-                <div
-                  className={`preprint-card__tag-icon ${
-                    hasData
-                      ? 'preprint-card__tag-icon--active'
-                      : 'preprint-card__tag-icon--inactive'
-                  }`}
-                >
-                  <MdCode
-                    className="preprint-card__tag-icon__icon"
-                    title="Has Data"
-                  />
-                </div>
-              </li>
-              <li className="preprint-card__tag-list__item">
-                <div
-                  className={`preprint-card__tag-icon ${
-                    hasCode
-                      ? 'preprint-card__tag-icon--active'
-                      : 'preprint-card__tag-icon--inactive'
-                  }`}
-                >
-                  <MdCode
-                    className="preprint-card__tag-icon__icon"
-                    title="Has Source Code"
-                  />
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="preprint-card__expansion-header">
-          {/* the reviewers */}
-          {/*reviews.length > 0 && (
-              <ul>
-              {reviews.map(action => (
-              <li key={getId(action)}>{unprefix(getId(action.agent))}</li>
-              ))}
+                <li className="preprint-card__tag-list__item">
+                  <div
+                    className={`preprint-card__tag-icon ${
+                      hasCode
+                        ? 'preprint-card__tag-icon--active'
+                        : 'preprint-card__tag-icon--inactive'
+                    }`}
+                  >
+                    <MdCode
+                      className="preprint-card__tag-icon__icon"
+                      title="Has Source Code"
+                    />
+                  </div>
+                </li>
               </ul>
-              )*/}
-
-          <CountBadge
-            count={reviews.length}
-            className="preprint-card__count-badge"
-          />
-          <div className="preprint-card__count-label">
-            review{reviews.length > 1 ? 's' : ''}
+            </div>
           </div>
-          <CountBadge
-            count={requests.length}
-            className="preprint-card__count-badge"
-          />
-          <div className="preprint-card__count-label">
-            request{requests.length > 1 ? 's' : ''}
+
+          <div className="preprint-card__expansion-header">
+            {/* the reviewers */}
+            {/*reviews.length > 0 && (
+                <ul>
+                {reviews.map(action => (
+                <li key={getId(action)}>{unprefix(getId(action.agent))}</li>
+                ))}
+                </ul>
+                )*/}
+
+            <CountBadge
+              count={reviews.length}
+              className="preprint-card__count-badge"
+            />
+            <div className="preprint-card__count-label">
+              review{reviews.length > 1 ? 's' : ''}
+            </div>
+            <CountBadge
+              count={requests.length}
+              className="preprint-card__count-badge"
+            />
+            <div className="preprint-card__count-label">
+              request{requests.length > 1 ? 's' : ''}
+            </div>
+
+            <IconButton
+              className="preprint-card__expansion-toggle"
+              onClick={e => {
+                setIsOpened(!isOpened);
+              }}
+            >
+              {isOpened ? <MdExpandLess /> : <MdExpandMore />}
+            </IconButton>
           </div>
         </div>
       </div>
-    </div>
+      <Collapse isOpened={isOpened}>
+        <div className="preprint-card__expansion">
+          <Barplot stats={getYesNoStats(actions)} />
+          <TextAnswers answers={getTextAnswers(actions)} />
+        </div>
+      </Collapse>
+    </Fragment>
   );
 }
 

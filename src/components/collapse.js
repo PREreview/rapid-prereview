@@ -15,6 +15,7 @@ export default function Collapse({ isOpened, children }) {
     if (isOpened) {
       // opening case (transitionning from close)
       const $el = ref.current;
+
       if ($el && prevIsOpenedRef.current !== null) {
         // transition from 0px to the height of the element inner content
         // (the element height is 0px when closed)
@@ -96,5 +97,5 @@ export default function Collapse({ isOpened, children }) {
 
 Collapse.propTypes = {
   children: PropTypes.any,
-  isOpened: PropTypes.bool
+  isOpened: PropTypes.bool.isRequired
 };

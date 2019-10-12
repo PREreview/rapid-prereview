@@ -164,6 +164,10 @@
     border-top: 1px solid var(--ruling-color--light);
     padding: var(--xsgrd);
     width: 100%;
+
+    & .preprint-card__expansion-toggle {
+      margin-left: auto;
+    }
   }
 
   & .preprint-card__count-badge {
@@ -178,4 +182,9 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
+}
+
+.preprint-card__expansion {
+  max-height: 300px;
+  overflow: auto;
 }

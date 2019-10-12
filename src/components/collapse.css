@@ -1,5 +1,5 @@
 .collapse {
   overflow: hidden;
   height: auto;
-  transition: height 1s ease-out;
+  transition: height 0.3s ease-out;
 }
