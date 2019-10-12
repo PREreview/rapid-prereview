@@ -83,14 +83,6 @@ export default function Collapse({ isOpened, children }) {
     }
   }, [isOpened, isClosing]);
 
-  console.log({
-    isOpened,
-    isClosing,
-    height,
-    prevIsOpened: prevIsOpenedRef.current,
-    children: isOpened || isClosing
-  });
-
   return (
     <div className="collapse" ref={ref} style={{ height }}>
       {isOpened ||
