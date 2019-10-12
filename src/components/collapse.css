@@ -1,0 +1,5 @@
+.collapse {
+  overflow: hidden;
+  height: auto;
+  transition: height 1s ease-out;
+}

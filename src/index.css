@@ -27,6 +27,7 @@
 @import './components/shell-content.css';
 @import './components/login-required-modal.css';
 @import './components/barplot.css';
+@import './components/collapse.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';
