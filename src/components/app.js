@@ -6,6 +6,7 @@ import ExtensionFallback from './extension-fallback';
 import { UserProvider } from '../contexts/user-context';
 import Login from './login';
 import Settings from './settings';
+import PrivateRoute from './private-route';
 
 export default function App({ user }) {
   return (
@@ -18,9 +19,9 @@ export default function App({ user }) {
           <Route exact={true} path="/login">
             <Login />
           </Route>
-          <Route exact={true} path="/settings">
+          <PrivateRoute exact={true} path="/settings">
             <Settings />
-          </Route>
+          </PrivateRoute>
           <Route exact={true} path="/:identifierPart1/:identifierPart2?">
             <ExtensionFallback />
           </Route>
