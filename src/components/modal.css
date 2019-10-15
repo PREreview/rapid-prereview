@@ -18,7 +18,8 @@
   & .modal__title {
     font: var(--ui-header-1-font);
     margin: 0;
-    display: block;
+    display: flex;
+    align-items: center;
   }
 
   & .modal__content {

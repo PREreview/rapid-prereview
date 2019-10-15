@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, createRef, useEffect } from 'react';
 import classNames from 'classnames';
 import noop from 'lodash/noop';
 
@@ -16,7 +16,15 @@ export default function TextInput({
    * see: https://www.smashingmagazine.com/2018/06/placeholder-attribute/
    */
 
-  const [empty, setEmpty] = useState();
+  const inputRef = createRef();
+  const [empty, setEmpty] = useState(true);
+
+  useEffect(() => {
+    if (inputRef.current && inputRef.current.value) {
+      console.log('value', inputRef.current.value);
+      setEmpty(false);
+    }
+  }, [inputRef]);
 
   return (
     <div
@@ -30,6 +38,7 @@ export default function TextInput({
       </label>
       <input
         className="text-input__input"
+        ref={inputRef}
         id={inputId}
         type="text"
         onChange={e => {
