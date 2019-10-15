@@ -1,0 +1,34 @@
+.text-answers {
+  & .text-answers__question {
+    margin: var(--sgrd);
+  }
+
+  & .text-answers__response-row {
+    margin: 0;
+    display: flex;
+    background-color: var(--xxlight-grey);
+    padding: var(--sgrd);
+    &:nth-child(even) {
+      background-color: var(--xlight-grey);
+    }
+  }
+
+  & .text-answers__user-badge-container {
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    display: block;
+    flex: 0 0 auto;
+    border-radius: 20px;
+    background-color: var(--prereview-grey);
+    margin-top: var(--xsgrd);
+    margin-right: var(--sgrd);
+    color: white;
+  }
+  & .text-answers__response {
+    border: 1px solid var(--ruling-color--light);
+    border-radius: 2px;
+    padding: var(--sgrd) var(--mgrd);
+    margin-bottom: var(--sgrd);
+  }
+}

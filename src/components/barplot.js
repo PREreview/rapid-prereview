@@ -6,11 +6,38 @@ import PropTypes from 'prop-types';
 export default function Barplot({ stats }) {
   return (
     <div className="barplot">
+      <div className="barplot__question-list-header">
+        <div className="barplot__question-list-header__left">Questions</div>
+        <div className="barplot__question-list-header__right">
+          <div className="barplot__key">
+            <div className="barplot__key-item">
+              <div className="barplot__key-color-chip barplot__key-color-chip--yes" />
+              <span className="barplot__key-label">Yes</span>
+            </div>
+            <div className="barplot__key-item">
+              <div className="barplot__key-color-chip barplot__key-color-chip--no" />
+              <span className="barplot__key-label">No</span>
+            </div>
+            <div className="barplot__key-item">
+              <div className="barplot__key-color-chip barplot__key-color-chip--unsure" />
+              <span className="barplot__key-label">Unsure</span>
+            </div>
+            <div className="barplot__key-item">
+              <div className="barplot__key-color-chip barplot__key-color-chip--na" />
+              <span className="barplot__key-label">N/A</span>
+            </div>
+          </div>
+        </div>
+      </div>
       <ul className="barplot__question-list">
         {stats.map(
           ({ questionId, nReviews, question, yes, no, na, unsure }) => (
-            <li className="barplot__question-list__item" key={questionId}>
-              <table className="barplot__question-table" tabIndex={0}>
+            <li
+              className="barplot__question-list__item"
+              key={questionId}
+              tabIndex={0}
+            >
+              <table className="barplot__question-table">
                 <caption className="barplot__question">{question}</caption>
                 <thead className="barplot__table-header">
                   <tr className="barplot__segment-titles">

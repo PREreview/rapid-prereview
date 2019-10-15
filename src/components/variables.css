@@ -18,6 +18,8 @@
   --prereview-coral: #f77463;
   --prereview-spring-green: #66f785;
 
+  --xxlight-grey: rgb(252, 252, 252);
+  --xlight-grey: rgb(248, 248, 248);
   --light-grey: rgb(232, 232, 232);
 
   /* UI Colors */
@@ -40,11 +42,17 @@
   --button-foreground-focus-color--primary: var(--prereview-white);
 
   --card-color: var(--prereview-white);
-  --card-color--tinted: rgb(245, 245, 245);
+  --card-color--tinted: var(--xlight-grey);
   --focus-color: var(--prereview-blue);
 
   --link-color: var(--prereview-blue);
   --link-color--hover: var(--prereview-light-blue);
+
+  /* Barplot colors */
+  --barplot-yes: var(--prereview-blue);
+  --barplot-no: var(--prereview-coral);
+  --barplot-unsure: var(--prereview-spring-green);
+  --barplot-na: var(--prereview-grey);
 
   /* standard dimensions */
   --header-bar-height: 72px;

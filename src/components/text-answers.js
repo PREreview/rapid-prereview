@@ -8,14 +8,16 @@ export default function TextAnswers({ answers }) {
       <dl>
         {answers.map(({ questionId, question, answers }) => (
           <div key={questionId}>
-            <dt>
+            <dt className="text-answers__question">
               <Value tagName="span">{question}</Value>
             </dt>
             {answers.map(({ roleId, text }) => (
-              <dd key={roleId}>
+              <dd className="text-answers__response-row" key={roleId}>
                 {/* TODO gravatar */}
-                <span>{roleId}</span>
-                <Value>{text}</Value>
+                <span className="text-answers__user-badge-container">
+                  {roleId}
+                </span>
+                <Value className="text-answers__response">{text}</Value>
               </dd>
             ))}
           </div>

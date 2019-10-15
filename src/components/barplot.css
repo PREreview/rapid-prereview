@@ -1,14 +1,65 @@
 .barplot {
-  padding-top: var(--lgrd);
   background-color: white;
-  outline: 1px solid coral;
   font: var(--ui-basic-font);
   color: var(--ui-basic-font-color);
+  padding-top: var(--mgrd);
+
+  & .barplot__question-list-header {
+    display: flex;
+    padding-bottom: var(--sgrd);
+
+    & .barplot__question-list-header__left {
+      flex: 0 0 50%;
+      color: var(--text-color--light);
+      font: var(--ui-basic-font--small);
+      color: var(--ui-basic-font-color--light);
+      padding-left: var(--sgrd);
+      text-transform: uppercase;
+    }
+    & .barplot__question-list-header__right {
+      flex: 0 0 50%;
+    }
+  }
+
+  & .barplot__key {
+    display: flex;
+    color: var(--text-color--light);
+    font: var(--ui-basic-font--small);
+    color: var(--ui-basic-font-color--light);
+    text-transform: uppercase;
+  }
+
+  & .barplot__key-item {
+    display: flex;
+    align-items: center;
+    margin-right: var(--mgrd);
+  }
+
+  & .barplot__key-color-chip {
+    width: var(--sgrd);
+    height: var(--sgrd);
+    flex: 0 0 auto;
+    background-color: var(--prereview-grey);
+    margin-right: var(--xsgrd);
+
+    &.barplot__key-color-chip--yes {
+      background-color: var(--barplot-yes);
+    }
+    &.barplot__key-color-chip--no {
+      background-color: var(--barplot-no);
+    }
+    &.barplot__key-color-chip--unsure {
+      background-color: var(--barplot-unsure);
+    }
+    &.barplot__key-color-chip--na {
+      background-color: var(--barplot-na);
+    }
+  }
 
   & .barplot__question-list {
     list-style: none;
     padding: 0;
-    padding-top: var(--lgrd);
+
     margin: 0;
     width: 100%;
 
@@ -16,32 +67,39 @@
     grid-template-areas: 'questions responses';
     grid-template-rows: repeat(auto-fill);
     justify-items: start;
-    outline: 1px solid pink;
 
     & .barplot__question-list__item {
       position: relative;
+      padding: var(--xsgrd);
+      background-color: var(--xxlight-grey);
+      &:nth-child(even) {
+        background-color: var(--xlight-grey);
+      }
+
       &:hover,
       &:focus {
         z-index: 1000;
+        background-color: var(--light-grey);
       }
     }
   }
 
   & .barplot__question-table {
     display: flex;
+    align-items: center;
     z-index: 10;
   }
 
   & .barplot__question {
     width: 50%;
     text-align: left;
-    padding: var(--xxsgrd);
+    padding: var(--xxsgrd) var(--xsgrd) var(--xxsgrd) var(--xsgrd);
     box-sizing: border-box;
   }
 
   & .barplot__responses {
     width: 50%;
-    padding-right: var(--mgrd);
+    padding-right: var(--xsgrd);
     box-sizing: border-box;
     z-index: 30;
   }
@@ -58,12 +116,11 @@
     box-sizing: border-box;
     color: white;
     display: flex;
-    padding: var(--xxsgrd);
 
     & .barplot__bar-segment {
       display: block;
       padding: var(--xsgrd);
-      height: var(--mgrd);
+      height: var(--sgrd);
       box-sizing: border-box;
       display: flex;
       align-items: center;
@@ -110,7 +167,7 @@
     }
   }
   & .barplot__segment-titles {
-    width: calc(100% - var(--mgrd));
+    width: calc(100% - var(--sgrd));
     display: flex;
     padding: 0 var(--xxsgrd) 0 var(--xxsgrd);
     margin-right: var(--mgrd);
@@ -119,17 +176,17 @@
     opacity: 0;
     box-sizing: border-box;
     background-color: white;
-    box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    border-radius: 12px 12px 0 0;
     transition: top 0.3s ease-out, opacity 0.3s ease-out;
     pointer-events: none;
     z-index: 20;
   }
-  & .barplot__question-table:hover,
-  & .barplot__question-table:focus {
+  & .barplot__question-list__item:hover,
+  & .barplot__question-list__item:focus {
     outline: none;
     & .barplot__segment-titles {
-      top: -28px;
+      top: -18px;
       opacity: 0.95;
     }
   }

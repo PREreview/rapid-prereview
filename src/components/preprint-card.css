@@ -184,7 +184,7 @@
   }
 }
 
-.preprint-card__expansion {
+.preprint-card-expansion {
   max-height: 300px;
   overflow: auto;
 }

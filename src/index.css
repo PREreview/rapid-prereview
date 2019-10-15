@@ -30,6 +30,7 @@
 @import './components/collapse.css';
 @import './components/login.css';
 @import './components/settings.css';
+@import './components/text-answers.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';
