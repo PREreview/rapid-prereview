@@ -9,6 +9,13 @@ export default function Settings() {
     <div>
       <h2>Settings</h2>
 
+      <dl>
+        <dt>ORCID:</dt>
+        <dd>
+          <a href={`https://orcid.org/${user.orcid}`}>{user.orcid}</a>
+        </dd>
+      </dl>
+
       <SettingsRoles user={user} />
     </div>
   );

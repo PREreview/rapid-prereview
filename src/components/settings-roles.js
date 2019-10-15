@@ -1,32 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { getId, unprefix } from '../utils/jsonld';
-import Value from './value';
 
 export default function SettingsRoles({ user }) {
   return (
-    <div>
-      <Value tagName="span">{user.name}</Value>
-      <a href={`https://orcid.org/${user.orcid}`}>{user.orcid}</a>
+    <section>
+      <h3>Personas</h3>
 
-      <section>
-        <h3>Roles</h3>
+      <p>
+        Personas allow you to manage your identity on Rapid PREreview. Personas
+        can be public (linked to your{' '}
+        <a href={`https://orcid.org/${user.orcid}`}>ORCID</a> profile) or kept
+        anonymous.
+      </p>
 
-        <ul>
-          {user.hasRole.map(role => (
-            <li key={getId(role)}>
-              <span>{role.name || unprefix(getId(role))}</span>
+      <ul>
+        {user.hasRole.map(role => (
+          <li key={getId(role)}>
+            <span>{role.name || unprefix(getId(role))}</span>
 
-              <span>
-                {role['@type'] === 'PublicReviewerRole'
-                  ? 'Public'
-                  : 'Anonymous'}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
-    </div>
+            <span>
+              {role['@type'] === 'PublicReviewerRole' ? 'Public' : 'Anonymous'}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
