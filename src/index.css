@@ -28,6 +28,8 @@
 @import './components/login-required-modal.css';
 @import './components/barplot.css';
 @import './components/collapse.css';
+@import './components/login.css';
+@import './components/settings.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';

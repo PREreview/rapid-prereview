@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { getId, unprefix } from '../utils/jsonld';
+import { getId, unprefix, arrayify } from '../utils/jsonld';
+import Button from './button';
+import Modal from './modal';
+import RoleEditor from './role-editor';
 
 export default function SettingsRoles({ user }) {
+  const [editedRoleId, setEditedRoleId] = useState(null);
+
   return (
     <section>
       <h3>Personas</h3>
@@ -15,16 +20,46 @@ export default function SettingsRoles({ user }) {
       </p>
 
       <ul>
-        {user.hasRole.map(role => (
+        {arrayify(user.hasRole).map(role => (
           <li key={getId(role)}>
             <span>{role.name || unprefix(getId(role))}</span>
 
             <span>
               {role['@type'] === 'PublicReviewerRole' ? 'Public' : 'Anonymous'}
             </span>
+
+            <Button
+              onClick={() => {
+                setEditedRoleId(getId(role));
+              }}
+            >
+              Edit
+            </Button>
+            <Button>Make Default</Button>
           </li>
         ))}
       </ul>
+
+      {!!editedRoleId && (
+        <Modal
+          title="Edit Role"
+          onClose={() => {
+            setEditedRoleId(null);
+          }}
+        >
+          <RoleEditor
+            role={arrayify(user.hasRole).find(
+              role => getId(role) === editedRoleId
+            )}
+            onCancel={() => {
+              setEditedRoleId(null);
+            }}
+            onSaved={() => {
+              setEditedRoleId(null);
+            }}
+          />
+        </Modal>
+      )}
     </section>
   );
 }
@@ -33,6 +68,23 @@ SettingsRoles.propTypes = {
   user: PropTypes.shape({
     orcid: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
+    defaultRole(props, propName, componentName) {
+      if (
+        props[propName] &&
+        !arrayify(props.hasRole).some(
+          role => getId(role) === getId(props[propName])
+        )
+      ) {
+        return new Error(
+          `Invalid prop ${propName} supplied to ${componentName}. Value must be one of ${arrayify(
+            props.hasRole
+          )
+            .map(getId)
+            .filter(Boolean)
+            .join(', ')}`
+        );
+      }
+    },
     hasRole: PropTypes.arrayOf(
       PropTypes.shape({
         '@id': PropTypes.string.isRequired,
@@ -40,8 +92,13 @@ SettingsRoles.propTypes = {
           'PublicReviewerRole',
           'AnonymousReviewerRole'
         ]),
-        name: PropTypes.string
+        name: PropTypes.string,
+        avatar: PropTypes.shape({
+          '@type': PropTypes.oneOf(['ImageObject']),
+          encodingFormat: PropTypes.oneOf(['image/jpeg', 'image/png']),
+          contentUrl: PropTypes.string // base64
+        })
       })
     )
-  })
+  }).isRequired
 };

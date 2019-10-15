@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { MdMenu } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { MenuLink } from '@reach/menu-button';
+import noop from 'lodash/noop';
 import RapidPreReviewLogo from './rapid-pre-review-logo';
 import IconButton from './icon-button';
 import { useUser } from '../contexts/user-context';
 import UserBadge from './user-badge';
 
-export default function HeaderBar({ onClickMenuButton }) {
+export default function HeaderBar({ onClickMenuButton = noop }) {
   const [user] = useUser();
 
   return (
@@ -30,7 +31,9 @@ export default function HeaderBar({ onClickMenuButton }) {
         <span className="header-bar__nav-item">
           {user ? (
             <UserBadge user={user}>
-              <MenuLink href="/settings">Settings</MenuLink>
+              <MenuLink as={Link} to="/settings">
+                Settings
+              </MenuLink>
               <MenuLink href="/auth/logout">Logout</MenuLink>
             </UserBadge>
           ) : (
@@ -43,5 +46,5 @@ export default function HeaderBar({ onClickMenuButton }) {
 }
 
 HeaderBar.propTypes = {
-  onClickMenuButton: PropTypes.func.isRequired
+  onClickMenuButton: PropTypes.func
 };
