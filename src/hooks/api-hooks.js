@@ -4,6 +4,7 @@ import { createError } from '../utils/errors';
 import { unprefix, getId, arrayify } from '../utils/jsonld';
 import { createPreprintId } from '../utils/ids';
 import { preprintsWithActionsStore } from '../stores/preprint-stores';
+import { roleStore } from '../stores/user-stores';
 
 // TODO stores directory each store inherit from EventEmitter and store object in LRU
 // addListenner and removeListenner in useEffect
@@ -374,5 +375,78 @@ export function usePreprintSearchResults(
   return [results, progress];
 }
 
-// TODO useRole(roleId)
-// one per role and cache server side
+/**
+ * Get a Role
+ */
+export function useRole(roleId) {
+  const [progress, setProgress] = useState({
+    isActive: false,
+    error: null
+  });
+
+  const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    if (roleId) {
+      const cached = roleStore.get(roleId);
+      if (cached) {
+        setProgress({
+          isActive: true,
+          error: null
+        });
+        setRole(cached);
+      } else {
+        setProgress({
+          isActive: true,
+          error: null
+        });
+        setRole(null);
+
+        const controller = new AbortController();
+
+        fetch(`/api/role/${unprefix(roleId)}`, {
+          signal: controller.signal
+        })
+          .then(resp => {
+            if (resp.ok) {
+              return resp.json();
+            } else {
+              return resp.json().then(
+                body => {
+                  throw createError(resp.status, body.description || body.name);
+                },
+                err => {
+                  throw createError(resp.status, 'something went wrong');
+                }
+              );
+            }
+          })
+          .then(data => {
+            roleStore.set(data);
+            setRole(data);
+            setProgress({ isActive: false, error: null });
+          })
+          .catch(err => {
+            if (err.name !== 'AbortError') {
+              setProgress({ isActive: false, error: err });
+            }
+            setRole(null);
+          });
+
+        return () => {
+          setProgress({ isActive: false, error: null });
+          setRole(null);
+          controller.abort();
+        };
+      }
+    } else {
+      setProgress({
+        isActive: false,
+        error: null
+      });
+      setRole(null);
+    }
+  }, [roleId]);
+
+  return [role, progress];
+}

@@ -30,6 +30,7 @@ export default function HeaderBar({ onClickMenuButton }) {
         <span className="header-bar__nav-item">
           {user ? (
             <UserBadge user={user}>
+              <MenuLink href="/settings">Settings</MenuLink>
               <MenuLink href="/auth/logout">Logout</MenuLink>
             </UserBadge>
           ) : (
