@@ -8,15 +8,19 @@
 }
 .modal {
   font: var(--ui-basic-font--large);
+
   & .modal__header-bar {
     display: flex;
     justify-content: space-between;
-    padding: var(--mgrd) var(--mgrd) var(--mgrd) var(--lgrd);
+    padding: var(--mgrd) var(--mgrd) var(--sgrd) var(--lgrd);
     align-items: baseline;
   }
 
   & .modal__title {
-    font: var(--ui-header-1-font);
+    font: var(--ui-basic-font);
+    color: var(--ui-basic-font-color--light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     margin: 0;
     display: flex;
     align-items: center;

@@ -21,6 +21,7 @@
     font: var(--ui-basic-font--large);
     &:focus {
       border-color: var(--prereview-black);
+      outline: none;
     }
   }
 

@@ -183,7 +183,11 @@ export default function PreprintCard({
                 setIsOpened(!isOpened);
               }}
             >
-              {isOpened ? <MdExpandLess /> : <MdExpandMore />}
+              {isOpened ? (
+                <MdExpandLess className="preprint-card__expansion-toggle-icon" />
+              ) : (
+                <MdExpandMore className="preprint-card__expansion-toggle-icon" />
+              )}
             </IconButton>
           </div>
         </div>

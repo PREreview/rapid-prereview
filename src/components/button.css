@@ -22,7 +22,6 @@
   &:hover {
     opacity: 1;
     & .button__contents {
-      background-color: var(--light-grey);
       &:hover {
         box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
       }

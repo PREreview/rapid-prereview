@@ -7,6 +7,9 @@
   & .barplot__question-list-header {
     display: flex;
     padding-bottom: var(--sgrd);
+    margin-bottom: 0;
+
+    border-bottom: 1px solid var(--ruling-color);
 
     & .barplot__question-list-header__left {
       flex: 0 0 50%;
@@ -36,8 +39,8 @@
   }
 
   & .barplot__key-color-chip {
-    width: var(--sgrd);
-    height: var(--sgrd);
+    width: 1em;
+    height: 1em;
     flex: 0 0 auto;
     background-color: var(--prereview-grey);
     margin-right: var(--xsgrd);

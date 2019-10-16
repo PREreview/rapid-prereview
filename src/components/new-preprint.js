@@ -4,6 +4,7 @@ import { useLocation } from 'react-router-dom';
 import identifiersArxiv from 'identifiers-arxiv';
 import doiRegex from 'doi-regex';
 import { format } from 'date-fns';
+import { MdChevronRight } from 'react-icons/md';
 import Value from './value';
 import { createPreprintIdentifierCurie } from '../utils/ids';
 import { getId, arrayify, unprefix } from '../utils/jsonld';
@@ -88,19 +89,33 @@ NewPreprint.propTypes = {
 
 function NewPreprintPreview({ preprint }) {
   return (
-    <div>
-      {!!preprint.name && <Value tagName="h2">{preprint.name}</Value>}
+    <div className="new-preprint__preview">
+      <div className="new-preprint__preview__header">
+        {!!preprint.name && (
+          <Value className="new-preprint__preview__title" tagName="h2">
+            {preprint.name}
+          </Value>
+        )}
 
-      {!!preprint.datePosted && (
-        <span>{format(new Date(preprint.datePosted), 'MMM. d, yyyy')}</span>
-      )}
-      {!!(preprint.preprintServer && preprint.preprintServer.name) && (
-        <Value tagName="span">{preprint.preprintServer.name}</Value>
-      )}
-
-      {!!(preprint.doi || preprint.arXivId) && (
-        <span>{preprint.doi || preprint.arXivId}</span>
-      )}
+        {!!preprint.datePosted && (
+          <span className="new-preprint__preview__date">
+            {format(new Date(preprint.datePosted), 'MMM. d, yyyy')}
+          </span>
+        )}
+      </div>
+      <div className="new-preprint__preview__info">
+        {!!(preprint.preprintServer && preprint.preprintServer.name) && (
+          <Value className="new-preprint__preview__server" tagName="span">
+            {preprint.preprintServer.name}
+          </Value>
+        )}
+        <MdChevronRight className="new-preprint__preview__server-arrow-icon" />
+        {!!(preprint.doi || preprint.arXivId) && (
+          <span className="new-preprint__preview__id">
+            {preprint.doi || preprint.arXivId}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
@@ -119,8 +134,8 @@ function StepPreprint({
   const [value, setValue] = useState(unprefix(identifier));
 
   return (
-    <div className="step-preprint">
-      <div className="step-preprint__input-row">
+    <div className="new-preprint__step-preprint">
+      <div className="new-preprint__input-row">
         <TextInput
           inputId="step-preprint-input-new"
           label={
@@ -209,7 +224,7 @@ function StepPreprint({
         </p>
       ) : null}
 
-      <Controls className="step-preprint__button-bar">
+      <Controls className="new-preprint__button-bar">
         <Button
           onClick={e => {
             setValue('');
@@ -256,8 +271,8 @@ function StepReview({ preprint, onViewInContext, onCancel, onReviewed }) {
   const canSubmit = checkIfAllAnswered(answerMap);
 
   return (
-    <div className="step-review">
-      <header>Add a Rapid PREreview</header>
+    <div className="new-preprint__step-review">
+      <header className="new-preprint__title">Add a Rapid PREreview</header>
 
       <NewPreprintPreview preprint={preprint} />
 
@@ -275,7 +290,7 @@ function StepReview({ preprint, onViewInContext, onCancel, onReviewed }) {
           }}
         />
 
-        <Controls error={postData.error}>
+        <Controls error={postData.error} className="new-preprint__button-bar">
           <Button
             onClick={e => {
               onCancel();
@@ -333,12 +348,12 @@ function StepRequest({ preprint, onViewInContext, onCancel, onRequested }) {
   const [post, postData] = usePostAction();
 
   return (
-    <div className="step-request">
-      <header>Request reviews</header>
+    <div className="new-preprint__step-request">
+      <header className="new-preprint__title">Confirm Review Request</header>
 
       <NewPreprintPreview preprint={preprint} />
 
-      <Controls error={postData.error}>
+      <Controls error={postData.error} className="new-preprint__button-bar">
         <Button
           onClick={e => {
             onCancel();

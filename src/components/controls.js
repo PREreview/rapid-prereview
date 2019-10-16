@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
-export default function Controls({ error, children }) {
+export default function Controls({ error, className, children }) {
   const errMsg = formatError(error);
 
   return (
-    <div className="controls">
+    <div className={classNames('controls', className)}>
       {!!errMsg && <div>{errMsg}</div>}
 
       <div className="controls__body">
@@ -15,6 +16,7 @@ export default function Controls({ error, children }) {
   );
 }
 Controls.propTypes = {
+  className: PropTypes.string,
   children: PropTypes.any,
   error: PropTypes.oneOfType([
     PropTypes.instanceOf(Error),

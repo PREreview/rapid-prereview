@@ -26,8 +26,8 @@
   --ui-basic-font-color: #181818;
   --ui-basic-font-color--light: rgb(120, 120, 120);
 
-  --ruling-color: var(--ui-basic-font-color--light);
-  --ruling-color--light: var(--light-grey);
+  --ruling-color: var(--light-grey);
+  --ruling-color--light: var(--xlight-grey);
 
   /* standard button colors */
   --button-background-color: transparent;

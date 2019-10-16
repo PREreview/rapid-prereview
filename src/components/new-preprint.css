@@ -1,9 +1,12 @@
 .new-preprint {
   font: var(--ui-basic-font);
-}
 
-.step-preprint {
-  & .step-preprint__button-bar {
+  & .new-preprint__title {
+    font: var(--ui-header-1-font);
+    margin-bottom: var(--mgrd);
+  }
+
+  & .new-preprint__button-bar {
     padding-top: var(--sgrd);
     display: flex;
     justify-content: flex-end;
@@ -13,7 +16,50 @@
     }
   }
 
-  & .step-preprint__input-row {
+  & .new-preprint__input-row {
     margin-bottom: var(--mgrd);
+  }
+
+  & .new-preprint__preview {
+    background-color: var(--xlight-grey);
+    padding: var(--sgrd) var(--sgrd);
+    border-radius: 2px;
+
+    & .new-preprint__preview__header {
+      display: flex;
+      align-items: baseline;
+      margin-bottom: var(--sgrd);
+    }
+    & .new-preprint__preview__title {
+      font: var(--ui-header-2-font);
+      hyphens: auto;
+      margin: 0;
+    }
+
+    & .new-preprint__preview__date {
+      font: var(--ui-header-2-font);
+      color: var(--ui-basic-font-color--light);
+      margin-left: var(--sgrd);
+      white-space: nowrap;
+    }
+
+    & .new-preprint__preview__info {
+      display: flex;
+      align-items: center;
+    }
+    & .new-preprint__preview__server {
+      color: var(--ui-basic-font-color--light);
+      white-space: nowrap;
+    }
+    & .new-preprint__preview__server-arrow-icon {
+      color: var(--ui-basic-font-color--light);
+      width: var(--sgrd);
+      height: var(--sgrd);
+      margin: 0 var(--xxsgrd);
+    }
+    & .new-preprint__preview__id {
+      color: var(--ui-basic-font-color--light);
+      white-space: nowrap;
+    }
   }
 }

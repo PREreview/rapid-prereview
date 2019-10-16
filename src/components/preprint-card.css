@@ -162,11 +162,16 @@
     display: flex;
     align-items: center;
     border-top: 1px solid var(--ruling-color--light);
-    padding: var(--xsgrd);
+    padding: var(--xsgrd) var(--xsgrd) var(--xsgrd) var(--sgrd);
     width: 100%;
 
     & .preprint-card__expansion-toggle {
       margin-left: auto;
+    }
+
+    & .preprint-card__expansion-toggle-icon {
+      width: var(--mgrd);
+      height: var(--mgrd);
     }
   }
 
