@@ -55,7 +55,7 @@ export default function SettingsRoles({ user }) {
               setEditedRoleId(null);
             }}
             onSaved={() => {
-              setEditedRoleId(null);
+              // setEditedRoleId(null);
             }}
           />
         </Modal>
