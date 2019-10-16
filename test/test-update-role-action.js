@@ -23,7 +23,7 @@ describe('UpdateRoleAction', function() {
     user = action.result;
   });
 
-  it.only('should update a role', async () => {
+  it('should update a role', async () => {
     const action = await db.post(
       {
         '@type': 'UpdateRoleAction',
@@ -37,7 +37,7 @@ describe('UpdateRoleAction', function() {
       { user }
     );
 
-    console.log(require('util').inspect(action, { depth: null }));
+    // console.log(require('util').inspect(action, { depth: null }));
 
     assert.equal(action.result.hasRole[0].name, 'updated name');
   });
