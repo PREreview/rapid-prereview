@@ -1,8 +1,14 @@
 .rapid-form-fragment {
+  margin-top: var(--mgrd);
+  & .rapid-form-fragment__divider {
+    border: none;
+    border-top: 2px solid var(--ruling-color);
+    margin: var(--mgrd) 0 var(--sgrd);
+  }
   & fieldset {
     padding: 0;
     border: none;
-    margin-top: var(--mgrd);
+    margin: 0;
   }
   & .radid-form-fragment__question-row {
     display: flex;
@@ -26,5 +32,25 @@
     justify-content: space-between;
     width: flex 0 0 50%;
     flex-wrap: wrap;
+  }
+
+  & .radid-form-fragment__text-question-row {
+    position: relative;
+    padding: var(--xsgrd);
+
+    &:nth-child(even) {
+      background-color: var(--xlight-grey);
+    }
+  }
+  & .radid-form-fragment__text-question {
+    display: block;
+    margin-bottom: var(--xsgrd);
+  }
+
+  & .radid-form-fragment__text-answer {
+    width: calc(100% - var(--xsgrd));
+    max-width: calc(100% - var(--xsgrd));
+    min-height: 6em;
+    resize: vertical;
   }
 }
