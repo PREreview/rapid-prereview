@@ -1,0 +1,30 @@
+.rapid-form-fragment {
+  & fieldset {
+    padding: 0;
+    border: none;
+    margin-top: var(--mgrd);
+  }
+  & .radid-form-fragment__question-row {
+    display: flex;
+    flex-wrap: wrap;
+    padding: var(--xsgrd);
+    align-items: center;
+    &:nth-child(even) {
+      background-color: var(--xlight-grey);
+    }
+  }
+  & .radid-form-fragment__question {
+    width: 50%;
+    margin: 0;
+    padding-right: var(--sgrd);
+    box-sizing: border-box;
+    hyphens: auto;
+  }
+  & .rapid-form-fragment__radio-group {
+    display: flex;
+    width: 50%;
+    justify-content: space-between;
+    width: flex 0 0 50%;
+    flex-wrap: wrap;
+  }
+}

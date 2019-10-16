@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { QUESTIONS } from '../constants';
 import Value from './value';
+import RadioButton from './radio-button';
 
 export default function RapidFormFragment({ answerMap = {}, onChange }) {
   function handleChange(key, value) {
@@ -24,57 +25,56 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
 
           return (
             <Fragment key={identifier}>
-              <Value tagName="p">{question}</Value>
+              <div className="radid-form-fragment__question-row">
+                <Value tagName="p" className="radid-form-fragment__question">
+                  {question}
+                </Value>
+                <div className="rapid-form-fragment__radio-group">
+                  <RadioButton
+                    inputId={`question-${identifier}-yes`}
+                    name={identifier}
+                    value="yes"
+                    checked={answer === 'yes'}
+                    onChange={e => {
+                      handleChange(identifier, 'yes');
+                    }}
+                    label="Yes"
+                  />
 
-              <input
-                type="radio"
-                id={`question-${identifier}-yes`}
-                name={identifier}
-                value="yes"
-                checked={answer === 'yes'}
-                onChange={e => {
-                  handleChange(identifier, 'yes');
-                }}
-              />
-              <label htmlFor={`question-${identifier}-yes`}>Yes</label>
+                  <RadioButton
+                    inputId={`question-${identifier}-no`}
+                    name={identifier}
+                    value="no"
+                    checked={answer === 'no'}
+                    onChange={e => {
+                      handleChange(identifier, 'no');
+                    }}
+                    label="No"
+                  />
 
-              <input
-                type="radio"
-                id={`question-${identifier}-no`}
-                name={identifier}
-                value="no"
-                checked={answer === 'no'}
-                onChange={e => {
-                  handleChange(identifier, 'no');
-                }}
-              />
-              <label htmlFor={`question-${identifier}-no`}>No</label>
+                  <RadioButton
+                    inputId={`question-${identifier}-na`}
+                    name={identifier}
+                    value="n.a."
+                    checked={answer === 'n.a.'}
+                    onChange={e => {
+                      handleChange(identifier, 'n.a.');
+                    }}
+                    label={<abbr title="Not Applicable">N.A.</abbr>}
+                  />
 
-              <input
-                type="radio"
-                id={`question-${identifier}-na`}
-                name={identifier}
-                value="n.a."
-                checked={answer === 'n.a.'}
-                onChange={e => {
-                  handleChange(identifier, 'n.a.');
-                }}
-              />
-              <label htmlFor={`question-${identifier}-na`}>
-                <abbr title="Not Applicable">N.A.</abbr>
-              </label>
-
-              <input
-                type="radio"
-                id={`question-${identifier}-unsure`}
-                name={identifier}
-                value="unsure"
-                checked={answer === 'unsure'}
-                onChange={e => {
-                  handleChange(identifier, 'unsure');
-                }}
-              />
-              <label htmlFor={`question-${identifier}-unsure`}>Unsure</label>
+                  <RadioButton
+                    inputId={`question-${identifier}-unsure`}
+                    name={identifier}
+                    value="unsure"
+                    checked={answer === 'unsure'}
+                    onChange={e => {
+                      handleChange(identifier, 'unsure');
+                    }}
+                    label="Unsure"
+                  />
+                </div>
+              </div>
             </Fragment>
           );
         })}
@@ -91,7 +91,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
               </Value>
 
               <textarea
-                id={`question-${identifier}`}
+                inputId={`question-${identifier}`}
                 name={identifier}
                 rows="2"
                 value={answer || ''}

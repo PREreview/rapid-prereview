@@ -21,7 +21,6 @@ export default function TextInput({
 
   useEffect(() => {
     if (inputRef.current && inputRef.current.value) {
-      console.log('value', inputRef.current.value);
       setEmpty(false);
     }
   }, [inputRef]);

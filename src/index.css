@@ -17,6 +17,8 @@
 @import './components/modal.css';
 @import './components/new-preprint.css';
 @import './components/preprint-card.css';
+@import './components/radio-button.css';
+@import './components/rapid-form-fragment.css';
 @import './components/rapid-pre-review-logo.css';
 @import './components/score-badge.css';
 @import './components/search-bar.css';
