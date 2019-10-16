@@ -42,6 +42,7 @@ export default function RoleEditor({ role, onCancel, onSaved }) {
     <div>
       <TextInput label="Display Name" />
 
+      {/* The Dropzone. Note that we remove the input if an image is present so that when user move the image with DmD it doesn't open the file picker */}
       <div {...getRootProps()}>
         <AvatarEditor
           ref={editorRef}
@@ -55,9 +56,18 @@ export default function RoleEditor({ role, onCancel, onSaved }) {
         {!image && <input {...getInputProps()} />}
       </div>
 
+      {/* Control to allow users to open the file picker (and to replace the one on the canvas). Once a file is in the canvas clicking on the canvas does _not_ open the file picker so this is necessary  */}
+      <label htmlFor="role-editor-input">
+        Click here to upload {image ? 'another' : 'a'} file or drag and drop it
+        to the area above.
+      </label>
+      <input {...getInputProps()} id="role-editor-input" />
+
       {!!image && (
         <div>
-          <input {...getInputProps()} style={{ display: '' }} />
+          <span>
+            Drag the image to select the part that you want part of your avatar
+          </span>
 
           <input
             type="range"
