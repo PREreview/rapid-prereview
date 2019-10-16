@@ -46,8 +46,8 @@ export default function RoleEditor({ role, onCancel, onSaved }) {
         <AvatarEditor
           ref={editorRef}
           image={image}
-          width={50}
-          height={50}
+          width={150}
+          height={150}
           border={50}
           scale={scale}
           rotate={rotate}
@@ -93,8 +93,17 @@ export default function RoleEditor({ role, onCancel, onSaved }) {
         </Button>
         <Button
           onClick={() => {
-            const canvas = editorRef.current.getImageScaledToCanvas();
-            console.log(canvas.toDataURL());
+            const canvas = editorRef.current.getImage();
+
+            // We need to keep the base64 string small to avoid hitting the
+            // size limit on JSON documents for Cloudant
+            let q = 0.92;
+            let dataUrl = canvas.toDataURL('image/jpeg', q);
+            while (dataUrl.length > 200000 && q > 0.1) {
+              q -= 0.05;
+              dataUrl = canvas.toDataURL('image/jpeg', q);
+            }
+
             onSaved();
           }}
         >
