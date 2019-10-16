@@ -19,7 +19,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
     <div className="rapid-form-fragment">
       <fieldset>{/* TODO title, datePosted and tags */}</fieldset>
 
-      <fieldset>
+      <fieldset className="rapid-form-fragment__multi-choice-questions">
         {yesNoQuestions.map(({ identifier, question, groupPrefix }, i) => {
           const answer = answerMap[identifier];
 
@@ -79,19 +79,27 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
           );
         })}
       </fieldset>
-
-      <fieldset>
+      <hr className="rapid-form-fragment__divider" />
+      <fieldset className="rapid-form-fragment__text-response-questions">
         {freeFormQuestions.map(({ identifier, question }) => {
           const answer = answerMap[identifier];
 
           return (
-            <div key={identifier}>
-              <Value tagName="label" htmlFor={`question-${identifier}`}>
+            <div
+              key={identifier}
+              className="radid-form-fragment__text-question-row"
+            >
+              <Value
+                tagName="label"
+                htmlFor={`question-${identifier}`}
+                className="radid-form-fragment__text-question"
+              >
                 {question}
               </Value>
 
               <textarea
-                inputId={`question-${identifier}`}
+                className="radid-form-fragment__text-answer"
+                id={`question-${identifier}`}
                 name={identifier}
                 rows="2"
                 value={answer || ''}
