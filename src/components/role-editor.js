@@ -5,15 +5,23 @@ import { useDropzone } from 'react-dropzone';
 import Button from './button';
 import Controls from './controls';
 import TextInput from './text-input';
+import { usePostAction } from '../hooks/api-hooks';
+import { getId } from '../utils/jsonld';
 
-export default function RoleEditor({ role, onCancel, onSaved }) {
+export default function RoleEditor({ user, role, onCancel, onSaved }) {
   const editorRef = useRef();
+  const [name, setName] = useState(role.name);
   const [image, setImage] = useState(role.avatar && role.avatar.contentUrl);
+  const [file, setFile] = useState(null);
   const [scale, setScale] = useState(1);
   const [rotate, setRotate] = useState(0);
+  const [post, postProgressData] = usePostAction();
 
   const onDrop = useCallback(acceptedFiles => {
     const [file] = acceptedFiles;
+    setScale(1);
+    setRotate(0);
+    setFile(file);
 
     const reader = new FileReader();
 
@@ -38,9 +46,17 @@ export default function RoleEditor({ role, onCancel, onSaved }) {
     onDrop
   });
 
+  const hasNewAvatar = !!file || (!file && (rotate !== 0 || scale !== 1));
+
   return (
     <div>
-      <TextInput label="Display Name" />
+      <TextInput
+        label="Display Name"
+        value={name}
+        onChange={e => {
+          setName(e.target.value);
+        }}
+      />
 
       {/* The Dropzone. Note that we remove the input if an image is present so that when user move the image with DmD it doesn't open the file picker */}
       <div {...getRootProps()}>
@@ -93,28 +109,56 @@ export default function RoleEditor({ role, onCancel, onSaved }) {
         </div>
       )}
 
-      <Controls>
+      <Controls error={postProgressData.error}>
         <Button
+          disabled={postProgressData.isActive}
           onClick={() => {
             onCancel();
           }}
         >
           Cancel
         </Button>
-        <Button
-          onClick={() => {
-            const canvas = editorRef.current.getImage();
 
-            // We need to keep the base64 string small to avoid hitting the
-            // size limit on JSON documents for Cloudant
-            let q = 0.92;
-            let dataUrl = canvas.toDataURL('image/jpeg', q);
-            while (dataUrl.length > 200000 && q > 0.1) {
-              q -= 0.05;
-              dataUrl = canvas.toDataURL('image/jpeg', q);
+        <Button
+          disabled={
+            (name === role.name && !hasNewAvatar) || postProgressData.isActive
+          }
+          onClick={() => {
+            const payload = {};
+            if (role.name !== name) {
+              payload.name = name;
+            }
+            if (hasNewAvatar) {
+              const canvas = editorRef.current.getImage();
+
+              // We need to keep the base64 string small to avoid hitting the
+              // size limit on JSON documents for Cloudant
+              let q = 0.92;
+              let dataUrl = canvas.toDataURL('image/jpeg', q);
+              while (dataUrl.length > 200000 && q > 0.1) {
+                q -= 0.05;
+                dataUrl = canvas.toDataURL('image/jpeg', q);
+              }
+
+              payload.avatar = {
+                '@type': 'ImageObject',
+                encodingFormat: file.type,
+                contentUrl: dataUrl
+              };
             }
 
-            onSaved();
+            post(
+              {
+                '@type': 'UpdateRoleAction',
+                agent: getId(user),
+                actionStatus: 'CompletedActionStatus',
+                object: getId(role),
+                payload
+              },
+              action => {
+                onSaved(action);
+              }
+            );
           }}
         >
           Submit
@@ -127,6 +171,9 @@ export default function RoleEditor({ role, onCancel, onSaved }) {
 RoleEditor.propTypes = {
   onCancel: PropTypes.func.isRequired,
   onSaved: PropTypes.func.isRequired,
+  user: PropTypes.shape({
+    '@id': PropTypes.string.isRequired
+  }).isRequired,
   role: PropTypes.shape({
     '@id': PropTypes.string.isRequired,
     '@type': PropTypes.oneOf(['PublicReviewerRole', 'AnonymousReviewerRole']),

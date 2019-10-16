@@ -5,15 +5,16 @@ import { unprefix, getId, arrayify } from '../utils/jsonld';
 import { createPreprintId } from '../utils/ids';
 import { preprintsWithActionsStore } from '../stores/preprint-stores';
 import { roleStore } from '../stores/user-stores';
-
-// TODO stores directory each store inherit from EventEmitter and store object in LRU
-// addListenner and removeListenner in useEffect
+import { useUser } from '../contexts/user-context';
+// TODO update user on post updateRoleAction results
 
 /**
  * Use to POST an Action to the API and keep track of the request progress /
  * error
  */
 export function usePostAction() {
+  const [, setUser] = useUser();
+
   const isMounted = useRef(false);
   useEffect(() => {
     isMounted.current = true;
@@ -71,7 +72,17 @@ export function usePostAction() {
         }
       })
       .then(body => {
-        preprintsWithActionsStore.upsertAction(action);
+        preprintsWithActionsStore.upsertAction(body);
+        roleStore.setFromAction(body);
+
+        if (
+          body['@type'] === 'CreateRoleAction' ||
+          body['@type'] === 'UpdateRoleAction' ||
+          body['@type'] === 'DeanonymizeRoleAction'
+        ) {
+          setUser(body.result);
+        }
+
         if (isMounted.current) {
           setState({ isActive: false, error: null, body });
           onSuccess(body);
@@ -385,6 +396,21 @@ export function useRole(roleId) {
   });
 
   const [role, setRole] = useState(null);
+
+  useEffect(() => {
+    // keep `role` up-to-date
+    function update(role) {
+      if (getId(role) === getId(roleId)) {
+        setRole(role);
+      }
+    }
+
+    roleStore.addListener('SET', update);
+
+    return () => {
+      roleStore.removeListener('SET', update);
+    };
+  }, [roleId]);
 
   useEffect(() => {
     if (roleId) {

@@ -24,14 +24,14 @@ export default function UserBadge({ user, children }) {
 
 UserBadge.propTypes = {
   user: PropTypes.shape({
-    '@id': PropTypes.string,
+    '@id': PropTypes.string.isRequired,
     '@type': PropTypes.oneOf([
       'Person',
       'PublicReviewerRole',
       'AnonymousReviewerRole'
-    ]),
+    ]).isRequired,
     name: PropTypes.string,
-    gravatar: PropTypes.shape({
+    avatar: PropTypes.shape({
       '@type': PropTypes.oneOf(['ImageObject']),
       contentUrl: PropTypes.string
     })

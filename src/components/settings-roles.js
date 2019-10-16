@@ -48,14 +48,16 @@ export default function SettingsRoles({ user }) {
           }}
         >
           <RoleEditor
+            key={editedRoleId}
+            user={user}
             role={arrayify(user.hasRole).find(
               role => getId(role) === editedRoleId
             )}
             onCancel={() => {
               setEditedRoleId(null);
             }}
-            onSaved={() => {
-              // setEditedRoleId(null);
+            onSaved={action => {
+              setEditedRoleId(null);
             }}
           />
         </Modal>

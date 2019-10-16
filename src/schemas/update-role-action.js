@@ -43,7 +43,7 @@ const schema = {
           properties: {
             '@type': {
               type: 'string',
-              const: 'UpdateRoleAction'
+              const: 'ImageObject'
             },
             encodingFormat: {
               type: 'string',

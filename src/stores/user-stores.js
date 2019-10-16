@@ -33,6 +33,23 @@ class RoleStore extends EventEmitter {
     }
   }
 
+  setFromAction(action) {
+    switch (action['@type']) {
+      case 'UpdateRoleAction': {
+        const updatedRole = action.result.hasRole.find(
+          role => getId(role) === getId(action.object)
+        );
+        if (updatedRole) {
+          this.set(updatedRole);
+        }
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+
   del(roleId, { emit = true } = {}) {
     if (emit) {
       this.emit('DEL', this.peek(getId(roleId)));
