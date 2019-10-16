@@ -23,19 +23,7 @@ export default function RadioButton({
     >
       {/*  The label element is responsible for triggering the onChange callback 
       of the radio-button since the native radio-button element will be visually hidden. */}
-      <label
-        htmlFor={inputId}
-        className="radio-button__contents"
-        onMouseDown={e => {
-          setFocusSource('mouse');
-        }}
-        onFocus={e => {
-          if (focusSource !== 'mouse') {
-            setFocused(true);
-            setFocusSource(undefined);
-          }
-        }}
-      >
+      <label htmlFor={inputId} className="radio-button__contents">
         <input
           className="radio-button__input"
           disabled={disabled}
