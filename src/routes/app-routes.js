@@ -5,7 +5,7 @@ const router = new Router({ caseSensitive: true });
 
 /**
  * `:p1` and `:p2` can be part of an identifer (e.g.DOI)
- * or `/about/<username>` or `/settings/profile`
+ * or `/about/:roleId` or `/settings/profile`
  */
 router.get('/:p1?/:p2?', (req, res, next) => {
   getBundlePaths((err, bundles) => {

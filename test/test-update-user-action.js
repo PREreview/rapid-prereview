@@ -3,7 +3,7 @@ import DB from '../src/db/db';
 import { getId } from '../src/utils/jsonld';
 import { createRandomOrcid } from '../src/utils/orcid';
 
-describe('UpdateRoleAction', function() {
+describe('UpdateUserAction', function() {
   this.timeout(40000);
 
   let user;
@@ -23,16 +23,16 @@ describe('UpdateRoleAction', function() {
     user = action.result;
   });
 
-  it('should update a role', async () => {
+  it('should update a user', async () => {
     const now = new Date().toISOString();
     const action = await db.post(
       {
-        '@type': 'UpdateRoleAction',
+        '@type': 'UpdateUserAction',
         agent: getId(user),
         actionStatus: 'CompletedActionStatus',
-        object: getId(user.hasRole[0]),
+        object: getId(user),
         payload: {
-          name: 'updated name'
+          defaultRole: getId(user.hasRole[1])
         }
       },
       { user, now }
@@ -40,8 +40,8 @@ describe('UpdateRoleAction', function() {
 
     // console.log(require('util').inspect(action, { depth: null }));
 
-    assert.equal(action.result.hasRole[0].name, 'updated name');
-    // we need `modifiedDate` for the reconciliation logic
-    assert.equal(action.result.hasRole[0].modifiedDate, now);
+    assert.equal(action.result.defaultRole, getId(user.hasRole[1]));
+    // we need `dateModified` for the reconciliation logic
+    assert.equal(action.result.dateModified, now);
   });
 });

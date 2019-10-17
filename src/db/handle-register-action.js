@@ -100,19 +100,31 @@ export default async function handleRegisterAction(
       }
     );
   } else {
-    const roleId = `role:${uuid.v4()}`;
+    // First time a profile is created
+    const anonRoleId = `role:${uuid.v4()}`;
+    const publicRoleId = `role:${uuid.v4()}`;
+
     merged = cleanup({
       _id: userId,
       '@id': userId,
       '@type': 'Person',
+      dateCreated: now,
       dateModified: now,
       orcid: orcidUtils.toDashFormat(orcid),
       name: action.agent.name,
+      defaultRole: anonRoleId,
       hasRole: [
         {
-          '@id': roleId,
+          '@id': anonRoleId,
           '@type': 'AnonymousReviewerRole',
-          name: unprefix(roleId),
+          name: unprefix(anonRoleId),
+          startDate: now,
+          modifiedDate: now
+        },
+        {
+          '@id': publicRoleId,
+          '@type': 'PublicReviewerRole',
+          name: unprefix(publicRoleId),
           startDate: now,
           modifiedDate: now
         }

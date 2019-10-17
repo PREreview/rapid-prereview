@@ -25,6 +25,7 @@ export default async function deanonymizeRoleAction(
   }
 
   const nextUser = await this.getUserByRoleId(roleId);
+  // TODO handle conflicts on user on read
 
   const nextRole = nextUser.hasRole.find(role => getId(role) === roleId);
   if (!nextRole) {

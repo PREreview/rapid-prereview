@@ -1,11 +1,11 @@
 const schema = {
-  $id: 'https://rapid.prereview.org/schemas/update-role-action.json',
+  $id: 'https://rapid.prereview.org/schemas/update-user-action.json',
 
   type: 'object',
   properties: {
     '@type': {
       type: 'string',
-      const: 'UpdateRoleAction'
+      const: 'UpdateUserAction'
     },
     actionStatus: {
       type: 'string',
@@ -30,7 +30,7 @@ const schema = {
     },
     object: {
       type: 'string',
-      pattern: '^role:'
+      pattern: '^user:'
     },
     payload: {
       type: 'object',
@@ -38,24 +38,9 @@ const schema = {
         name: {
           type: 'string'
         },
-        avatar: {
-          type: 'object',
-          properties: {
-            '@type': {
-              type: 'string',
-              const: 'ImageObject'
-            },
-            encodingFormat: {
-              type: 'string',
-              enum: ['image/jpeg', 'image/png']
-            },
-            contentUrl: {
-              type: 'string',
-              pattern: '^data:image/(png|jpeg);base64' // prettier-ignore eslint-ignore-line
-            }
-          },
-          required: ['@type', 'encodingFormat', 'contentUrl'],
-          additionalProperties: false
+        defaultRole: {
+          type: 'string',
+          pattern: '^role:'
         }
       },
       additionalProperties: false

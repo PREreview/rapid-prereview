@@ -4,6 +4,7 @@ import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
 import handleUpdateRoleAction from './handle-update-role-action';
+import handleUpdateUserAction from './handle-update-user-action';
 import handleRequestForRapidPrereviewAction from './handle-request-for-rapid-prereview-action';
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
@@ -430,6 +431,13 @@ export default class DB {
       case 'CreateRoleAction':
         // TODO
         break;
+
+      case 'UpdateUserAction':
+        return handleUpdateUserAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
 
       case 'UpdateRoleAction':
         return handleUpdateRoleAction.call(this, action, {

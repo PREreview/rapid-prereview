@@ -121,6 +121,9 @@ router.get('/role/:roleId', async (req, res, next) => {
   }
 });
 
+// TODO /avatar/:roleId
+// Get the avatar associated with the `roleId`
+
 /**
  * Post an action (side effects)
  */

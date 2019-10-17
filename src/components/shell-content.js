@@ -12,12 +12,13 @@ import {
   checkIfHasReviewed,
   checkIfHasRequested
 } from '../utils/actions';
-import { getId, arrayify } from '../utils/jsonld';
+import { getId } from '../utils/jsonld';
 import { createPreprintIdentifierCurie } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
 import { getYesNoStats, getTextAnswers } from '../utils/stats';
 import Barplot from './barplot';
 import TextAnswers from './text-answers';
+import { getDefaultRole } from '../utils/users';
 
 export default function ShellContent({ preprint, defaultTab = 'read' }) {
   const [user] = useUser();
@@ -177,7 +178,7 @@ function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
               onSubmit({
                 '@type': 'RapidPREreviewAction',
                 actionStatus: 'CompletedActionStatus',
-                agent: getId(arrayify(user.hasRole)[0]),
+                agent: getId(getDefaultRole(user)),
                 object: createPreprintIdentifierCurie(preprint),
                 resultReview: {
                   '@type': 'RapidPREreview',
@@ -212,7 +213,7 @@ function ShellContentRequest({ user, preprint, onSubmit, disabled, error }) {
             onSubmit({
               '@type': 'RequestForRapidPREreviewAction',
               actionStatus: 'CompletedActionStatus',
-              agent: getId(arrayify(user.hasRole)[0]),
+              agent: getId(getDefaultRole(user)),
               object: createPreprintIdentifierCurie(preprint)
             });
           }}

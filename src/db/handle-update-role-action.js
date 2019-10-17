@@ -3,7 +3,7 @@ import schema from '../schemas/update-role-action';
 import { getId, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 
-export default async function updateRoleAction(
+export default async function handleUpdateRoleAction(
   action,
   { strict = true, user = null, now = new Date().toISOString() } = {}
 ) {
@@ -25,13 +25,14 @@ export default async function updateRoleAction(
   }
 
   const nextUser = await this.getUserByRoleId(roleId);
+  // TODO handle conflicts on user on read
 
   const nextRole = nextUser.hasRole.find(role => getId(role) === roleId);
   if (!nextRole) {
     throw createError(400, 'Cannot find role ${roleId} in ${getId(nextUser)}');
   }
 
-  Object.assign(nextRole, action.payload);
+  Object.assign(nextRole, action.payload, { modifiedDate: now });
 
   const resp = await this.users.insert(nextUser, getId(nextUser));
 

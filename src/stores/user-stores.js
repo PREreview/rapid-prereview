@@ -2,6 +2,8 @@ import { EventEmitter } from 'events';
 import LRU from 'lru-cache';
 import { getId } from '../utils/jsonld';
 
+// TODO use a store provider so that we can test more easily
+
 class RoleStore extends EventEmitter {
   constructor({ max = 1000 } = {}) {
     super();

@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import { MdChevronRight } from 'react-icons/md';
 import Value from './value';
 import { createPreprintIdentifierCurie } from '../utils/ids';
-import { getId, arrayify, unprefix } from '../utils/jsonld';
+import { getId, unprefix } from '../utils/jsonld';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
 import RapidFormFragment from './rapid-form-fragment';
 import { useUser } from '../contexts/user-context';
@@ -15,6 +15,7 @@ import { getReviewAnswers, checkIfAllAnswered } from '../utils/actions';
 import Controls from './controls';
 import Button from './button';
 import TextInput from './text-input';
+import { getDefaultRole } from '../utils/users';
 
 export default function NewPreprint({
   onCancel,
@@ -305,7 +306,7 @@ function StepReview({ preprint, onViewInContext, onCancel, onReviewed }) {
                 {
                   '@type': 'RapidPREreviewAction',
                   actionStatus: 'CompletedActionStatus',
-                  agent: getId(arrayify(user.hasRole)[0]),
+                  agent: getId(getDefaultRole(user)),
                   object: createPreprintIdentifierCurie(preprint),
                   resultReview: {
                     '@type': 'RapidPREreview',
@@ -368,7 +369,7 @@ function StepRequest({ preprint, onViewInContext, onCancel, onRequested }) {
               {
                 '@type': 'RequestForRapidPREreviewAction',
                 actionStatus: 'CompletedActionStatus',
-                agent: getId(arrayify(user.hasRole)[0]),
+                agent: getId(getDefaultRole(user)),
                 object: createPreprintIdentifierCurie(preprint)
               },
               onRequested
