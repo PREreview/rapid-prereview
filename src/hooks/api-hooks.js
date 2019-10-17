@@ -3,8 +3,7 @@ import noop from 'lodash/noop';
 import { createError } from '../utils/errors';
 import { unprefix, getId, arrayify } from '../utils/jsonld';
 import { createPreprintId } from '../utils/ids';
-import { preprintsWithActionsStore } from '../stores/preprint-stores';
-import { roleStore } from '../stores/user-stores';
+import { useStores } from '../contexts/store-context';
 import { useUser } from '../contexts/user-context';
 // TODO update user on post updateRoleAction results
 
@@ -37,6 +36,8 @@ export function usePostAction() {
     error: null,
     body: null
   });
+
+  const { preprintsWithActionsStore, roleStore } = useStores();
 
   // Note: `onSuccess` and `onError` are only called if the component is still
   // mounted
@@ -122,6 +123,8 @@ export function usePreprint(
 
   const [preprint, setPreprint] = useState(null);
 
+  const { preprintsWithActionsStore } = useStores();
+
   useEffect(() => {
     if (identifier) {
       let cached;
@@ -193,7 +196,7 @@ export function usePreprint(
       });
       setPreprint(null);
     }
-  }, [identifier, prefetchedPreprint]);
+  }, [identifier, prefetchedPreprint, preprintsWithActionsStore]);
 
   return [preprint, progress];
 }
@@ -210,6 +213,8 @@ export function usePreprintActions(identifier) {
 
   const [actions, setActions] = useState([]);
 
+  const { preprintsWithActionsStore } = useStores();
+
   useEffect(() => {
     // keep `actions` up-to-date
     function update(preprint) {
@@ -223,7 +228,7 @@ export function usePreprintActions(identifier) {
     return () => {
       preprintsWithActionsStore.removeListener('SET', update);
     };
-  }, [identifier]);
+  }, [identifier, preprintsWithActionsStore]);
 
   useEffect(() => {
     if (identifier) {
@@ -276,7 +281,7 @@ export function usePreprintActions(identifier) {
       });
       setActions([]);
     }
-  }, [identifier]);
+  }, [identifier, preprintsWithActionsStore]);
 
   return [actions, progress];
 }
@@ -308,6 +313,8 @@ export function usePreprintSearchResults(
 
   const [results, setResults] = useState(DEFAULT_SEARCH_RESULTS);
 
+  const { preprintsWithActionsStore } = useStores();
+
   useEffect(() => {
     // keep `results` up-to-date
     function update(preprint) {
@@ -332,7 +339,7 @@ export function usePreprintSearchResults(
     return () => {
       preprintsWithActionsStore.removeListener('SET', update);
     };
-  }, [results]);
+  }, [results, preprintsWithActionsStore]);
 
   useEffect(() => {
     setProgress({
@@ -381,7 +388,7 @@ export function usePreprintSearchResults(
       setProgress({ isActive: false, error: null });
       controller.abort();
     };
-  }, [search]);
+  }, [search, preprintsWithActionsStore]);
 
   return [results, progress];
 }
@@ -397,6 +404,8 @@ export function useRole(roleId) {
 
   const [role, setRole] = useState(null);
 
+  const { roleStore } = useStores();
+
   useEffect(() => {
     // keep `role` up-to-date
     function update(role) {
@@ -410,7 +419,7 @@ export function useRole(roleId) {
     return () => {
       roleStore.removeListener('SET', update);
     };
-  }, [roleId]);
+  }, [roleId, roleStore]);
 
   useEffect(() => {
     if (roleId) {
@@ -472,7 +481,7 @@ export function useRole(roleId) {
       });
       setRole(null);
     }
-  }, [roleId]);
+  }, [roleId, roleStore]);
 
   return [role, progress];
 }

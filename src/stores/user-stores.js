@@ -4,7 +4,7 @@ import { getId } from '../utils/jsonld';
 
 // TODO use a store provider so that we can test more easily
 
-class RoleStore extends EventEmitter {
+export class RoleStore extends EventEmitter {
   constructor({ max = 1000 } = {}) {
     super();
     this.cache = new LRU({ max });
@@ -59,5 +59,3 @@ class RoleStore extends EventEmitter {
     return this.cache.del(getId(roleId));
   }
 }
-
-export const roleStore = new RoleStore();

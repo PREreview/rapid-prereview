@@ -6,7 +6,7 @@ import { arrayify, getId } from '../utils/jsonld';
 
 // TODO use a store provider so that we can test more easily
 
-class PreprintsWithActionsStore extends EventEmitter {
+export class PreprintsWithActionsStore extends EventEmitter {
   constructor({ max = 100 } = {}) {
     super();
     this.cache = new LRU({ max });
@@ -76,5 +76,3 @@ class PreprintsWithActionsStore extends EventEmitter {
     }
   }
 }
-
-export const preprintsWithActionsStore = new PreprintsWithActionsStore();
