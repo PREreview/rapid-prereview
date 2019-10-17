@@ -27,13 +27,23 @@ export default function RoleBadge({ roleId, children }) {
 
       {/* Note: MenuList is currently bugged if children is undefined hence the ternary */}
       {children ? (
-        <MenuList>
-          <MenuLink href={`/about/${unprefix(roleId)}`}>Profile</MenuLink>
+        <MenuList className="menu__list">
+          <MenuLink
+            className="menu__list__link-item"
+            href={`/about/${unprefix(roleId)}`}
+          >
+            Profile
+          </MenuLink>
           {children}
         </MenuList>
       ) : (
-        <MenuList>
-          <MenuLink href={`/about/${unprefix(roleId)}`}>Profile</MenuLink>
+        <MenuList className="menu__list">
+          <MenuLink
+            className="menu__list__link-item"
+            href={`/about/${unprefix(roleId)}`}
+          >
+            Profile
+          </MenuLink>
         </MenuList>
       )}
     </Menu>

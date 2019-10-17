@@ -1,0 +1,30 @@
+/* styles for the reach menu component */
+[data-reach-menu-button] {
+  background-color: none;
+  border: none;
+  cursor: pointer;
+  &:focus {
+    outline: none;
+  }
+}
+[data-reach-menu-list] {
+  border: 1px solid var(--light-grey) !important;
+  box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.15);
+  padding: var(--xsgrd) 0 !important;
+  min-width: 100px;
+
+  & [data-reach-menu-item] {
+    color: var(--menu-item-text-color);
+    background-color: var(--menu-item-bg-color);
+    text-align: left;
+    padding: var(--xsgrd);
+    font: var(--ui-basic-font-size);
+    letter-spacing: 0.05em;
+
+    &:hover,
+    &[data-selected] {
+      color: var(--menu-item-text-color--hover);
+      background-color: var(--menu-item-bg-color--hover);
+    }
+  }
+}

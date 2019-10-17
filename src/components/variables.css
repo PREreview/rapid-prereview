@@ -54,6 +54,12 @@
   --barplot-unsure: var(--prereview-spring-green);
   --barplot-na: var(--prereview-grey);
 
+  /* Menu Colors */
+  --menu-item-bg-color: var(--prereview-white);
+  --menu-item-text-color: var(--ui-basic-font-color);
+  --menu-item-bg-color--hover: var(--prereview-blue);
+  --menu-item-text-color--hover: var(--prereview-white);
+
   /* standard dimensions */
   --header-bar-height: 72px;
   --search-bar-height: 72px;
