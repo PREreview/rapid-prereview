@@ -1,3 +1,10 @@
 .profile {
   padding-top: var(--header-bar-height);
+
+  & header {
+    & img {
+      max-height: 150px;
+      max-width: 150px;
+    }
+  }
 }
