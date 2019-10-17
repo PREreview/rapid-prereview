@@ -21,6 +21,14 @@ const ddoc = {
   },
   indexes: {
     actions: {
+      analyzer: {
+        name: 'perfield',
+        default: 'english',
+        fields: {
+          '@type': 'keyword',
+          agentId: 'keyword'
+        }
+      },
       // This is used to display the activity feed of the profile page
       index: function(doc) {
         if (

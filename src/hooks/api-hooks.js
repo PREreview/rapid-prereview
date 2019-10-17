@@ -8,6 +8,13 @@ import { roleStore } from '../stores/user-stores';
 import { useUser } from '../contexts/user-context';
 // TODO update user on post updateRoleAction results
 
+const DEFAULT_SEARCH_RESULTS = {
+  bookmark: null,
+  rows: [],
+  total_rows: 0,
+  counts: {}
+};
+
 /**
  * Use to POST an Action to the API and keep track of the request progress /
  * error
@@ -274,13 +281,6 @@ export function usePreprintActions(identifier) {
   return [actions, progress];
 }
 
-const defaultResults = {
-  bookmark: null,
-  rows: [],
-  total_rows: 0,
-  counts: {}
-};
-
 /**
  * Get all the `RapidPREreviewAction` and `RequestForRapidPREreviewAction`
  * associated with a preprint
@@ -306,7 +306,7 @@ export function usePreprintSearchResults(
     error: null
   });
 
-  const [results, setResults] = useState(defaultResults);
+  const [results, setResults] = useState(DEFAULT_SEARCH_RESULTS);
 
   useEffect(() => {
     // keep `results` up-to-date
@@ -339,7 +339,7 @@ export function usePreprintSearchResults(
       isActive: true,
       error: null
     });
-    setResults(defaultResults);
+    setResults(DEFAULT_SEARCH_RESULTS);
 
     const controller = new AbortController();
 
@@ -374,7 +374,7 @@ export function usePreprintSearchResults(
         if (err.name !== 'AbortError') {
           setProgress({ isActive: false, error: err });
         }
-        setResults(defaultResults);
+        setResults(DEFAULT_SEARCH_RESULTS);
       });
 
     return () => {
@@ -475,4 +475,63 @@ export function useRole(roleId) {
   }, [roleId]);
 
   return [role, progress];
+}
+
+/**
+ * Search using the `actions` index
+ */
+export function useActionsSearchResults(
+  search // the ?qs part of the url
+) {
+  const [progress, setProgress] = useState({
+    isActive: false,
+    error: null
+  });
+
+  const [results, setResults] = useState(DEFAULT_SEARCH_RESULTS);
+
+  useEffect(() => {
+    setProgress({
+      isActive: true,
+      error: null
+    });
+    setResults(DEFAULT_SEARCH_RESULTS);
+
+    const controller = new AbortController();
+
+    fetch(`/api/action/${search}`, {
+      signal: controller.signal
+    })
+      .then(resp => {
+        if (resp.ok) {
+          return resp.json();
+        } else {
+          return resp.json().then(
+            body => {
+              throw createError(resp.status, body.description || body.name);
+            },
+            err => {
+              throw createError(resp.status, 'something went wrong');
+            }
+          );
+        }
+      })
+      .then(data => {
+        setResults(data);
+        setProgress({ isActive: false, error: null });
+      })
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          setProgress({ isActive: false, error: err });
+        }
+        setResults(DEFAULT_SEARCH_RESULTS);
+      });
+
+    return () => {
+      setProgress({ isActive: false, error: null });
+      controller.abort();
+    };
+  }, [search]);
+
+  return [results, progress];
 }

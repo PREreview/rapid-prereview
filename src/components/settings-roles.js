@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { getId, unprefix, arrayify } from '../utils/jsonld';
 import Button from './button';
 import Modal from './modal';
@@ -22,7 +23,9 @@ export default function SettingsRoles({ user }) {
       <ul>
         {arrayify(user.hasRole).map(role => (
           <li key={getId(role)}>
-            <span>{role.name || unprefix(getId(role))}</span>
+            <Link to={`/about/${unprefix(getId(role))}`}>
+              {role.name || unprefix(getId(role))}
+            </Link>
 
             <span>
               {role['@type'] === 'PublicReviewerRole' ? 'Public' : 'Anonymous'}

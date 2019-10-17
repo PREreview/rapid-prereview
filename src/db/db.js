@@ -1,5 +1,6 @@
 import Cloudant from '@cloudant/cloudant';
 import uniqBy from 'lodash/uniqBy';
+import omit from 'lodash/omit';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
@@ -161,6 +162,7 @@ export default class DB {
         )
       )
     ]);
+
     return resps;
   }
 
@@ -207,7 +209,16 @@ export default class DB {
         );
 
         return role['@type'] === 'PublicReviewerRole'
-          ? Object.assign({}, role, { isRoleOf: embedder })
+          ? Object.assign({}, role, {
+              isRoleOf: cleanup(
+                Object.assign({}, omit(embedder, ['token']), {
+                  hasRole: arrayify(embedder.hasRole).filter(
+                    role => role['@type'] !== 'AnonymousReviewerRole'
+                  )
+                }),
+                { removeEmptyArray: true }
+              )
+            })
           : role;
       }
 
@@ -298,6 +309,16 @@ export default class DB {
 
   streamPreprints(params, { user = null } = {}) {
     return this.index.searchAsStream('ddoc-index', 'preprints', params);
+  }
+
+  async searchActions(params, { user = null } = {}) {
+    const results = await this.docs.search('ddoc-docs', 'actions', params);
+
+    return results;
+  }
+
+  streamActions(params, { user = null } = {}) {
+    return this.docs.searchAsStream('ddoc-docs', 'actions', params);
   }
 
   async searchReviews(params, { user = null } = {}) {}

@@ -140,7 +140,30 @@ router.post('/action', jsonParser, async (req, res, next) => {
   }
 });
 
-// TODO search actions (for profile)
+/**
+ * Search for actions
+ */
+router.get('/action', parseQuery, (req, res, next) => {
+  res.setHeader('content-type', 'application/json');
+
+  let hasErrored = false;
+
+  const s = req.db.streamActions(req.query);
+  s.on('error', err => {
+    if (!hasErrored) {
+      hasErrored = true;
+      next(err);
+    }
+
+    try {
+      s.destroy();
+    } catch (err) {
+      // noop
+    }
+  });
+
+  s.pipe(res);
+});
 
 /**
  * Resolve (get metadata) for an identifier passed as query string paramenter
