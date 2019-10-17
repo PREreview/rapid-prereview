@@ -7,21 +7,24 @@ import { useRole } from '../hooks/api-hooks';
 export default function RoleBadge({ roleId, children }) {
   const [role, fetchRoleProgress] = useRole(roleId);
 
-  if (fetchRoleProgress.isActive) {
-    return null;
-  }
-
   return (
     <Menu>
       <MenuButton
+        className="role-badge"
         style={
-          role.avatar && role.avatar.contentUrl
-            ? { background: `url(${role.avatar.contentUrl})` }
+          role && role.avatar && role.avatar.contentUrl
+            ? {
+                background: `url(${role.avatar.contentUrl})`,
+                backgroundSize: 'contain'
+              }
             : undefined
         }
       >
-        {role.name}
+        {role && role.avatar && role.avatar.contentUrl
+          ? ''
+          : (role && role.name) || unprefix(roleId)}
       </MenuButton>
+
       {/* Note: MenuList is currently bugged if children is undefined hence the ternary */}
       {children ? (
         <MenuList>

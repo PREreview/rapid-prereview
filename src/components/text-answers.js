@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Value from './value';
+import RoleBadge from './role-badge';
 
 export default function TextAnswers({ answers }) {
   return (
@@ -13,10 +14,10 @@ export default function TextAnswers({ answers }) {
             </dt>
             {answers.map(({ roleId, text }) => (
               <dd className="text-answers__response-row" key={roleId}>
-                {/* TODO gravatar */}
-                <span className="text-answers__user-badge-container">
-                  {roleId}
-                </span>
+                <div className="text-answers__user-badge-container">
+                  <RoleBadge roleId={roleId} />
+                </div>
+
                 <Value className="text-answers__response">{text}</Value>
               </dd>
             ))}

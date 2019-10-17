@@ -1,0 +1,8 @@
+.role-badge {
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  border-radius: 20px;
+  background-color: var(--prereview-grey);
+  color: white;
+}

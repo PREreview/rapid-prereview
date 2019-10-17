@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 
 import faker from 'faker';
+import fetch from 'node-fetch';
 import sample from 'lodash/sample';
 import sampleSize from 'lodash/sampleSize';
 import { QUESTIONS } from '../src/constants';
@@ -51,7 +52,46 @@ const identifiers = Object.keys(id2paths).filter(
       }
     });
     console.log(`\t- ${action.result.name} (${action.result.orcid})`);
-    users.push(action.result);
+
+    let user = action.result;
+
+    // add avatars
+    for (const type of ['AnonymousReviewerRole', 'PublicReviewerRole']) {
+      const role = user.hasRole.find(role => role['@type'] === type);
+
+      const avatarUrl = faker.image.avatar();
+
+      console.log(
+        `\t\t- setting avatar ${avatarUrl} for ${type} (${getId(role)})`
+      );
+      const r = await fetch(avatarUrl);
+      if (r.ok) {
+        console.log(r.headers.get('Content-Type'));
+      }
+      const buffer = await r.buffer();
+
+      const updateRoleAction = await db.post(
+        {
+          '@type': 'UpdateRoleAction',
+          actionStatus: 'CompletedActionStatus',
+          agent: getId(user),
+          object: getId(role),
+          payload: {
+            avatar: {
+              '@type': 'ImageObject',
+              encodingFormat: r.headers.get('Content-Type'),
+              contentUrl: `data:${r.headers.get(
+                'Content-Type'
+              )};base64,${buffer.toString('base64')}`
+            }
+          }
+        },
+        { user }
+      );
+      user = updateRoleAction.result;
+    }
+
+    users.push(user);
   }
 
   for (const identifier of identifiers) {
