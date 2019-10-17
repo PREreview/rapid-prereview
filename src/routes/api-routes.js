@@ -140,6 +140,8 @@ router.post('/action', jsonParser, async (req, res, next) => {
   }
 });
 
+// TODO search actions (for profile)
+
 /**
  * Resolve (get metadata) for an identifier passed as query string paramenter
  * `identifier` (wrapped in `encodeURIComponent)

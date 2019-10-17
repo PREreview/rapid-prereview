@@ -20,7 +20,7 @@ export default function App({ user }) {
           <Route exact={true} path="/login">
             <Login />
           </Route>
-          <Route exact={true} path="/about/:id">
+          <Route exact={true} path="/about/:roleId">
             <Profile />
           </Route>
           <PrivateRoute exact={true} path="/settings">

@@ -8,6 +8,7 @@
     "log-cloudant": "docker logs cloudant-developer",
     "start": "babel-node ./src/server.js",
     "seed": "babel-node ./scripts/seed.js",
+    "ddocs": "babel-node ./scripts/ddocs.js",
     "init": "babel-node ./scripts/init.js",
     "harvest": "babel-node ./scripts/harvest.js",
     "build:client": "rm -rf ./public/assets/* && cross-env NODE_ENV=production webpack --progress",

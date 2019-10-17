@@ -20,9 +20,25 @@ const ddoc = {
     }
   },
   indexes: {
-    action: {
+    actions: {
+      // This is used to display the activity feed of the profile page
       index: function(doc) {
-        index('name', doc.name);
+        if (
+          doc['@type'] === 'RapidPREreviewAction' ||
+          doc['@type'] === 'RequestForRapidPREreviewAction'
+        ) {
+          index('@type', doc['@type'], { facet: true });
+
+          var agentId = doc.agent['@id'] || doc.agent;
+          if (typeof agentId === 'string') {
+            index('agentId', agentId);
+          }
+
+          var startTime = doc.startTime
+            ? new Date(doc.startTime).getTime()
+            : new Date('0000').getTime();
+          index('startTime', startTime, { facet: true });
+        }
       }
     }
   }

@@ -119,10 +119,47 @@ export default class DB {
       }, {});
     }
 
+    const revMap = await Promise.all([
+      this.docs.head(ddocDocs._id).catch(err => {
+        // noop
+      }),
+      this.users.head(ddocUsers._id).catch(err => {
+        // noop
+      }),
+      this.index.head(ddocIndex._id).catch(err => {
+        // noop
+      })
+    ]).then(heads => {
+      return heads.filter(Boolean).reduce((map, head) => {
+        const _id = head.uri
+          .split('/')
+          .slice(-2)
+          .join('/');
+        map[_id] = head.etag.replace(/"/g, '');
+
+        return map;
+      }, {});
+    });
+
     const resps = await Promise.all([
-      this.docs.insert(stringify(ddocDocs)),
-      this.users.insert(stringify(ddocUsers)),
-      this.index.insert(stringify(ddocIndex))
+      this.docs.insert(
+        Object.assign(
+          revMap[ddocDocs._id] ? { _rev: revMap[ddocDocs._id] } : {},
+          stringify(ddocDocs)
+        )
+      ),
+      this.users.insert(
+        Object.assign(
+          revMap[ddocUsers._id] ? { _rev: revMap[ddocUsers._id] } : {},
+          stringify(ddocUsers)
+        )
+      ),
+      this.index.insert(
+        Object.assign(
+          revMap[ddocIndex._id] ? { _rev: revMap[ddocIndex._id] } : {},
+          stringify(ddocIndex)
+        )
+      )
     ]);
     return resps;
   }
@@ -165,7 +202,13 @@ export default class DB {
 
       case 'role': {
         const embedder = await this.getUserByRoleId(id);
-        return arrayify(embedder.hasRole).find(role => getId(role) === id);
+        const role = arrayify(embedder.hasRole).find(
+          role => getId(role) === id
+        );
+
+        return role['@type'] === 'PublicReviewerRole'
+          ? Object.assign({}, role, { isRoleOf: embedder })
+          : role;
       }
 
       case 'review':
