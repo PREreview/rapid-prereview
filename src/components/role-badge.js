@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { Menu, MenuList, MenuButton, MenuLink } from '@reach/menu-button';
 import { unprefix } from '../utils/jsonld';
 import { useRole } from '../hooks/api-hooks';
@@ -29,8 +30,9 @@ export default function RoleBadge({ roleId, children }) {
       {children ? (
         <MenuList className="menu__list">
           <MenuLink
+            as={Link}
             className="menu__list__link-item"
-            href={`/about/${unprefix(roleId)}`}
+            to={`/about/${unprefix(roleId)}`}
           >
             Profile
           </MenuLink>
@@ -39,8 +41,9 @@ export default function RoleBadge({ roleId, children }) {
       ) : (
         <MenuList className="menu__list">
           <MenuLink
+            as={Link}
             className="menu__list__link-item"
-            href={`/about/${unprefix(roleId)}`}
+            to={`/about/${unprefix(roleId)}`}
           >
             Profile
           </MenuLink>

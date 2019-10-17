@@ -19,9 +19,9 @@ export default function RoleActivity({ roleId }) {
     <div className="role-activity">
       {!!(results.counts && results.counts['@type']) && (
         <dl>
-          <dt>Number of requests</dt>
+          <dt>Total number of requests</dt>
           <dd>{results.counts['@type']['RequestForRapidPREreviewAction']}</dd>
-          <dt>Number of reviews</dt>
+          <dt>Total number of reviews</dt>
           <dd>{results.counts['@type']['RapidPREreviewAction']}</dd>
         </dl>
       )}

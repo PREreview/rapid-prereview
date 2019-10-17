@@ -49,8 +49,13 @@ export default function Profile() {
               <dd>
                 <a href={`https://orcid.org/${user.orcid}`}>{user.orcid}</a>
               </dd>
+            </Fragment>
+          )}
+
+          {!!role && (
+            <Fragment>
               <dt>Member since</dt>
-              <dd>{format(new Date(user.dateCreated), 'MMM. d, yyyy')}</dd>
+              <dd>{format(new Date(role.startDate), 'MMM. d, yyyy')}</dd>
             </Fragment>
           )}
         </dl>
