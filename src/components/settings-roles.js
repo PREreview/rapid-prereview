@@ -10,8 +10,8 @@ export default function SettingsRoles({ user }) {
   const [editedRoleId, setEditedRoleId] = useState(null);
 
   return (
-    <section>
-      <h3>Personas</h3>
+    <section className="settings__section">
+      <h3 className="settings__title">Personas</h3>
 
       <p>
         Personas allow you to manage your identity on Rapid PREreview. Personas
@@ -20,25 +20,30 @@ export default function SettingsRoles({ user }) {
         anonymous.
       </p>
 
-      <ul>
+      <ul className="settings__persona-list">
         {arrayify(user.hasRole).map(role => (
-          <li key={getId(role)}>
-            <Link to={`/about/${unprefix(getId(role))}`}>
-              {role.name || unprefix(getId(role))}
-            </Link>
+          <li key={getId(role)} className="settings__persona-list-item">
+            <div className="settings__persona-list-item__left">
+              <Link to={`/about/${unprefix(getId(role))}`}>
+                {role.name || unprefix(getId(role))}
+              </Link>
 
-            <span>
-              {role['@type'] === 'PublicReviewerRole' ? 'Public' : 'Anonymous'}
-            </span>
-
-            <Button
-              onClick={() => {
-                setEditedRoleId(getId(role));
-              }}
-            >
-              Edit
-            </Button>
-            <Button>Make Default</Button>
+              <span className="settings__persona-status">
+                {role['@type'] === 'PublicReviewerRole'
+                  ? 'Public'
+                  : 'Anonymous'}
+              </span>
+            </div>
+            <div className="settings__persona-list-item__right">
+              <Button
+                onClick={() => {
+                  setEditedRoleId(getId(role));
+                }}
+              >
+                Edit
+              </Button>
+              <Button>Make Default</Button>
+            </div>
           </li>
         ))}
       </ul>

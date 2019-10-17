@@ -10,14 +10,15 @@ export default function Settings() {
     <div className="settings">
       <HeaderBar />
 
-      <h2>Settings</h2>
-
-      <dl>
-        <dt>ORCID:</dt>
-        <dd>
-          <a href={`https://orcid.org/${user.orcid}`}>{user.orcid}</a>
-        </dd>
-      </dl>
+      <section className="settings__section">
+        <h2 className="settings__title">Profile Settings</h2>
+        <dl className="settings__info-list">
+          <dt className="settings__info-list__term">ORCID:</dt>
+          <dd className="settings__info-list__def">
+            <a href={`https://orcid.org/${user.orcid}`}>{user.orcid}</a>
+          </dd>
+        </dl>
+      </section>
 
       <SettingsRoles user={user} />
     </div>
