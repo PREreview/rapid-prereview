@@ -142,7 +142,7 @@ export default function RoleEditor({ user, role, onCancel, onSaved }) {
 
               payload.avatar = {
                 '@type': 'ImageObject',
-                encodingFormat: file.type,
+                encodingFormat: file ? file.type : role.avatar.encodingFormat,
                 contentUrl: dataUrl
               };
             }

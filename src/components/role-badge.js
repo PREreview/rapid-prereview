@@ -43,7 +43,7 @@ export function RoleBadgeUI({ roleId, role, fetchRoleProgress, children }) {
         style={
           role && role.avatar && role.avatar.contentUrl
             ? {
-                background: `url(${role.avatar.contentUrl})`,
+                backgroundImage: `url(${role.avatar.contentUrl})`,
                 backgroundSize: 'contain'
               }
             : undefined
