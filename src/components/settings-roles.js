@@ -42,7 +42,7 @@ export default function SettingsRoles({ user }) {
             </div>
             <div className="settings__persona-list-item__right">
               {getId(role) === getId(defaultRole) ? (
-                <span>Active personna</span>
+                <Button primary={true}>Active personna</Button>
               ) : (
                 <Button>Make active</Button>
               )}
