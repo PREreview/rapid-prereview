@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
 
 @import 'normalize.css';
+@import '@reach/tooltip/styles.css';
+
 @import './components/variables.css';
 
 @import './components/app.css';
@@ -35,6 +37,7 @@
 @import './components/settings.css';
 @import './components/profile.css';
 @import './components/text-answers.css';
+@import './components/tooltip.css';
 @import './components/role-badge.css';
 
 /* reach ui */

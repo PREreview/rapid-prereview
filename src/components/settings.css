@@ -1,14 +1,21 @@
 .settings {
-  max-width: var(--middle-column-default-width);
+  width: 100%;
 
-  margin: var(--header-bar-height) auto 0;
-
+  background-color: var(--xlight-grey);
   box-sizing: border-box;
   font: var(--ui-basic-font);
-  background-color: var(--xlight-grey);
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+  margin: 0;
   min-height: 100vh;
-  padding-top: var(--sgrd);
+  padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd);
+  box-sizing: border-box;
+
+  & .settings__content {
+    max-width: var(--middle-column-default-width);
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+    min-height: 100vh;
+  }
   & .settings__title {
     margin: 0 0 var(--mgrd) 0;
     font: var(--ui-header-1-font);
@@ -32,9 +39,17 @@
 
   & .settings__section {
     padding: var(--mgrd) var(--lgrd);
-    border-top: 1px solid white;
+    border-top: 1px solid var(--ruling-color);
   }
 
+  & .settings__persona-list-header {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--ruling-color--light);
+    padding-bottom: var(--xsgrd);
+    margin-bottom: var(--sgrd);
+  }
   & .settings__persona-list {
     padding: 0;
     list-style: none;
@@ -49,21 +64,85 @@
       background-color: white;
     }
 
+    & .settings__persona-list-item__username {
+      display: flex;
+      align-items: center;
+      flex: 1 1 25%;
+    }
+
     & .settings__persona-list-item__right {
       display: flex;
       align-items: center;
     }
   }
 
+  & .settings__persona-list-item__username {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  & .settings__persona-badge {
+    margin-right: var(--xsgrd);
+  }
+
+  & .settings__persona-link {
+    display: inline-block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  & .settings__persona-list-item__active-state {
+    padding-right: var(--sgrd);
+    flex: 0 0 110px;
+  }
+  & .settings__persona-list-item__is-active {
+    display: flex;
+    align-items: center;
+    padding-left: var(--xsgrd);
+  }
+
+  .settings__persona-active-icon {
+    width: var(--mgrd);
+    height: var(--mgrd);
+    fill: var(--prereview-gold);
+    margin-right: var(--xxsgrd);
+
+    &.settings__persona-active-icon--inactive {
+      fill: var(--light-grey);
+    }
+  }
   & .settings__persona-status {
     display: inline-block;
     margin: 0 var(--xsgrd);
     padding: 2px var(--xsgrd);
-    background-color: var(--prereview-grey);
-    color: var(--prereview-white);
     border-radius: 2px;
     text-transform: uppercase;
     font: var(--ui-basic-font--small);
     letter-spacing: 0.075em;
+
+    & .settings__persona-status__icon-container {
+      height: var(--mgrd);
+      padding: 0 var(--sgrd) 0 var(--xsgrd);
+      color: white;
+      border-radius: 12px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--prereview-blue);
+
+      box-sizing: border-box;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    & .settings__persona-status__icon {
+      width: 18px;
+      height: 18px;
+      fill: white;
+      margin-right: var(--xxsgrd);
+      flex: 0 0 18px;
+    }
   }
 }

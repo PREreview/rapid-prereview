@@ -1,14 +1,17 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+
 import { getId, unprefix, arrayify } from '../utils/jsonld';
 import { getDefaultRole } from '../utils/users';
 import Button from './button';
+import { MdPublic, MdStar, MdStarBorder } from 'react-icons/md';
 import Modal from './modal';
 import RoleEditor from './role-editor';
 import { RoleBadgeUI } from './role-badge';
 import Controls from './controls';
 import { usePostAction } from '../hooks/api-hooks';
+import IncognitoIcon from '../svgs/incognito_icon.svg';
 
 export default function SettingsRoles({ user }) {
   const [editedRoleId, setEditedRoleId] = useState(null);
@@ -25,37 +28,60 @@ export default function SettingsRoles({ user }) {
         <a href={`https://orcid.org/${user.orcid}`}>ORCID</a> profile) or kept
         anonymous.
       </p>
-
+      <p>
+        The <strong>active</strong> persona is the persona that will be used
+        when you write <em>new</em> Rapid PREreviews or <em>new</em> request for
+        feedback on preprints. It can be changed at any time.
+      </p>
       <ul className="settings__persona-list">
+        <li className="settings__persona-list-header">
+          <div className="settings__persona-list-header__active">
+            <span>Active</span>
+          </div>
+          <span>Username</span>
+          <span>Anonymity</span>
+        </li>
         {arrayify(user.hasRole).map(role => (
           <li key={getId(role)} className="settings__persona-list-item">
-            <div className="settings__persona-list-item__left">
-              <RoleBadgeUI role={role} />
-
-              <Link to={`/about/${unprefix(getId(role))}`}>
-                {role.name || unprefix(getId(role))}
-              </Link>
-
-              <span className="settings__persona-status">
-                {role['@type'] === 'PublicReviewerRole'
-                  ? 'Public'
-                  : 'Anonymous'}
-              </span>
-            </div>
-            <div className="settings__persona-list-item__right">
+            <div className="settings__persona-list-item__active-state">
               {getId(role) === getId(defaultRole) ? (
-                <ActivePersonaInfoModalButton role={role} />
+                <span className="settings__persona-list-item__is-active">
+                  <MdStar className="settings__persona-active-icon" />
+                  Active
+                </span>
               ) : (
                 <MakeActivePersonaModalButton user={user} role={role} />
               )}
-              <Button
-                onClick={() => {
-                  setEditedRoleId(getId(role));
-                }}
-              >
-                Edit
-              </Button>
             </div>
+            <div className="settings__persona-list-item__username">
+              <RoleBadgeUI role={role} className="settings__persona-badge" />
+
+              <Link
+                to={`/about/${unprefix(getId(role))}`}
+                className="settings__persona-link"
+              >
+                {role.name || unprefix(getId(role))}
+              </Link>
+            </div>
+            <span className="settings__persona-status">
+              {role['@type'] === 'PublicReviewerRole' ? (
+                <div className="settings__persona-status__icon-container">
+                  <MdPublic className="settings__persona-status__icon" /> Public
+                </div>
+              ) : (
+                <div className="settings__persona-status__icon-container">
+                  <IncognitoIcon className="settings__persona-status__icon" />{' '}
+                  Anonymous
+                </div>
+              )}
+            </span>
+            <Button
+              onClick={() => {
+                setEditedRoleId(getId(role));
+              }}
+            >
+              Edit
+            </Button>
           </li>
         ))}
       </ul>
@@ -125,42 +151,6 @@ SettingsRoles.propTypes = {
   }).isRequired
 };
 
-function ActivePersonaInfoModalButton({ role }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <Fragment>
-      <Button
-        primary={true}
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
-        Active persona
-      </Button>
-
-      {isOpen && (
-        <Modal
-          onClose={() => {
-            setIsOpen(false);
-          }}
-          title="info"
-          showCloseButton={true}
-        >
-          <p>
-            The <strong>active</strong> persona is the persona that will be used
-            when you write <em>new</em> Rapid PREreviews or <em>new</em> request
-            for feedback on preprints. It can be changed at any time.
-          </p>
-        </Modal>
-      )}
-    </Fragment>
-  );
-}
-ActivePersonaInfoModalButton.propTypes = {
-  role: PropTypes.object.isRequired
-};
-
 function MakeActivePersonaModalButton({ user, role }) {
   const [isOpen, setIsOpen] = useState(false);
   const [post, postProgress] = usePostAction();
@@ -172,7 +162,8 @@ function MakeActivePersonaModalButton({ user, role }) {
           setIsOpen(true);
         }}
       >
-        Make active
+        <MdStarBorder className="settings__persona-active-icon settings__persona-active-icon--inactive" />
+        Activate...
       </Button>
 
       {isOpen && (

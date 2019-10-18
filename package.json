@@ -177,6 +177,7 @@
     "@cloudant/cloudant": "^4.2.1",
     "@reach/dialog": "^0.3.0",
     "@reach/menu-button": "^0.3.0",
+    "@reach/tooltip": "^0.3.0",
     "@reach/visually-hidden": "^0.3.0",
     "ajv": "^6.10.2",
     "classnames": "^2.2.6",

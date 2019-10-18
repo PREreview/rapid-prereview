@@ -55,6 +55,7 @@
     height: var(--mgrd);
     background-color: var(--button-background-color);
     color: var(--button-foreground-color);
+    white-space: pre;
   }
 
   &.button--pill .button__contents {
