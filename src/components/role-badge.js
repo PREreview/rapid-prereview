@@ -9,9 +9,32 @@ export default function RoleBadge({ roleId, children }) {
   const [role, fetchRoleProgress] = useRole(roleId);
 
   return (
+    <RoleBadgeMenu
+      roleId={roleId}
+      role={role}
+      fetchRoleProgress={fetchRoleProgress}
+    >
+      {children}
+    </RoleBadgeMenu>
+  );
+}
+
+RoleBadge.propTypes = {
+  roleId: PropTypes.string.isRequired,
+  children: PropTypes.any
+};
+
+// This is so that we can easily work on the UI in storybook
+export function RoleBadgeMenu({
+  roleId, // always defined
+  role, // may be undefined while fetching
+  fetchRoleProgress,
+  children
+}) {
+  return (
     <Menu>
       <MenuButton
-        className="role-badge"
+        className="role-badge-menu"
         style={
           role && role.avatar && role.avatar.contentUrl
             ? {
@@ -53,7 +76,22 @@ export default function RoleBadge({ roleId, children }) {
   );
 }
 
-RoleBadge.propTypes = {
+RoleBadgeMenu.propTypes = {
   roleId: PropTypes.string.isRequired,
+  role: PropTypes.shape({
+    '@id': PropTypes.string.isRequired,
+    '@type': PropTypes.oneOf(['PublicReviewerRole', 'AnonymousReviewerRole'])
+      .isRequired,
+    name: PropTypes.string,
+    avatar: PropTypes.shape({
+      '@type': PropTypes.oneOf(['ImageObject']).isRequired,
+      encodingFormat: PropTypes.oneOf(['image/jpeg', 'image/png']).isRequired,
+      contentUrl: PropTypes.string.isRequired
+    })
+  }),
+  fetchRoleProgress: PropTypes.shape({
+    isActive: PropTypes.bool,
+    error: PropTypes.instanceOf(Error)
+  }).isRequired,
   children: PropTypes.any
 };
