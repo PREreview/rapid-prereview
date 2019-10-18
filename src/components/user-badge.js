@@ -1,24 +1,26 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { Menu, MenuList, MenuButton, MenuLink } from '@reach/menu-button';
-import { unprefix, getId } from '../utils/jsonld';
+import { getId } from '../utils/jsonld';
+import { getDefaultRole } from '../utils/users';
+import { RoleBadgeUI } from './role-badge';
 
 export default function UserBadge({ user, children }) {
+  const role = getDefaultRole(user);
+  const fetchRoleProgress = useMemo(() => {
+    return {
+      isActive: false,
+      error: null
+    };
+  }, []);
+
   return (
-    <Menu>
-      <MenuButton>{user.name}</MenuButton>
-      {/* Note: MenuList is currently bugged if children is undefined hence the ternary */}
-      {children ? (
-        <MenuList>
-          <MenuLink href={`/about/${unprefix(getId(user))}`}>Profile</MenuLink>
-          {children}
-        </MenuList>
-      ) : (
-        <MenuList>
-          <MenuLink href={`/about/${unprefix(getId(user))}`}>Profile</MenuLink>
-        </MenuList>
-      )}
-    </Menu>
+    <RoleBadgeUI
+      roleId={getId(role)}
+      role={role}
+      fetchRoleProgress={fetchRoleProgress}
+    >
+      {children}
+    </RoleBadgeUI>
   );
 }
 
@@ -31,10 +33,23 @@ UserBadge.propTypes = {
       'AnonymousReviewerRole'
     ]).isRequired,
     name: PropTypes.string,
-    avatar: PropTypes.shape({
-      '@type': PropTypes.oneOf(['ImageObject']),
-      contentUrl: PropTypes.string
-    })
+    orcid: PropTypes.string.isRequired,
+    hasRole: PropTypes.arrayOf(
+      PropTypes.shape({
+        '@id': PropTypes.string.isRequired,
+        '@type': PropTypes.oneOf([
+          'PublicReviewerRole',
+          'AnonymousReviewerRole'
+        ]).isRequired,
+        name: PropTypes.string,
+        avatar: PropTypes.shape({
+          '@type': PropTypes.oneOf(['ImageObject']).isRequired,
+          encodingFormat: PropTypes.oneOf(['image/jpeg', 'image/png'])
+            .isRequired,
+          contentUrl: PropTypes.string.isRequired
+        })
+      })
+    )
   }).isRequired,
   children: PropTypes.any
 };

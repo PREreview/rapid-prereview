@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { action } from '@storybook/addon-actions';
 
-import { RoleBadgeMenu } from './role-badge';
+import { RoleBadgeUI } from './role-badge';
 
 export default {
   title: 'Role Badge',
-  component: 'RoleBadgeMenu',
+  component: 'RoleBadgeUI',
   decorators: [
     storyFn => (
       <div
@@ -28,7 +28,7 @@ export default {
 export function ActiveRoleBadge() {
   return (
     <Router>
-      <RoleBadgeMenu
+      <RoleBadgeUI
         roleId="role:e0a86b93-c127-4a3a-8399-dda0e60a30ef"
         roleFetchProgress={{
           isActive: true,
@@ -42,7 +42,7 @@ export function ActiveRoleBadge() {
 export function FetchedAnonymousRoleBadge() {
   return (
     <Router>
-      <RoleBadgeMenu
+      <RoleBadgeUI
         roleId="role:e0a86b93-c127-4a3a-8399-dda0e60a30ef"
         role={{
           '@id': 'role:e0a86b93-c127-4a3a-8399-dda0e60a30ef',
@@ -68,7 +68,7 @@ export function FetchedAnonymousRoleBadge() {
 export function FetchedPublicRoleBadge() {
   return (
     <Router>
-      <RoleBadgeMenu
+      <RoleBadgeUI
         roleId="role:e0a86b93-c127-4a3a-8399-dda0e60a30ef"
         role={{
           '@id': 'role:e0a86b93-c127-4a3a-8399-dda0e60a30ef',
@@ -130,7 +130,7 @@ export function TransitionRoleBadge() {
         restart fetch
       </button>
 
-      <RoleBadgeMenu
+      <RoleBadgeUI
         roleId="role:e0a86b93-c127-4a3a-8399-dda0e60a30ef"
         role={role}
         roleFetchProgress={progress}

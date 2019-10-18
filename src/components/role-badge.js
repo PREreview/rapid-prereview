@@ -9,13 +9,13 @@ export default function RoleBadge({ roleId, children }) {
   const [role, fetchRoleProgress] = useRole(roleId);
 
   return (
-    <RoleBadgeMenu
+    <RoleBadgeUI
       roleId={roleId}
       role={role}
       fetchRoleProgress={fetchRoleProgress}
     >
       {children}
-    </RoleBadgeMenu>
+    </RoleBadgeUI>
   );
 }
 
@@ -24,8 +24,10 @@ RoleBadge.propTypes = {
   children: PropTypes.any
 };
 
-// This is so that we can easily work on the UI in storybook
-export function RoleBadgeMenu({
+/**
+ * Non hooked version (handy for story book and `UserBadge`)
+ */
+export function RoleBadgeUI({
   roleId, // always defined
   role, // may be undefined while fetching
   fetchRoleProgress,
@@ -76,7 +78,7 @@ export function RoleBadgeMenu({
   );
 }
 
-RoleBadgeMenu.propTypes = {
+RoleBadgeUI.propTypes = {
   roleId: PropTypes.string.isRequired,
   role: PropTypes.shape({
     '@id': PropTypes.string.isRequired,
