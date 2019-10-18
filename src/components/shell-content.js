@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { MenuLink } from '@reach/menu-button';
 import { useUser } from '../contexts/user-context';
 import { usePreprintActions, usePostAction } from '../hooks/api-hooks';
 import RapidPreReviewLogo from './rapid-pre-review-logo';
@@ -19,6 +21,7 @@ import { getYesNoStats, getTextAnswers } from '../utils/stats';
 import Barplot from './barplot';
 import TextAnswers from './text-answers';
 import { getDefaultRole } from '../utils/users';
+import UserBadge from './user-badge';
 
 export default function ShellContent({ preprint, defaultTab = 'read' }) {
   const [user] = useUser();
@@ -80,6 +83,17 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
             </li>
           </ul>
         </nav>
+
+        {user ? (
+          <UserBadge user={user}>
+            <MenuLink as={Link} to="/settings">
+              Settings
+            </MenuLink>
+            <MenuLink href="/auth/logout">Logout</MenuLink>
+          </UserBadge>
+        ) : (
+          <Link to="/login">Login</Link>
+        )}
       </header>
 
       {isLoginModalOpen && (

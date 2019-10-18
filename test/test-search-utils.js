@@ -11,7 +11,7 @@ describe('search utils', () => {
   describe('createPreprintQs', () => {
     it('should create qs in the default case', () => {
       const { ui, api } = createPreprintQs();
-      assert.equal(ui, '');
+      assert.equal(ui, undefined);
       assert(api.startsWith('?'));
     });
 

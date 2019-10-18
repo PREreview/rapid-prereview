@@ -150,8 +150,8 @@ export function createPreprintQs(
   const sapi = api.toString();
 
   return {
-    ui: sui ? `?${sui}` : '',
-    api: sapi ? `?${sapi}` : ''
+    ui: sui ? `?${sui}` : undefined,
+    api: sapi ? `?${sapi}` : undefined
   };
 }
 
