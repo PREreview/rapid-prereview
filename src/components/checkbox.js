@@ -9,13 +9,12 @@ import classNames from 'classnames';
 export default function Checkbox({
   inputId,
   label,
-  onChange = noop,
   onBlur = noop,
   className,
   disabled = false,
+  checked = false,
   ...inputProps
 }) {
-  const [checked, setChecked] = useState(false);
   const [focused, setFocused] = useState(false);
   const [focusSource, setFocusSource] = useState();
 
@@ -27,8 +26,8 @@ export default function Checkbox({
         'checkbox--focused': focused
       })}
     >
-      {/*  The label element is responsible for triggering the onChange callback 
-      of the Checkbox since the native checkbox element will be visually hidden. */}
+      {/*  The label element is responsible for triggering the onChange callback
+          of the Checkbox since the native checkbox element will be visually hidden. */}
       <label
         htmlFor={inputId}
         className="checkbox__contents"
@@ -48,14 +47,11 @@ export default function Checkbox({
             disabled={disabled}
             id={inputId}
             type="checkbox"
+            checked={checked}
             {...inputProps}
             onBlur={e => {
               setFocused(false);
               onBlur(e);
-            }}
-            onChange={e => {
-              setChecked(e.currentTarget.checked);
-              onChange(e);
             }}
           />
         </VisuallyHidden>
@@ -75,8 +71,8 @@ export default function Checkbox({
 Checkbox.propTypes = {
   inputId: PropTypes.string,
   label: PropTypes.any,
-  onChange: PropTypes.func,
   onBlur: PropTypes.func,
   className: PropTypes.string,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  checked: PropTypes.bool
 };

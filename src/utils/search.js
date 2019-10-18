@@ -4,16 +4,16 @@ import identifiersArxiv from 'identifiers-arxiv';
 export function createPreprintQs(
   {
     // full text search
-    text = null,
+    text,
     // facets
-    hasReviews = null,
-    hasRequests = null,
-    hasData = null,
-    hasCode = null,
-    subjects = null,
+    hasReviews,
+    hasRequests,
+    hasData,
+    hasCode,
+    subjects,
     // sort
     sort = `score`, // `new` or `date`
-    bookmark = null
+    bookmark
   } = {},
   uiQs = ''
 ) {
@@ -23,56 +23,50 @@ export function createPreprintQs(
 
   const ui = new URLSearchParams(uiQs);
 
-  if (text !== null) {
-    if (text) {
-      ui.set('q', text);
-    } else {
-      ui.delete('q');
-    }
+  if (text != null) {
+    ui.set('q', text);
+  } else if (text === null) {
+    ui.delete('q');
   }
 
   // With and without reviews
-  if (hasReviews !== null) {
+  if (hasReviews != null) {
     ui.set('reviews', hasReviews);
+  } else if (hasReviews === null) {
+    ui.delete('reviews');
   }
 
   // With and without requests
-  if (hasRequests !== null) {
+  if (hasRequests != null) {
     ui.set('requests', hasRequests);
+  } else if (hasRequests === null) {
+    ui.delete('requests');
   }
 
   // With data
-  if (hasData !== null) {
-    if (hasData) {
-      ui.set('data', hasData);
-    } else {
-      ui.delete('data');
-    }
+  if (hasData != null) {
+    ui.set('data', hasData);
+  } else if (hasData === null) {
+    ui.delete('data');
   }
 
   // With code
-  if (hasCode !== null) {
-    if (hasCode) {
-      ui.set('code', hasCode);
-    } else {
-      ui.delete('code');
-    }
+  if (hasCode != null) {
+    ui.set('code', hasCode);
+  } else if (hasCode === null) {
+    ui.delete('code');
   }
 
-  if (sort !== null) {
-    if (sort === 'score') {
-      ui.delete('sort');
-    } else {
-      ui.set('sort', sort);
-    }
+  if (sort === null || sort === 'score') {
+    ui.delete('sort');
+  } else if (sort != null) {
+    ui.set('sort', sort);
   }
 
-  if (subjects !== null) {
-    if (subjects.length) {
-      ui.set('subject', subjects);
-    } else {
-      ui.delete('subject');
-    }
+  if (subjects != null && subjects.length) {
+    ui.set('subject', subjects);
+  } else if (subjects === null || (subjects && !subjects.length)) {
+    ui.delete('subject');
   }
 
   const sui = ui.toString();
