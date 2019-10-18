@@ -4,62 +4,81 @@ import identifiersArxiv from 'identifiers-arxiv';
 export function createPreprintQs(
   {
     // full text search
-    text = null,
+    text,
     // facets
-    hasReviews = null,
-    hasRequests = null,
-    hasData = null,
-    hasCode = null,
-    subjects = [],
+    hasReviews,
+    hasRequests,
+    hasData,
+    hasCode,
+    subjects,
     // sort
     sort = `score`, // `new` or `date`
-    bookmark = null
+    bookmark
   } = {},
   uiQs = ''
 ) {
   if (bookmark) {
-    return {
-      ui: `?bookmark=${bookmark}`,
-      api: `?bookmark=${bookmark}`
-    };
+    return `?bookmark=${bookmark}`;
   }
 
   const ui = new URLSearchParams(uiQs);
 
-  if (text) {
+  if (text != null) {
     ui.set('q', text);
+  } else if (text === null) {
+    ui.delete('q');
   }
+
   // With and without reviews
   if (hasReviews != null) {
     ui.set('reviews', hasReviews);
+  } else if (hasReviews === null) {
+    ui.delete('reviews');
   }
+
   // With and without requests
   if (hasRequests != null) {
     ui.set('requests', hasRequests);
+  } else if (hasRequests === null) {
+    ui.delete('requests');
   }
+
   // With data
-  if (hasData) {
+  if (hasData != null) {
     ui.set('data', hasData);
-  } else {
+  } else if (hasData === null) {
     ui.delete('data');
   }
+
   // With code
-  if (hasCode) {
+  if (hasCode != null) {
     ui.set('code', hasCode);
-  } else {
+  } else if (hasCode === null) {
     ui.delete('code');
   }
 
-  if (sort === 'score') {
+  if (sort === null || sort === 'score') {
     ui.delete('sort');
-  } else {
+  } else if (sort != null) {
     ui.set('sort', sort);
   }
 
-  if (subjects.length) {
+  if (subjects != null && subjects.length) {
     ui.set('subject', subjects);
-  } else {
+  } else if (subjects === null || (subjects && !subjects.length)) {
     ui.delete('subject');
+  }
+
+  const sui = ui.toString();
+
+  return sui ? `?${sui}` : undefined;
+}
+
+export function apifyPreprintQs(uiQs = '') {
+  const ui = new URLSearchParams(uiQs);
+
+  if (ui.has('bookmark')) {
+    return `?bookmark=${ui.get('bookmark')}`;
   }
 
   const api = new URLSearchParams();
@@ -100,7 +119,7 @@ export function createPreprintQs(
 
   api.set('q', anded.length ? anded.join(' AND ') : '*:*');
 
-  if (ui.has(sort)) {
+  if (ui.has('sort')) {
     if (ui.get('sort') === 'new') {
       // dateFirstActivity
       api.set(
@@ -146,13 +165,9 @@ export function createPreprintQs(
     ])
   );
 
-  const sui = ui.toString();
   const sapi = api.toString();
 
-  return {
-    ui: sui ? `?${sui}` : undefined,
-    api: sapi ? `?${sapi}` : undefined
-  };
+  return sapi ? `?${sapi}` : undefined;
 }
 
 function escapeLucene(term) {

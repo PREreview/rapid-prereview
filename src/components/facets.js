@@ -1,14 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useHistory, useLocation } from 'react-router-dom';
 import Checkbox from './checkbox';
+import { createPreprintQs } from '../utils/search';
 
 export default function Facets({ counts }) {
+  const history = useHistory();
+  const location = useLocation();
+
+  const qs = new URLSearchParams(location.search);
+
   return (
     <div className="facets">
       <section className="facets__section">
         <header className="facets__section-header">Contents</header>
         <ul className="facets__list">
-          {!!counts.hasReviews && (
+          {'hasReviews' in counts && (
             <li className="facets__list-item">
               <Checkbox
                 label={
@@ -19,11 +26,25 @@ export default function Facets({ counts }) {
                 type="checkbox"
                 inputId="counts-reviews"
                 name="hasReviews"
+                checked={qs.get('reviews') === 'true'}
+                onChange={e => {
+                  const search = createPreprintQs(
+                    {
+                      hasReviews: e.target.checked || null
+                    },
+                    location.search
+                  );
+
+                  history.push({
+                    pathname: location.pathname,
+                    search
+                  });
+                }}
               />
             </li>
           )}
 
-          {!!counts.hasReviews && (
+          {'hasReviews' in counts && (
             <li className="facets__list-item">
               <Checkbox
                 inputId="counts-reviews-false"
@@ -33,11 +54,25 @@ export default function Facets({ counts }) {
                     Without Reviews <span>{counts.hasReviews.false || 0}</span>
                   </span>
                 }
+                checked={qs.get('reviews') === 'false'}
+                onChange={e => {
+                  const search = createPreprintQs(
+                    {
+                      hasReviews: e.target.checked ? false : null
+                    },
+                    location.search
+                  );
+
+                  history.push({
+                    pathname: location.pathname,
+                    search
+                  });
+                }}
               />
             </li>
           )}
 
-          {!!counts.hasRequests && (
+          {'hasRequests' in counts && (
             <li className="facets__list-item">
               <Checkbox
                 inputId="counts-requests"
@@ -47,11 +82,25 @@ export default function Facets({ counts }) {
                     With Requests <span>{counts.hasRequests.true || 0}</span>
                   </span>
                 }
+                checked={qs.get('requests') === 'true'}
+                onChange={e => {
+                  const search = createPreprintQs(
+                    {
+                      hasRequests: e.target.checked || null
+                    },
+                    location.search
+                  );
+
+                  history.push({
+                    pathname: location.pathname,
+                    search
+                  });
+                }}
               />
             </li>
           )}
 
-          {!!counts.hasRequests && (
+          {'hasRequests' in counts && (
             <li className="facets__list-item">
               <Checkbox
                 inputId="counts-requests-false"
@@ -62,11 +111,25 @@ export default function Facets({ counts }) {
                     <span>{counts.hasRequests.false || 0}</span>
                   </span>
                 }
+                checked={qs.get('requests') === 'false'}
+                onChange={e => {
+                  const search = createPreprintQs(
+                    {
+                      hasRequests: e.target.checked ? false : null
+                    },
+                    location.search
+                  );
+
+                  history.push({
+                    pathname: location.pathname,
+                    search
+                  });
+                }}
               />
             </li>
           )}
 
-          {!!counts.hasData && (
+          {'hasData' in counts && (
             <li className="facets__list-item">
               <Checkbox
                 inputId="counts-data"
@@ -76,6 +139,20 @@ export default function Facets({ counts }) {
                     With Reported Data <span>{counts.hasData.true || 0}</span>
                   </span>
                 }
+                checked={qs.get('data') === 'true'}
+                onChange={e => {
+                  const search = createPreprintQs(
+                    {
+                      hasData: e.target.checked || null
+                    },
+                    location.search
+                  );
+
+                  history.push({
+                    pathname: location.pathname,
+                    search
+                  });
+                }}
               />
             </li>
           )}
@@ -90,6 +167,20 @@ export default function Facets({ counts }) {
                     With Reported Code <span>{counts.hasCode.true}</span>
                   </span>
                 }
+                checked={qs.get('code') === 'true'}
+                onChange={e => {
+                  const search = createPreprintQs(
+                    {
+                      hasCode: e.target.checked || null
+                    },
+                    location.search
+                  );
+
+                  history.push({
+                    pathname: location.pathname,
+                    search
+                  });
+                }}
               />
             </li>
           )}
@@ -110,6 +201,32 @@ export default function Facets({ counts }) {
                       {subject} <span>{counts.subjectName[subject]}</span>
                     </span>
                   }
+                  checked={
+                    qs.has('subject') &&
+                    qs
+                      .get('subject')
+                      .split(',')
+                      .includes(subject)
+                  }
+                  onChange={e => {
+                    const subjects = qs.has('subject')
+                      ? qs.get('subject').split(',')
+                      : [];
+
+                    const search = createPreprintQs(
+                      {
+                        subjects: e.target.checked
+                          ? subjects.concat(subject)
+                          : subjects.filter(s => s !== subject)
+                      },
+                      location.search
+                    );
+
+                    history.push({
+                      pathname: location.pathname,
+                      search
+                    });
+                  }}
                 />
               </li>
             ))}
@@ -122,22 +239,37 @@ export default function Facets({ counts }) {
 
 Facets.propTypes = {
   counts: PropTypes.shape({
-    hasReviews: PropTypes.shape({
-      true: PropTypes.number,
-      false: PropTypes.number
-    }),
-    hasRequests: PropTypes.shape({
-      true: PropTypes.number,
-      false: PropTypes.number
-    }),
-    hasData: PropTypes.shape({
-      true: PropTypes.number,
-      false: PropTypes.number
-    }),
-    hasCode: PropTypes.shape({
-      true: PropTypes.number,
-      false: PropTypes.number
-    }),
-    subjectName: PropTypes.object
+    hasReviews: PropTypes.oneOfType([
+      PropTypes.number, // 0
+      PropTypes.shape({
+        true: PropTypes.number,
+        false: PropTypes.number
+      })
+    ]),
+    hasRequests: PropTypes.oneOfType([
+      PropTypes.number, // 0
+      PropTypes.shape({
+        true: PropTypes.number,
+        false: PropTypes.number
+      })
+    ]),
+    hasData: PropTypes.oneOfType([
+      PropTypes.number, // 0
+      PropTypes.shape({
+        true: PropTypes.number,
+        false: PropTypes.number
+      })
+    ]),
+    hasCode: PropTypes.oneOfType([
+      PropTypes.number, // 0
+      PropTypes.shape({
+        true: PropTypes.number,
+        false: PropTypes.number
+      })
+    ]),
+    subjectName: PropTypes.oneOfType([
+      PropTypes.number, // 0
+      PropTypes.object
+    ])
   }).isRequired
 };

@@ -14,15 +14,18 @@ import NewPreprint from './new-preprint';
 import Modal from './modal';
 import Button from './button';
 import LoginRequiredModal from './login-required-modal';
+import { createPreprintQs, apifyPreprintQs } from '../utils/search';
 
 export default function Home() {
+  const history = useHistory();
+  const location = useLocation();
+
   const [user] = useUser();
   const [showLeftPanel, setShowLeftPanel] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [results, fetchResultsProgress] = usePreprintSearchResults();
-
-  const history = useHistory();
-  const location = useLocation();
+  const [results, fetchResultsProgress] = usePreprintSearchResults(
+    apifyPreprintQs(location.search)
+  );
 
   return (
     <div className="home">
@@ -97,12 +100,18 @@ export default function Home() {
           )}
 
           <SortOptions
-            value="score"
+            value={new URLSearchParams(location.search).get('sort') || 'score'}
             onChange={(
               nextValue // `score` | `new` | `date`
             ) => {
-              // TODO
-              console.log('TODO', nextValue);
+              const search = createPreprintQs(
+                { sort: nextValue },
+                location.search
+              );
+              history.push({
+                pathname: location.pathame,
+                search
+              });
             }}
           />
 

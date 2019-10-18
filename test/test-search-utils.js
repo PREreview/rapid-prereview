@@ -1,6 +1,6 @@
 import assert from 'assert';
 import querystring from 'querystring';
-import { createPreprintQs } from '../src/utils/search';
+import { createPreprintQs, apifyPreprintQs } from '../src/utils/search';
 import {
   arXivId,
   crossrefDoi,
@@ -8,21 +8,21 @@ import {
 } from './utils/create-preprint-server';
 
 describe('search utils', () => {
-  describe('createPreprintQs', () => {
+  describe('createPreprintQs and apifyPreprintQs', () => {
     it('should create qs in the default case', () => {
-      const { ui, api } = createPreprintQs();
+      const ui = createPreprintQs();
       assert.equal(ui, undefined);
-      assert(api.startsWith('?'));
+      assert(apifyPreprintQs(ui).startsWith('?'));
     });
 
     it('should create qs in the bookmark case', () => {
-      const { ui, api } = createPreprintQs({ bookmark: 'bookmark' });
+      const ui = createPreprintQs({ bookmark: 'bookmark' });
       assert.equal(ui, '?bookmark=bookmark');
-      assert.equal(api, '?bookmark=bookmark');
+      assert.equal(apifyPreprintQs(ui), '?bookmark=bookmark');
     });
 
     it('should create qs in the search case', () => {
-      const { ui, api } = createPreprintQs({
+      const ui = createPreprintQs({
         text: 'text',
         hasReviews: true,
         subjects: ['influenza', 'zika'],
@@ -34,7 +34,7 @@ describe('search utils', () => {
         '?q=text&reviews=true&sort=new&subject=influenza%2Czika'
       );
 
-      const p = querystring.parse(api.substring(1));
+      const p = querystring.parse(apifyPreprintQs(ui).substring(1));
       assert.equal(
         p.q,
         'name:text AND hasReviews:true AND (subjectName:"influenza" OR subjectName:"zika")'
@@ -42,9 +42,10 @@ describe('search utils', () => {
     });
 
     it('should handle DOI and arXivId', () => {
-      const { ui, api } = createPreprintQs({
+      const ui = createPreprintQs({
         text: `text ${arXivId} ${crossrefDoi} ${openAireDoi}`
       });
+      const api = apifyPreprintQs(ui);
       assert(api.includes('+OR+doi') && api.includes('+OR+arXivId'));
     });
   });
