@@ -1,27 +1,12 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { getId } from '../utils/jsonld';
 import { getDefaultRole } from '../utils/users';
 import { RoleBadgeUI } from './role-badge';
 
 export default function UserBadge({ user, children }) {
   const role = getDefaultRole(user);
-  const fetchRoleProgress = useMemo(() => {
-    return {
-      isActive: false,
-      error: null
-    };
-  }, []);
 
-  return (
-    <RoleBadgeUI
-      roleId={getId(role)}
-      role={role}
-      fetchRoleProgress={fetchRoleProgress}
-    >
-      {children}
-    </RoleBadgeUI>
-  );
+  return <RoleBadgeUI role={role}>{children}</RoleBadgeUI>;
 }
 
 UserBadge.propTypes = {

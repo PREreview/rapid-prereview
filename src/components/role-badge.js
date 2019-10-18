@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { Menu, MenuList, MenuButton, MenuLink } from '@reach/menu-button';
-import { unprefix } from '../utils/jsonld';
+import { unprefix, getId } from '../utils/jsonld';
 import { useRole } from '../hooks/api-hooks';
 
 export default function RoleBadge({ roleId, children }) {
@@ -27,12 +27,15 @@ RoleBadge.propTypes = {
 /**
  * Non hooked version (handy for story book and `UserBadge`)
  */
-export function RoleBadgeUI({
-  roleId, // always defined
-  role, // may be undefined while fetching
-  fetchRoleProgress,
-  children
-}) {
+export function RoleBadgeUI({ roleId, role, fetchRoleProgress, children }) {
+  if (roleId == null && fetchRoleProgress == null && !!role) {
+    roleId = getId(role);
+    fetchRoleProgress = {
+      isActive: true,
+      error: null
+    };
+  }
+
   return (
     <Menu>
       <MenuButton
@@ -79,7 +82,7 @@ export function RoleBadgeUI({
 }
 
 RoleBadgeUI.propTypes = {
-  roleId: PropTypes.string.isRequired,
+  roleId: PropTypes.string,
   role: PropTypes.shape({
     '@id': PropTypes.string.isRequired,
     '@type': PropTypes.oneOf(['PublicReviewerRole', 'AnonymousReviewerRole'])
@@ -94,6 +97,6 @@ RoleBadgeUI.propTypes = {
   fetchRoleProgress: PropTypes.shape({
     isActive: PropTypes.bool,
     error: PropTypes.instanceOf(Error)
-  }).isRequired,
+  }),
   children: PropTypes.any
 };

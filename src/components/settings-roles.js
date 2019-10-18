@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { getId, unprefix, arrayify } from '../utils/jsonld';
+import { getDefaultRole } from '../utils/users';
 import Button from './button';
 import Modal from './modal';
 import RoleEditor from './role-editor';
+import { RoleBadgeUI } from './role-badge';
 
 export default function SettingsRoles({ user }) {
   const [editedRoleId, setEditedRoleId] = useState(null);
+
+  const defaultRole = getDefaultRole(user);
 
   return (
     <section className="settings__section">
@@ -24,6 +28,8 @@ export default function SettingsRoles({ user }) {
         {arrayify(user.hasRole).map(role => (
           <li key={getId(role)} className="settings__persona-list-item">
             <div className="settings__persona-list-item__left">
+              <RoleBadgeUI role={role} />
+
               <Link to={`/about/${unprefix(getId(role))}`}>
                 {role.name || unprefix(getId(role))}
               </Link>
@@ -35,6 +41,11 @@ export default function SettingsRoles({ user }) {
               </span>
             </div>
             <div className="settings__persona-list-item__right">
+              {getId(role) === getId(defaultRole) ? (
+                <span>Active personna</span>
+              ) : (
+                <Button>Make active</Button>
+              )}
               <Button
                 onClick={() => {
                   setEditedRoleId(getId(role));
@@ -42,7 +53,6 @@ export default function SettingsRoles({ user }) {
               >
                 Edit
               </Button>
-              <Button>Make Default</Button>
             </div>
           </li>
         ))}
