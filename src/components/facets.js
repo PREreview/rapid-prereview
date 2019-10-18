@@ -157,7 +157,7 @@ export default function Facets({ counts }) {
             </li>
           )}
 
-          {!!counts.hasCode && (
+          {'hasCode' in counts && (
             <li className="facets__list-item">
               <Checkbox
                 inputId="counts-code"

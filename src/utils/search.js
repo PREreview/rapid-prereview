@@ -23,7 +23,7 @@ export function createPreprintQs(
 
   const ui = new URLSearchParams(uiQs);
 
-  if (text != null) {
+  if (text != null && text != '') {
     ui.set('q', text);
   } else if (text === null) {
     ui.delete('q');
@@ -84,15 +84,22 @@ export function apifyPreprintQs(uiQs = '') {
   const api = new URLSearchParams();
   const anded = [];
   if (ui.has('q')) {
-    const term = ui.get('q');
-    const ored = [`name:${escapeLucene(term)}`];
+    const q = ui.get('q');
+    const splt = q.split(/(\s+)/);
+    let term;
+    if (splt.length > 1) {
+      term = JSON.stringify(q);
+    } else {
+      term = escapeLucene(q);
+    }
+    const ored = [`name:${term}`];
 
-    const doiMatched = term.match(doiRegex());
+    const doiMatched = q.match(doiRegex());
     if (doiMatched) {
       ored.push(...doiMatched.map(doi => `doi:"${doi}"`));
     }
 
-    const arXivIds = identifiersArxiv.extract(term);
+    const arXivIds = identifiersArxiv.extract(q);
     if (arXivIds && arXivIds.length) {
       ored.push(...arXivIds.map(arXivId => `arXivId:"${arXivId}"`));
     }
@@ -114,7 +121,12 @@ export function apifyPreprintQs(uiQs = '') {
   }
   if (ui.has('subject')) {
     const subjects = ui.get('subject').split(',');
-    anded.push(`(${subjects.map(s => `subjectName:"${s}"`).join(' OR ')})`);
+
+    anded.push(
+      subjects.length === 1
+        ? `subjectName:"${subjects[0]}"`
+        : `(${subjects.map(s => `subjectName:"${s}"`).join(' OR ')})`
+    );
   }
 
   api.set('q', anded.length ? anded.join(' AND ') : '*:*');

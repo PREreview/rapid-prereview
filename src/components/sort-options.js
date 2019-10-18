@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { MdArrowUpward } from 'react-icons/md';
+import Tooltip from '@reach/tooltip';
 
 export default function SortOptions({ value, onChange }) {
   return (
@@ -18,7 +19,17 @@ export default function SortOptions({ value, onChange }) {
               onChange(e.target.value);
             }}
           />
-          <label htmlFor={`sort-options-${name}`}>{name}</label>
+          <Tooltip
+            label={`Sort by ${
+              name === 'score'
+                ? 'score'
+                : name === 'new'
+                ? 'Date of first activity'
+                : 'Date preprint posted'
+            }`}
+          >
+            <label htmlFor={`sort-options-${name}`}>{name}</label>
+          </Tooltip>
           <MdArrowUpward
             className={classNames('sort-options__icon', {
               'sort-options__icon--hidden': name !== value

@@ -34,7 +34,9 @@ export default function Home() {
           setShowLeftPanel(!showLeftPanel);
         }}
       />
+
       <SearchBar />
+
       <div className="home__main">
         <LeftSidePanel visible={showLeftPanel}>
           <Facets counts={results.counts} />

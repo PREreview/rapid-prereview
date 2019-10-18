@@ -7,6 +7,10 @@
   border-bottom: 1px solid var(--ruling-color--light);
   text-transform: uppercase;
   font: var(--ui-basic-font--small);
+
+  & label {
+    cursor: pointer;
+  }
 }
 
 .sort-options__item {
