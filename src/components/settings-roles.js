@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { getId, unprefix, arrayify } from '../utils/jsonld';
@@ -7,6 +7,8 @@ import Button from './button';
 import Modal from './modal';
 import RoleEditor from './role-editor';
 import { RoleBadgeUI } from './role-badge';
+import Controls from './controls';
+import { usePostAction } from '../hooks/api-hooks';
 
 export default function SettingsRoles({ user }) {
   const [editedRoleId, setEditedRoleId] = useState(null);
@@ -42,9 +44,9 @@ export default function SettingsRoles({ user }) {
             </div>
             <div className="settings__persona-list-item__right">
               {getId(role) === getId(defaultRole) ? (
-                <Button primary={true}>Active personna</Button>
+                <ActivePersonaInfoModalButton role={role} />
               ) : (
-                <Button>Make active</Button>
+                <MakeActivePersonaModalButton user={user} role={role} />
               )}
               <Button
                 onClick={() => {
@@ -121,4 +123,105 @@ SettingsRoles.propTypes = {
       })
     )
   }).isRequired
+};
+
+function ActivePersonaInfoModalButton({ role }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Fragment>
+      <Button
+        primary={true}
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        Active personna
+      </Button>
+
+      {isOpen && (
+        <Modal
+          onClose={() => {
+            setIsOpen(false);
+          }}
+          title="info"
+          showCloseButton={true}
+        >
+          <p>
+            The <strong>active</strong> persona is the persona that will be used
+            when you write <em>new</em> Rapid PREreviews or <em>new</em> request
+            for feedback on preprints. It can be changed at any time.
+          </p>
+        </Modal>
+      )}
+    </Fragment>
+  );
+}
+ActivePersonaInfoModalButton.propTypes = {
+  role: PropTypes.object.isRequired
+};
+
+function MakeActivePersonaModalButton({ user, role }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [post, postProgress] = usePostAction();
+
+  return (
+    <Fragment>
+      <Button
+        onClick={() => {
+          setIsOpen(true);
+        }}
+      >
+        Make active
+      </Button>
+
+      {isOpen && (
+        <Modal
+          title={`Set active persona to ${role.name || unprefix(getId(role))}`}
+        >
+          <p>
+            The <strong>active</strong> persona is the persona that will be used
+            when you write <em>new</em> Rapid PREreviews or <em>new</em> request
+            for feedback on preprints. It can be changed at any time.
+          </p>
+
+          <Controls error={postProgress.error}>
+            <Button
+              disabled={postProgress.isActive}
+              onClick={() => {
+                setIsOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              disabled={postProgress.isActive}
+              onClick={() => {
+                post(
+                  {
+                    '@type': 'UpdateUserAction',
+                    agent: getId(user),
+                    object: getId(user),
+                    actionStatus: 'CompletedActionStatus',
+                    payload: {
+                      defaultRole: getId(role)
+                    }
+                  },
+                  body => {
+                    setIsOpen(false);
+                  }
+                );
+              }}
+            >
+              Make active
+            </Button>
+          </Controls>
+        </Modal>
+      )}
+    </Fragment>
+  );
+}
+MakeActivePersonaModalButton.propTypes = {
+  user: PropTypes.object.isRequired,
+  role: PropTypes.object.isRequired
 };

@@ -86,6 +86,7 @@ export function usePostAction() {
         if (
           body['@type'] === 'CreateRoleAction' ||
           body['@type'] === 'UpdateRoleAction' ||
+          body['@type'] === 'UpdateUserAction' ||
           body['@type'] === 'DeanonymizeRoleAction'
         ) {
           setUser(body.result);
