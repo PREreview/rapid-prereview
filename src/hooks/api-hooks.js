@@ -297,7 +297,8 @@ export function usePreprintSearchResults(
   if (!search || search === '?') {
     search = `?q=*:*&sort=${JSON.stringify([
       '-score<number>',
-      '-datePosted<number>'
+      '-datePosted<number>',
+      '-dateFirstActivity<number>'
     ])}&include_docs=true&counts=${JSON.stringify([
       'hasData',
       'hasCode',

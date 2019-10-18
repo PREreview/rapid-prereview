@@ -187,6 +187,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "identifiers-arxiv": "^0.1.1",
+    "identifiers-orcid": "^0.1.1",
     "jsdom": "^15.2.0",
     "lodash": "^4.17.15",
     "lru-cache": "^5.1.1",

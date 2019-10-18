@@ -98,9 +98,11 @@ export default function Home() {
 
           <SortOptions
             value="score"
-            onChange={nextValue => {
+            onChange={(
+              nextValue // `score` | `new` | `date`
+            ) => {
               // TODO
-              console.log('TODO');
+              console.log('TODO', nextValue);
             }}
           />
 

@@ -93,6 +93,22 @@ const ddoc = {
             : new Date('0000').getTime();
           index('datePosted', datePosted, { facet: true });
 
+          // date of first activity (`dateFirstActivity`)
+          var firstAction = (doc.potentialAction || [])
+            .filter(function(action) {
+              return action && action.startTime;
+            })
+            .sort(function(a, b) {
+              return (
+                new Date(a.startTime).getTime() -
+                new Date(b.startTime).getTime()
+              );
+            })[0];
+          var dateFirstActivity = firstAction
+            ? new Date(firstAction.startTime).getTime()
+            : new Date('0000').getTime();
+          index('dateFirstActivity', dateFirstActivity);
+
           if (doc.potentialAction) {
             // reviewer and requester
             doc.potentialAction.forEach(function(action) {
