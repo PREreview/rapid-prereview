@@ -136,7 +136,7 @@ function ActivePersonaInfoModalButton({ role }) {
           setIsOpen(true);
         }}
       >
-        Active personna
+        Active persona
       </Button>
 
       {isOpen && (
