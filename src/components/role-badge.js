@@ -31,7 +31,7 @@ export function RoleBadgeUI({ roleId, role, fetchRoleProgress, children }) {
   if (roleId == null && fetchRoleProgress == null && !!role) {
     roleId = getId(role);
     fetchRoleProgress = {
-      isActive: true,
+      isActive: false,
       error: null
     };
   }
