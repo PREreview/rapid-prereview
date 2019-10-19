@@ -141,8 +141,8 @@ function StepPreprint({
           inputId="step-preprint-input-new"
           label={
             <span>
-              Enter a <abbr title="Digital Object Identifier">DOI</abbr> or an
-              arXiv ID
+              Enter preprint <abbr title="Digital Object Identifier">DOI</abbr>{' '}
+              or an arXiv ID
             </span>
           }
           minimal={true}

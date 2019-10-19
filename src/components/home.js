@@ -67,7 +67,7 @@ export default function Home() {
           <Route path="/new" exact={true}>
             <Modal
               showCloseButton={true}
-              title="Add Preprint"
+              title="Add Entry"
               onClose={() => {
                 history.push('/');
               }}
