@@ -175,6 +175,7 @@
     "@babel/polyfill": "^7.6.0",
     "@babel/runtime": "^7.6.3",
     "@cloudant/cloudant": "^4.2.1",
+    "@reach/combobox": "^0.3.0",
     "@reach/dialog": "^0.3.0",
     "@reach/menu-button": "^0.3.0",
     "@reach/tooltip": "^0.3.0",
