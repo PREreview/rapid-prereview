@@ -17,10 +17,6 @@ export function createPreprintQs(
   } = {},
   uiQs = ''
 ) {
-  if (bookmark) {
-    return `?bookmark=${bookmark}`;
-  }
-
   const ui = new URLSearchParams(uiQs);
 
   if (text != null && text != '') {
@@ -74,14 +70,15 @@ export function createPreprintQs(
   return sui ? `?${sui}` : undefined;
 }
 
-export function apifyPreprintQs(uiQs = '') {
+export function apifyPreprintQs(uiQs = '', bookmark) {
   const ui = new URLSearchParams(uiQs);
 
-  if (ui.has('bookmark')) {
-    return `?bookmark=${ui.get('bookmark')}`;
+  const api = new URLSearchParams();
+
+  if (bookmark) {
+    api.set('bookmark', bookmark);
   }
 
-  const api = new URLSearchParams();
   const anded = [];
   if (ui.has('q')) {
     const q = ui.get('q');
@@ -176,6 +173,8 @@ export function apifyPreprintQs(uiQs = '') {
       'subjectName'
     ])
   );
+
+  api.set('limit', 10);
 
   const sapi = api.toString();
 

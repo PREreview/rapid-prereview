@@ -24,10 +24,8 @@ export default function Home() {
   const [showLeftPanel, setShowLeftPanel] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [results, fetchResultsProgress] = usePreprintSearchResults(
-    apifyPreprintQs(location.search)
+    apifyPreprintQs(location.search, location.state && location.state.bookmark)
   );
-
-  console.log(results);
 
   return (
     <div className="home">
@@ -125,6 +123,8 @@ export default function Home() {
             }}
           />
 
+          {/* TODO 0 result case + loading  */}
+
           <ul className="home__preprint-list">
             {results.rows.map(row => (
               <li key={row.id} className="home__preprint-list__item">
@@ -155,6 +155,40 @@ export default function Home() {
               </li>
             ))}
           </ul>
+
+          {/* Cloudant returns the same bookmark when it hits the end of the list */}
+          {!!(
+            results.rows.length < results.total_rows &&
+            results.bookmark !== (location.state && location.state.bookmark)
+          ) && (
+            <Button
+              onClick={() => {
+                history.push({
+                  pathname: location.pathame,
+                  search: createPreprintQs(
+                    { bookmark: results.bookmark },
+                    location.search
+                  ),
+                  state: { bookmark: results.bookmark }
+                });
+              }}
+            >
+              More
+            </Button>
+          )}
+
+          {!!(location.state && location.state.bookmark) && (
+            <Button
+              onClick={() => {
+                history.push({
+                  pathname: location.pathame,
+                  search: createPreprintQs({ bookmark: null }, location.search)
+                });
+              }}
+            >
+              Back to first page
+            </Button>
+          )}
         </div>
         <div className="home__main__right"></div>
       </div>
