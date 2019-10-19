@@ -40,6 +40,7 @@
 @import './components/tooltip.css';
 @import './components/role-badge.css';
 @import './components/role-activity.css';
+@import './components/diseases.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';

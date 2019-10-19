@@ -17,8 +17,6 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
 
   return (
     <div className="rapid-form-fragment">
-      <fieldset>{/* TODO title, datePosted and tags */}</fieldset>
-
       <fieldset className="rapid-form-fragment__multi-choice-questions">
         {yesNoQuestions.map(({ identifier, question, groupPrefix }, i) => {
           const answer = answerMap[identifier];
