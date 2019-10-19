@@ -77,7 +77,7 @@ export function RoleBadgeUI({
             className="menu__list__link-item"
             to={`/about/${unprefix(roleId)}`}
           >
-            Profile
+            View Profile
           </MenuLink>
           {children}
         </MenuList>
@@ -88,7 +88,7 @@ export function RoleBadgeUI({
             className="menu__list__link-item"
             to={`/about/${unprefix(roleId)}`}
           >
-            Profile
+            View Profile
           </MenuLink>
         </MenuList>
       )}

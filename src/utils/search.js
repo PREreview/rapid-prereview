@@ -181,6 +181,28 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   return sapi ? `?${sapi}` : undefined;
 }
 
+export function createActivityQs({ roleId, bookmark }) {
+  const api = new URLSearchParams();
+
+  if (roleId) {
+    api.set('q', `agentId:"${roleId}"`);
+  }
+  if (bookmark) {
+    api.set('bookmark', bookmark);
+  } else {
+    api.delete('bookmark');
+  }
+
+  api.set('sort', JSON.stringify(['-startTime<number>']));
+  api.set('include_docs', true);
+  api.set('counts', JSON.stringify(['@type']));
+  api.set('limit', 10);
+
+  const sapi = api.toString();
+
+  return sapi ? `?${sapi}` : undefined;
+}
+
 function escapeLucene(term) {
   return term.replace(/([+&|!(){}[\]^"~*?:\\\/-])/g, '\\$1');
 }
