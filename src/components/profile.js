@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import HeaderBar from './header-bar';
@@ -14,6 +14,10 @@ export default function Profile() {
   const roleId = `role:${unprefixedRoleId}`;
 
   const [role, fetchRoleProgress] = useRole(roleId);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const user = role && role.isRoleOf;
 

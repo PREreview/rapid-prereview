@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useUser } from '../contexts/user-context';
 import SettingsRoles from './settings-roles';
 import HeaderBar from './header-bar';
 
 export default function Settings() {
   const [user] = useUser();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="settings">

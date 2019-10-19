@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { Route, useHistory, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useHistory, useLocation, Link } from 'react-router-dom';
+import PrivateRoute from './private-route';
 import omit from 'lodash/omit';
 import { usePreprintSearchResults } from '../hooks/api-hooks';
 import { useUser } from '../contexts/user-context';
@@ -23,9 +24,16 @@ export default function Home() {
   const [user] = useUser();
   const [showLeftPanel, setShowLeftPanel] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [results, fetchResultsProgress] = usePreprintSearchResults(
-    apifyPreprintQs(location.search, location.state && location.state.bookmark)
+
+  const apiQs = apifyPreprintQs(
+    location.search,
+    location.state && location.state.bookmark
   );
+  const [results, fetchResultsProgress] = usePreprintSearchResults(apiQs);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [apiQs]);
 
   return (
     <div className="home">
@@ -35,7 +43,7 @@ export default function Home() {
         }}
       />
 
-      <SearchBar isFetching={fetchResultsProgress.isActive} />
+      <SearchBar key={apiQs} isFetching={fetchResultsProgress.isActive} />
 
       <div className="home__main">
         <LeftSidePanel visible={showLeftPanel}>
@@ -67,7 +75,7 @@ export default function Home() {
             </Button>
           </div>
 
-          <Route path="/new" exact={true}>
+          <PrivateRoute path="/new" exact={true}>
             <Modal
               showCloseButton={true}
               title="Add Entry"
@@ -97,7 +105,7 @@ export default function Home() {
                 }}
               />
             </Modal>
-          </Route>
+          </PrivateRoute>
 
           {isLoginModalOpen && (
             <LoginRequiredModal
@@ -124,71 +132,87 @@ export default function Home() {
           />
 
           {/* TODO 0 result case + loading  */}
-
-          <ul className="home__preprint-list">
-            {results.rows.map(row => (
-              <li key={row.id} className="home__preprint-list__item">
-                <PreprintCard
-                  user={user}
-                  preprint={row.doc}
-                  onNewRequest={preprint => {
-                    if (user) {
-                      history.push('/new', {
-                        preprint: omit(preprint, ['potentialAction']),
-                        tab: 'request'
-                      });
-                    } else {
-                      setIsLoginModalOpen(true);
-                    }
-                  }}
-                  onNewReview={preprint => {
-                    if (user) {
-                      history.push('/new', {
-                        preprint: omit(preprint, ['potentialAction']),
-                        tab: 'review'
-                      });
-                    } else {
-                      setIsLoginModalOpen(true);
-                    }
-                  }}
-                />
-              </li>
-            ))}
-          </ul>
-
-          {/* Cloudant returns the same bookmark when it hits the end of the list */}
-          {!!(
-            results.rows.length < results.total_rows &&
-            results.bookmark !== (location.state && location.state.bookmark)
-          ) && (
-            <Button
-              onClick={() => {
-                history.push({
-                  pathname: location.pathame,
-                  search: createPreprintQs(
-                    { bookmark: results.bookmark },
-                    location.search
-                  ),
-                  state: { bookmark: results.bookmark }
-                });
-              }}
-            >
-              More
-            </Button>
+          {results.total_rows === 0 && !fetchResultsProgress.isActive ? (
+            <div>
+              No results found.{' '}
+              {!!apiQs && (
+                <Link to={location.pathname}>Clear search terms.</Link>
+              )}
+            </div>
+          ) : results.bookmark ===
+            (location.state && location.state.bookmark) ? (
+            <div>No more results.</div>
+          ) : (
+            <ul className="home__preprint-list">
+              {results.rows.map(row => (
+                <li key={row.id} className="home__preprint-list__item">
+                  <PreprintCard
+                    user={user}
+                    preprint={row.doc}
+                    onNewRequest={preprint => {
+                      if (user) {
+                        history.push('/new', {
+                          preprint: omit(preprint, ['potentialAction']),
+                          tab: 'request'
+                        });
+                      } else {
+                        setIsLoginModalOpen(true);
+                      }
+                    }}
+                    onNewReview={preprint => {
+                      if (user) {
+                        history.push('/new', {
+                          preprint: omit(preprint, ['potentialAction']),
+                          tab: 'review'
+                        });
+                      } else {
+                        setIsLoginModalOpen(true);
+                      }
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
           )}
 
-          {!!(location.state && location.state.bookmark) && (
-            <Button
-              onClick={() => {
-                history.push({
-                  pathname: location.pathame,
-                  search: createPreprintQs({ bookmark: null }, location.search)
-                });
-              }}
-            >
-              Back to first page
-            </Button>
-          )}
+          <div className="home__pagination">
+            {/* Cloudant returns the same bookmark when it hits the end of the list */}
+            {!!(
+              results.rows.length < results.total_rows &&
+              results.bookmark !== (location.state && location.state.bookmark)
+            ) && (
+              <Button
+                onClick={() => {
+                  history.push({
+                    pathname: location.pathame,
+                    search: createPreprintQs(
+                      { bookmark: results.bookmark },
+                      location.search
+                    ),
+                    state: { bookmark: results.bookmark }
+                  });
+                }}
+              >
+                Next page
+              </Button>
+            )}
+
+            {!!(location.state && location.state.bookmark) && (
+              <Button
+                onClick={() => {
+                  history.push({
+                    pathname: location.pathame,
+                    search: createPreprintQs(
+                      { bookmark: null },
+                      location.search
+                    )
+                  });
+                }}
+              >
+                Back to first page
+              </Button>
+            )}
+          </div>
         </div>
         <div className="home__main__right"></div>
       </div>
