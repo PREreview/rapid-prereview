@@ -110,3 +110,109 @@ export const INDEXED_PREPRINT_PROPS = [
   'datePosted',
   'encoding'
 ];
+
+// See https://github.com/PREreview/rapid-prereview/issues/10
+export const DISEASES = [
+  {
+    name: 'Human immunodeficiency virus',
+    alternateName: 'HIV',
+    priority: 'yellow'
+  },
+  {
+    name: 'Chikungunya',
+    priority: 'orange'
+  },
+  {
+    name: 'Cholera',
+    priority: 'yellow'
+  },
+  {
+    name: 'Crimean-Congo hemorrhagic fever',
+    alternateName: 'CCHF',
+    priority: 'red'
+  },
+  {
+    name: 'Dengue',
+    priority: 'yellow'
+  },
+  {
+    name: 'Ebola',
+    priority: 'red'
+  },
+  {
+    name: 'Hendra',
+    priority: 'red'
+  },
+  {
+    name: 'Influenza',
+    priority: 'yellow'
+  },
+  {
+    name: 'Lassa',
+    priority: 'red'
+  },
+  {
+    name: 'Leishmaniasis',
+    priority: 'yellow'
+  },
+  {
+    name: 'Malaria',
+    priority: 'yellow'
+  },
+  {
+    name: 'Marburg',
+    priority: 'red'
+  },
+  {
+    name: 'Measles',
+    priority: 'yellow'
+  },
+  {
+    name: 'Middle East respiratory syndrome',
+    alternateName: 'MERS',
+    priority: 'red'
+  },
+  {
+    name: 'Nipah',
+    priority: 'red'
+  },
+  {
+    name: 'Plague',
+    priority: 'yellow'
+  },
+  {
+    name: 'Rift Valley fever',
+    alternateName: 'RVF',
+    priority: 'red'
+  },
+  {
+    name: 'Severe Acute Respiratory Syndrome',
+    alternateName: 'SARS',
+    priority: 'red'
+  },
+  {
+    name: 'Severe Fever with Thrombocytopenia Syndrome',
+    alternateName: 'SFTS',
+    priority: 'orange'
+  },
+  {
+    name: 'Smallpox',
+    priority: 'yellow'
+  },
+  {
+    name: 'Tuberculosis',
+    priority: 'yellow'
+  },
+  {
+    name: 'West Nile Virus',
+    priority: 'yellow'
+  },
+  {
+    name: 'Yellow fever',
+    priority: 'yellow'
+  },
+  {
+    name: 'Zika',
+    priority: 'red'
+  }
+];
