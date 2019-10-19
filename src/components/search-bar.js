@@ -33,7 +33,7 @@ export default function SearchBar() {
           ref={inputRef}
           type="text"
           className="search-bar__search-box__input"
-          placeholder="Search reviewed preprints by DOI, arXiv ID or title"
+          placeholder="Search preprints with reviews or requests for reviews by DOI, arXiv ID or title"
           onKeyDown={e => {
             if (e.key === 'Enter') {
               handleSubmit(e.target.value);
