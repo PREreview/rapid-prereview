@@ -39,7 +39,10 @@ export default function Home() {
 
       <div className="home__main">
         <LeftSidePanel visible={showLeftPanel}>
-          <Facets counts={results.counts} />
+          <Facets
+            counts={results.counts}
+            isFetching={fetchResultsProgress.isActive}
+          />
         </LeftSidePanel>
 
         <div className="home__content">

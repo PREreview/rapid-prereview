@@ -428,7 +428,7 @@ export function useRole(roleId) {
       const cached = roleStore.get(roleId);
       if (cached) {
         setProgress({
-          isActive: true,
+          isActive: false,
           error: null
         });
         setRole(cached);

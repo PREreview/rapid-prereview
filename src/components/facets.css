@@ -24,9 +24,14 @@
   & .facets__list-item {
     margin-bottom: var(--xsgrd);
   }
+
   & .facets__facet-label {
     display: flex;
     justify-content: space-between;
     width: 100%;
   }
+}
+
+.count--loading {
+  color: var(--light-grey);
 }

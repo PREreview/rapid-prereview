@@ -146,14 +146,14 @@
     justify-content: center;
     align-items: center;
 
-    & .preprint-card__tag-icon--active {
-      background-color: var(--ui-basic-font-color--light);
-    }
-
     & .preprint-card__tag-icon__icon {
       width: 16px;
       height: 16px;
     }
+  }
+
+  & .preprint-card__tag-icon--active {
+    background-color: var(--ui-basic-font-color--light);
   }
 
   & .preprint-card__expansion-header {

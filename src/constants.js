@@ -114,11 +114,6 @@ export const INDEXED_PREPRINT_PROPS = [
 // See https://github.com/PREreview/rapid-prereview/issues/10
 export const DISEASES = [
   {
-    name: 'Human immunodeficiency virus',
-    alternateName: 'HIV',
-    priority: 'yellow'
-  },
-  {
     name: 'Chikungunya',
     priority: 'orange'
   },
@@ -142,6 +137,11 @@ export const DISEASES = [
   {
     name: 'Hendra',
     priority: 'red'
+  },
+  {
+    name: 'Human immunodeficiency virus',
+    alternateName: 'HIV',
+    priority: 'yellow'
   },
   {
     name: 'Influenza',

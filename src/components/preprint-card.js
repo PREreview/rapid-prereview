@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import {
   MdArrowUpward,
+  MdTimeline,
   MdCode,
   MdChevronRight,
   MdExpandLess,
@@ -128,7 +129,7 @@ export default function PreprintCard({
                         : 'preprint-card__tag-icon--inactive'
                     }`}
                   >
-                    <MdCode
+                    <MdTimeline
                       className="preprint-card__tag-icon__icon"
                       title="Has Data"
                     />

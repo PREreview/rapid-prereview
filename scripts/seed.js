@@ -137,18 +137,18 @@ const identifiers = Object.keys(id2paths).filter(
                 '@type': 'OutbreakScienceEntity',
                 name:
                   {
-                    'arXiv:1909.13766': 'influenza',
-                    'arXiv:1910.00274': 'influenza',
-                    'doi:10.1101/19001834': 'influenza',
-                    'doi:10.1101/19007971': 'dengue',
-                    'doi:10.1101/780627': 'influenza',
-                    'doi:10.1101/782680': 'influenza',
-                    'doi:10.1101/788968': 'influenza',
-                    'doi:10.1101/790493': 'cholera',
-                    'doi:10.1101/790642': 'dengue',
-                    'doi:10.1101/791004': 'influenza',
-                    'doi:10.1101/791038': 'influenza'
-                  }[identifier] || sample(['influenza', 'dengue', 'zika'])
+                    'arXiv:1909.13766': 'Influenza',
+                    'arXiv:1910.00274': 'Influenza',
+                    'doi:10.1101/19001834': 'Influenza',
+                    'doi:10.1101/19007971': 'Dengue',
+                    'doi:10.1101/780627': 'Influenza',
+                    'doi:10.1101/782680': 'Influenza',
+                    'doi:10.1101/788968': 'Influenza',
+                    'doi:10.1101/790493': 'Cholera',
+                    'doi:10.1101/790642': 'Dengue',
+                    'doi:10.1101/791004': 'Influenza',
+                    'doi:10.1101/791038': 'Influenza'
+                  }[identifier] || sample(['Influenza', 'Dengue', 'Zika'])
               }
             ],
             reviewAnswer: QUESTIONS.map(question => {
