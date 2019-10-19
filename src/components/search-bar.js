@@ -1,9 +1,10 @@
 import React, { useRef } from 'react';
+import PropTypes from 'prop-types';
 import { MdSearch } from 'react-icons/md';
 import { useHistory, useLocation } from 'react-router-dom';
 import { createPreprintQs } from '../utils/search';
 
-export default function SearchBar() {
+export default function SearchBar({ isFetching }) {
   const inputRef = useRef();
   const history = useHistory();
   const location = useLocation();
@@ -34,6 +35,7 @@ export default function SearchBar() {
           type="text"
           className="search-bar__search-box__input"
           placeholder="Search preprints with reviews or requests for reviews by DOI, arXiv ID or title"
+          disabled={isFetching}
           onKeyDown={e => {
             if (e.key === 'Enter') {
               handleSubmit(e.target.value);
@@ -60,3 +62,7 @@ export default function SearchBar() {
     </div>
   );
 }
+
+SearchBar.propTypes = {
+  isFetching: PropTypes.bool.isRequired
+};

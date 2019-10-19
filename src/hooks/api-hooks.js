@@ -294,20 +294,6 @@ export function usePreprintActions(identifier) {
 export function usePreprintSearchResults(
   search // the ?qs part of the url
 ) {
-  if (!search || search === '?') {
-    search = `?q=*:*&sort=${JSON.stringify([
-      '-score<number>',
-      '-datePosted<number>',
-      '-dateFirstActivity<number>'
-    ])}&include_docs=true&counts=${JSON.stringify([
-      'hasData',
-      'hasCode',
-      'hasReviews',
-      'hasRequests',
-      'subjectName'
-    ])}`;
-  }
-
   const [progress, setProgress] = useState({
     isActive: false,
     error: null

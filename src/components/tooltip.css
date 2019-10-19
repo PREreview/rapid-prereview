@@ -1,3 +1,7 @@
+[data-reach-tooltip] {
+  z-index: 100000;
+}
+
 .tooltip {
   background-color: white;
 }

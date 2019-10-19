@@ -27,6 +27,8 @@ export default function Home() {
     apifyPreprintQs(location.search)
   );
 
+  console.log(results);
+
   return (
     <div className="home">
       <HeaderBar
@@ -35,7 +37,7 @@ export default function Home() {
         }}
       />
 
-      <SearchBar />
+      <SearchBar isFetching={fetchResultsProgress.isActive} />
 
       <div className="home__main">
         <LeftSidePanel visible={showLeftPanel}>

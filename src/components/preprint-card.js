@@ -11,6 +11,7 @@ import {
   MdExpandLess,
   MdExpandMore
 } from 'react-icons/md';
+import Tooltip from '@reach/tooltip';
 import Value from './value';
 import { getTags, getYesNoStats, getTextAnswers } from '../utils/stats';
 import { checkIfHasReviewed, checkIfHasRequested } from '../utils/actions';
@@ -58,27 +59,36 @@ export default function PreprintCard({
       <div className="preprint-card">
         <div className="preprint-card__score-panel">
           <div className="preprint-card__score-panel__top">
-            <IconButton
-              disabled={hasRequested}
-              onClick={() => {
-                onNewRequest(preprint);
-              }}
-            >
-              <MdArrowUpward className="preprint-card__up-request-icon" />
-            </IconButton>
+            <Tooltip label="Add your request for review">
+              <IconButton
+                disabled={hasRequested}
+                onClick={() => {
+                  onNewRequest(preprint);
+                }}
+              >
+                <MdArrowUpward className="preprint-card__up-request-icon" />
+              </IconButton>
+            </Tooltip>
           </div>
-          <div className="preprint-card__score-panel__middle">
-            <ScoreBadge score={actions.length} />
-          </div>
+          <Tooltip label="Number of reviews and requests for reviews for this preprint">
+            <div className="preprint-card__score-panel__middle">
+              <ScoreBadge
+                nRequests={requests.length}
+                nReviews={reviews.length}
+              />
+            </div>
+          </Tooltip>
           <div className="preprint-card__score-panel__bottom">
-            <IconButton
-              disabled={hasReviewed}
-              onClick={() => {
-                onNewReview(preprint);
-              }}
-            >
-              <AddPrereviewIcon />
-            </IconButton>
+            <Tooltip label="Add your review">
+              <IconButton
+                disabled={hasReviewed}
+                onClick={() => {
+                  onNewReview(preprint);
+                }}
+              >
+                <AddPrereviewIcon />
+              </IconButton>
+            </Tooltip>
           </div>
         </div>
 
@@ -118,36 +128,52 @@ export default function PreprintCard({
               <ul className="preprint-card__tag-list">
                 {subjects.map(subject => (
                   <li key="subject" className="preprint-card__tag-list__item">
-                    <TagPill>{subject}</TagPill>
+                    <Tooltip
+                      label={`Majority of reviewers tagged with ${subject}`}
+                    >
+                      <div>
+                        <TagPill>{subject}</TagPill>
+                      </div>
+                    </Tooltip>
                   </li>
                 ))}
                 <li className="preprint-card__tag-list__item">
-                  <div
-                    className={`preprint-card__tag-icon ${
+                  <Tooltip
+                    label={
                       hasData
-                        ? 'preprint-card__tag-icon--active'
-                        : 'preprint-card__tag-icon--inactive'
-                    }`}
+                        ? 'Majority of reviewers reported data'
+                        : 'Majority of reviewers did not report data'
+                    }
                   >
-                    <MdTimeline
-                      className="preprint-card__tag-icon__icon"
-                      title="Has Data"
-                    />
-                  </div>
+                    <div
+                      className={`preprint-card__tag-icon ${
+                        hasData
+                          ? 'preprint-card__tag-icon--active'
+                          : 'preprint-card__tag-icon--inactive'
+                      }`}
+                    >
+                      <MdTimeline className="preprint-card__tag-icon__icon" />
+                    </div>
+                  </Tooltip>
                 </li>
                 <li className="preprint-card__tag-list__item">
-                  <div
-                    className={`preprint-card__tag-icon ${
+                  <Tooltip
+                    label={
                       hasCode
-                        ? 'preprint-card__tag-icon--active'
-                        : 'preprint-card__tag-icon--inactive'
-                    }`}
+                        ? 'Majority of reviewers reported code'
+                        : 'Majority of reviewers did not report code'
+                    }
                   >
-                    <MdCode
-                      className="preprint-card__tag-icon__icon"
-                      title="Has Source Code"
-                    />
-                  </div>
+                    <div
+                      className={`preprint-card__tag-icon ${
+                        hasCode
+                          ? 'preprint-card__tag-icon--active'
+                          : 'preprint-card__tag-icon--inactive'
+                      }`}
+                    >
+                      <MdCode className="preprint-card__tag-icon__icon" />
+                    </div>
+                  </Tooltip>
                 </li>
               </ul>
             </div>

@@ -24,8 +24,8 @@ export default function SortOptions({ value, onChange }) {
               name === 'score'
                 ? 'score'
                 : name === 'new'
-                ? 'Date of first activity'
-                : 'Date preprint posted'
+                ? 'date of first review or request for review'
+                : 'date preprint posted'
             }`}
           >
             <label htmlFor={`sort-options-${name}`}>{name}</label>
