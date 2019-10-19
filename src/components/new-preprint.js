@@ -23,7 +23,9 @@ export default function NewPreprint({
   onRequested,
   onViewInContext
 }) {
-  const location = useLocation(); // location.state can be {preprint, tab} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
+  const location = useLocation(); // location.state can be {preprint, tab, isSingleStep} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
+
+  const isSingleStep = location.state && location.state.isSingleStep;
 
   const [identifier, setIdentifier] = useState(
     (location.state &&
@@ -61,8 +63,13 @@ export default function NewPreprint({
         />
       ) : preprint && step === 'NEW_REVIEW' ? (
         <StepReview
+          isSingleStep={isSingleStep}
           onCancel={e => {
-            setStep('NEW_PREPRINT');
+            if (isSingleStep) {
+              onCancel();
+            } else {
+              setStep('NEW_PREPRINT');
+            }
           }}
           preprint={preprint}
           onReviewed={onReviewed}
@@ -70,8 +77,13 @@ export default function NewPreprint({
         />
       ) : preprint && step === 'NEW_REQUEST' ? (
         <StepRequest
+          isSingleStep={isSingleStep}
           onCancel={e => {
-            setStep('NEW_PREPRINT');
+            if (isSingleStep) {
+              onCancel();
+            } else {
+              setStep('NEW_PREPRINT');
+            }
           }}
           preprint={preprint}
           onRequested={onRequested}
@@ -172,44 +184,6 @@ function StepPreprint({
           }}
           value={value}
         />
-        {/* <label
-            htmlFor="step-preprint-input"
-            className="step-preprint__input-label step-preprint__input-label--large"
-            >
-            Enter a <abbr title="Digital Object Identifier">DOI</abbr> or an arXiv
-            ID
-            </label>
-
-            <input
-            id="step-preprint-input"
-            className="step-preprint__text-input"
-            type="text"
-            autoComplete="off"
-            placeholder=""
-            onChange={e => {
-            const value = e.target.value;
-            const [arxivId] = identifiersArxiv.extract(value);
-            let nextIdentifier;
-            if (arxivId) {
-            nextIdentifier = `arXiv:${arxivId}`;
-            } else {
-            const doiMatch = value.match(doiRegex());
-            const doi = doiMatch && doiMatch[0];
-            if (doi) {
-            nextIdentifier = `doi:${doi}`;
-            } else {
-            nextIdentifier = '';
-            }
-            }
-
-            if (nextIdentifier !== identifier) {
-            onIdentifier(nextIdentifier);
-            }
-
-            setValue(value);
-            }}
-            value={value}
-            /> */}
       </div>
 
       {preprint ? (
@@ -264,7 +238,13 @@ StepPreprint.propTypes = {
   resolvePreprintStatus: PropTypes.object.isRequired
 };
 
-function StepReview({ preprint, onViewInContext, onCancel, onReviewed }) {
+function StepReview({
+  preprint,
+  onViewInContext,
+  onCancel,
+  onReviewed,
+  isSingleStep
+}) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
   const [answerMap, setAnswerMap] = useState({}); // TODO read from local storage ?
@@ -298,7 +278,7 @@ function StepReview({ preprint, onViewInContext, onCancel, onReviewed }) {
             }}
             disabled={postData.isActive}
           >
-            Go Back
+            {isSingleStep ? 'Cancel' : 'Go Back'}
           </Button>
           <Button
             onClick={e => {
@@ -338,13 +318,20 @@ function StepReview({ preprint, onViewInContext, onCancel, onReviewed }) {
   );
 }
 StepReview.propTypes = {
+  isSingleStep: PropTypes.bool,
   preprint: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onReviewed: PropTypes.func.isRequired,
   onViewInContext: PropTypes.func.isRequired
 };
 
-function StepRequest({ preprint, onViewInContext, onCancel, onRequested }) {
+function StepRequest({
+  isSingleStep,
+  preprint,
+  onViewInContext,
+  onCancel,
+  onRequested
+}) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
 
@@ -361,7 +348,7 @@ function StepRequest({ preprint, onViewInContext, onCancel, onRequested }) {
           }}
           disabled={postData.isActive}
         >
-          Go Back
+          {isSingleStep ? 'Cancel' : 'Go Back'}
         </Button>
         <Button
           onClick={e => {
@@ -392,6 +379,7 @@ function StepRequest({ preprint, onViewInContext, onCancel, onRequested }) {
   );
 }
 StepRequest.propTypes = {
+  isSingleStep: PropTypes.bool,
   preprint: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
   onRequested: PropTypes.func.isRequired,

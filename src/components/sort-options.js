@@ -22,7 +22,7 @@ export default function SortOptions({ value, onChange }) {
           <Tooltip
             label={`Sort by ${
               name === 'score'
-                ? 'score'
+                ? 'score (number of reviews and requests divided by time elapsed since first activity)'
                 : name === 'new'
                 ? 'date of first review or request for review'
                 : 'date preprint posted'

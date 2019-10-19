@@ -153,7 +153,8 @@ export default function Home() {
                       if (user) {
                         history.push('/new', {
                           preprint: omit(preprint, ['potentialAction']),
-                          tab: 'request'
+                          tab: 'request',
+                          isSingleStep: true
                         });
                       } else {
                         setIsLoginModalOpen(true);
@@ -163,7 +164,8 @@ export default function Home() {
                       if (user) {
                         history.push('/new', {
                           preprint: omit(preprint, ['potentialAction']),
-                          tab: 'review'
+                          tab: 'review',
+                          isSingleStep: true
                         });
                       } else {
                         setIsLoginModalOpen(true);

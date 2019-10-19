@@ -58,8 +58,14 @@ export default function PreprintCard({
     <Fragment>
       <div className="preprint-card">
         <div className="preprint-card__score-panel">
-          <div className="preprint-card__score-panel__top">
-            <Tooltip label="Add your request for review">
+          <Tooltip
+            label={
+              hasRequested
+                ? 'You already requested feedback for this preprint'
+                : 'Add your request for review'
+            }
+          >
+            <div className="preprint-card__score-panel__top">
               <IconButton
                 disabled={hasRequested}
                 onClick={() => {
@@ -68,8 +74,8 @@ export default function PreprintCard({
               >
                 <MdArrowUpward className="preprint-card__up-request-icon" />
               </IconButton>
-            </Tooltip>
-          </div>
+            </div>
+          </Tooltip>
           <Tooltip label="Number of reviews and requests for reviews for this preprint">
             <div className="preprint-card__score-panel__middle">
               <ScoreBadge
@@ -78,8 +84,14 @@ export default function PreprintCard({
               />
             </div>
           </Tooltip>
-          <div className="preprint-card__score-panel__bottom">
-            <Tooltip label="Add your review">
+          <Tooltip
+            label={
+              hasReviewed
+                ? 'You already reviewed this preprint'
+                : 'Add your review'
+            }
+          >
+            <div className="preprint-card__score-panel__bottom">
               <IconButton
                 disabled={hasReviewed}
                 onClick={() => {
@@ -88,8 +100,8 @@ export default function PreprintCard({
               >
                 <AddPrereviewIcon />
               </IconButton>
-            </Tooltip>
-          </div>
+            </div>
+          </Tooltip>
         </div>
 
         <div className="preprint-card__contents">

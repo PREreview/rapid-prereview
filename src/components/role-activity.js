@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
+import { MdChevronRight } from 'react-icons/md';
 import { getId } from '../utils/jsonld';
 import { createActivityQs } from '../utils/search';
 import { useActionsSearchResults } from '../hooks/api-hooks';
@@ -37,10 +38,22 @@ export default function RoleActivity({ roleId }) {
               {format(new Date(doc.startTime), 'MMM. d, yyyy')}{' '}
               {doc['@type'] === 'RequestForRapidPREreviewAction'
                 ? 'requested feedback on'
-                : 'reviewed'}{' '}
-              <Link to={`/${doc.object.doi || doc.object.arXivId}`}>
-                <Value tagName="span">{doc.object.name}</Value>
-              </Link>
+                : 'reviewed'}
+              {':'}
+              <div>
+                <Link to={`/${doc.object.doi || doc.object.arXivId}`}>
+                  <Value tagName="span">{doc.object.name}</Value>
+                </Link>
+                <div>
+                  <Value tagName="span" className="preprint-card__server-name">
+                    {(doc.object.preprintServer || {}).name}
+                  </Value>
+                  <MdChevronRight className="preprint-card__server-arrow-icon" />
+                  <Value tagName="span">
+                    {doc.object.doi || doc.object.arXivId}
+                  </Value>
+                </div>
+              </div>
             </li>
           ))}
         </ul>
