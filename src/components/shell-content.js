@@ -15,7 +15,8 @@ import {
   checkIfHasRequested
 } from '../utils/actions';
 import { getId, cleanup } from '../utils/jsonld';
-import { createPreprintIdentifierCurie } from '../utils/ids';
+import { useLocalState } from '../hooks/ui-hooks';
+import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
 import { getYesNoStats, getTextAnswers } from '../utils/stats';
 import Barplot from './barplot';
@@ -165,8 +166,18 @@ ShellContentRead.propTypes = {
 };
 
 function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
-  const [answerMap, setAnswerMap] = useState({}); // TODO read from local storage ?
-  const [subjects, setSubjects] = useState([]);
+  const [subjects, setSubjects] = useLocalState(
+    'subjects',
+    getId(getDefaultRole(user)),
+    createPreprintId(preprint),
+    []
+  );
+  const [answerMap, setAnswerMap] = useLocalState(
+    'answerMap',
+    getId(getDefaultRole(user)),
+    createPreprintId(preprint),
+    {}
+  );
 
   const canSubmit = checkIfAllAnswered(answerMap);
 

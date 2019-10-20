@@ -6,9 +6,10 @@ import doiRegex from 'doi-regex';
 import { format } from 'date-fns';
 import { MdChevronRight } from 'react-icons/md';
 import Value from './value';
-import { createPreprintIdentifierCurie } from '../utils/ids';
+import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
 import { getId, unprefix, cleanup } from '../utils/jsonld';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
+import { useLocalState } from '../hooks/ui-hooks';
 import SubjectEditor from './subject-editor';
 import RapidFormFragment from './rapid-form-fragment';
 import { useUser } from '../contexts/user-context';
@@ -248,8 +249,18 @@ function StepReview({
 }) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
-  const [subjects, setSubjects] = useState([]);
-  const [answerMap, setAnswerMap] = useState({}); // TODO read from local storage ?
+  const [subjects, setSubjects] = useLocalState(
+    'subjects',
+    getId(getDefaultRole(user)),
+    createPreprintId(preprint),
+    []
+  );
+  const [answerMap, setAnswerMap] = useLocalState(
+    'answerMap',
+    getId(getDefaultRole(user)),
+    createPreprintId(preprint),
+    {}
+  );
 
   const canSubmit = checkIfAllAnswered(answerMap);
 
@@ -328,8 +339,7 @@ function StepReview({
             onClick={e => {
               onViewInContext({
                 preprint,
-                tab: 'review',
-                answerMap
+                tab: 'review'
               });
             }}
             disabled={postData.isActive}
