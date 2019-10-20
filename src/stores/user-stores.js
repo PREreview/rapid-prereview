@@ -7,6 +7,7 @@ import { getId } from '../utils/jsonld';
 export class RoleStore extends EventEmitter {
   constructor({ max = 1000 } = {}) {
     super();
+    this.setMaxListeners(max);
     this.cache = new LRU({ max });
   }
 
