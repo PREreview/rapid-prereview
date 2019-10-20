@@ -41,6 +41,7 @@ export default function Diseases({ onSubmit, blacklist = [] }) {
   return (
     <div className="diseases">
       <Combobox
+        className="diseases__combobox"
         openOnFocus={true}
         onSelect={term => {
           setSelected(term);
@@ -56,7 +57,12 @@ export default function Diseases({ onSubmit, blacklist = [] }) {
             setSelected(null);
           }}
         />
-        <ComboboxPopover>
+        <ComboboxPopover
+          portal={
+            false /* rendering a portal within a portal (modal) is currently bugged */
+          }
+          className="diseases__combobox-popover"
+        >
           <ComboboxList persistSelection={true}>
             {sorted.map(subject => (
               <ComboboxOption key={subject.name} value={format(subject)} />

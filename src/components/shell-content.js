@@ -14,7 +14,7 @@ import {
   checkIfHasReviewed,
   checkIfHasRequested
 } from '../utils/actions';
-import { getId } from '../utils/jsonld';
+import { getId, cleanup } from '../utils/jsonld';
 import { createPreprintIdentifierCurie } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
 import { getYesNoStats, getTextAnswers } from '../utils/stats';
@@ -22,6 +22,7 @@ import Barplot from './barplot';
 import TextAnswers from './text-answers';
 import { getDefaultRole } from '../utils/users';
 import UserBadge from './user-badge';
+import SubjectEditor from './subject-editor';
 
 export default function ShellContent({ preprint, defaultTab = 'read' }) {
   const [user] = useUser();
@@ -165,6 +166,7 @@ ShellContentRead.propTypes = {
 
 function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
   const [answerMap, setAnswerMap] = useState({}); // TODO read from local storage ?
+  const [subjects, setSubjects] = useState([]);
 
   const canSubmit = checkIfAllAnswered(answerMap);
 
@@ -175,6 +177,24 @@ function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
           e.preventDefault();
         }}
       >
+        <SubjectEditor
+          subjects={subjects}
+          onAdd={subject => {
+            setSubjects(
+              subjects.concat(subject).sort((a, b) => {
+                return (a.alternateName || a.name).localeCompare(
+                  b.alternateName || b.name
+                );
+              })
+            );
+          }}
+          onDelete={subject => {
+            setSubjects(
+              subjects.filter(_subject => _subject.name !== subject.name)
+            );
+          }}
+        />
+
         <RapidFormFragment
           answerMap={answerMap}
           onChange={(key, value) => {
@@ -194,10 +214,14 @@ function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
                 actionStatus: 'CompletedActionStatus',
                 agent: getId(getDefaultRole(user)),
                 object: createPreprintIdentifierCurie(preprint),
-                resultReview: {
-                  '@type': 'RapidPREreview',
-                  reviewAnswer: getReviewAnswers(answerMap)
-                }
+                resultReview: cleanup(
+                  {
+                    '@type': 'RapidPREreview',
+                    about: subjects,
+                    reviewAnswer: getReviewAnswers(answerMap)
+                  },
+                  { removeEmptyArray: true }
+                )
               });
             }}
           >

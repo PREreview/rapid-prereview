@@ -7,8 +7,9 @@ import { format } from 'date-fns';
 import { MdChevronRight } from 'react-icons/md';
 import Value from './value';
 import { createPreprintIdentifierCurie } from '../utils/ids';
-import { getId, unprefix } from '../utils/jsonld';
+import { getId, unprefix, cleanup } from '../utils/jsonld';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
+import SubjectEditor from './subject-editor';
 import RapidFormFragment from './rapid-form-fragment';
 import { useUser } from '../contexts/user-context';
 import { getReviewAnswers, checkIfAllAnswered } from '../utils/actions';
@@ -247,6 +248,7 @@ function StepReview({
 }) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
+  const [subjects, setSubjects] = useState([]);
   const [answerMap, setAnswerMap] = useState({}); // TODO read from local storage ?
 
   const canSubmit = checkIfAllAnswered(answerMap);
@@ -262,6 +264,24 @@ function StepReview({
           e.preventDefault();
         }}
       >
+        <SubjectEditor
+          subjects={subjects}
+          onAdd={subject => {
+            setSubjects(
+              subjects.concat(subject).sort((a, b) => {
+                return (a.alternateName || a.name).localeCompare(
+                  b.alternateName || b.name
+                );
+              })
+            );
+          }}
+          onDelete={subject => {
+            setSubjects(
+              subjects.filter(_subject => _subject.name !== subject.name)
+            );
+          }}
+        />
+
         <RapidFormFragment
           answerMap={answerMap}
           onChange={(key, value) => {
@@ -288,10 +308,14 @@ function StepReview({
                   actionStatus: 'CompletedActionStatus',
                   agent: getId(getDefaultRole(user)),
                   object: createPreprintIdentifierCurie(preprint),
-                  resultReview: {
-                    '@type': 'RapidPREreview',
-                    reviewAnswer: getReviewAnswers(answerMap)
-                  }
+                  resultReview: cleanup(
+                    {
+                      '@type': 'RapidPREreview',
+                      about: subjects,
+                      reviewAnswer: getReviewAnswers(answerMap)
+                    },
+                    { removeEmptyArray: true }
+                  )
                 },
                 onReviewed
               );

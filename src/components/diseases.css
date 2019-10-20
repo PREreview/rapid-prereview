@@ -1,3 +1,13 @@
 .diseases {
   display: flex;
+
+  /* @reach/combobox is currently bugged with the portal option when rendered within a portal (e.g. a Modal) => we use position relative and absolute and no portal */
+  & .diseases__combobox {
+    position: relative;
+  }
+
+  & .diseases__combobox-popover {
+    position: absolute;
+    z-index: 10000000;
+  }
 }

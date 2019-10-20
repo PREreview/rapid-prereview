@@ -10,9 +10,9 @@ export default function SubjectEditor({ subjects = [], onAdd, onDelete }) {
   return (
     <div className="subject-editor">
       {!!subjects.length && (
-        <ul>
+        <ul className="subject-editor__list">
           {subjects.map(subject => (
-            <li key={subject.name}>
+            <li key={subject.name} className="subject-editor__item">
               <TagPill>
                 {subject.alternateName ? (
                   <abbr title={subject.name}>{subject.alternateName}</abbr>
