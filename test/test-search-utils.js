@@ -16,9 +16,8 @@ describe('search utils', () => {
     });
 
     it('should create qs in the bookmark case', () => {
-      const ui = createPreprintQs({ bookmark: 'bookmark' });
-      assert.equal(ui, '?bookmark=bookmark');
-      assert.equal(apifyPreprintQs(ui), '?bookmark=bookmark');
+      const ui = createPreprintQs();
+      assert(apifyPreprintQs(ui, 'bookmark').includes('bookmark=bookmark'));
     });
 
     it('should create qs in the search case', () => {
