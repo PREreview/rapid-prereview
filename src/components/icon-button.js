@@ -1,13 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
 
-export default React.forwardRef(function IconButton(
-  { children, className, onMouseUp = noop, ...buttonProps },
-  ref
-) {
+export default function IconButton({
+  children,
+  className,
+  onMouseUp = noop,
+  ...buttonProps
+}) {
   return (
     <button
-      ref={ref}
       className={`icon-button ${className ? className : ''}`}
       {...buttonProps}
       onMouseUp={e => {
@@ -20,4 +22,10 @@ export default React.forwardRef(function IconButton(
       <div className="icon-button__contents">{children}</div>
     </button>
   );
-});
+}
+
+IconButton.propTypes = {
+  children: PropTypes.any, // typically an icon from react-icons/md
+  className: PropTypes.string,
+  onMouseUp: PropTypes.func
+};

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import matchSorter from 'match-sorter';
 import PropTypes from 'prop-types';
 import {
@@ -11,19 +11,27 @@ import {
 import { DISEASES } from '../constants';
 import Button from './button';
 
-export default function Diseases({ onSubmit }) {
+export default function Diseases({ onSubmit, blacklist = [] }) {
   const [term, setTerm] = useState('');
   const [selected, setSelected] = useState(null);
 
-  const sorted =
-    term.trim() === ''
-      ? DISEASES
-      : matchSorter(DISEASES, term, {
+  const options = useMemo(() => {
+    return DISEASES.filter(
+      subject =>
+        !blacklist.some(_subject => format(_subject) === format(subject))
+    );
+  }, [blacklist]);
+
+  const sorted = useMemo(() => {
+    return term.trim() === ''
+      ? options
+      : matchSorter(options, term, {
           keys: [subject => format(subject)]
         });
+  }, [term, options]);
 
   function handleSubmit(value) {
-    const subject = DISEASES.find(subject => format(subject) === value);
+    const subject = options.find(subject => format(subject) === value);
     if (subject) {
       setTerm(format(subject));
       onSubmit(subject);
@@ -58,7 +66,7 @@ export default function Diseases({ onSubmit }) {
       </Combobox>
       <Button
         disabled={
-          !DISEASES.find(subject => format(subject) === term) ||
+          !options.find(subject => format(subject) === term) ||
           term === selected
         }
         onClick={() => {
@@ -73,7 +81,13 @@ export default function Diseases({ onSubmit }) {
 }
 
 Diseases.propTypes = {
-  onSubmit: PropTypes.func.isRequired
+  onSubmit: PropTypes.func.isRequired,
+  blacklist: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      alternateName: PropTypes.string
+    })
+  )
 };
 
 function format(subject) {

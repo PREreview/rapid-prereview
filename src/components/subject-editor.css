@@ -1,0 +1,22 @@
+.subject-editor {
+  & ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: var(--sgrd) 0;
+
+    & li {
+      padding: 0;
+      margin: 0;
+      margin-right: var(--xsgrd);
+
+      & .icon-button {
+        margin-left: var(--xsgrd);
+      }
+    }
+
+    & li:last-child {
+      margin-right: 0;
+    }
+  }
+}

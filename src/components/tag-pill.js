@@ -1,5 +1,5 @@
 import React from 'react';
-import PropType from 'prop-types';
+import PropTypes from 'prop-types';
 
 export default function TagPill({
   children,
@@ -20,3 +20,9 @@ export default function TagPill({
     </span>
   );
 }
+
+TagPill.propTypes = {
+  children: PropTypes.any,
+  backgroundColor: PropTypes.string,
+  foregroundColor: PropTypes.string
+};
