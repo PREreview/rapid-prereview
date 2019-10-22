@@ -9,6 +9,7 @@ import IconButton from './icon-button';
 export default function SubjectEditor({ subjects = [], onAdd, onDelete }) {
   return (
     <div className="subject-editor">
+      <h3 className="subject-editor__title">Add Disease Subject Tags</h3>
       {!!subjects.length && (
         <ul className="subject-editor__list">
           {subjects.map(subject => (

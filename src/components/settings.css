@@ -46,9 +46,27 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
-    border-bottom: 1px solid var(--ruling-color--light);
-    padding-bottom: var(--xsgrd);
+    border-bottom: 1px solid var(--ruling-color);
+
+    padding: var(--xxsgrd) var(--xsgrd);
     margin-bottom: var(--sgrd);
+    font: var(--ui-basic-font);
+    color: var(--ui-basic-font-color--light);
+    text-transform: uppercase;
+    letter-spacing: 0.035em;
+    & .settings__persona-list-header__active {
+      padding: 0 var(--sgrd);
+      flex: 0 0 128px;
+      box-sizing: border-box;
+    }
+
+    & .settings__persona-list-header__username {
+      flex: 1 1 25%;
+    }
+
+    & .settings__persona-list-header__anon {
+      margin-right: 80px;
+    }
   }
   & .settings__persona-list {
     padding: 0;
@@ -145,4 +163,9 @@
       flex: 0 0 18px;
     }
   }
+}
+
+.settings-role-editor-modal {
+  width: 100vw;
+  max-width: 470px;
 }

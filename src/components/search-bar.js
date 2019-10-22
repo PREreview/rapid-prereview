@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { MdSearch } from 'react-icons/md';
 import { useHistory, useLocation } from 'react-router-dom';
 import { createPreprintQs } from '../utils/search';
+import IconButton from './icon-button';
 
 export default function SearchBar({ isFetching }) {
   const inputRef = useRef();
@@ -45,18 +46,18 @@ export default function SearchBar({ isFetching }) {
             handleSubmit(e.target.value);
           }}
         />
-        <button className="search-bar__search-box__button">
-          <MdSearch
-            className="search-bar__search-box__button-icon"
-            onClick={e => {
-              e.preventDefault();
-              const $input = inputRef.current;
-              if ($input) {
-                handleSubmit($input.value);
-              }
-            }}
-          />
-        </button>
+        <IconButton
+          className="search-bar__search-box__button"
+          onClick={e => {
+            e.preventDefault();
+            const $input = inputRef.current;
+            if ($input) {
+              handleSubmit($input.value);
+            }
+          }}
+        >
+          <MdSearch className="search-bar__search-box__button-icon" />
+        </IconButton>
       </div>
       <div className="search-bar__right-spacer" />
     </div>

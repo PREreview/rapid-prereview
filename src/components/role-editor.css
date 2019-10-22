@@ -1,0 +1,105 @@
+.role-editor {
+  & .role-editor__content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  & .role-editor__name_input {
+    flex: 1 1 50%;
+    padding-right: var(--mgrd);
+  }
+  & .role-editor__avatar-block {
+    flex: 1 0 50%;
+  }
+
+  & .role-editor__avatar-block-title {
+    font: var(--ui-basic-font--large);
+    color: var(--ui-basic-font-color--light);
+    margin-top: 0;
+    margin-bottom: var(--xxsgrd);
+  }
+
+  & .role-editor__avatar-editor-dropzone {
+    border: 2px solid var(--ruling-color);
+    text-align: center;
+    position: relative;
+    background: var(--light-grey);
+    display: block;
+    min-width: 200px;
+    line-height: 0;
+    &:focus {
+      outline: none;
+      border-color: black;
+    }
+  }
+
+  & .role-editor__avatar-placeholder-image {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--light-grey);
+    fill: white;
+    opacity: 0.75;
+    box-sizing: border-box;
+  }
+
+  & .role-editor__avatar-editor {
+    background-color: white;
+  }
+  & .role-editor__avatar-block-label {
+    font: var(--ui-basic-font);
+    letter-spacing: 0.025em;
+    width: 100%;
+    box-sizing: border-box;
+    display: block;
+    color: white;
+    padding: var(--sgrd);
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+  }
+
+  & .role-editor__name_input {
+    margin-bottom: var(--mgrd);
+  }
+
+  & .role-editor__image-controls-label {
+    display: block;
+    font: var(--ui-basic-font);
+    color: var(--ui-basic-font-color--light);
+    margin: var(--xsgrd) var(--xxsgrd);
+  }
+
+  & .role-editor__input-row {
+    display: block;
+    width: 100%;
+    margin: var(--sgrd) 0;
+  }
+  & .role-editor__input-label {
+    font: var(--ui-basic-font--small);
+    letter-spacing: 0.035em;
+    display: block;
+    text-align: center;
+    text-transform: uppercase;
+    color: var(--ui-basic-font-color--light);
+  }
+  & .role-editor__scale-input {
+    width: 100%;
+  }
+
+  & .role-editor__rotate-input {
+    width: 100%;
+  }
+
+  & .role-editor__controls {
+    margin-top: var(--sgrd);
+
+    & .button {
+      margin-left: var(--sgrd);
+    }
+  }
+}

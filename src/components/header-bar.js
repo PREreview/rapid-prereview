@@ -28,7 +28,7 @@ export default function HeaderBar({ onClickMenuButton = noop }) {
         <span className="header-bar__nav-item">Get Browser Extension</span>
         <span className="header-bar__nav-item">About</span>
         <span className="header-bar__nav-item">PREreview</span>
-        <span className="header-bar__nav-item">
+        <span className="header-bar__nav-item header-bar__nav-item--user-badge">
           {user ? (
             <UserBadge user={user}>
               <MenuLink as={Link} to="/settings">

@@ -2,6 +2,7 @@ import React, { useCallback, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AvatarEditor from 'react-avatar-editor';
 import { useDropzone } from 'react-dropzone';
+import { MdPerson } from 'react-icons/md';
 import Button from './button';
 import Controls from './controls';
 import TextInput from './text-input';
@@ -49,67 +50,109 @@ export default function RoleEditor({ user, role, onCancel, onSaved }) {
   const hasNewAvatar = !!file || (!file && (rotate !== 0 || scale !== 1));
 
   return (
-    <div>
-      <TextInput
-        label="Display Name"
-        value={name}
-        onChange={e => {
-          setName(e.target.value);
-        }}
-      />
-
-      {/* The Dropzone. Note that we remove the input if an image is present so that when user move the image with DmD it doesn't open the file picker */}
-      <div {...getRootProps()}>
-        <AvatarEditor
-          ref={editorRef}
-          image={image}
-          width={150}
-          height={150}
-          border={50}
-          scale={scale}
-          rotate={rotate}
+    <div className="role-editor">
+      <div className="role-editor__content">
+        <TextInput
+          className="role-editor__name_input"
+          label="Display Name"
+          value={name}
+          onChange={e => {
+            setName(e.target.value);
+          }}
         />
-        {!image && <input {...getInputProps()} />}
-      </div>
 
-      {/* Control to allow users to open the file picker (and to replace the one on the canvas). Once a file is in the canvas clicking on the canvas does _not_ open the file picker so this is necessary  */}
-      <label htmlFor="role-editor-input">
-        Click here to upload {image ? 'another' : 'a'} file or drag and drop it
-        to the area above.
-      </label>
-      <input {...getInputProps()} id="role-editor-input" />
-
-      {!!image && (
-        <div>
-          <span>
-            Drag the image to select the part that you want part of your avatar
-          </span>
-
-          <input
-            type="range"
-            id="role-editor-scale"
-            name="scale"
-            min={1}
-            max={25}
-            step={0.1}
-            onChange={e => {
-              setScale(parseFloat(e.target.value));
-            }}
-            value={scale}
-          />
-          <label htmlFor="role-editor-scale">Zoom</label>
-
-          <Button
-            onClick={() => {
-              setRotate((rotate + 90) % 360);
-            }}
+        <div className="role-editor__avatar-block">
+          <h4 className="role-editor__avatar-block-title">Avatar Editor</h4>
+          {/* The Dropzone. Note that we remove the input if an image is present so that when user move the image with DmD it doesn't open the file picker */}
+          <div
+            {...getRootProps()}
+            className="role-editor__avatar-editor-dropzone"
           >
-            Rotate
-          </Button>
-        </div>
-      )}
+            <AvatarEditor
+              className="role-editor__avatar-editor"
+              ref={editorRef}
+              image={image}
+              width={150}
+              height={150}
+              border={25}
+              borderRadius={75}
+              scale={scale}
+              rotate={rotate}
+              style={{ width: '100%', height: '100%' }}
+            />
+            {!image && <input {...getInputProps()} />}
+            {!image && (
+              <MdPerson className="role-editor__avatar-placeholder-image" />
+            )}
+            <label
+              htmlFor="role-editor-input"
+              className="role-editor__avatar-block-label"
+            >
+              Drag and drop file or click to upload image.
+            </label>
+          </div>
 
-      <Controls error={postProgressData.error}>
+          {/* Control to allow users to open the file picker (and to replace the one on the canvas). Once a file is in the canvas clicking on the canvas does _not_ open the file picker so this is necessary  */}
+
+          <input {...getInputProps()} id="role-editor-input" />
+
+          {!!image && (
+            <div className="role-editor__image-controls">
+              <span className="role-editor__image-controls-label">
+                Drag the image to select the part that you want part of your
+                avatar
+              </span>
+              <div className="role-editor__input-row">
+                <input
+                  className="role-editor__scale-input"
+                  type="range"
+                  id="role-editor-scale"
+                  name="scale"
+                  min={1}
+                  max={10}
+                  step={0.1}
+                  onChange={e => {
+                    setScale(parseFloat(e.target.value));
+                  }}
+                  value={scale}
+                />
+                <label
+                  className="role-editor__input-label role-editor__input-label--scale"
+                  htmlFor="role-editor-scale"
+                >
+                  Zoom
+                </label>
+              </div>
+
+              <div className="role-editor__input-row">
+                <input
+                  className="role-editor__rotate-input"
+                  type="range"
+                  id="role-editor-rotate"
+                  name="scale"
+                  min={-180}
+                  max={180}
+                  step={0}
+                  onChange={e => {
+                    setRotate(parseFloat(e.target.value));
+                  }}
+                  value={rotate}
+                />
+                <label
+                  className="role-editor__input-label role-editor__input-label--rotate"
+                  htmlFor="role-editor-scale"
+                >
+                  Rotate
+                </label>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+      <Controls
+        error={postProgressData.error}
+        className="role-editor__controls"
+      >
         <Button
           disabled={postProgressData.isActive}
           onClick={() => {
@@ -123,6 +166,7 @@ export default function RoleEditor({ user, role, onCancel, onSaved }) {
           disabled={
             (name === role.name && !hasNewAvatar) || postProgressData.isActive
           }
+          primary={true}
           onClick={() => {
             const payload = {};
             if (role.name !== name) {
@@ -161,7 +205,7 @@ export default function RoleEditor({ user, role, onCancel, onSaved }) {
             );
           }}
         >
-          Submit
+          Save
         </Button>
       </Controls>
     </div>

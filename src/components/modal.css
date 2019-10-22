@@ -5,6 +5,7 @@
 .modal-container {
   max-width: 800px;
   min-width: 400px;
+  width: fit-content !important;
 }
 .modal {
   font: var(--ui-basic-font--large);

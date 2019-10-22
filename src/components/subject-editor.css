@@ -1,17 +1,43 @@
+.subject-editor {
+  margin: var(--sgrd) 0;
+  padding: var(--sgrd) 0;
+  border-top: 1px solid var(--ruling-color);
+  border-bottom: 1px solid var(--ruling-color);
+
+  & .subject-editor__title {
+    font: var(--ui-basic-font);
+    text-transform: uppercase;
+    color: var(--ui-basic-font-color--light);
+    letter-spacing: 0.045em;
+    margin-top: 0;
+    margin-bottom: var(--sgrd);
+  }
+}
 .subject-editor__list {
   display: flex;
   list-style: none;
   padding: 0;
-  margin: var(--sgrd) 0;
+  margin: 0;
+  margin-bottom: var(--sgrd);
 }
 
 .subject-editor__item {
   padding: 0;
   margin: 0;
   margin-right: var(--xsgrd);
+  box-sizing: border-box;
+  height: var(--mgrd);
 
+  & .tag-pill {
+    padding-right: 0;
+  }
   & .icon-button {
+    height: var(--mgrd);
+    width: var(--mgrd);
+    min-width: var(--mgrd);
     margin-left: var(--xsgrd);
+    color: white;
+    box-sizing: border-box;
   }
 }
 

@@ -20,7 +20,7 @@
   }
 
   & .text-answers__response {
-    border: 1px solid var(--ruling-color--light);
+    border: 1px solid var(--ruling-color);
     border-radius: 2px;
     padding: var(--sgrd) var(--mgrd);
     margin-bottom: var(--sgrd);

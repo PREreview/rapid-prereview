@@ -8,8 +8,9 @@ import {
   ComboboxList,
   ComboboxOption
 } from '@reach/combobox';
+import { MdAdd } from 'react-icons/md';
 import { DISEASES } from '../constants';
-import Button from './button';
+import IconButton from './icon-button';
 
 export default function Diseases({ onSubmit, blacklist = [] }) {
   const [term, setTerm] = useState('');
@@ -70,7 +71,8 @@ export default function Diseases({ onSubmit, blacklist = [] }) {
           </ComboboxList>
         </ComboboxPopover>
       </Combobox>
-      <Button
+      <IconButton
+        className="diseases__add-button"
         disabled={
           !options.find(subject => format(subject) === term) ||
           term === selected
@@ -80,8 +82,8 @@ export default function Diseases({ onSubmit, blacklist = [] }) {
           handleSubmit(term);
         }}
       >
-        Add
-      </Button>
+        <MdAdd className="diseases__add-icon" />
+      </IconButton>
     </div>
   );
 }

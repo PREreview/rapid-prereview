@@ -6,6 +6,7 @@
   height: var(--lgrd);
   min-width: var(--lgrd);
   cursor: pointer;
+  flex: 0 0 auto;
 
   &:focus {
     outline: none;
@@ -34,7 +35,7 @@
     border: 2px solid transparent;
     box-sizing: border-box;
     /* background-color: white; */
-    color: var(--ui-basic-font-color);
+    color: inherit;
 
     border-radius: var(--sgrd);
     display: flex;

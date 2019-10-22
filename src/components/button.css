@@ -52,7 +52,7 @@
     font: var(--ui-button-font);
     letter-spacing: 0.04em;
     border-radius: 2px;
-    height: var(--mgrd);
+    height: var(--lgrd);
     background-color: var(--button-background-color);
     color: var(--button-foreground-color);
     white-space: pre;

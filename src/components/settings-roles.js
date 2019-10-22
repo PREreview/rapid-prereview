@@ -38,8 +38,10 @@ export default function SettingsRoles({ user }) {
           <div className="settings__persona-list-header__active">
             <span>Active</span>
           </div>
-          <span>Username</span>
-          <span>Anonymity</span>
+          <span className="settings__persona-list-header__username">
+            Username
+          </span>
+          <span className="settings__persona-list-header__anon">Anonymity</span>
         </li>
         {arrayify(user.hasRole).map(role => (
           <li key={getId(role)} className="settings__persona-list-item">
@@ -88,7 +90,8 @@ export default function SettingsRoles({ user }) {
 
       {!!editedRoleId && (
         <Modal
-          title="Edit Role"
+          className="settings-role-editor-modal"
+          title="Edit Persona Settings"
           onClose={() => {
             setEditedRoleId(null);
           }}

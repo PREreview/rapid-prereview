@@ -9,10 +9,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 var(--mgrd);
+  padding: 0 var(--mgrd) 0 var(--mgrd);
 
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
   z-index: 1000;
+
+  @media (--narrow-screen) {
+    padding-left: var(--sgrd);
+  }
 
   /* the hamburder is only visible on narrow screens */
   & .header-bar__menu-button {
@@ -35,11 +39,16 @@
   }
 
   & .header-bar__right {
+    display: flex;
+    align-items: center;
   }
 
   & .header-bar__nav-item {
     font: var(--ui-header-menu-font);
     margin: 0 var(--sgrd);
+    display: block;
+    white-space: nowrap;
+    line-height: 0;
 
     &:last-of-type {
       margin-right: 0;

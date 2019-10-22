@@ -1,11 +1,41 @@
 .diseases {
-  display: flex;
-
+  display: inline-flex;
+  position: relative;
   /* @reach/combobox is currently bugged with the portal option when rendered within a portal (e.g. a Modal) => we use position relative and absolute and no portal */
   & .diseases__combobox {
     position: relative;
+
+    & [data-reach-combobox-input] {
+      /* outline: 1px solid red; */
+      padding: var(--xxsgrd) var(--xsgrd);
+      box-sizing: border-box;
+      border-radius: 12px;
+      border: 2px solid var(--ruling-color);
+
+      &:focus {
+        outline: none;
+        border: 2px solid var(--prereview-grey);
+      }
+    }
   }
 
+  & .diseases__add-button {
+    width: var(--mgrd);
+    min-width: var(--mgrd);
+    position: absolute;
+    right: 2px;
+    top: 1px;
+    height: var(--mgrd);
+    opacity: 1;
+    transition: opacity 0.1s;
+    &:disabled {
+      opacity: 0;
+    }
+  }
+  & .diseases__add-icon {
+    width: var(--mgrd);
+    height: var(--mgrd);
+  }
   & .diseases__combobox-popover {
     position: absolute;
     z-index: 10000000;
