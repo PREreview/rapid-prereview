@@ -231,7 +231,7 @@ export default function PreprintCard({
           </div>
         </div>
       </div>
-      <Collapse isOpened={isOpened}>
+      <Collapse isOpened={isOpened} className="preprint-card__collapse">
         <div className="preprint-card-expansion">
           <Barplot stats={getYesNoStats(actions)} />
           <TextAnswers answers={getTextAnswers(actions)} />

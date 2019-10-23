@@ -2,29 +2,38 @@
   position: relative;
   background-color: white;
   box-sizing: border-box;
-  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.08);
+  /* box-shadow: 0px 1px 5px rgba(0, 0, 0, 0); */
   color: var(--ui-basic-font-color);
 
   font: var(--ui-basic-font);
-  margin: 0;
-  margin-bottom: 3px;
+  margin: var(--mgrd) 0 0;
+  /* margin-bottom: 3px; */
   display: flex;
-  border-top: 1px solid white;
+  /* border-top: 1px solid white; */
+  border-bottom: 1px solid var(--light-grey);
 
-  &:hover {
+  transition: box-shadow 0.1s;
+  /* &:hover {
     z-index: 500;
-    /*outline: 1px solid red;*/
     box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.1);
-  }
+  }  */
 
   & .preprint-card__score-panel {
     box-sizing: border-box;
-    flex: 0 0 var(--xlgrd);
-    background-color: var(--card-color--tinted);
+    flex: 0 0 48px;
+    padding: var(--sgrd) 8px 6px;
+    /* background-color: var(--card-color--tinted); */
     display: flex;
     align-items: center;
     justify-content: space-between;
     flex-direction: column;
+
+    & .icon-button__contents {
+      opacity: 0.5;
+      &:hover {
+        opacity: 0.9;
+      }
+    }
 
     & .preprint-card__score-panel__top {
       box-sizing: border-box;
@@ -69,7 +78,7 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    padding: var(--sgrd) var(--sgrd) var(--xsgrd);
+    padding: var(--mgrd) var(--mgrd) var(--xsgrd);
   }
 
   & .preprint-card__title {
@@ -96,7 +105,7 @@
 
   & .preprint-card__info-row {
     box-sizing: border-box;
-    padding: 0 var(--sgrd) var(--xsgrd);
+    padding: 0 var(--mgrd) var(--mgrd);
     display: flex;
     justify-content: space-between;
 
@@ -189,7 +198,37 @@
   }
 }
 
+.home__preprint-list__item .collapse {
+  position: relative;
+
+  /* Top Shadow */
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    top: -1px;
+    z-index: 10;
+  }
+
+  /* Bottom Shadow */
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.6);
+    bottom: -1px;
+    z-index: 10;
+  }
+}
 .preprint-card-expansion {
   max-height: 300px;
   overflow: auto;
+  position: relative;
 }
