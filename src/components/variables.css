@@ -90,6 +90,11 @@
   --ui-header-menu-font: 400 var(--ui-header-menu-font-size) /
     var(--ui-header-menu-font-leading) var(--ui-font-family);
 
+  --ui-header-font-size: 24px;
+  --ui-header-font-leading: 1.3em;
+  --ui-header-font: 500 var(--ui-header-font-size) /
+    var(--ui-header-font-leading) var(--ui-font-family);
+
   --ui-header-1-font-size: 20px;
   --ui-header-1-font-leading: 1.3em;
   --ui-header-1-font: 500 var(--ui-header-1-font-size) /

@@ -1,10 +1,100 @@
 .profile {
-  padding-top: var(--header-bar-height);
+  width: 100%;
 
-  & header {
-    & img {
-      max-height: 150px;
-      max-width: 150px;
+  background-color: var(--xlight-grey);
+  box-sizing: border-box;
+  font: var(--ui-basic-font);
+  margin: 0;
+  min-height: 100vh;
+  padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd);
+  box-sizing: border-box;
+
+  & .profile__content {
+    max-width: var(--middle-column-default-width);
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
+    min-height: 100vh;
+  }
+
+  & .profile__header {
+    padding: var(--lgrd);
+    display: flex;
+  }
+  & .profile__avatar-img {
+    max-height: 150px;
+    max-width: 150px;
+    margin-right: var(--mgrd);
+  }
+
+  & .profile__username {
+    font: var(--ui-header-font);
+    margin: 0;
+  }
+
+  & .profile__identity-info {
+    display: block;
+    flex: 1 1 100%;
+
+    & dt {
+      display: block;
+      /* float: left; */
+      margin-right: var(--xxsgrd);
+      margin: var(--xxsgrd) 0;
     }
+    & dd {
+      /* text-align: right; */
+      margin: var(--xxsgrd) 0 var(--sgrd);
+      display: block;
+    }
+  }
+  & .profile__indentity-info-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--mgrd);
+  }
+
+  & .profile__persona-status {
+    display: inline-block;
+    /* margin: 0 var(--xsgrd);
+    padding: 2px var(--xsgrd); */
+    border-radius: 2px;
+    text-transform: uppercase;
+    font: var(--ui-basic-font--small);
+    letter-spacing: 0.075em;
+
+    & .profile__persona-status__icon-container {
+      height: var(--mgrd);
+      padding: 0 var(--sgrd) 0 var(--xsgrd);
+      color: white;
+      border-radius: 12px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--prereview-blue);
+
+      box-sizing: border-box;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    & .profile__persona-status__icon {
+      width: 18px;
+      height: 18px;
+      fill: white;
+      margin-right: var(--xxsgrd);
+      flex: 0 0 18px;
+    }
+  }
+
+  & .profile__activity-section {
+    border-top: 1px solid var(--ruling-color);
+    padding: var(--lgrd);
+  }
+
+  & .profile__section-title {
+    font: var(--ui-header-font);
   }
 }

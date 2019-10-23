@@ -48,15 +48,16 @@
       height: 100%;
       box-sizing: border-box;
       border: none;
-      padding: var(--xxsgrd) var(--xsgrd);
+      padding: var(--xxsgrd) var(--sgrd);
       margin: 0;
-      border: 2px solid var(--ruling-color);
+      border: 1px solid var(--ruling-color);
       transition: border 0.2s;
       font: var(--ui-basic-font--large);
-
+      font-weight: 300;
+      border-radius: calc(var(--xlgrd) / 2);
       &:focus {
         outline: none;
-        border: 2px solid var(--prereview-grey);
+        border: 1px solid var(--prereview-grey);
         margin: 0;
       }
     }
