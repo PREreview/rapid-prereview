@@ -1,5 +1,54 @@
+.role-activity {
+  & .role-activity__history {
+    margin-top: var(--lgrd);
+  }
+
+  & .role-activity__sub-title {
+    font: var(--ui-header-1-font);
+    border-bottom: 1px solid var(--ruling-color);
+    padding-bottom: var(--sgrd);
+    display: block;
+    margin: 0;
+  }
+  & .role-activity__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  & .role-activity__list-item {
+    border-bottom: 1px solid var(--ruling-color);
+
+    padding: var(--mgrd);
+    &:nth-child(even) {
+      background-color: var(--xlight-grey);
+    }
+  }
+
+  & .role-activity__list-item-details {
+  }
+  & .role-activity__summary__label {
+    margin-top: var(--sgrd);
+  }
+
+  & .role-activity__summary__stat {
+    margin: 0;
+    font: var(--ui-basic-font--large);
+  }
+
+  & .role-activity__server-info {
+    display: flex;
+    align-items: center;
+  }
+
+  & .role-activity__server-arrow-icon {
+    position: relative;
+    top: 0.05em;
+    fill: var(--ui-basic-font-color--light);
+  }
+}
 .role-activity__pagination {
   margin-top: var(--sgrd);
-  display:flex;
+  display: flex;
   justify-content: center;
 }
