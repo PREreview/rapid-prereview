@@ -1,0 +1,28 @@
+.potential-roles__list,
+.highlighted-roles__list {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+
+  & li {
+    margin-right: var(--xxsgrd);
+  }
+  & li:last-child {
+    margin-right: 0;
+  }
+}
+
+.potential-roles--can-drop,
+.highlighted-roles--can-drop {
+  background-color: grey;
+}
+
+.potential-roles--is-over,
+.highlighted-roles--is-over {
+  background-color: green;
+}
+
+.draggable-role-badge--dragging {
+  visibility: hidden;
+}

@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { StoresProvider } from '../contexts/store-context';
 import { RoleStore } from '../stores/user-stores';
 import { getId } from '../utils/jsonld';
-import { DraggableRoleList, DroppableRoleList } from './role-list';
+import { PotentialRoles, HighlightedRoles } from './role-list';
 
 export default { title: 'RoleList' };
 
@@ -17,7 +17,7 @@ export function DnD() {
     <Router>
       <StoresProvider roleStore={roleStore}>
         <DndProvider backend={HTML5Backend}>
-          <DraggableRoleList
+          <PotentialRoles
             roleIds={roleIds}
             onRemoved={roleId => {
               setRoleIds(roleIds.filter(_roleId => _roleId !== roleId));
@@ -27,7 +27,7 @@ export function DnD() {
 
           <hr />
 
-          <DroppableRoleList
+          <HighlightedRoles
             roleIds={highlightedRoleIds}
             onRemoved={ids => {
               setHighlightedRoleIds(

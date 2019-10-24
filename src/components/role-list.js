@@ -1,19 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useDrag, useDrop } from 'react-dnd';
+import classNames from 'classnames';
 import { MenuItem } from '@reach/menu-button';
 import RoleBadge from './role-badge';
 import Button from './button';
 
-const ITEM_TYPE = Symbol('dnd:role');
+const POTENTIAL_ROLE_TYPE = Symbol('dnd:potential-role-type');
+const HIGHLIGHTED_ROLE_TYPE = Symbol('dnd:highlighted-role-type');
 
 /**
- * Note: this is also a drop zone for the `DroppableRoleList`
- * so that dragged role can be dragged back...  ¯\_(ツ)_/¯
+ * Allow roles to be dragged to `HighlightedRoles`.
+ * Note: this is also a drop zone for the `HighlightedRoles`
+ * so that dragged role can be dragged back
  */
-export function DraggableRoleList({ roleIds = [], onRemoved }) {
+export function PotentialRoles({ roleIds = [], onRemoved }) {
   const [{ canDrop, isOver }, dropRef] = useDrop({
-    accept: ITEM_TYPE,
+    accept: HIGHLIGHTED_ROLE_TYPE,
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop()
@@ -21,12 +24,19 @@ export function DraggableRoleList({ roleIds = [], onRemoved }) {
   });
 
   return (
-    <div ref={dropRef}>
+    <div
+      className={classNames('potential-roles', {
+        'potential-roles--can-drop': canDrop,
+        'potential-roles--is-over': isOver
+      })}
+      ref={dropRef}
+    >
       {!!roleIds.length && (
-        <ul>
+        <ul className="potential-roles__list">
           {roleIds.map(roleId => (
             <li key={roleId}>
               <DraggableRoleBadge
+                type={POTENTIAL_ROLE_TYPE}
                 roleId={roleId}
                 onDropped={roleId => {
                   onRemoved(roleId);
@@ -45,19 +55,19 @@ export function DraggableRoleList({ roleIds = [], onRemoved }) {
         </ul>
       )}
 
-      <p>Drag persona to highlight</p>
+      <p>Drag persona below to highlight (or drop back here to undo)</p>
     </div>
   );
 }
 
-DraggableRoleList.propTypes = {
+PotentialRoles.propTypes = {
   onRemoved: PropTypes.func.isRequired,
   roleIds: PropTypes.arrayOf(PropTypes.string)
 };
 
-function DraggableRoleBadge({ roleId, onDropped, children }) {
+function DraggableRoleBadge({ roleId, onDropped, children, type }) {
   const [{ isDragging }, dragRef] = useDrag({
-    item: { roleId, type: ITEM_TYPE },
+    item: { roleId, type },
     end(item, monitor) {
       const dropResult = monitor.getDropResult();
       if (item && dropResult) {
@@ -70,7 +80,13 @@ function DraggableRoleBadge({ roleId, onDropped, children }) {
   });
 
   return (
-    <RoleBadge ref={dragRef} roleId={roleId}>
+    <RoleBadge
+      ref={dragRef}
+      roleId={roleId}
+      className={classNames('draggable-role-badge', {
+        'draggable-role-badge--dragging': isDragging
+      })}
+    >
       {children}
     </RoleBadge>
   );
@@ -79,16 +95,18 @@ function DraggableRoleBadge({ roleId, onDropped, children }) {
 DraggableRoleBadge.propTypes = {
   roleId: PropTypes.string.isRequired,
   onDropped: PropTypes.func.isRequired,
-  children: PropTypes.any
+  children: PropTypes.any,
+  type: PropTypes.oneOf([POTENTIAL_ROLE_TYPE, HIGHLIGHTED_ROLE_TYPE])
 };
 
 /**
+ * This act as a drop target for the `PotentialRoles`
  * Note: this is also a draggable so that dragged role can be dragged back to
- *`DraggableRoleList` ...  ¯\_(ツ)_/¯
+ *`PotentialRoles`
  */
-export function DroppableRoleList({ roleIds = [], onRemoved }) {
+export function HighlightedRoles({ roleIds = [], onRemoved }) {
   const [{ canDrop, isOver }, dropRef] = useDrop({
-    accept: ITEM_TYPE,
+    accept: POTENTIAL_ROLE_TYPE,
     collect: monitor => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop()
@@ -96,12 +114,19 @@ export function DroppableRoleList({ roleIds = [], onRemoved }) {
   });
 
   return (
-    <div ref={dropRef}>
+    <div
+      className={classNames('highlighted-roles', {
+        'highlighted-roles--can-drop': canDrop,
+        'highlighted-roles--is-over': isOver
+      })}
+      ref={dropRef}
+    >
       {!!roleIds.length && (
-        <ul>
+        <ul className="highlighted-roles__list">
           {roleIds.map(roleId => (
             <li key={roleId}>
               <DraggableRoleBadge
+                type={HIGHLIGHTED_ROLE_TYPE}
                 roleId={roleId}
                 onDropped={roleId => {
                   onRemoved([roleId]);
@@ -120,7 +145,7 @@ export function DroppableRoleList({ roleIds = [], onRemoved }) {
         </ul>
       )}
 
-      <p>Drop persona to highlight here</p>
+      <p>Drop persona to highlight here (or drag above to undo)</p>
 
       <Button
         onClick={() => {
@@ -133,7 +158,7 @@ export function DroppableRoleList({ roleIds = [], onRemoved }) {
   );
 }
 
-DroppableRoleList.propTypes = {
+HighlightedRoles.propTypes = {
   roleIds: PropTypes.arrayOf(PropTypes.string),
   onRemoved: PropTypes.func.isRequired
 };

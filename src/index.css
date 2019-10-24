@@ -45,6 +45,7 @@
 @import './components/diseases.css';
 @import './components/subject-editor.css';
 @import './components/welcome-modal.css';
+@import './components/role-list.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';
