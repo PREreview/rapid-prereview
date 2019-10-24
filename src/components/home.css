@@ -1,6 +1,10 @@
 .home {
   color: var(--ui-basic-font-color);
   font: var(--ui-basic-font);
+  width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
+
   &:any-link {
     color: var(--link-color);
   }
@@ -51,11 +55,13 @@
       padding: 0;
     }
   }
-}
 
-
-.home__pagination {
-  margin-top: var(--sgrd);
-  display:flex;
-  justify-content: center;
+  & .home__pagination {
+    margin-top: var(--sgrd);
+    display: flex;
+    justify-content: center;
+    & .button {
+      margin: var(--xsgrd);
+    }
+  }
 }

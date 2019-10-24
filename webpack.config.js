@@ -102,7 +102,17 @@ module.exports = {
       // SVG
       {
         test: /\.svg$/,
+        issuer: {
+          test: /\.jsx?$/
+        },
         use: ['@svgr/webpack']
+      },
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        issuer: {
+          test: /\.css$/
+        },
+        loader: 'url-loader'
       }
     ]
   },

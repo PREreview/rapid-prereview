@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import PrivateRoute from './private-route';
 import omit from 'lodash/omit';
+import { MdChevronLeft, MdChevronRight, MdFirstPage } from 'react-icons/md';
+
 import { usePreprintSearchResults } from '../hooks/api-hooks';
 import { useUser } from '../contexts/user-context';
 import { unprefix } from '../utils/jsonld';
@@ -16,6 +18,7 @@ import Modal from './modal';
 import Button from './button';
 import LoginRequiredModal from './login-required-modal';
 import { createPreprintQs, apifyPreprintQs } from '../utils/search';
+import WelcomeModal from './welcome-modal';
 
 export default function Home() {
   const history = useHistory();
@@ -24,6 +27,7 @@ export default function Home() {
   const [user] = useUser();
   const [showLeftPanel, setShowLeftPanel] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isNewVisitor, setIsNewVisitor] = useState(true);
 
   const apiQs = apifyPreprintQs(
     location.search,
@@ -37,6 +41,7 @@ export default function Home() {
 
   return (
     <div className="home">
+      {isNewVisitor && <WelcomeModal onClose={() => setIsNewVisitor(false)} />}
       <HeaderBar
         onClickMenuButton={() => {
           setShowLeftPanel(!showLeftPanel);
@@ -178,27 +183,6 @@ export default function Home() {
           )}
 
           <div className="home__pagination">
-            {/* Cloudant returns the same bookmark when it hits the end of the list */}
-            {!!(
-              results.rows.length < results.total_rows &&
-              results.bookmark !== (location.state && location.state.bookmark)
-            ) && (
-              <Button
-                onClick={() => {
-                  history.push({
-                    pathname: location.pathame,
-                    search: createPreprintQs(
-                      { bookmark: results.bookmark },
-                      location.search
-                    ),
-                    state: { bookmark: results.bookmark }
-                  });
-                }}
-              >
-                Next page
-              </Button>
-            )}
-
             {!!(location.state && location.state.bookmark) && (
               <Button
                 onClick={() => {
@@ -211,7 +195,28 @@ export default function Home() {
                   });
                 }}
               >
-                Back to first page
+                <MdFirstPage /> First page
+              </Button>
+            )}
+            {/* Cloudant returns the same bookmark when it hits the end of the list */}
+            {!!(
+              results.rows.length < results.total_rows &&
+              results.bookmark !== (location.state && location.state.bookmark)
+            ) && (
+              <Button
+                className="home__next-page-button"
+                onClick={() => {
+                  history.push({
+                    pathname: location.pathame,
+                    search: createPreprintQs(
+                      { bookmark: results.bookmark },
+                      location.search
+                    ),
+                    state: { bookmark: results.bookmark }
+                  });
+                }}
+              >
+                Next Page <MdChevronRight />
               </Button>
             )}
           </div>

@@ -21,7 +21,6 @@
   & .preprint-card__score-panel {
     box-sizing: border-box;
     flex: 0 0 48px;
-    padding: var(--sgrd) 8px 6px;
     /* background-color: var(--card-color--tinted); */
     display: flex;
     align-items: center;
@@ -37,11 +36,12 @@
 
     & .preprint-card__score-panel__top {
       box-sizing: border-box;
-      flex: 0 0 var(--lgrd);
+      flex: 0 0 var(--xlgrd);
+      height: var(--xlgrd);
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: var(--xxsgrd) 0;
+      padding: 20px 0 var(--xxsgrd) 0;
     }
     & .preprint-card__score-panel__middle {
       box-sizing: border-box;
@@ -54,11 +54,13 @@
 
     & .preprint-card__score-panel__bottom {
       box-sizing: border-box;
-      flex: 0 0 var(--lgrd);
+      flex: 0 0 var(--xlgrd);
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: var(--xxsgrd) 0;
+      box-sizing: border-box;
+      border-top: 1px solid var(--ruling-color--light);
     }
   }
 
@@ -76,9 +78,16 @@
 
   & .preprint-card__header {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: baseline;
-    padding: var(--mgrd) var(--mgrd) var(--xsgrd);
+    align-items: first-baseline;
+
+    padding: var(--sgrd) var(--mgrd) var(--xsgrd);
+
+    @media (--mobile-portrait) {
+      padding-left: var(--xsgrd);
+    }
   }
 
   & .preprint-card__title {
@@ -107,7 +116,12 @@
     box-sizing: border-box;
     padding: 0 var(--mgrd) var(--mgrd);
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
+
+    @media (--mobile-portrait) {
+      padding-left: var(--xsgrd);
+    }
 
     & .preprint-card__info-row__left {
       display: flex;
@@ -173,7 +187,7 @@
     border-top: 1px solid var(--ruling-color--light);
     padding: var(--xsgrd) var(--xsgrd) var(--xsgrd) var(--sgrd);
     width: 100%;
-
+    height: var(--xlgrd);
     & .preprint-card__expansion-toggle {
       margin-left: auto;
     }
@@ -200,7 +214,7 @@
 
 .home__preprint-list__item .collapse {
   position: relative;
-
+  border-bottom: 1px solid var(--ruling-color);
   /* Top Shadow */
   &:before {
     content: '';
