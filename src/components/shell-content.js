@@ -18,12 +18,10 @@ import { getId, cleanup } from '../utils/jsonld';
 import { useLocalState } from '../hooks/ui-hooks';
 import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
-import { getYesNoStats, getTextAnswers } from '../utils/stats';
-import Barplot from './barplot';
-import TextAnswers from './text-answers';
 import { getDefaultRole } from '../utils/users';
 import UserBadge from './user-badge';
 import SubjectEditor from './subject-editor';
+import ReviewReader from './review-reader';
 
 export default function ShellContent({ preprint, defaultTab = 'read' }) {
   const [user] = useUser();
@@ -155,8 +153,11 @@ ShellContent.propTypes = {
 function ShellContentRead({ preprint, actions }) {
   return (
     <div>
-      <Barplot stats={getYesNoStats(actions)} />
-      <TextAnswers answers={getTextAnswers(actions)} />
+      <ReviewReader
+        actions={actions.filter(
+          action => action['@type'] === 'RapidPREreviewAction'
+        )}
+      />
     </div>
   );
 }

@@ -13,7 +13,7 @@ import {
 } from 'react-icons/md';
 import Tooltip from '@reach/tooltip';
 import Value from './value';
-import { getTags, getYesNoStats, getTextAnswers } from '../utils/stats';
+import { getTags } from '../utils/stats';
 import { checkIfHasReviewed, checkIfHasRequested } from '../utils/actions';
 import CountBadge from './count-badge';
 import ScoreBadge from './score-badge';
@@ -21,8 +21,7 @@ import IconButton from './icon-button';
 import TagPill from './tag-pill';
 import AddPrereviewIcon from '../svgs/add_prereview_icon.svg';
 import Collapse from './collapse';
-import Barplot from './barplot';
-import TextAnswers from './text-answers';
+import ReviewReader from './review-reader';
 
 export default function PreprintCard({
   user,
@@ -233,8 +232,7 @@ export default function PreprintCard({
       </div>
       <Collapse isOpened={isOpened} className="preprint-card__collapse">
         <div className="preprint-card-expansion">
-          <Barplot stats={getYesNoStats(actions)} />
-          <TextAnswers answers={getTextAnswers(actions)} />
+          <ReviewReader actions={reviews} />
         </div>
       </Collapse>
     </Fragment>
