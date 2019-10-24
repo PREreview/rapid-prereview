@@ -13,6 +13,9 @@ import Controls from './controls';
 import { usePostAction } from '../hooks/api-hooks';
 import IncognitoIcon from '../svgs/incognito_icon.svg';
 
+// TODO make user display name required
+// TODO force user to accept the code of conduct (like PREreview)
+
 export default function SettingsRoles({ user }) {
   const [editedRoleId, setEditedRoleId] = useState(null);
 
