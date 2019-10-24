@@ -1,44 +1,55 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useDrag, useDrop } from 'react-dnd';
+import { MenuItem } from '@reach/menu-button';
 import RoleBadge from './role-badge';
-import { useDrag } from 'react-dnd';
+import Button from './button';
 
-export default function RoleList({ roleIds = [] }) {
-  if (!roleIds || !roleIds.length) return null;
+const ITEM_TYPE = Symbol('dnd:role');
 
+export function DraggableRoleList({ roleIds = [], onRemoved }) {
   return (
-    <ul>
-      {roleIds.map(roleId => (
-        <li key={roleId}>
-          <DraggableRoleBadge roleId={roleId} />
-        </li>
-      ))}
-    </ul>
+    <div>
+      {!!roleIds.length && (
+        <ul>
+          {roleIds.map(roleId => (
+            <li key={roleId}>
+              <DraggableRoleBadge
+                roleId={roleId}
+                onDropped={roleId => {
+                  onRemoved(roleId);
+                }}
+              >
+                <MenuItem
+                  onSelect={() => {
+                    onRemoved(roleId);
+                  }}
+                >
+                  Add to selection
+                </MenuItem>
+              </DraggableRoleBadge>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <p>Drag persona to highlight</p>
+    </div>
   );
 }
 
-RoleList.propTypes = {
+DraggableRoleList.propTypes = {
+  onRemoved: PropTypes.func.isRequired,
   roleIds: PropTypes.arrayOf(PropTypes.string)
 };
 
-function DraggableRoleBadge({ roleId }) {
+function DraggableRoleBadge({ roleId, onDropped, children }) {
   const [{ isDragging }, dragRef] = useDrag({
-    item: { roleId, type: 'TYPE' },
+    item: { roleId, type: ITEM_TYPE },
     end(item, monitor) {
       const dropResult = monitor.getDropResult();
       if (item && dropResult) {
-        let alertMessage = '';
-        const isDropAllowed =
-          dropResult.allowedDropEffect === 'any' ||
-          dropResult.allowedDropEffect === dropResult.dropEffect;
-        if (isDropAllowed) {
-          const isCopyAction = dropResult.dropEffect === 'copy';
-          const actionName = isCopyAction ? 'copied' : 'moved';
-          alertMessage = `You ${actionName} ${item.name} into ${dropResult.name}!`;
-        } else {
-          alertMessage = `You cannot ${dropResult.dropEffect} an item into the ${dropResult.name}`;
-        }
-        alert(alertMessage);
+        onDropped(item.roleId);
       }
     },
     collect: monitor => ({
@@ -46,17 +57,62 @@ function DraggableRoleBadge({ roleId }) {
     })
   });
 
-  console.log({ isDragging });
-
-  //  return (
-  //    <div ref={dragRef} roleId={roleId}>
-  //      {roleId}
-  //    </div>
-  //  );
-
-  return <RoleBadge ref={dragRef} roleId={roleId} />;
+  return (
+    <RoleBadge ref={dragRef} roleId={roleId}>
+      {children}
+    </RoleBadge>
+  );
 }
 
 DraggableRoleBadge.propTypes = {
-  roleId: PropTypes.string.isRequired
+  roleId: PropTypes.string.isRequired,
+  onDropped: PropTypes.func.isRequired,
+  children: PropTypes.any
+};
+
+export function DroppableRoleList({ roleIds = [], onRemoved }) {
+  const [{ canDrop, isOver }, dropRef] = useDrop({
+    accept: ITEM_TYPE,
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop()
+    })
+  });
+
+  return (
+    <div ref={dropRef}>
+      {!!roleIds.length && (
+        <ul>
+          {roleIds.map(roleId => (
+            <li key={roleId}>
+              <RoleBadge roleId={roleId}>
+                <MenuItem
+                  onSelect={() => {
+                    onRemoved([roleId]);
+                  }}
+                >
+                  Remove
+                </MenuItem>
+              </RoleBadge>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <p>Drop persona to highlight here</p>
+
+      <Button
+        onClick={() => {
+          onRemoved(roleIds);
+        }}
+      >
+        Clear all
+      </Button>
+    </div>
+  );
+}
+
+DroppableRoleList.propTypes = {
+  roleIds: PropTypes.arrayOf(PropTypes.string),
+  onRemoved: PropTypes.func.isRequired
 };

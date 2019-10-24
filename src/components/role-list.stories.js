@@ -1,32 +1,50 @@
-import React from 'react';
+import React, { useState } from 'react';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { StoresProvider } from '../contexts/store-context';
 import { RoleStore } from '../stores/user-stores';
 import { getId } from '../utils/jsonld';
-import RoleList from './role-list';
+import { DraggableRoleList, DroppableRoleList } from './role-list';
 
 export default { title: 'RoleList' };
 
-export function Draggable() {
-  const roleStore = new RoleStore();
-  roles.forEach(role => {
-    roleStore.set(role);
-  });
+export function DnD() {
+  const [roleIds, setRoleIds] = useState(ROLES.map(getId));
+  const [highlightedRoleIds, setHighlightedRoleIds] = useState([]);
 
   return (
     <Router>
       <StoresProvider roleStore={roleStore}>
         <DndProvider backend={HTML5Backend}>
-          <RoleList roleIds={roles.map(getId)} />
+          <DraggableRoleList
+            roleIds={roleIds}
+            onRemoved={roleId => {
+              setRoleIds(roleIds.filter(_roleId => _roleId !== roleId));
+              setHighlightedRoleIds(highlightedRoleIds.concat(roleId));
+            }}
+          />
+
+          <hr />
+
+          <DroppableRoleList
+            roleIds={highlightedRoleIds}
+            onRemoved={ids => {
+              setHighlightedRoleIds(
+                highlightedRoleIds.filter(
+                  roleId => !ids.some(id => roleId === id)
+                )
+              );
+              setRoleIds(roleIds.concat(ids));
+            }}
+          />
         </DndProvider>
       </StoresProvider>
     </Router>
   );
 }
 
-var roles = [
+var ROLES = [
   {
     '@id': 'role:romain-gary', // visible display name (user selected and globally unique within Rapid PREreview)
     '@type': 'PublicReviewerRole',
@@ -50,3 +68,8 @@ var roles = [
     }
   }
 ];
+
+var roleStore = new RoleStore();
+ROLES.forEach(role => {
+  roleStore.set(role);
+});
