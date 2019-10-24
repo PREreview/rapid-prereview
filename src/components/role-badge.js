@@ -7,11 +7,15 @@ import classNames from 'classnames';
 import { unprefix, getId } from '../utils/jsonld';
 import { useRole } from '../hooks/api-hooks';
 
-export default function RoleBadge({ roleId, children, className }) {
+const RoleBadge = React.forwardRef(function RoleBadge(
+  { roleId, children, className },
+  ref
+) {
   const [role, fetchRoleProgress] = useRole(roleId);
 
   return (
     <RoleBadgeUI
+      ref={ref}
       roleId={roleId}
       role={role}
       fetchRoleProgress={fetchRoleProgress}
@@ -20,7 +24,7 @@ export default function RoleBadge({ roleId, children, className }) {
       {children}
     </RoleBadgeUI>
   );
-}
+});
 
 RoleBadge.propTypes = {
   roleId: PropTypes.string.isRequired,
@@ -28,16 +32,15 @@ RoleBadge.propTypes = {
   className: PropTypes.string
 };
 
+export default RoleBadge;
+
 /**
  * Non hooked version (handy for story book and `UserBadge`)
  */
-export function RoleBadgeUI({
-  roleId,
-  role,
-  fetchRoleProgress,
-  className,
-  children
-}) {
+const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
+  { roleId, role, fetchRoleProgress, className, children },
+  ref
+) {
   if (roleId == null && fetchRoleProgress == null && !!role) {
     roleId = getId(role);
     fetchRoleProgress = {
@@ -54,19 +57,23 @@ export function RoleBadgeUI({
             fetchRoleProgress && fetchRoleProgress.isActive
         })}
       >
-        <div className={classNames('role-badge-menu__generic-icon-container')}>
-          <MdPerson className="role-badge-menu__generic-icon" />
-        </div>
-        {role && role.avatar && role.avatar.contentUrl && (
+        {/*NOTE: the `ref` is typically used for Drag and Drop: we need 1 DOM element that will be used as the drag preview */}
+        <div ref={ref}>
           <div
-            className="role-badge-menu__avatar"
-            style={{
-              backgroundImage: `url(${role.avatar.contentUrl})`,
-              backgroundSize: 'contain'
-            }}
-          ></div>
-        )}
-        {/* }: (role && role.name) || unprefix(roleId)}*/}
+            className={classNames('role-badge-menu__generic-icon-container')}
+          >
+            <MdPerson className="role-badge-menu__generic-icon" />
+          </div>
+          {role && role.avatar && role.avatar.contentUrl && (
+            <div
+              className="role-badge-menu__avatar"
+              style={{
+                backgroundImage: `url(${role.avatar.contentUrl})`,
+                backgroundSize: 'contain'
+              }}
+            ></div>
+          )}
+        </div>
       </MenuButton>
 
       {/* Note: MenuList is currently bugged if children is undefined hence the ternary */}
@@ -94,7 +101,7 @@ export function RoleBadgeUI({
       )}
     </Menu>
   );
-}
+});
 
 RoleBadgeUI.propTypes = {
   roleId: PropTypes.string,
@@ -116,3 +123,5 @@ RoleBadgeUI.propTypes = {
   children: PropTypes.any,
   className: PropTypes.string
 };
+
+export { RoleBadgeUI };
