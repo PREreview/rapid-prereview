@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Barplot from './barplot';
 import { getId } from '../utils/jsonld';
@@ -7,17 +7,18 @@ import TextAnswers from './text-answers';
 import { PotentialRoles, HighlightedRoles } from './role-list';
 
 export default function ReviewReader({ actions }) {
-  const [roleIds, setRoleIds] = useState(
-    actions.map(action => getId(action.agent))
-  );
-
   const [highlightedRoleIds, setHighlightedRoleIds] = useState([]);
 
-  // reset when actions change
-  useEffect(() => {
-    setRoleIds(actions.map(action => getId(action.agent)));
-    setHighlightedRoleIds([]);
-  }, [actions]);
+  const roleIds = useMemo(() => {
+    return actions
+      .map(action => getId(action.agent))
+      .filter(
+        roleId =>
+          !highlightedRoleIds.some(
+            highlightedRoleId => roleId === highlightedRoleId
+          )
+      );
+  }, [actions, highlightedRoleIds]);
 
   const highlighedActions = useMemo(() => {
     return highlightedRoleIds.length
@@ -32,7 +33,6 @@ export default function ReviewReader({ actions }) {
       <PotentialRoles
         roleIds={roleIds}
         onRemoved={roleId => {
-          setRoleIds(roleIds.filter(_roleId => _roleId !== roleId));
           setHighlightedRoleIds(highlightedRoleIds.concat(roleId));
         }}
       />
@@ -45,7 +45,6 @@ export default function ReviewReader({ actions }) {
           setHighlightedRoleIds(
             highlightedRoleIds.filter(roleId => !ids.some(id => roleId === id))
           );
-          setRoleIds(roleIds.concat(ids));
         }}
       />
 
