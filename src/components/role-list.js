@@ -7,9 +7,21 @@ import Button from './button';
 
 const ITEM_TYPE = Symbol('dnd:role');
 
+/**
+ * Note: this is also a drop zone for the `DroppableRoleList`
+ * so that dragged role can be dragged back...  ¯\_(ツ)_/¯
+ */
 export function DraggableRoleList({ roleIds = [], onRemoved }) {
+  const [{ canDrop, isOver }, dropRef] = useDrop({
+    accept: ITEM_TYPE,
+    collect: monitor => ({
+      isOver: monitor.isOver(),
+      canDrop: monitor.canDrop()
+    })
+  });
+
   return (
-    <div>
+    <div ref={dropRef}>
       {!!roleIds.length && (
         <ul>
           {roleIds.map(roleId => (
@@ -70,6 +82,10 @@ DraggableRoleBadge.propTypes = {
   children: PropTypes.any
 };
 
+/**
+ * Note: this is also a draggable so that dragged role can be dragged back to
+ *`DraggableRoleList` ...  ¯\_(ツ)_/¯
+ */
 export function DroppableRoleList({ roleIds = [], onRemoved }) {
   const [{ canDrop, isOver }, dropRef] = useDrop({
     accept: ITEM_TYPE,
@@ -85,7 +101,12 @@ export function DroppableRoleList({ roleIds = [], onRemoved }) {
         <ul>
           {roleIds.map(roleId => (
             <li key={roleId}>
-              <RoleBadge roleId={roleId}>
+              <DraggableRoleBadge
+                roleId={roleId}
+                onDropped={roleId => {
+                  onRemoved([roleId]);
+                }}
+              >
                 <MenuItem
                   onSelect={() => {
                     onRemoved([roleId]);
@@ -93,7 +114,7 @@ export function DroppableRoleList({ roleIds = [], onRemoved }) {
                 >
                   Remove
                 </MenuItem>
-              </RoleBadge>
+              </DraggableRoleBadge>
             </li>
           ))}
         </ul>
