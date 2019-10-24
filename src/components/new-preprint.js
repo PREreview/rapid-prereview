@@ -419,3 +419,43 @@ StepRequest.propTypes = {
   onRequested: PropTypes.func.isRequired,
   onViewInContext: PropTypes.func.isRequired
 };
+
+function StepReviewSuccess({ preprint, onClose }) {
+  return (
+    <div className="new-preprint__step-review-success">
+      <header className="new-preprint__title">Success</header>
+
+      <NewPreprintPreview preprint={preprint} />
+
+      <p>Your review have been successfully posted.</p>
+
+      <Controls>
+        <Button onClick={onClose}>Close</Button>
+      </Controls>
+    </div>
+  );
+}
+StepReviewSuccess.propTypes = {
+  preprint: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired
+};
+
+function StepRequestSuccess({ preprint, onClose }) {
+  return (
+    <div className="new-preprint__step-review-success">
+      <header className="new-preprint__title">Success</header>
+
+      <NewPreprintPreview preprint={preprint} />
+
+      <p>Your request have been successfully posted.</p>
+
+      <Controls>
+        <Button onClick={onClose}>Close</Button>
+      </Controls>
+    </div>
+  );
+}
+StepRequestSuccess.propTypes = {
+  preprint: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired
+};
