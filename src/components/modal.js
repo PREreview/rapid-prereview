@@ -24,18 +24,17 @@ export default function Modal({
         }}
       >
         <div className={classNames('modal', className)}>
-          {title ||
-            (showCloseButton && (
-              <div className="modal__header-bar">
-                {title ? <h3 className="modal__title">{title}</h3> : <span />}
-                {showCloseButton && (
-                  <IconButton className="modal__close-button" onClick={onClose}>
-                    <VisuallyHidden>Close</VisuallyHidden>
-                    <MdClose className="modal__close-button__icon" />
-                  </IconButton>
-                )}
-              </div>
-            ))}
+          {(title || showCloseButton) && (
+            <div className="modal__header-bar">
+              {title ? <h3 className="modal__title">{title}</h3> : <span />}
+              {showCloseButton && (
+                <IconButton className="modal__close-button" onClick={onClose}>
+                  <VisuallyHidden>Close</VisuallyHidden>
+                  <MdClose className="modal__close-button__icon" />
+                </IconButton>
+              )}
+            </div>
+          )}
           <div className="modal__content">{children}</div>
         </div>
       </DialogContent>

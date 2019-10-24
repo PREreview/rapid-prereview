@@ -25,6 +25,7 @@
     max-height: 150px;
     max-width: 150px;
     margin-right: var(--mgrd);
+    flex: 0 0 150px;
   }
 
   & .profile__username {

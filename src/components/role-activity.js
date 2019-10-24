@@ -8,6 +8,7 @@ import { createActivityQs } from '../utils/search';
 import { useActionsSearchResults } from '../hooks/api-hooks';
 import Value from './value';
 import Button from './button';
+import LabelStyle from './label-style';
 
 export default function RoleActivity({ roleId }) {
   const [bookmark, setBookmark] = useState(null);
@@ -19,11 +20,19 @@ export default function RoleActivity({ roleId }) {
   return (
     <div className="role-activity">
       {!!(results.counts && results.counts['@type']) && (
-        <dl>
-          <dt>Total number of requests</dt>
-          <dd>{results.counts['@type']['RequestForRapidPREreviewAction']}</dd>
-          <dt>Total number of reviews</dt>
-          <dd>{results.counts['@type']['RapidPREreviewAction']}</dd>
+        <dl className="role-activity__summary">
+          <dt className="role-activity__summary__label">
+            <LabelStyle>Total number of requests</LabelStyle>
+          </dt>
+          <dd className="role-activity__summary__stat">
+            {results.counts['@type']['RequestForRapidPREreviewAction']}
+          </dd>
+          <dt className="role-activity__summary__label">
+            <LabelStyle>Total number of reviews</LabelStyle>
+          </dt>
+          <dd className="role-activity__summary__stat">
+            {results.counts['@type']['RapidPREreviewAction']}
+          </dd>
         </dl>
       )}
 
@@ -32,31 +41,38 @@ export default function RoleActivity({ roleId }) {
       ) : results.bookmark === bookmark ? (
         <div>No more activity.</div>
       ) : (
-        <ul>
-          {results.rows.map(({ doc }) => (
-            <li key={getId(doc)}>
-              {format(new Date(doc.startTime), 'MMM. d, yyyy')}{' '}
-              {doc['@type'] === 'RequestForRapidPREreviewAction'
-                ? 'requested feedback on'
-                : 'reviewed'}
-              {':'}
-              <div>
-                <Link to={`/${doc.object.doi || doc.object.arXivId}`}>
-                  <Value tagName="span">{doc.object.name}</Value>
-                </Link>
-                <div>
-                  <Value tagName="span" className="preprint-card__server-name">
-                    {(doc.object.preprintServer || {}).name}
-                  </Value>
-                  <MdChevronRight className="preprint-card__server-arrow-icon" />
-                  <Value tagName="span">
-                    {doc.object.doi || doc.object.arXivId}
-                  </Value>
+        <section className="role-activity__history">
+          <h3 className="role-activity__sub-title">History</h3>
+          <ul className="role-activity__list">
+            {results.rows.map(({ doc }) => (
+              <li key={getId(doc)} className="role-activity__list-item">
+                <LabelStyle>
+                  {format(new Date(doc.startTime), 'MMM. d, yyyy')}{' '}
+                  {doc['@type'] === 'RequestForRapidPREreviewAction'
+                    ? 'requested feedback on'
+                    : 'reviewed'}
+                </LabelStyle>
+                <div className="role-activity__list-item-details">
+                  <Link to={`/${doc.object.doi || doc.object.arXivId}`}>
+                    <Value tagName="span">{doc.object.name}</Value>
+                  </Link>
+                  <div className="role-activity__server-info">
+                    <Value
+                      tagName="span"
+                      className="role-activity__server-name"
+                    >
+                      {(doc.object.preprintServer || {}).name}
+                    </Value>
+                    <MdChevronRight className="role-activity__server-arrow-icon" />
+                    <Value tagName="span">
+                      {doc.object.doi || doc.object.arXivId}
+                    </Value>
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <div className="role-activity__pagination">
