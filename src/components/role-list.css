@@ -1,25 +1,54 @@
-.potential-roles__list,
-.highlighted-roles__list {
-  margin: 0;
-  padding: 0;
+.role-list {
+  position: relative;
+  padding: var(--xxsgrd);
+  /* border-radius: calc((var(--xsgrd) * 2)+ var(--lgrd)); */
+  border-radius: 32px;
+
+  box-sizing: border-box;
+
+  & .role-list__tip-text {
+    position: absolute;
+    z-index: 500;
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+    color: var(--ui-basic-font-color--light);
+  }
+
+  & .role-list__clear-button {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+
+    & .role-list__clear-button__icon {
+      width: var(--sgrd);
+      height: var(--sgrd);
+    }
+  }
+}
+
+.role-list__list {
+  border-radius: var(--mgrd);
+  padding: var(--xxsgrd);
   display: flex;
   list-style: none;
+  background-color: var(--xlight-grey);
+  height: var(--lgrd);
 
   & li {
     margin-right: var(--xxsgrd);
+    height: var(--lgrd);
   }
   & li:last-child {
     margin-right: 0;
   }
 }
 
-.potential-roles--can-drop,
-.highlighted-roles--can-drop {
-  background-color: grey;
+.role-list--can-drop {
+  background-color: var(--light-grey);
 }
 
-.potential-roles--is-over,
-.highlighted-roles--is-over {
+.role-list--is-over {
   background-color: green;
 }
 

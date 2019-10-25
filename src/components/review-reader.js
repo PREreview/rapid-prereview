@@ -37,28 +37,28 @@ const ReviewReader = React.memo(function ReviewReader({
 
   return (
     <div>
-      <PotentialRoles
-        roleIds={roleIds}
-        onRemoved={roleId => {
-          const nextHighlightedRoleIds = highlightedRoleIds.concat(roleId);
-          onHighlighedRoleIdsChange(nextHighlightedRoleIds);
-          setHighlightedRoleIds(nextHighlightedRoleIds);
-        }}
-      />
+      <h4>Preprint Reviewers</h4>
+      <div className="review-reader__persona-selector">
+        <PotentialRoles
+          roleIds={roleIds}
+          onRemoved={roleId => {
+            const nextHighlightedRoleIds = highlightedRoleIds.concat(roleId);
+            onHighlighedRoleIdsChange(nextHighlightedRoleIds);
+            setHighlightedRoleIds(nextHighlightedRoleIds);
+          }}
+        />
 
-      <hr />
-
-      <HighlightedRoles
-        roleIds={highlightedRoleIds}
-        onRemoved={ids => {
-          const nextHighlightedRoleIds = highlightedRoleIds.filter(
-            roleId => !ids.some(id => roleId === id)
-          );
-          onHighlighedRoleIdsChange(nextHighlightedRoleIds);
-          setHighlightedRoleIds(nextHighlightedRoleIds);
-        }}
-      />
-
+        <HighlightedRoles
+          roleIds={highlightedRoleIds}
+          onRemoved={ids => {
+            const nextHighlightedRoleIds = highlightedRoleIds.filter(
+              roleId => !ids.some(id => roleId === id)
+            );
+            onHighlighedRoleIdsChange(nextHighlightedRoleIds);
+            setHighlightedRoleIds(nextHighlightedRoleIds);
+          }}
+        />
+      </div>
       <Barplot stats={getYesNoStats(highlightedActions)} />
       <TextAnswers answers={getTextAnswers(highlightedActions)} />
     </div>

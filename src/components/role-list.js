@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDrag, useDrop } from 'react-dnd';
 import classNames from 'classnames';
+import { MdClear } from 'react-icons/md';
 import { MenuItem } from '@reach/menu-button';
 import RoleBadge from './role-badge';
-import Button from './button';
+import IconButton from './icon-button';
 
 // !! there is currently a bug in chrome for DnD over an inline PDF (dragover events are not emitted)
 // see https://bugs.chromium.org/p/chromium/issues/detail?id=984891&q=drag%20object&colspec=ID%20Pri%20M%20Stars%20ReleaseBlock%20Component%20Status%20Owner%20Summary%20OS%20Modified
@@ -28,14 +29,16 @@ export function PotentialRoles({ roleIds = [], onRemoved }) {
 
   return (
     <div
-      className={classNames('potential-roles', {
-        'potential-roles--can-drop': canDrop,
-        'potential-roles--is-over': isOver
+      className={classNames('role-list role-list--potential', {
+        'role-list--can-drop': canDrop,
+        'role-list--is-over': isOver
       })}
       ref={dropRef}
     >
+      <p className="role-list__tip-text">Reviewers</p>
+
       {!!roleIds.length && (
-        <ul className="potential-roles__list">
+        <ul className="role-list__list">
           {roleIds.map(roleId => (
             <li key={roleId}>
               <DraggableRoleBadge
@@ -57,8 +60,6 @@ export function PotentialRoles({ roleIds = [], onRemoved }) {
           ))}
         </ul>
       )}
-
-      <p>Drag persona below to highlight (or drop back here to undo)</p>
     </div>
   );
 }
@@ -118,15 +119,22 @@ export function HighlightedRoles({ roleIds = [], onRemoved }) {
 
   return (
     <div
-      className={classNames('highlighted-roles', {
-        'highlighted-roles--can-drop': canDrop,
-        'highlighted-roles--is-over': isOver
+      className={classNames('role-list role-list--highlighted', {
+        'role-list--can-drop': canDrop,
+        'role-list--is-over': isOver
       })}
       ref={dropRef}
     >
-      {!!roleIds.length && (
-        <ul className="highlighted-roles__list">
-          {roleIds.map(roleId => (
+      <p className="role-list__tip-text">
+        {roleIds.length ? (
+          <span>Selected Reviewers</span>
+        ) : (
+          <span>Viewing All (Drag {`&`} drop bades to filter reviews)</span>
+        )}
+      </p>
+      <ul className="role-list__list">
+        {!!roleIds.length &&
+          roleIds.map(roleId => (
             <li key={roleId}>
               <DraggableRoleBadge
                 type={HIGHLIGHTED_ROLE_TYPE}
@@ -145,18 +153,15 @@ export function HighlightedRoles({ roleIds = [], onRemoved }) {
               </DraggableRoleBadge>
             </li>
           ))}
-        </ul>
-      )}
-
-      <p>Drop persona to highlight here (or drag above to undo)</p>
-
-      <Button
+      </ul>
+      <IconButton
+        className="role-list__clear-button"
         onClick={() => {
           onRemoved(roleIds);
         }}
       >
-        Clear all
-      </Button>
+        <MdClear className="role-list__clear-button__icon" />
+      </IconButton>
     </div>
   );
 }
