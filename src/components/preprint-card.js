@@ -229,7 +229,10 @@ export default function PreprintCard({
       </div>
       <Collapse isOpened={isOpened} className="preprint-card__collapse">
         <div className="preprint-card-expansion">
-          <ReviewReader actions={reviews} />
+          <ReviewReader
+            identifier={preprint.doi || preprint.arXivId}
+            actions={reviews}
+          />
         </div>
       </Collapse>
     </Fragment>

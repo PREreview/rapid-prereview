@@ -5,6 +5,7 @@
   padding-top: var(--mgrd);
 
   & .barplot__question-list-header {
+    box-sizing: border-box;
     display: flex;
     padding-bottom: var(--sgrd);
     margin-bottom: 0;
@@ -12,6 +13,7 @@
     border-bottom: 1px solid var(--ruling-color);
 
     & .barplot__question-list-header__left {
+    box-sizing: border-box;
       flex: 0 0 50%;
       color: var(--text-color--light);
       font: var(--ui-basic-font--small);
@@ -19,7 +21,9 @@
       padding-left: var(--sgrd);
       text-transform: uppercase;
     }
+
     & .barplot__question-list-header__right {
+      box-sizing: border-box;
       flex: 0 0 50%;
     }
   }
@@ -30,6 +34,11 @@
     font: var(--ui-basic-font--small);
     color: var(--ui-basic-font-color--light);
     text-transform: uppercase;
+  }
+
+  & .barplot__share {
+    margin-left: auto;
+    margin-right: var(--sgrd);
   }
 
   & .barplot__key-item {

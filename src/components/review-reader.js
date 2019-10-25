@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
 import Barplot from './barplot';
@@ -6,8 +6,10 @@ import { getId } from '../utils/jsonld';
 import { getYesNoStats, getTextAnswers } from '../utils/stats';
 import TextAnswers from './text-answers';
 import { PotentialRoles, HighlightedRoles } from './role-list';
+import ShareMenu from './share-menu';
 
 const ReviewReader = React.memo(function ReviewReader({
+  identifier,
   actions,
   defaultHighlightedRoleIds = [],
   onHighlighedRoleIdsChange = noop
@@ -59,13 +61,16 @@ const ReviewReader = React.memo(function ReviewReader({
         }}
       />
 
-      <Barplot stats={getYesNoStats(highlightedActions)} />
+      <Barplot stats={getYesNoStats(highlightedActions)}>
+        <ShareMenu identifier={identifier} roleIds={highlightedRoleIds} />
+      </Barplot>
       <TextAnswers answers={getTextAnswers(highlightedActions)} />
     </div>
   );
 });
 
 ReviewReader.propTypes = {
+  identifier: PropTypes.string.isRequired, // DOI or arXivID
   onHighlighedRoleIdsChange: PropTypes.func,
   actions: PropTypes.arrayOf(
     PropTypes.shape({
