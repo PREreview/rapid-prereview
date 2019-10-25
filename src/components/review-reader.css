@@ -1,0 +1,34 @@
+.review-reader {
+  padding-top: var(--mgrd);
+
+  & .review-reader__title {
+    font: var(--ui-header-1-font);
+    margin: 0 var(--xsgrd) var(--xsgrd);
+  }
+  & .review-reader__sub-header {
+    font: var(--ui-header-2-font);
+    margin: var(--xsgrd) var(--xsgrd) var(--xxsgrd);
+  }
+
+  & .review-reader__help-text {
+    font: var(--ui-basic-font);
+    color: var(--ui-basic-font-color--light);
+    margin: var(--xsgrd) var(--xsgrd) var(--sgrd);
+    border: 1px solid var(--ruling-color);
+    padding: var(--xsgrd);
+    border-radius: var(--xxsgrd);
+    display: flex;
+    align-items: center;
+  }
+
+  & .review-reader__help-text-icon {
+    margin-right: var(--xsgrd);
+    height: var(--sgrd);
+    width: var(--sgrd);
+  }
+
+  & .review-review__persona-selector {
+    outline: 1px solid red;
+    width: 100%;
+  }
+}

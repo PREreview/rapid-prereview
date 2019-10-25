@@ -35,7 +35,7 @@ export function PotentialRoles({ roleIds = [], onRemoved }) {
       })}
       ref={dropRef}
     >
-      <p className="role-list__tip-text">Reviewers</p>
+      {!roleIds.length && <p className="role-list__tip-text">No Reviewers</p>}
 
       {!!roleIds.length && (
         <ul className="role-list__list">
@@ -129,7 +129,7 @@ export function HighlightedRoles({ roleIds = [], onRemoved }) {
         {roleIds.length ? (
           <span>Selected Reviewers</span>
         ) : (
-          <span>Viewing All (Drag {`&`} drop bades to filter reviews)</span>
+          <span>Viewing all reviews</span>
         )}
       </p>
       <ul className="role-list__list">
@@ -154,14 +154,18 @@ export function HighlightedRoles({ roleIds = [], onRemoved }) {
             </li>
           ))}
       </ul>
-      <IconButton
-        className="role-list__clear-button"
-        onClick={() => {
-          onRemoved(roleIds);
-        }}
-      >
-        <MdClear className="role-list__clear-button__icon" />
-      </IconButton>
+      {roleIds.length ? (
+        <IconButton
+          className="role-list__clear-button"
+          onClick={() => {
+            onRemoved(roleIds);
+          }}
+        >
+          <MdClear className="role-list__clear-button__icon" />
+        </IconButton>
+      ) : (
+        ''
+      )}
     </div>
   );
 }

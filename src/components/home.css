@@ -29,8 +29,15 @@
     background: white;
     min-height: 200vh;
     padding: var(--sgrd);
-    flex: 1 1 var(--middle-column-default-width);
-    max-width: var(--middle-column-default-width);
+    flex: 0 0 var(--middle-column-default-width);
+    width: var(--middle-column-default-width);
+    max-width: calc(100vw - var(--left-panel-min-width));
+
+    position: relative;
+    box-sizing: border-box;
+    @media (--narrow-screen) {
+      max-width: 100vw;
+    }
   }
 
   & .home__content-header {

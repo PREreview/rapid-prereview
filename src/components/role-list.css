@@ -9,7 +9,10 @@
   & .role-list__tip-text {
     position: absolute;
     z-index: 500;
-    width: 100%;
+    width: calc(100% - var(--sgrd));
+    margin: 0;
+    height: calc(100% - var(--sgrd));
+    line-height: var(--xlgrd);
     text-align: center;
     pointer-events: none;
     color: var(--ui-basic-font-color--light);
@@ -19,6 +22,7 @@
     position: absolute;
     right: 8px;
     top: 8px;
+    z-index: 500;
 
     & .role-list__clear-button__icon {
       width: var(--sgrd);
@@ -34,6 +38,43 @@
   list-style: none;
   background-color: var(--xlight-grey);
   height: var(--lgrd);
+  overflow-x: auto;
+
+  /* scrolling hints (credits to Lea Verou in her CSS secrets book and
+     http://lea.verou.me/2012/04/background-attachment-local/ */
+  background: 
+    /* left shadow cover mask (scrolls) */ linear-gradient(
+      to right,
+      var(--xlight-grey) 0px,
+      var(--xlight-grey) 32px,
+      transparent 64px,
+      transparent
+    ),
+    /* left inset shadow (fixed) */
+      linear-gradient(
+        to right,
+        rgba(0, 0, 0, 0.3) 0px,
+        var(--xlight-grey) 24px,
+        transparent
+      ),
+    /* left shadow cover mask (scrolls) */
+      linear-gradient(
+        to left,
+        var(--xlight-grey) 0px,
+        var(--xlight-grey) 32px,
+        transparent 64px,
+        transparent
+      ),
+    /* left inset shadow (fixed) */
+      linear-gradient(
+        to left,
+        rgba(0, 0, 0, 0.3) 0px,
+        var(--xlight-grey) 24px,
+        transparent
+      );
+  background-repeat: no-repeat;
+  background-size: 100% 100%, 100% 100%;
+  background-attachment: local, scroll, local, scroll;
 
   & li {
     margin-right: var(--xxsgrd);
@@ -49,7 +90,7 @@
 }
 
 .role-list--is-over {
-  background-color: green;
+  background-color: var(--prereview-blue);
 }
 
 .draggable-role-badge--dragging {
