@@ -1,0 +1,43 @@
+.preprint-preview {
+  font: var(--ui-basic-font);
+  background-color: var(--xlight-grey);
+  padding: var(--sgrd) var(--sgrd);
+  border-radius: 2px;
+
+  & .preprint-preview__header {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: var(--sgrd);
+  }
+  & .preprint-preview__title {
+    font: var(--ui-header-2-font);
+    hyphens: auto;
+    margin: 0;
+  }
+
+  & .preprint-preview__date {
+    font: var(--ui-header-2-font);
+    color: var(--ui-basic-font-color--light);
+    margin-left: var(--sgrd);
+    white-space: nowrap;
+  }
+
+  & .preprint-preview__info {
+    display: flex;
+    align-items: center;
+  }
+  & .preprint-preview__server {
+    color: var(--ui-basic-font-color--light);
+    white-space: nowrap;
+  }
+  & .preprint-preview__server-arrow-icon {
+    color: var(--ui-basic-font-color--light);
+    width: var(--sgrd);
+    height: var(--sgrd);
+    margin: 0 var(--xxsgrd);
+  }
+  & .preprint-preview__id {
+    color: var(--ui-basic-font-color--light);
+    white-space: nowrap;
+  }
+}
