@@ -133,7 +133,7 @@ export function TransitionRoleBadge() {
       <RoleBadgeUI
         roleId="role:e0a86b93-c127-4a3a-8399-dda0e60a30ef"
         role={role}
-        roleFetchProgress={progress}
+        fetchRoleProgress={progress}
       />
     </Router>
   );

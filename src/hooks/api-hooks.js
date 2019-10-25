@@ -390,9 +390,8 @@ export function useRole(roleId) {
     error: null
   });
 
-  const [role, setRole] = useState(null);
-
   const { roleStore } = useStores();
+  const [role, setRole] = useState(roleStore.get(roleId));
 
   useEffect(() => {
     // keep `role` up-to-date

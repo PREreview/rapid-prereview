@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { MdPerson } from 'react-icons/md';
@@ -64,15 +64,24 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
           >
             <MdPerson className="role-badge-menu__generic-icon" />
           </div>
-          {role && role.avatar && role.avatar.contentUrl && (
-            <div
-              className="role-badge-menu__avatar"
-              style={{
-                backgroundImage: `url(${role.avatar.contentUrl})`,
-                backgroundSize: 'contain'
-              }}
-            ></div>
-          )}
+
+          <div
+            className={classNames('role-badge-menu__avatar', {
+              'role-badge-menu__avatar--loaded':
+                !!role &&
+                role.avatar &&
+                role.avatar.contentUrl &&
+                (fetchRoleProgress && !fetchRoleProgress.isActive)
+            })}
+            style={
+              role && role.avatar && role.avatar.contentUrl
+                ? {
+                    backgroundImage: `url(${role.avatar.contentUrl})`,
+                    backgroundSize: 'contain'
+                  }
+                : undefined
+            }
+          ></div>
         </div>
       </MenuButton>
 

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 import { Link } from 'react-router-dom';
@@ -31,27 +31,24 @@ export default function PreprintCard({
 }) {
   const [isOpened, setIsOpened] = useState(false);
 
-  const {
-    name,
-    preprintServer,
-    doi,
-    arXivId,
-    datePosted,
-    potentialAction: actions
-  } = preprint;
+  const { name, preprintServer, doi, arXivId, datePosted } = preprint;
 
-  const reviews = actions.filter(
-    action => action['@type'] === 'RapidPREreviewAction'
-  );
+  const reviews = useMemo(() => {
+    return preprint.potentialAction.filter(
+      action => action['@type'] === 'RapidPREreviewAction'
+    );
+  }, [preprint]);
 
-  const requests = actions.filter(
-    action => action['@type'] === 'RequestForRapidPREreviewAction'
-  );
+  const requests = useMemo(() => {
+    return preprint.potentialAction.filter(
+      action => action['@type'] === 'RequestForRapidPREreviewAction'
+    );
+  }, [preprint]);
 
   const hasReviewed = checkIfHasReviewed(user, reviews);
   const hasRequested = checkIfHasRequested(user, requests);
 
-  const { hasData, hasCode, subjects } = getTags(actions);
+  const { hasData, hasCode, subjects } = getTags(preprint.potentialAction);
 
   return (
     <Fragment>

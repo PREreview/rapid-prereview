@@ -6,7 +6,7 @@ import { getYesNoStats, getTextAnswers } from '../utils/stats';
 import TextAnswers from './text-answers';
 import { PotentialRoles, HighlightedRoles } from './role-list';
 
-export default function ReviewReader({ actions }) {
+const ReviewReader = React.memo(function ReviewReader({ actions }) {
   const [highlightedRoleIds, setHighlightedRoleIds] = useState([]);
 
   const roleIds = useMemo(() => {
@@ -52,7 +52,7 @@ export default function ReviewReader({ actions }) {
       <TextAnswers answers={getTextAnswers(highlighedActions)} />
     </div>
   );
-}
+});
 
 ReviewReader.propTypes = {
   actions: PropTypes.arrayOf(
@@ -62,3 +62,5 @@ ReviewReader.propTypes = {
     })
   ).isRequired
 };
+
+export default ReviewReader;
