@@ -14,11 +14,10 @@
     hyphens: auto;
     margin: 0;
   }
-
   & .preprint-preview__date {
     font: var(--ui-header-2-font);
     color: var(--ui-basic-font-color--light);
-    margin-left: var(--sgrd);
+    margin-left: auto;
     white-space: nowrap;
   }
 

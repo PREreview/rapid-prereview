@@ -23,6 +23,7 @@ import { getDefaultRole } from '../utils/users';
 import UserBadge from './user-badge';
 import SubjectEditor from './subject-editor';
 import ReviewReader from './review-reader';
+import PreprintPreview from './preprint-preview';
 
 export default function ShellContent({ preprint, defaultTab = 'read' }) {
   const [user] = useUser();
@@ -146,12 +147,14 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
           />
         ) : tab === 'review#success' ? (
           <ShellContentReviewSuccess
+            preprint={preprint}
             onClose={() => {
               setTab('read');
             }}
           />
         ) : tab === 'request#success' ? (
           <ShellContentRequestSuccess
+            preprint={preprint}
             onClose={() => {
               setTab('read');
             }}
@@ -212,6 +215,10 @@ function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
 
   return (
     <div className="shell-content-read">
+      <header className="shell-content-read__title">Reviews</header>
+
+      <PreprintPreview preprint={preprint} />
+
       <ReviewReader
         key={roleIdsQs /* Needed to reset `defaultHighlightedRoleIds` */}
         onHighlighedRoleIdsChange={roleIds => {
@@ -260,6 +267,12 @@ function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
 
   return (
     <div className="shell-content-review">
+      <header className="shell-content-review__title">
+        Add a Rapid PREreview
+      </header>
+
+      <PreprintPreview preprint={preprint} />
+
       <form
         onSubmit={e => {
           e.preventDefault();
@@ -331,7 +344,12 @@ ShellContentReview.propTypes = {
 function ShellContentRequest({ user, preprint, onSubmit, disabled, error }) {
   return (
     <div className="shell-content-request">
-      Request
+      <header className="shell-content-request__title">
+        Add a request for Rapid PREreview
+      </header>
+
+      <PreprintPreview preprint={preprint} />
+
       <Controls error={error}>
         <Button
           disabled={disabled}
@@ -358,10 +376,12 @@ ShellContentRequest.propTypes = {
   error: PropTypes.instanceOf(Error)
 };
 
-function ShellContentReviewSuccess({ onClose }) {
+function ShellContentReviewSuccess({ preprint, onClose }) {
   return (
-    <div>
-      <header>Success</header>
+    <div className="shell-content-review-success">
+      <header className="shell-content-review-success__title">Success</header>
+
+      <PreprintPreview preprint={preprint} />
 
       <p>Your review has been successfully posted.</p>
 
@@ -372,13 +392,16 @@ function ShellContentReviewSuccess({ onClose }) {
   );
 }
 ShellContentReviewSuccess.propTypes = {
+  preprint: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired
 };
 
-function ShellContentRequestSuccess({ onClose }) {
+function ShellContentRequestSuccess({ preprint, onClose }) {
   return (
-    <div>
-      <header>Success</header>
+    <div className="shell-content-request-success">
+      <header className="shell-content-request-success__title">Success</header>
+
+      <PreprintPreview preprint={preprint} />
 
       <p>Your request has been successfully posted.</p>
 
@@ -389,5 +412,6 @@ function ShellContentRequestSuccess({ onClose }) {
   );
 }
 ShellContentRequestSuccess.propTypes = {
+  preprint: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired
 };
