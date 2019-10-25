@@ -266,13 +266,11 @@ export function usePreprintActions(identifier) {
         .catch(err => {
           if (err.name !== 'AbortError') {
             setProgress({ isActive: false, error: err });
+            setActions([]);
           }
-          setActions([]);
         });
 
       return () => {
-        setProgress({ isActive: false, error: null });
-        setActions([]);
         controller.abort();
       };
     } else {
@@ -368,12 +366,11 @@ export function usePreprintSearchResults(
       .catch(err => {
         if (err.name !== 'AbortError') {
           setProgress({ isActive: false, error: err });
+          setResults(DEFAULT_SEARCH_RESULTS);
         }
-        setResults(DEFAULT_SEARCH_RESULTS);
       });
 
     return () => {
-      setProgress({ isActive: false, error: null });
       controller.abort();
     };
   }, [search, preprintsWithActionsStore]);
@@ -451,13 +448,11 @@ export function useRole(roleId) {
           .catch(err => {
             if (err.name !== 'AbortError') {
               setProgress({ isActive: false, error: err });
+              setRole(null);
             }
-            setRole(null);
           });
 
         return () => {
-          setProgress({ isActive: false, error: null });
-          setRole(null);
           controller.abort();
         };
       }
@@ -519,12 +514,11 @@ export function useActionsSearchResults(
       .catch(err => {
         if (err.name !== 'AbortError') {
           setProgress({ isActive: false, error: err });
+          setResults(DEFAULT_SEARCH_RESULTS);
         }
-        setResults(DEFAULT_SEARCH_RESULTS);
       });
 
     return () => {
-      setProgress({ isActive: false, error: null });
       controller.abort();
     };
   }, [search]);

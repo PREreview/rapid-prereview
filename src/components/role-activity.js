@@ -25,13 +25,13 @@ export default function RoleActivity({ roleId }) {
             <LabelStyle>Total number of requests</LabelStyle>
           </dt>
           <dd className="role-activity__summary__stat">
-            {results.counts['@type']['RequestForRapidPREreviewAction']}
+            {results.counts['@type']['RequestForRapidPREreviewAction'] || 0}
           </dd>
           <dt className="role-activity__summary__label">
             <LabelStyle>Total number of reviews</LabelStyle>
           </dt>
           <dd className="role-activity__summary__stat">
-            {results.counts['@type']['RapidPREreviewAction']}
+            {results.counts['@type']['RapidPREreviewAction'] || 0}
           </dd>
         </dl>
       )}

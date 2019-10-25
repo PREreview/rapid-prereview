@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import uniq from 'lodash/uniq';
 import { MenuLink } from '@reach/menu-button';
 import { useUser } from '../contexts/user-context';
@@ -15,7 +15,7 @@ import {
   checkIfHasReviewed,
   checkIfHasRequested
 } from '../utils/actions';
-import { getId, cleanup } from '../utils/jsonld';
+import { getId, cleanup, unprefix } from '../utils/jsonld';
 import { useLocalState } from '../hooks/ui-hooks';
 import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
@@ -153,17 +153,44 @@ ShellContent.propTypes = {
 
 function ShellContentRead({ preprint, actions }) {
   const location = useLocation();
-  const qs = new URLSearchParams(location.search);
-  let roleIds = qs.get('role') || undefined;
-  if (roleIds) {
-    roleIds = uniq(roleIds.split(',').map(id => `role:${id}`));
-  }
+  const history = useHistory();
 
-  // TODO sanitize qs + keep URL in sync
+  // sanitize qs
+  useEffect(() => {
+    const qs = new URLSearchParams(location.search);
+    const roleIdsQs = qs.get('role');
+
+    if (roleIdsQs != null) {
+      const raw = roleIdsQs.split(',').map(id => `role:${id}`);
+      const roleIds = uniq(raw).filter(roleId =>
+        actions.some(action => getId(action.agent) === roleId)
+      );
+
+      if (!roleIds.length || roleIds.length !== raw.length) {
+        if (roleIds.length) {
+          qs.set('role', roleIds.map(unprefix));
+        } else {
+          qs.delete('role');
+        }
+        history.replace({
+          hash: location.hash,
+          pathname: location.pathname,
+          search: qs.toString()
+        });
+      }
+    }
+  }, [history, location, actions]);
+
+  const qs = new URLSearchParams(location.search);
+  const roleIdsQs = qs.get('role');
+  const roleIds = roleIdsQs
+    ? roleIdsQs.split(',').map(id => `role:${id}`)
+    : undefined;
 
   return (
-    <div>
+    <div className="shell-content-read">
       <ReviewReader
+        key={roleIdsQs /* Needed to reset `defaultHighlightedRoleIds` */}
         defaultHighlightedRoleIds={roleIds}
         actions={actions.filter(
           action => action['@type'] === 'RapidPREreviewAction'
@@ -194,7 +221,7 @@ function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
   const canSubmit = checkIfAllAnswered(answerMap);
 
   return (
-    <div>
+    <div className="shell-content-review">
       <form
         onSubmit={e => {
           e.preventDefault();
@@ -265,7 +292,7 @@ ShellContentReview.propTypes = {
 
 function ShellContentRequest({ user, preprint, onSubmit, disabled, error }) {
   return (
-    <div>
+    <div className="shell-content-request">
       Request
       <Controls error={error}>
         <Button

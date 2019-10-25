@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-// TODO `highlightedRoleId` prop
-
 export default function Barplot({ stats }) {
   return (
     <div className="barplot">
