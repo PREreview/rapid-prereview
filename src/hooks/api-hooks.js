@@ -207,14 +207,16 @@ export function usePreprint(
  * associated with a preprint
  */
 export function usePreprintActions(identifier) {
+  const { preprintsWithActionsStore } = useStores();
+
   const [progress, setProgress] = useState({
-    isActive: false,
+    isActive: true,
     error: null
   });
 
-  const [actions, setActions] = useState([]);
-
-  const { preprintsWithActionsStore } = useStores();
+  const [actions, setActions] = useState(
+    identifier ? preprintsWithActionsStore.getActions(identifier) : []
+  );
 
   useEffect(() => {
     // keep `actions` up-to-date

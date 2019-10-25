@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import noop from 'lodash/noop';
 import Barplot from './barplot';
 import { getId } from '../utils/jsonld';
 import { getYesNoStats, getTextAnswers } from '../utils/stats';
@@ -8,7 +9,8 @@ import { PotentialRoles, HighlightedRoles } from './role-list';
 
 const ReviewReader = React.memo(function ReviewReader({
   actions,
-  defaultHighlightedRoleIds = []
+  defaultHighlightedRoleIds = [],
+  onHighlighedRoleIdsChange = noop
 }) {
   const [highlightedRoleIds, setHighlightedRoleIds] = useState(
     defaultHighlightedRoleIds
@@ -38,7 +40,9 @@ const ReviewReader = React.memo(function ReviewReader({
       <PotentialRoles
         roleIds={roleIds}
         onRemoved={roleId => {
-          setHighlightedRoleIds(highlightedRoleIds.concat(roleId));
+          const nextHighlightedRoleIds = highlightedRoleIds.concat(roleId);
+          onHighlighedRoleIdsChange(nextHighlightedRoleIds);
+          setHighlightedRoleIds(nextHighlightedRoleIds);
         }}
       />
 
@@ -47,9 +51,11 @@ const ReviewReader = React.memo(function ReviewReader({
       <HighlightedRoles
         roleIds={highlightedRoleIds}
         onRemoved={ids => {
-          setHighlightedRoleIds(
-            highlightedRoleIds.filter(roleId => !ids.some(id => roleId === id))
+          const nextHighlightedRoleIds = highlightedRoleIds.filter(
+            roleId => !ids.some(id => roleId === id)
           );
+          onHighlighedRoleIdsChange(nextHighlightedRoleIds);
+          setHighlightedRoleIds(nextHighlightedRoleIds);
         }}
       />
 
@@ -60,6 +66,7 @@ const ReviewReader = React.memo(function ReviewReader({
 });
 
 ReviewReader.propTypes = {
+  onHighlighedRoleIdsChange: PropTypes.func,
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       '@type': PropTypes.oneOf(['RapidPREreviewAction']).isRequired,

@@ -107,7 +107,11 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
 
       <div className="shell-content__body">
         {tab === 'read' ? (
-          <ShellContentRead preprint={preprint} actions={actions} />
+          <ShellContentRead
+            preprint={preprint}
+            actions={actions}
+            fetchActionsProgress={fetchActionsProgress}
+          />
         ) : tab === 'request' ? (
           <ShellContentRequest
             user={user}
@@ -151,35 +155,42 @@ ShellContent.propTypes = {
   defaultTab: PropTypes.oneOf(['read', 'review', 'request'])
 };
 
-function ShellContentRead({ preprint, actions }) {
+function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
   const location = useLocation();
   const history = useHistory();
 
   // sanitize qs
   useEffect(() => {
-    const qs = new URLSearchParams(location.search);
-    const roleIdsQs = qs.get('role');
+    if (!fetchActionsProgress.isActive) {
+      const qs = new URLSearchParams(location.search);
+      const roleIdsQs = qs.get('role');
 
-    if (roleIdsQs != null) {
-      const raw = roleIdsQs.split(',').map(id => `role:${id}`);
-      const roleIds = uniq(raw).filter(roleId =>
-        actions.some(action => getId(action.agent) === roleId)
-      );
+      if (roleIdsQs != null) {
+        const raw = roleIdsQs.split(',').map(id => `role:${id}`);
+        const roleIds = uniq(raw).filter(roleId =>
+          actions.some(
+            action =>
+              action['@type'] === 'RapidPREreviewAction' &&
+              getId(action.agent) === roleId
+          )
+        );
 
-      if (!roleIds.length || roleIds.length !== raw.length) {
-        if (roleIds.length) {
-          qs.set('role', roleIds.map(unprefix));
-        } else {
-          qs.delete('role');
+        if (!roleIds.length || roleIds.length !== raw.length) {
+          if (roleIds.length) {
+            qs.set('role', roleIds.map(unprefix));
+          } else {
+            qs.delete('role');
+          }
+
+          history.replace({
+            hash: location.hash,
+            pathname: location.pathname,
+            search: qs.toString()
+          });
         }
-        history.replace({
-          hash: location.hash,
-          pathname: location.pathname,
-          search: qs.toString()
-        });
       }
     }
-  }, [history, location, actions]);
+  }, [history, location, actions, fetchActionsProgress]);
 
   const qs = new URLSearchParams(location.search);
   const roleIdsQs = qs.get('role');
@@ -191,6 +202,19 @@ function ShellContentRead({ preprint, actions }) {
     <div className="shell-content-read">
       <ReviewReader
         key={roleIdsQs /* Needed to reset `defaultHighlightedRoleIds` */}
+        onHighlighedRoleIdsChange={roleIds => {
+          const qs = new URLSearchParams(location.search);
+          if (roleIds && roleIds.length) {
+            qs.set('role', roleIds.map(unprefix));
+          } else {
+            qs.delete('role');
+          }
+          history.push({
+            hash: location.hash,
+            pathname: location.pathname,
+            search: qs.toString()
+          });
+        }}
         defaultHighlightedRoleIds={roleIds}
         actions={actions.filter(
           action => action['@type'] === 'RapidPREreviewAction'
@@ -201,7 +225,8 @@ function ShellContentRead({ preprint, actions }) {
 }
 ShellContentRead.propTypes = {
   preprint: PropTypes.object.isRequired,
-  actions: PropTypes.array.isRequired
+  actions: PropTypes.array.isRequired,
+  fetchActionsProgress: PropTypes.object.isRequired
 };
 
 function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
