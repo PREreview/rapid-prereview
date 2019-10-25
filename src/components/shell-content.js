@@ -42,7 +42,7 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
 
   return (
     <div className="shell-content">
-      <header>
+      <header className="shell-content__header">
         <RapidPreReviewLogo />
         <nav>
           <ul>
@@ -118,7 +118,7 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
             preprint={preprint}
             onSubmit={action => {
               post(action, () => {
-                setTab('read');
+                setTab('request#success');
               });
             }}
             disabled={postProgress.isActive}
@@ -128,13 +128,13 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
               postProgress.error
             }
           />
-        ) : (
+        ) : tab === 'review' ? (
           <ShellContentReview
             user={user}
             preprint={preprint}
             onSubmit={action => {
               post(action, () => {
-                setTab('read');
+                setTab('review#success');
               });
             }}
             disabled={postProgress.isActive}
@@ -144,7 +144,19 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
               postProgress.error
             }
           />
-        )}
+        ) : tab === 'review#success' ? (
+          <ShellContentReviewSuccess
+            onClose={() => {
+              setTab('read');
+            }}
+          />
+        ) : tab === 'request#success' ? (
+          <ShellContentRequestSuccess
+            onClose={() => {
+              setTab('read');
+            }}
+          />
+        ) : null}
       </div>
     </div>
   );
@@ -344,4 +356,38 @@ ShellContentRequest.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   error: PropTypes.instanceOf(Error)
+};
+
+function ShellContentReviewSuccess({ onClose }) {
+  return (
+    <div>
+      <header>Success</header>
+
+      <p>Your review has been successfully posted.</p>
+
+      <Controls>
+        <Button onClick={onClose}>View</Button>
+      </Controls>
+    </div>
+  );
+}
+ShellContentReviewSuccess.propTypes = {
+  onClose: PropTypes.func.isRequired
+};
+
+function ShellContentRequestSuccess({ onClose }) {
+  return (
+    <div>
+      <header>Success</header>
+
+      <p>Your request has been successfully posted.</p>
+
+      <Controls>
+        <Button onClick={onClose}>View</Button>
+      </Controls>
+    </div>
+  );
+}
+ShellContentRequestSuccess.propTypes = {
+  onClose: PropTypes.func.isRequired
 };

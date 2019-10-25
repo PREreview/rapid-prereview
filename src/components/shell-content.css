@@ -1,7 +1,7 @@
 .shell-content {
   width: inherit;
 
-  & header  {
+  & .shell-content__header  {
     padding-top: var(--xsgrd);
     z-index: 1000000;
     background-color: white;

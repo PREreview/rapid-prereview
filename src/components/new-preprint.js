@@ -19,12 +19,7 @@ import Button from './button';
 import TextInput from './text-input';
 import { getDefaultRole } from '../utils/users';
 
-export default function NewPreprint({
-  onCancel,
-  onReviewed,
-  onRequested,
-  onViewInContext
-}) {
+export default function NewPreprint({ onCancel, onSuccess, onViewInContext }) {
   const location = useLocation(); // location.state can be {preprint, tab, isSingleStep} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
 
   const isSingleStep = location.state && location.state.isSingleStep;
@@ -74,7 +69,9 @@ export default function NewPreprint({
             }
           }}
           preprint={preprint}
-          onReviewed={onReviewed}
+          onSuccess={() => {
+            setStep('REVIEW_SUCCESS');
+          }}
           onViewInContext={onViewInContext}
         />
       ) : preprint && step === 'NEW_REQUEST' ? (
@@ -88,17 +85,22 @@ export default function NewPreprint({
             }
           }}
           preprint={preprint}
-          onRequested={onRequested}
+          onSuccess={() => {
+            setStep('REQUEST_SUCCESS');
+          }}
           onViewInContext={onViewInContext}
         />
+      ) : preprint && step === 'REVIEW_SUCCESS' ? (
+        <StepReviewSuccess preprint={preprint} onClose={onSuccess} />
+      ) : preprint && step === 'REQUEST_SUCCESS' ? (
+        <StepRequestSuccess preprint={preprint} onClose={onSuccess} />
       ) : null}
     </div>
   );
 }
 NewPreprint.propTypes = {
   onCancel: PropTypes.func.isRequired,
-  onReviewed: PropTypes.func.isRequired,
-  onRequested: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
   onViewInContext: PropTypes.func.isRequired
 };
 
@@ -244,7 +246,7 @@ function StepReview({
   preprint,
   onViewInContext,
   onCancel,
-  onReviewed,
+  onSuccess,
   isSingleStep
 }) {
   const [user] = useUser();
@@ -328,7 +330,7 @@ function StepReview({
                     { removeEmptyArray: true }
                   )
                 },
-                onReviewed
+                onSuccess
               );
             }}
             disabled={postData.isActive || !canSubmit}
@@ -355,7 +357,7 @@ StepReview.propTypes = {
   isSingleStep: PropTypes.bool,
   preprint: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
-  onReviewed: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
   onViewInContext: PropTypes.func.isRequired
 };
 
@@ -364,7 +366,7 @@ function StepRequest({
   preprint,
   onViewInContext,
   onCancel,
-  onRequested
+  onSuccess
 }) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
@@ -393,7 +395,7 @@ function StepRequest({
                 agent: getId(getDefaultRole(user)),
                 object: createPreprintIdentifierCurie(preprint)
               },
-              onRequested
+              onSuccess
             );
           }}
           disabled={postData.isActive}
@@ -416,7 +418,7 @@ StepRequest.propTypes = {
   isSingleStep: PropTypes.bool,
   preprint: PropTypes.object.isRequired,
   onCancel: PropTypes.func.isRequired,
-  onRequested: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
   onViewInContext: PropTypes.func.isRequired
 };
 
@@ -427,7 +429,7 @@ function StepReviewSuccess({ preprint, onClose }) {
 
       <NewPreprintPreview preprint={preprint} />
 
-      <p>Your review have been successfully posted.</p>
+      <p>Your review has been successfully posted.</p>
 
       <Controls>
         <Button onClick={onClose}>Close</Button>
@@ -447,7 +449,7 @@ function StepRequestSuccess({ preprint, onClose }) {
 
       <NewPreprintPreview preprint={preprint} />
 
-      <p>Your request have been successfully posted.</p>
+      <p>Your request has been successfully posted.</p>
 
       <Controls>
         <Button onClick={onClose}>Close</Button>
