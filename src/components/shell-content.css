@@ -1,7 +1,7 @@
 .shell-content {
   width: inherit;
 
-  & header  {
+  & .shell-content__header  {
     padding-top: var(--xsgrd);
     z-index: 1000000;
     background-color: white;
@@ -28,4 +28,15 @@
 
 .shell-content__body {
   padding: 52px var(--sgrd) var(--sgrd) var(--sgrd);
+}
+
+
+.shell-content-read__title,
+.shell-content-review__title,
+.shell-content-request__title,
+.shell-content-review-success__title,
+.shell-content-request-success__title
+{
+  font: var(--ui-header-1-font);
+  margin-bottom: var(--mgrd);
 }

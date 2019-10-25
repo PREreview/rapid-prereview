@@ -103,10 +103,7 @@ export default function Home() {
                   // TODO clear local storage entry ?
                   history.push('/');
                 }}
-                onReviewed={action => {
-                  history.push('/');
-                }}
-                onRequested={action => {
+                onSuccess={() => {
                   history.push('/');
                 }}
                 onViewInContext={({ preprint, tab }) => {
