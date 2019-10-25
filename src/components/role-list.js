@@ -6,6 +6,9 @@ import { MenuItem } from '@reach/menu-button';
 import RoleBadge from './role-badge';
 import Button from './button';
 
+// !! there is currently a bug in chrome for DnD over an inline PDF (dragover events are not emitted)
+// see https://bugs.chromium.org/p/chromium/issues/detail?id=984891&q=drag%20object&colspec=ID%20Pri%20M%20Stars%20ReleaseBlock%20Component%20Status%20Owner%20Summary%20OS%20Modified
+
 const POTENTIAL_ROLE_TYPE = Symbol('dnd:potential-role-type');
 const HIGHLIGHTED_ROLE_TYPE = Symbol('dnd:highlighted-role-type');
 

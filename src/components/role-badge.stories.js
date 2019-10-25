@@ -30,7 +30,7 @@ export function ActiveRoleBadge() {
     <Router>
       <RoleBadgeUI
         roleId="role:e0a86b93-c127-4a3a-8399-dda0e60a30ef"
-        roleFetchProgress={{
+        fetchRoleProgress={{
           isActive: true,
           error: null
         }}
@@ -56,7 +56,7 @@ export function FetchedAnonymousRoleBadge() {
             contentUrl: avatarUrl
           }
         }}
-        roleFetchProgress={{
+        fetchRoleProgress={{
           isActive: false,
           error: null
         }}
@@ -82,7 +82,7 @@ export function FetchedPublicRoleBadge() {
             contentUrl: avatarUrl
           }
         }}
-        roleFetchProgress={{
+        fetchRoleProgress={{
           isActive: false,
           error: null
         }}

@@ -21,7 +21,7 @@ export default function ExtensionFallback() {
   const canonicalUrl = getCanonicalUrl(preprint);
 
   return (
-    <div>
+    <div className="extension-fallback">
       {pdfUrl && (
         <object
           key={pdfUrl}

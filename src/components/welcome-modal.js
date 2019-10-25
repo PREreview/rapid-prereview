@@ -16,10 +16,9 @@ export default function WelcomeModal(props) {
           </h2>
 
           <p>
-            Rapid PREreview allows to request, provide and analyze feedback (in
-            the form of structured review rapid to complete) on{' '}
-            <em>existing</em> preprints relevant to the outbreak science
-            community.
+            Rapid PREreview allows to request and provide feedback (in the form
+            of structured review rapid to complete) on <em>existing</em>{' '}
+            preprints relevant to the outbreak science community.
           </p>
 
           <div className="welcome-modal__controls">

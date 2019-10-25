@@ -6,8 +6,13 @@ import { getYesNoStats, getTextAnswers } from '../utils/stats';
 import TextAnswers from './text-answers';
 import { PotentialRoles, HighlightedRoles } from './role-list';
 
-const ReviewReader = React.memo(function ReviewReader({ actions }) {
-  const [highlightedRoleIds, setHighlightedRoleIds] = useState([]);
+const ReviewReader = React.memo(function ReviewReader({
+  actions,
+  defaultHighlightedRoleIds = []
+}) {
+  const [highlightedRoleIds, setHighlightedRoleIds] = useState(
+    defaultHighlightedRoleIds
+  );
 
   const roleIds = useMemo(() => {
     return actions
@@ -20,7 +25,7 @@ const ReviewReader = React.memo(function ReviewReader({ actions }) {
       );
   }, [actions, highlightedRoleIds]);
 
-  const highlighedActions = useMemo(() => {
+  const highlightedActions = useMemo(() => {
     return highlightedRoleIds.length
       ? actions.filter(action =>
           highlightedRoleIds.some(roleId => getId(action.agent) === roleId)
@@ -48,8 +53,8 @@ const ReviewReader = React.memo(function ReviewReader({ actions }) {
         }}
       />
 
-      <Barplot stats={getYesNoStats(highlighedActions)} />
-      <TextAnswers answers={getTextAnswers(highlighedActions)} />
+      <Barplot stats={getYesNoStats(highlightedActions)} />
+      <TextAnswers answers={getTextAnswers(highlightedActions)} />
     </div>
   );
 });
@@ -60,7 +65,8 @@ ReviewReader.propTypes = {
       '@type': PropTypes.oneOf(['RapidPREreviewAction']).isRequired,
       agent: PropTypes.string.isRequired
     })
-  ).isRequired
+  ).isRequired,
+  defaultHighlightedRoleIds: PropTypes.arrayOf(PropTypes.string)
 };
 
 export default ReviewReader;

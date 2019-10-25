@@ -1,3 +1,8 @@
+.extension-fallback{
+  height: 100vh;
+  background-color: rgb(83,86,89);
+}
+
 object {
   display: block;       /* iframes are inline by default */
   border: none;         /* Reset default border */

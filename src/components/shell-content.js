@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import uniq from 'lodash/uniq';
 import { MenuLink } from '@reach/menu-button';
 import { useUser } from '../contexts/user-context';
 import { usePreprintActions, usePostAction } from '../hooks/api-hooks';
@@ -151,9 +152,19 @@ ShellContent.propTypes = {
 };
 
 function ShellContentRead({ preprint, actions }) {
+  const location = useLocation();
+  const qs = new URLSearchParams(location.search);
+  let roleIds = qs.get('role') || undefined;
+  if (roleIds) {
+    roleIds = uniq(roleIds.split(',').map(id => `role:${id}`));
+  }
+
+  // TODO sanitize qs + keep URL in sync
+
   return (
     <div>
       <ReviewReader
+        defaultHighlightedRoleIds={roleIds}
         actions={actions.filter(
           action => action['@type'] === 'RapidPREreviewAction'
         )}

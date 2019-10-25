@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
+import fetch from 'node-fetch';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
 import resolve from '../utils/resolve';
