@@ -17,7 +17,7 @@ export default function ExtensionFallback() {
     location.state && location.state.preprint
   );
 
-  const pdfUrl = null; // getPdfUrl(preprint);
+  const pdfUrl = getPdfUrl(preprint);
   const canonicalUrl = getCanonicalUrl(preprint);
 
   return (
