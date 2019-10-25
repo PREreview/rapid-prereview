@@ -136,16 +136,16 @@
     }
 
     & .barplot__bar-segment--yes {
-      background-color: var(--prereview-blue);
+      background-color: var(--barplot-yes);
     }
     & .barplot__bar-segment--no {
-      background-color: var(--prereview-coral);
+      background-color: var(--barplot-no);
     }
     & .barplot__bar-segment--unsure {
-      background-color: var(--prereview-spring-green);
+      background-color: var(--barplot-unsure);
     }
     & .barplot__bar-segment--na {
-      background-color: var(--prereview-grey);
+      background-color: var(--barplot-na);
     }
   }
   & .barplot__question-table:focus {

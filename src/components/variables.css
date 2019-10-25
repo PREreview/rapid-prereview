@@ -49,9 +49,9 @@
   --link-color--hover: var(--prereview-light-blue);
 
   /* Barplot colors */
-  --barplot-yes: var(--prereview-blue);
+  --barplot-yes: var(--prereview-spring-green);
   --barplot-no: var(--prereview-coral);
-  --barplot-unsure: var(--prereview-spring-green);
+  --barplot-unsure: var(--prereview-blue);
   --barplot-na: var(--prereview-grey);
 
   /* Menu Colors */
