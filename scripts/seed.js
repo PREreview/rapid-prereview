@@ -26,6 +26,8 @@ const identifiers = Object.keys(id2paths).filter(
     id !== errorDoesNotExistArXivId
 );
 
+const N_USERS = 50;
+
 (async function() {
   const port = 3333;
   const config = createConfig(port);
@@ -41,7 +43,7 @@ const identifiers = Object.keys(id2paths).filter(
 
   const users = [];
   console.log('Registering users...');
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < N_USERS; i++) {
     const action = await db.post({
       '@type': 'RegisterAction',
       actionStatus: 'CompletedActionStatus',
@@ -101,7 +103,9 @@ const identifiers = Object.keys(id2paths).filter(
       users.filter(
         user => !requesters.some(requester => getId(requester) === getId(user))
       ),
-      Math.ceil(5 * Math.random())
+      identifier === identifiers[0]
+        ? N_USERS - requesters.length
+        : Math.ceil(5 * Math.random())
     );
 
     for (const user of requesters) {

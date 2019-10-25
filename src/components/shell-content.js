@@ -216,6 +216,7 @@ function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
           });
         }}
         defaultHighlightedRoleIds={roleIds}
+        identifier={preprint.doi || preprint.arXivId}
         actions={actions.filter(
           action => action['@type'] === 'RapidPREreviewAction'
         )}
