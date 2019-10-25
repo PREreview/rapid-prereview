@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * This is used for the Rapid PREreview form:
@@ -40,4 +40,19 @@ export function useLocalState(key, roleId, preprintId, initialValue) {
   }
 
   return [state, localSetState];
+}
+
+/**
+ * Assess if the visitor lands on rapid PREreview for the first time
+ */
+export function useIsNewVisitor() {
+  const [isNewVisitor] = useState(
+    localStorage.getItem('isNewVisitor') !== 'false'
+  );
+
+  useEffect(() => {
+    localStorage.setItem('isNewVisitor', 'false');
+  }, []);
+
+  return isNewVisitor;
 }

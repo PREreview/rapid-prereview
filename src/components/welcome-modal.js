@@ -14,10 +14,14 @@ export default function WelcomeModal(props) {
           <h2 className="welcome-modal__title">
             Welcome to Rapid PREreview for Outbreak Science
           </h2>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
+
+          <p>
+            Rapid PREreview allows to request, provide and analyze feedback (in
+            the form of structured review rapid to complete) on{' '}
+            <em>existing</em> preprints relevant to the outbreak science
+            community.
+          </p>
+
           <div className="welcome-modal__controls">
             <Button pill={true} primary={true} onClick={props.onClose}>
               Get Started

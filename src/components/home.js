@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation, Link } from 'react-router-dom';
 import PrivateRoute from './private-route';
 import omit from 'lodash/omit';
-import { MdChevronLeft, MdChevronRight, MdFirstPage } from 'react-icons/md';
-
+import { MdChevronRight, MdFirstPage } from 'react-icons/md';
 import { usePreprintSearchResults } from '../hooks/api-hooks';
 import { useUser } from '../contexts/user-context';
 import { unprefix } from '../utils/jsonld';
@@ -19,6 +18,7 @@ import Button from './button';
 import LoginRequiredModal from './login-required-modal';
 import { createPreprintQs, apifyPreprintQs } from '../utils/search';
 import WelcomeModal from './welcome-modal';
+import { useIsNewVisitor } from '../hooks/ui-hooks';
 
 export default function Home() {
   const history = useHistory();
@@ -27,7 +27,8 @@ export default function Home() {
   const [user] = useUser();
   const [showLeftPanel, setShowLeftPanel] = useState(true);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isNewVisitor, setIsNewVisitor] = useState(true);
+  const isNewVisitor = useIsNewVisitor();
+  const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true);
 
   const apiQs = apifyPreprintQs(
     location.search,
@@ -41,7 +42,16 @@ export default function Home() {
 
   return (
     <div className="home">
-      {isNewVisitor && <WelcomeModal onClose={() => setIsNewVisitor(false)} />}
+      {!!(
+        (isNewVisitor || new URLSearchParams(location.search).get('welcome')) &&
+        isWelcomeModalOpen
+      ) && (
+        <WelcomeModal
+          onClose={() => {
+            setIsWelcomeModalOpen(false);
+          }}
+        />
+      )}
       <HeaderBar
         onClickMenuButton={() => {
           setShowLeftPanel(!showLeftPanel);
