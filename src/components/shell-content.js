@@ -25,7 +25,11 @@ import SubjectEditor from './subject-editor';
 import ReviewReader from './review-reader';
 import PreprintPreview from './preprint-preview';
 
-export default function ShellContent({ preprint, defaultTab = 'read' }) {
+export default function ShellContent({
+  preprint,
+  defaultTab = 'read',
+  onRequireScreen
+}) {
   const [user] = useUser();
 
   const [actions, fetchActionsProgress] = usePreprintActions(
@@ -50,7 +54,10 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
             <li>
               <Button
                 disabled={postProgress.isActive}
-                onClick={() => setTab('read')}
+                onClick={() => {
+                  onRequireScreen();
+                  setTab('read');
+                }}
               >
                 Read reviews
               </Button>
@@ -60,6 +67,7 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
                 disabled={postProgress.isActive || hasReviewed}
                 onClick={() => {
                   if (user) {
+                    onRequireScreen();
                     setTab('review');
                   } else {
                     setIsLoginModalOpen(true);
@@ -74,6 +82,7 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
                 disabled={postProgress.isActive || hasRequested}
                 onClick={() => {
                   if (user) {
+                    onRequireScreen();
                     setTab('request');
                   } else {
                     setIsLoginModalOpen(true);
@@ -166,6 +175,7 @@ export default function ShellContent({ preprint, defaultTab = 'read' }) {
 }
 
 ShellContent.propTypes = {
+  onRequireScreen: PropTypes.func.isRequired,
   preprint: PropTypes.object.isRequired,
   defaultTab: PropTypes.oneOf(['read', 'review', 'request'])
 };

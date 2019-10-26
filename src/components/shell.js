@@ -3,21 +3,30 @@ import React, {
   useEffect,
   useRef,
   useState,
+  useLayoutEffect,
   useCallback
 } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { MdDragHandle } from 'react-icons/md';
+import {
+  MdVerticalAlignBottom,
+  MdVerticalAlignTop,
+  MdDragHandle
+} from 'react-icons/md';
 import IconButton from './icon-button';
+
+const SHELL_HEADER_HEIGHT = 56;
 
 export default function Shell({ children }) {
   const [isDown, setIsDown] = useState(false);
-  const nextMaxHeightRef = useRef(null);
+  const ref = useRef();
+  const nextHeightRef = useRef(null);
   const needForRafRef = useRef(true);
   const rafIdRef = useRef(null);
 
   // shell height is set in `vh` units through the `max-height` CSS property
-  const [maxHeight, setMaxHeight] = useState(50);
+  const [height, setHeight] = useState(50);
+  const [status, setStatus] = useState('default'); // `minimized`, `revealed`, `maximized`, `positioned`
 
   useEffect(() => {
     function handleMouseUp(e) {
@@ -38,7 +47,7 @@ export default function Shell({ children }) {
           ) * 100
         );
 
-        nextMaxHeightRef.current = nextMaxHeight;
+        nextHeightRef.current = nextMaxHeight;
 
         if (needForRafRef.current) {
           needForRafRef.current = false; // no need to call rAF up until next frame
@@ -50,8 +59,11 @@ export default function Shell({ children }) {
     // callback for rAF
     function resizeShell() {
       needForRafRef.current = true;
-      if (nextMaxHeightRef.current != null && nextMaxHeightRef.current > 10) {
-        setMaxHeight(nextMaxHeightRef.current);
+      if (nextHeightRef.current != null) {
+        if (status !== 'positioned') {
+          setStatus('positioned');
+        }
+        setHeight(nextHeightRef.current);
       }
     }
 
@@ -63,33 +75,132 @@ export default function Shell({ children }) {
       cancelAnimationFrame(rafIdRef.current);
       needForRafRef.current = true;
     };
-  }, [isDown]);
+  }, [isDown, status]);
+
+  useEffect(() => {
+    function handleMouseMove(e) {
+      if (
+        status === 'minimized' &&
+        window.innerHeight - Math.max(e.clientY, 0) < SHELL_HEADER_HEIGHT
+      ) {
+        setStatus('revealed');
+      } else if (
+        status === 'revealed' &&
+        window.innerHeight - Math.max(e.clientY, 0) >= SHELL_HEADER_HEIGHT
+      ) {
+        setStatus('minimized');
+      }
+    }
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [status]);
+
+  // Make transition from `height` to `max-height` work with CSS transitions
+  const [transition, setTransition] = useState(null);
+  useLayoutEffect(() => {
+    const { style, offsetHeight } = ref.current;
+    if (transition === 'default') {
+      // set max-height so that the CSS transition works
+      style.maxHeight = `${offsetHeight}px`;
+      style.height = '';
+      const rafId = requestAnimationFrame(() => {
+        setStatus('default');
+        setTransition(null);
+        style.maxHeight = '';
+      });
+
+      return () => {
+        cancelAnimationFrame(rafId);
+      };
+    } else if (transition) {
+      if (status === 'default') {
+        // set height so CSS transition works
+        style.height = `${offsetHeight}px`;
+        style.maxHeight = '';
+
+        const rafId = requestAnimationFrame(() => {
+          setStatus(transition);
+          setTransition(null);
+          style.height = '';
+        });
+
+        return () => {
+          cancelAnimationFrame(rafId);
+        };
+      } else {
+        setStatus(transition);
+        setTransition(null);
+      }
+    }
+  }, [status, transition]);
 
   const handleMouseDown = useCallback(e => {
     setIsDown(true);
   }, []);
 
+  const onRequireScreen = useCallback(() => {
+    if (status === 'minimized' || status === 'revealed') {
+      setTransition('default');
+    }
+  }, [status]);
+
   return (
     <Fragment>
       <div
+        ref={ref}
         className={classNames('shell', {
-          'shell--iddle': !isDown // TODO? use that class to do CSS transition when shell is iddle in cases where we switch tabs
+          'shell--default': status === 'default',
+          'shell--revealed': status === 'revealed',
+          'shell--minimized': status === 'minimized',
+          'shell--maximized': status === 'maximized'
         })}
-        style={{ maxHeight: `${maxHeight}vh` }}
+        style={status === 'positioned' ? { height: `${height}vh` } : undefined}
       >
-        <IconButton className="shell__drag" onMouseDown={handleMouseDown}>
-          <MdDragHandle />
-        </IconButton>
+        <div className="shell__controls">
+          <IconButton
+            onClick={() => {
+              setTransition('minimized');
+            }}
+          >
+            <MdVerticalAlignBottom />
+          </IconButton>
 
-        {children}
+          <IconButton
+            onMouseDown={handleMouseDown}
+            onClick={() => {
+              if (status !== 'positioned') {
+                setTransition('default');
+              }
+            }}
+          >
+            <MdDragHandle />
+          </IconButton>
+
+          <IconButton
+            onClick={() => {
+              setTransition('maximized');
+            }}
+          >
+            <MdVerticalAlignTop />
+          </IconButton>
+        </div>
+
+        {children(onRequireScreen)}
       </div>
 
       {/* !! the Shell is typically over an iframe or object from a different origin => we can't get access to mousemove and mouseup event when user position mouse in this area => as a workaround we add a tranparant mask to be able to track mouse positions when the user resize the shell  */}
-      {isDown && <div className="shell__mask"></div>}
+      <div
+        className={classNames('shell__mask', {
+          'shell__mask--full': isDown
+        })}
+      ></div>
     </Fragment>
   );
 }
 
 Shell.propTypes = {
-  children: PropTypes.any
+  children: PropTypes.func
 };

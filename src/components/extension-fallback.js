@@ -40,12 +40,15 @@ export default function ExtensionFallback() {
       )}
 
       <Shell>
-        {!!preprint && (
-          <ShellContent
-            preprint={preprint}
-            defaultTab={location.state && location.state.tab}
-          />
-        )}
+        {onRequireScreen =>
+          !!preprint && (
+            <ShellContent
+              onRequireScreen={onRequireScreen}
+              preprint={preprint}
+              defaultTab={location.state && location.state.tab}
+            />
+          )
+        }
       </Shell>
     </div>
   );

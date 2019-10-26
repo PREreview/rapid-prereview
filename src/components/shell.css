@@ -1,10 +1,14 @@
+:root {
+  --shell-header-height: 56px;
+  --shell-control-icon-width: 32px;
+}
+
 .shell {
   z-index: 2;
   position: fixed;
   background-color: white;
   bottom: 0;
   width: 80vw;
-  max-height: 50vh;
   overflow: auto;
   left: 10vw;
   border-top:1px solid red;
@@ -12,18 +16,44 @@
   border-right:1px solid red;
 }
 
-.shell__drag {
+.shell--default {
+  max-height: 50vh;
+  transition: max-height 0.2s ease-in-out;
+}
+
+.shell--revealed {
+  height: var(--shell-header-height);
+  transition: height 0.2s ease-in-out;
+}
+
+.shell--minimized {
+  height: 0;
+  transition: height 0.2s ease-in-out;
+}
+
+.shell--maximized {
+  height: 100vh;
+  transition: height 0.2s ease-in-out;
+}
+
+.shell__controls {
   z-index: 1000001;
   position: fixed;
-  left: 50vw;
+  left: calc(50vw - var(--shell-control-icon-width) - var(--shell-control-icon-width) / 2);
 }
 
 .shell__mask {
   z-index: 1;
   position: fixed;
   background-color: transparent;
-  top: 0;
+  height: calc(var(--shell-header-height) + 1px);
   bottom: 0;
   left: 0;
   right:0
+}
+
+
+.shell__mask--full {
+  height: auto;
+  top: 0;
 }
