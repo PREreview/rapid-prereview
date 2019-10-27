@@ -6,6 +6,8 @@
   "scripts": {
     "cloudant": "docker restart cloudant-developer",
     "log-cloudant": "docker logs cloudant-developer",
+    "extension:watch": "webpack --config webpack-extension.config.js --watch --mode development",
+    "extension:build": "NODE_ENV=production webpack --config webpack-extension.config.js --mode production",
     "start": "babel-node ./src/server.js",
     "seed": "babel-node ./scripts/seed.js",
     "ddocs": "babel-node ./scripts/ddocs.js",
