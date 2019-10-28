@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
-import fetch from 'node-fetch';
+import cors from 'cors';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
 import resolve from '../utils/resolve';
@@ -12,7 +12,7 @@ const router = new Router({ caseSensitive: true });
 /**
  * Search for preprints with reviews or requests for reviews
  */
-router.get('/preprint', parseQuery, (req, res, next) => {
+router.get('/preprint', cors(), parseQuery, (req, res, next) => {
   res.setHeader('content-type', 'application/json');
 
   let hasErrored = false;
@@ -37,7 +37,7 @@ router.get('/preprint', parseQuery, (req, res, next) => {
 /**
  * Get a preprint
  */
-router.get('/preprint/:preprintId', async (req, res, next) => {
+router.get('/preprint/:preprintId', cors(), async (req, res, next) => {
   try {
     const body = await req.db.get(`preprint:${req.params.preprintId}`);
     res.json(body);
@@ -106,14 +106,14 @@ router.get('/user/:userId', async (req, res, next) => {
 /**
  * Search for roles
  */
-router.get('/role', parseQuery, (req, res, next) => {
+router.get('/role', cors(), parseQuery, (req, res, next) => {
   next(createError(500, 'Not implemented yet'));
 });
 
 /**
  * Get a role
  */
-router.get('/role/:roleId', async (req, res, next) => {
+router.get('/role/:roleId', cors(), async (req, res, next) => {
   try {
     const body = await req.db.get(`role:${req.params.roleId}`);
     res.json(body);
@@ -128,7 +128,7 @@ router.get('/role/:roleId', async (req, res, next) => {
 /**
  * Post an action (side effects)
  */
-router.post('/action', jsonParser, async (req, res, next) => {
+router.post('/action', cors(), jsonParser, async (req, res, next) => {
   if (!req.isAuthenticated()) {
     return next(createError(401, 'Login required'));
   }
@@ -144,7 +144,7 @@ router.post('/action', jsonParser, async (req, res, next) => {
 /**
  * Search for actions
  */
-router.get('/action', parseQuery, (req, res, next) => {
+router.get('/action', cors(), parseQuery, (req, res, next) => {
   res.setHeader('content-type', 'application/json');
 
   let hasErrored = false;
@@ -170,7 +170,7 @@ router.get('/action', parseQuery, (req, res, next) => {
  * Resolve (get metadata) for an identifier passed as query string paramenter
  * `identifier` (wrapped in `encodeURIComponent)
  */
-router.get('/resolve', async (req, res, next) => {
+router.get('/resolve', cors(), async (req, res, next) => {
   const { identifier } = req.query;
   if (!identifier) {
     return next(createError(400, 'missing identifier query string parameter'));
