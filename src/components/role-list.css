@@ -39,6 +39,8 @@
   background-color: var(--xlight-grey);
   height: var(--lgrd);
   overflow-x: auto;
+  overflow-y: hidden;
+  margin: 0;
 
   /* scrolling hints (credits to Lea Verou in her CSS secrets book and
      http://lea.verou.me/2012/04/background-attachment-local/ */

@@ -1,11 +1,17 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import PreReviewLogo from '../svgs/rapid-prereview-icon.svg';
-import OutbreakScienceLogo from '../svgs/outbreak-science-logo.svg';
+import classNames from 'classnames';
 
-export default function RapidPreReviewLogo() {
+import PreReviewLogo from '../svgs/rapid-prereview-icon.svg';
+
+export default function RapidPreReviewLogo({ short = false }) {
   return (
-    <div className="rapid-pre-review-logo">
+    <div
+      className={classNames('rapid-pre-review-logo', {
+        'rapid-pre-review-logo--short': short
+      })}
+    >
       <Link to="/" className="rapid-pre-review-logo__svg-container">
         <PreReviewLogo className="rapid-pre-review-logo__icon-svg" />
         <div className="rapid-pre-review-logo__outbreak-science">
@@ -21,3 +27,7 @@ export default function RapidPreReviewLogo() {
     </div>
   );
 }
+
+RapidPreReviewLogo.propTypes = {
+  short: PropTypes.bool
+};

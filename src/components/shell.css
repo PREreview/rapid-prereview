@@ -1,6 +1,6 @@
 :root {
-  --shell-header-height: 56px;
-  --shell-control-icon-width: 32px;
+  --shell-header-height: var(--xlgrd);
+  --shell-control-icon-width: var(--lgrd);
 }
 
 .shell {
@@ -8,12 +8,20 @@
   position: fixed;
   background-color: white;
   bottom: 0;
-  width: 80vw;
+
   overflow: auto;
   left: 10vw;
-  border-top:1px solid red;
-  border-left:1px solid red;
-  border-right:1px solid red;
+  /* note we use width here instead of setting right position so we can inherit it int he shell content */
+  width: 80vw;
+  border-top: 1px solid var(--ruling-color);
+  border-left: 1px solid var(--ruling-color);
+  border-right: 1px solid var(--ruling-color);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
+
+  @media (--narrow-screen) {
+    left: 0;
+    width: 100vw;
+  }
 }
 
 .shell--default {
@@ -36,10 +44,69 @@
   transition: height 0.2s ease-in-out;
 }
 
-.shell__controls {
+.shell__control-bar {
+  height: var(--shell-header-height);
+  background: red;
+  position: relative;
   z-index: 1000001;
+}
+.shell__controls {
+  background: white;
+  z-index: 1000001;
+  height: var(--shell-header-height);
+  box-sizing: border-box;
   position: fixed;
-  left: calc(50vw - var(--shell-control-icon-width) - var(--shell-control-icon-width) / 2);
+  /* left: calc(50vw - var(--shell-control-icon-width) - var(--shell-control-icon-width) / 2); */
+  left: 10vw;
+  width: 80vw;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--xsgrd) var(--sgrd);
+
+  @media (--narrow-screen) {
+    left: 0;
+    width: 100vw;
+  }
+  & .shell__controls__left {
+    display: flex;
+    align-items: center;
+    flex: 1 1 50%;
+  }
+  & .shell__controls__right {
+    display: flex;
+    align-items: center;
+    flex: 1 1 50%;
+    justify-content: flex-end;
+  }
+  & .shell__controls__center {
+    display: flex;
+    align-items: center;
+  }
+  & .shell__controls__button {
+    width: 16px !important;
+    height: 16px;
+    min-width: 16px;
+    border-radius: 50%;
+    flex: 0 0 auto;
+    margin-right: var(--xxsgrd);
+    background-color: var(--prereview-black);
+    color: white;
+
+    & .shell__controls__button__icon {
+      /* width: 16px;
+      height: 16px; */
+    }
+
+    &.shell__controls__button--drag {
+      color: black;
+      background-color: white;
+      width: 24px !important;
+      height: 24px;
+      min-width: 24px;
+    }
+  }
 }
 
 .shell__mask {
@@ -49,9 +116,8 @@
   height: calc(var(--shell-header-height) + 1px);
   bottom: 0;
   left: 0;
-  right:0
+  right: 0;
 }
-
 
 .shell__mask--full {
   height: auto;

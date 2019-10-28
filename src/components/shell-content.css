@@ -1,42 +1,65 @@
 .shell-content {
   width: inherit;
 
-  & .shell-content__header  {
-    padding-top: var(--xsgrd);
+  overflow-x: hidden;
+  position: relative;
+
+  & .shell-content__header {
+    width: inherit;
+    overflow-x: hidden;
+    padding-right: var(--sgrd);
+    box-sizing: border-box;
     z-index: 1000000;
     background-color: white;
-    width: inherit;
     position: fixed;
     display: flex;
     align-items: center;
-    padding-bottom: var(--xsgrd);
-
+    justify-content: space-between;
+    border-top: 1px solid var(--ruling-color);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
     & nav {
-      margin-left: auto;
-      &  ul {
+      & ul {
         margin: 0;
         padding: 0;
         display: flex;
         list-style-type: none;
         & li {
-          margin-right: var(--sgrd);
+          margin-right: 0;
         }
       }
     }
   }
 }
+.shell-content__tab-button {
+  & .button__contents {
+    padding: 0 var(--sgrd) !important;
+    height: var(--xlgrd);
+    display: block;
+    box-sizing: border-box;
+    line-height: var(--xlgrd);
+    border-radius: 0;
+    border-bottom: 2px solid transparent;
 
-.shell-content__body {
-  padding: 52px var(--sgrd) var(--sgrd) var(--sgrd);
+    &:hover {
+      border-bottom: 2px solid var(--ruling-color);
+    }
+  }
+  &.shell-content__tab-button--active {
+    & .button__contents {
+      border-bottom: 2px solid black;
+    }
+  }
 }
 
+.shell-content__body {
+  padding: 64px var(--sgrd) var(--sgrd) var(--sgrd);
+}
 
 .shell-content-read__title,
 .shell-content-review__title,
 .shell-content-request__title,
 .shell-content-review-success__title,
-.shell-content-request-success__title
-{
+.shell-content-request-success__title {
   font: var(--ui-header-1-font);
   margin-bottom: var(--mgrd);
 }

@@ -48,4 +48,12 @@
     & .rapid-pre-review-logo__outbreak-science__science {
     }
   }
+
+  &.rapid-pre-review-logo--short {
+    max-width: none;
+    height: var(--mgrd);
+    & .rapid-pre-review-logo__outbreak-science {
+      flex-direction: row;
+    }
+  }
 }

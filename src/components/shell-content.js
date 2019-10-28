@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import uniq from 'lodash/uniq';
+import classNames from 'classnames';
 import { MenuLink } from '@reach/menu-button';
 import { useUser } from '../contexts/user-context';
 import { usePreprintActions, usePostAction } from '../hooks/api-hooks';
@@ -48,11 +49,13 @@ export default function ShellContent({
   return (
     <div className="shell-content">
       <header className="shell-content__header">
-        <RapidPreReviewLogo />
         <nav>
           <ul>
             <li>
               <Button
+                className={classNames('shell-content__tab-button', {
+                  'shell-content__tab-button--active': tab === 'read'
+                })}
                 disabled={postProgress.isActive}
                 onClick={() => {
                   onRequireScreen();
@@ -64,6 +67,9 @@ export default function ShellContent({
             </li>
             <li>
               <Button
+                className={classNames('shell-content__tab-button', {
+                  'shell-content__tab-button--active': tab === 'review'
+                })}
                 disabled={postProgress.isActive || hasReviewed}
                 onClick={() => {
                   if (user) {
@@ -79,6 +85,9 @@ export default function ShellContent({
             </li>
             <li>
               <Button
+                className={classNames('shell-content__tab-button', {
+                  'shell-content__tab-button--active': tab === 'request'
+                })}
                 disabled={postProgress.isActive || hasRequested}
                 onClick={() => {
                   if (user) {

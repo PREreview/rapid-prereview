@@ -23,9 +23,9 @@ export default function ShareMenu({ identifier, roleIds = [] }) {
   return (
     <Fragment>
       <Menu>
-        <MenuButton>
+        <MenuButton className="share-menu">
           <VisuallyHidden>Share</VisuallyHidden>
-          <MdShare />
+          <MdShare className="share-menu__icon" />
         </MenuButton>
         <MenuList>
           <MenuItem
@@ -38,6 +38,7 @@ export default function ShareMenu({ identifier, roleIds = [] }) {
 
           {!!(roleIds && roleIds.length) && (
             <MenuItem
+              className="menu__list"
               onSelect={() => {
                 const qs = new URLSearchParams();
                 qs.set('role', roleIds.map(unprefix));
@@ -52,6 +53,7 @@ export default function ShareMenu({ identifier, roleIds = [] }) {
           )}
 
           <MenuLink
+            className="menu__list__link-item"
             download="rapid-prereview-data.jsonld"
             href={`/api/preprint/${unprefix(createPreprintId(identifier))}`}
           >

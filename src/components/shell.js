@@ -11,9 +11,12 @@ import PropTypes from 'prop-types';
 import {
   MdVerticalAlignBottom,
   MdVerticalAlignTop,
-  MdDragHandle
+  MdDragHandle,
+  MdUnfoldMore,
+  MdUnfoldLess
 } from 'react-icons/md';
 import IconButton from './icon-button';
+import RapidPreReviewLogo from './rapid-pre-review-logo';
 
 const SHELL_HEADER_HEIGHT = 56;
 
@@ -159,33 +162,43 @@ export default function Shell({ children }) {
         })}
         style={status === 'positioned' ? { height: `${height}vh` } : undefined}
       >
-        <div className="shell__controls">
-          <IconButton
-            onClick={() => {
-              setTransition('minimized');
-            }}
-          >
-            <MdVerticalAlignBottom />
-          </IconButton>
-
-          <IconButton
-            onMouseDown={handleMouseDown}
-            onClick={() => {
-              if (status !== 'positioned') {
-                setTransition('default');
-              }
-            }}
-          >
-            <MdDragHandle />
-          </IconButton>
-
-          <IconButton
-            onClick={() => {
-              setTransition('maximized');
-            }}
-          >
-            <MdVerticalAlignTop />
-          </IconButton>
+        <div className="shell__control-bar">
+          <div className="shell__controls">
+            <div className="shell__controls__left">
+              <RapidPreReviewLogo short={true} />
+            </div>
+            <div className="shell__controls__center">
+              <IconButton
+                className="shell__controls__button shell__controls__button--drag"
+                onMouseDown={handleMouseDown}
+                onClick={() => {
+                  if (status !== 'positioned') {
+                    setTransition('default');
+                  }
+                }}
+              >
+                <MdDragHandle className="shell__controls__button__icon" />
+              </IconButton>
+            </div>
+            <div className="shell__controls__right">
+              <IconButton
+                className="shell__controls__button"
+                onClick={() => {
+                  setTransition('maximized');
+                }}
+              >
+                <MdUnfoldMore className="shell__controls__button__icon" />
+              </IconButton>
+              <IconButton
+                className="shell__controls__button"
+                onClick={() => {
+                  setTransition('minimized');
+                }}
+              >
+                <MdUnfoldLess className="shell__controls__button__icon" />
+              </IconButton>
+            </div>
+          </div>
         </div>
 
         {children(onRequireScreen)}

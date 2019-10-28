@@ -1,11 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export default function Barplot({ stats, children }) {
+export default function Barplot({
+  nTotalReviews,
+  nHighlightedReviews,
+  stats,
+  children
+}) {
   return (
     <div className="barplot">
       <div className="barplot__question-list-header">
-        <div className="barplot__question-list-header__left">Questions</div>
+        <div className="barplot__question-list-header__left">
+          <span>
+            Showing {nHighlightedReviews} of {nTotalReviews} Reviews
+          </span>
+        </div>
 
         <div className="barplot__question-list-header__right">
           <div className="barplot__key">
@@ -25,9 +34,8 @@ export default function Barplot({ stats, children }) {
               <div className="barplot__key-color-chip barplot__key-color-chip--na" />
               <span className="barplot__key-label">N/A</span>
             </div>
-
-            {!!children && <div className="barplot__share">{children}</div>}
           </div>
+          {!!children && <div className="barplot__share">{children}</div>}
         </div>
       </div>
       <ul className="barplot__question-list">

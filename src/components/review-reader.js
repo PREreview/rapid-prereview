@@ -40,7 +40,9 @@ const ReviewReader = React.memo(function ReviewReader({
 
   return (
     <div className="review-reader">
-      <h3 className="review-reader__title">Preprint Reviews</h3>
+      <h3 className="review-reader__title">
+        {actions.length} Preprint Reviews
+      </h3>
       <p className="review-reader__help-text">
         <MdInfoOutline className="review-reader__help-text-icon" />
         View only the reviews you are interested in by draging-and-dropping user
@@ -69,9 +71,15 @@ const ReviewReader = React.memo(function ReviewReader({
           }}
         />
       </div>
-      <Barplot stats={getYesNoStats(highlightedActions)}>
+
+      <Barplot
+        stats={getYesNoStats(highlightedActions)}
+        nHighlightedReviews={highlightedRoleIds.length || actions.length}
+        nTotalReviews={actions.length}
+      >
         <ShareMenu identifier={identifier} roleIds={highlightedRoleIds} />
       </Barplot>
+
       <TextAnswers answers={getTextAnswers(highlightedActions)} />
     </div>
   );
