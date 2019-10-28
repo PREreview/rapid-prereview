@@ -1,4 +1,5 @@
 {
+  "manifest_version": 2,
   "name": "Rapid PREreview for Outbreak Science",
   "version": "1.0",
   "description": "Rapid PREreview allows to request and provide feedback (in the form of structured review rapid to complete) on existing preprints relevant to the outbreak science community",
@@ -13,9 +14,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["http*://*arxiv.org/*"],
-      "js": ["content-script.js"]
+      "matches": ["*://*.arxiv.org/*"],
+      "js": ["content-script.js"],
+      "css": ["content-script.css"],
+      "run_at": "document_end"
     }
-  ],
-  "manifest_version": 2
+  ]
 }
