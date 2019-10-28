@@ -19,5 +19,8 @@
       "css": ["content-script.css"],
       "run_at": "document_end"
     }
+  ],
+  "web_accessible_resources": [
+    "fonts/*.woff", "fonts/*.woff2"
   ]
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Popup from './components/popup';
+import ExtensionShell from './components/extension-shell';
+import { parseGoogleScholar } from './utils/scholar';
 import './content-script.css';
 
 if (
@@ -22,7 +23,11 @@ function start() {
     );
 
     if (hasGscholar) {
-      ReactDOM.render(<Popup />, $div);
+      const preprint = parseGoogleScholar(document.head, {
+        sourceUrl: window.location.href
+      });
+
+      ReactDOM.render(<ExtensionShell preprint={preprint} />, $div);
     }
   }
 

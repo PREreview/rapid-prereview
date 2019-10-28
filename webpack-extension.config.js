@@ -69,11 +69,23 @@ module.exports = {
               plugins: function(loader) {
                 return [
                   require('postcss-import')(),
-                  require('postcss-url')(),
+                  require('postcss-url')({
+                    filter: asset => xo{
+                      return /^.*\.(svg|png|css|jpeg)$/.test(
+                        asset.relativePath
+                      );
+                    }
+                  }),
                   require('postcss-preset-env')({
+                    /* see: https://github.com/csstools/postcss-preset-env/issues/32 */
                     browsers: 'last 2 versions',
-                    stage: 3
-                  })
+                    stage: 3,
+                    features: {
+                      'nesting-rules': false /* disable css nesting which does not allow nesting of selectors without white spaces between them */,
+                      'custom-media-queries': true
+                    }
+                  }),
+                  require('postcss-nested') /*replace cssnext nesting with this one which allows for sass style nesting*/
                 ];
               }
             }

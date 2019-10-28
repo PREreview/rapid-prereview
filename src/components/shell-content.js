@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import { MenuLink } from '@reach/menu-button';
 import { useUser } from '../contexts/user-context';
 import { usePreprintActions, usePostAction } from '../hooks/api-hooks';
-import RapidPreReviewLogo from './rapid-pre-review-logo';
 import Controls from './controls';
 import Button from './button';
 import RapidFormFragment from './rapid-form-fragment';
