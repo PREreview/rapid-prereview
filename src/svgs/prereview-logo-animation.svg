@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" viewBox="0 0 82 95">
+  <style id="style3774">
+    .st0{fill:none;stroke:#000;stroke-miterlimit:10}
+  </style>
+  <path class="st0" d="M65 73.2V19c0-.9-.8-1.7-1.7-1.7H18.7c-.9 0-1.7.8-1.7 1.7v54.2c0 .9.8 1.7 1.7 1.7h35.9" id="path3776" style="animation:FIpjYSLW_draw 2006ms ease-out 0ms forwards" stroke-dasharray="197 199" stroke-dashoffset="198"/>
+  <path d="M51 77.8l5-2.9-5-2.9" id="path3780" style="animation:FIpjYSLW_draw 131ms ease-out 2016ms forwards" stroke-dasharray="12 14" stroke-dashoffset="13" fill="#f33"/>
+  <path class="st0" d="M27.7 32.2h26.9" id="path3782" style="animation:FIpjYSLW_draw 283ms ease-out 2148ms forwards" stroke-dasharray="27 29" stroke-dashoffset="28"/>
+  <path class="st0" d="M27.7 46.3h26.9" id="path3784" style="animation:FIpjYSLW_draw 283ms ease-out 2432ms forwards" stroke-dasharray="27 29" stroke-dashoffset="28"/>
+  <path class="st0" d="M27.7 60.5h26.9" id="path3786" style="animation:FIpjYSLW_draw 283ms ease-out 2716ms forwards" stroke-dasharray="27 29" stroke-dashoffset="28"/>
+  <style data-made-with="vivus-instant" id="style3788">
+    @keyframes FIpjYSLW_draw{to{stroke-dashoffset:0}}@keyframes FIpjYSLW_fade{0%,94.44444444444444%{stroke-opacity:1}to{stroke-opacity:0}}
+  </style>
+</svg>

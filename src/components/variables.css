@@ -31,7 +31,7 @@
 
   /* standard button colors */
   --button-background-color: transparent;
-  --button-foreground-color: var(-ui-basic-font-color);
+  --button-foreground-color: var(--ui-basic-font-color);
   --button-background-focus-color: var(--prereview-black);
   --button-foreground-focus-color: var(--prereview-white);
 
