@@ -219,4 +219,6 @@ export const DISEASES = [
 
 // messaging for the web extension
 export const CHECK_SESSION_COOKIE = 'CHECK_SESSION_COOKIE';
+export const CHECK_PREPRINT = 'CHECK_PREPRINT';
 export const SESSION_COOKIE = 'SESSION_COOKIE';
+export const PREPRINT = 'PREPRINT';
