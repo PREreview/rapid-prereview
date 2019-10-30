@@ -9,10 +9,13 @@ export default function Button({
   pill = false,
   primary = false,
   onMouseUp = noop,
+  element = 'button',
   ...buttonProps
 }) {
+  const El = element;
+  console.log('props', buttonProps);
   return (
-    <button
+    <El
       className={classNames('button', className, {
         'button--pill': pill,
         'button--primary': primary
@@ -26,7 +29,7 @@ export default function Button({
       }}
     >
       <span className="button__contents">{children}</span>
-    </button>
+    </El>
   );
 }
 
@@ -35,5 +38,6 @@ Button.propTypes = {
   className: PropTypes.string,
   pill: PropTypes.bool,
   primary: PropTypes.bool,
-  onMouseUp: PropTypes.func
+  onMouseUp: PropTypes.func,
+  element: PropTypes.string
 };

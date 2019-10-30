@@ -8,7 +8,8 @@
   width: fit-content;
 
   cursor: pointer;
-  opacity: 0.8;
+  opacity: 1;
+  transition: all 0.2s;
 
   &:disabled {
     pointer-events: none;
@@ -20,7 +21,7 @@
   }
 
   &:hover {
-    opacity: 1;
+    opacity: 0.8;
     & .button__contents {
       &:hover {
         box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);

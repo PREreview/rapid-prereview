@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="62px" viewBox="0 0 50 62" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>logo animation</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="logo-animation" transform="translate(1.000000, 1.000000)">
+            <path d="M48,56.2 L48,2 C48,1.1 47.2,0.3 46.3,0.3 L1.7,0.3 C0.8,0.3 0,1.1 0,2 L0,56.2 C0,57.1 0.8,57.9 1.7,57.9 L26.9980257,57.9 L31.1977803,57.9" id="path3776" stroke="#000000" stroke-dasharray="197"></path>
+            <polyline id="path3780" fill="#FF3333" fill-rule="nonzero" points="34 60.8 39 57.9 34 55"></polyline>
+            <polyline id="path3780-copy" fill="#FF3333" fill-rule="nonzero" points="29 60.8 34 57.9 29 55"></polyline>
+            <path d="M10.7,15.2 L37.6,15.2" id="path3782" stroke="#000000" stroke-dasharray="27"></path>
+            <path d="M10.7,29.3 L37.6,29.3" id="path3784" stroke="#000000" stroke-dasharray="27"></path>
+            <path d="M10.7,43.5 L37.6,43.5" id="path3786" stroke="#000000" stroke-dasharray="27"></path>
+        </g>
+    </g>
+</svg>

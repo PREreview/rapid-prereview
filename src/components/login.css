@@ -1,3 +1,68 @@
 .login {
-  padding-top: var(--header-bar-height);
+  box-sizing: border-box;
+  font: var(--ui-basic-font);
+  margin: 0;
+  min-height: 100vh;
+  padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd);
+  box-sizing: border-box;
+  color: var(--ui-basic-font-color);
+  & :any-link {
+    text-decoration: none;
+  }
+  & .login__content {
+    max-width: var(--middle-column-default-width);
+    margin: 0 auto;
+    background-color: white;
+    min-height: 100vh;
+    padding: 0 var(--xlgrd);
+  }
+
+  & .login__header {
+    font-size: 24pt;
+    line-height: 32pt;
+    font-weight: 600;
+    text-align: center;
+    margin: var(--lgrd) var(--xlgrd) 1.5em;
+  }
+
+  & .login__text {
+    font-size: 18pt;
+    line-height: 24pt;
+    font-weight: 200;
+    text-align: center;
+    text-decoration: none;
+  }
+  & .login__logo-container {
+    margin: 0 auto;
+    width: 200px;
+    max-width: 100%;
+
+    & svg {
+      height: 100%;
+    }
+  }
+
+  & .login__login-button {
+    margin: 0 auto;
+    display: block;
+
+    & .button__contents {
+      height: 50px;
+      padding: 0 16px;
+    }
+  }
+}
+@keyframes FIpjYSLW_draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes FIpjYSLW_fade {
+  0%,
+  94.44444444444444% {
+    stroke-opacity: 1;
+  }
+  to {
+    stroke-opacity: 0;
+  }
 }
