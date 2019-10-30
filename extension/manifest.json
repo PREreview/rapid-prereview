@@ -19,7 +19,14 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.arxiv.org/*"],
+      "matches": [
+        "*://*.arxiv.org/*",
+        "*://*.www.biorxiv.org/*",
+        "*://*.www.medrxiv.org/*",
+        "*://*.peerj.com/preprints/*",
+        "*://*.osf.io/preprints/*",
+        "*://*.preprints.org/*"
+      ],
       "js": ["content-script.js"],
       "css": ["content-script.css"],
       "run_at": "document_end"
