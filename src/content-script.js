@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ExtensionShell from './components/extension-shell';
 import { parseGoogleScholar } from './utils/scholar';
-import './content-script.css';
 import { CHECK_SESSION_COOKIE, CHECK_PREPRINT, PREPRINT } from './constants';
+import './content-script.css';
 
 // When the user open the popup, we need to grab the preprint metadata
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -54,12 +54,13 @@ function start() {
       'meta[name^="citation_"], meta[property^="citation_"]'
     );
 
+    // TODO notify background of `hasGscholar` so that we update the icon
+    // TODO create the store here and setup an event listner on it to notify the backgound on number of review and requests for the icon
+
     if (hasGscholar) {
       const preprint = parseGoogleScholar(document.head, {
         sourceUrl: window.location.href
       });
-
-      // TODO notify background if `hasGscholar` so that we update the icon
 
       // We can't access the cookie store from the content script => we ask the
       // background script
