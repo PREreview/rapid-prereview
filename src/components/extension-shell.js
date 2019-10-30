@@ -8,12 +8,16 @@ import ShellContent from './shell-content';
 import { UserProvider } from '../contexts/user-context';
 import { StoresProvider } from '../contexts/store-context';
 
-export default function ExtensionShell({ defaultTab = 'read', preprint }) {
+export default function ExtensionShell({
+  defaultTab = 'read',
+  preprint,
+  user
+}) {
   return (
     <Router>
       <DndProvider backend={HTML5Backend}>
         <StoresProvider>
-          <UserProvider user={undefined /* TODO */}>
+          <UserProvider user={user}>
             <div className="extension-shell">
               <Shell>
                 {onRequireScreen => (
@@ -34,5 +38,6 @@ export default function ExtensionShell({ defaultTab = 'read', preprint }) {
 
 ExtensionShell.propTypes = {
   defaultTab: PropTypes.oneOf(['read', 'review', 'request']),
-  preprint: PropTypes.object.isRequired
+  preprint: PropTypes.object.isRequired,
+  user: PropTypes.object // only present if logged in
 };

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import passport from 'passport';
+import cors from 'cors';
 
 const router = new Router({ caseSensitive: true });
 
@@ -15,9 +16,16 @@ router.get(
   })
 );
 
-router.get('/logout', function(req, res) {
+router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
+});
+
+/**
+ * Used by the web-extension to get the user if the user is logged in
+ */
+router.get('/user', cors(), (req, res) => {
+  res.json(req.user || null);
 });
 
 export default router;

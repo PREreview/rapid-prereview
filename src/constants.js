@@ -216,3 +216,7 @@ export const DISEASES = [
     priority: 'red'
   }
 ];
+
+// messaging for the web extension
+export const CHECK_SESSION_COOKIE = 'CHECK_SESSION_COOKIE';
+export const SESSION_COOKIE = 'SESSION_COOKIE';

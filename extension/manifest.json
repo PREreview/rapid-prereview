@@ -4,6 +4,10 @@
   "version": "1.0",
   "description": "Rapid PREreview allows to request and provide feedback (in the form of structured review rapid to complete) on existing preprints relevant to the outbreak science community",
   "permissions": [
+    "cookies",
+    "*://*.prereview.org/*",
+    "http://127.0.0.1/*",
+    "http://localhost/*"
   ],
   "background": {
     "scripts": ["background.js"],
