@@ -118,7 +118,9 @@ export default function ShellContent({
             >
               Settings
             </MenuLink>
-            <MenuLink href="/auth/logout">Logout</MenuLink>
+            <MenuLink href={`${process.env.API_URL}/auth/logout`}>
+              Logout
+            </MenuLink>
           </UserBadge>
         ) : (
           <XLink href="/login" to="/login">

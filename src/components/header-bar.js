@@ -31,10 +31,21 @@ export default function HeaderBar({ onClickMenuButton = noop }) {
         <span className="header-bar__nav-item header-bar__nav-item--user-badge">
           {user ? (
             <UserBadge user={user}>
-              <MenuLink as={Link} to="/settings">
+              <MenuLink
+                as={process.env.IS_EXTENSION ? undefined : Link}
+                to={process.env.IS_EXTENSION ? undefined : '/settings'}
+                href={
+                  process.env.IS_EXTENSION
+                    ? `${process.env.API_URL}/settings`
+                    : undefined
+                }
+                target={process.env.IS_EXTENSION ? '_blank' : undefined}
+              >
                 Settings
               </MenuLink>
-              <MenuLink href="/auth/logout">Logout</MenuLink>
+              <MenuLink href={`${process.env.API_URL}/auth/logout`}>
+                Logout
+              </MenuLink>
             </UserBadge>
           ) : (
             <Link to="/login">Login</Link>
