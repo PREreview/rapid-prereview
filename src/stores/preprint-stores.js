@@ -35,8 +35,6 @@ export class PreprintsWithActionsStore extends EventEmitter {
   }
 
   set(preprint, { emit = true, onlyIfNotExisting = false } = {}) {
-    console.log('YOOOOO oo');
-
     if (onlyIfNotExisting) {
       if (!this.has(preprint)) {
         this.set(preprint, { emit });
