@@ -8,6 +8,7 @@ import RapidPreReviewLogo from './rapid-pre-review-logo';
 import IconButton from './icon-button';
 import { useUser } from '../contexts/user-context';
 import UserBadge from './user-badge';
+import XLink from './xlink';
 
 export default function HeaderBar({ onClickMenuButton = noop }) {
   const [user] = useUser();
@@ -48,7 +49,9 @@ export default function HeaderBar({ onClickMenuButton = noop }) {
               </MenuLink>
             </UserBadge>
           ) : (
-            <Link to="/login">Login</Link>
+            <XLink to="/login" href="/login">
+              Login
+            </XLink>
           )}
         </span>
       </div>
