@@ -11,12 +11,17 @@ import { StoresProvider } from '../contexts/store-context';
 export default function ExtensionShell({
   defaultTab = 'read',
   preprint,
-  user
+  user,
+  preprintsWithActionsStore,
+  roleStore
 }) {
   return (
     <Router>
       <DndProvider backend={HTML5Backend}>
-        <StoresProvider>
+        <StoresProvider
+          preprintsWithActionsStore={preprintsWithActionsStore}
+          roleStore={roleStore}
+        >
           <UserProvider user={user}>
             <div className="extension-shell">
               <Shell>
@@ -39,5 +44,7 @@ export default function ExtensionShell({
 ExtensionShell.propTypes = {
   defaultTab: PropTypes.oneOf(['read', 'review', 'request']),
   preprint: PropTypes.object.isRequired,
+  preprintsWithActionsStore: PropTypes.object.isRequired,
+  roleStore: PropTypes.object.isRequired,
   user: PropTypes.object // only present if logged in
 };

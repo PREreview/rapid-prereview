@@ -13,7 +13,6 @@ export default function Button({
   ...buttonProps
 }) {
   const El = element;
-  console.log('props', buttonProps);
   return (
     <El
       className={classNames('button', className, {
@@ -23,7 +22,7 @@ export default function Button({
       {...buttonProps}
       onMouseUp={e => {
         /* having a focus style forces button to catch a sticky focus appearance.
-        Blur onMouseUp to release that focus appearance for mouse click only. */
+           Blur onMouseUp to release that focus appearance for mouse click only. */
         e.currentTarget.blur();
         onMouseUp(e);
       }}

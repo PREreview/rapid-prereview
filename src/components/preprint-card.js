@@ -128,7 +128,23 @@ export default function PreprintCard({
               </Value>
               <MdChevronRight className="preprint-card__server-arrow-icon" />
               <Value tagName="span" className="preprint-card__server-id">
-                {doi || arXivId}
+                {doi ? (
+                  <a
+                    href={`https://doi.org/${doi}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {doi}
+                  </a>
+                ) : (
+                  <a
+                    href={`https://arxiv.org/abs/${arXivId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {arXivId}
+                  </a>
+                )}
               </Value>
             </div>
 

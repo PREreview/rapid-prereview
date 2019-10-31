@@ -56,7 +56,7 @@ export function usePostAction() {
     }
     controllerRef.current = controller;
 
-    fetch('/api/action', {
+    fetch(`${process.env.API_URL}/api/action`, {
       signal: controller.signal,
       method: 'POST',
       body: JSON.stringify(action),
@@ -154,9 +154,14 @@ export function usePreprint(
 
         const controller = new AbortController();
 
-        fetch(`/api/resolve?identifier=${encodeURIComponent(identifier)}`, {
-          signal: controller.signal
-        })
+        fetch(
+          `${process.env.API_URL}/api/resolve?identifier=${encodeURIComponent(
+            identifier
+          )}`,
+          {
+            signal: controller.signal
+          }
+        )
           .then(resp => {
             if (resp.ok) {
               return resp.json();
@@ -243,9 +248,14 @@ export function usePreprintActions(identifier) {
 
       const controller = new AbortController();
 
-      fetch(`/api/preprint/${unprefix(createPreprintId(identifier))}`, {
-        signal: controller.signal
-      })
+      fetch(
+        `${process.env.API_URL}/api/preprint/${unprefix(
+          createPreprintId(identifier)
+        )}`,
+        {
+          signal: controller.signal
+        }
+      )
         .then(resp => {
           if (resp.ok) {
             return resp.json();
@@ -338,7 +348,7 @@ export function usePreprintSearchResults(
 
     const controller = new AbortController();
 
-    fetch(`/api/preprint/${search}`, {
+    fetch(`${process.env.API_URL}/api/preprint/${search}`, {
       signal: controller.signal
     })
       .then(resp => {
@@ -425,7 +435,7 @@ export function useRole(roleId) {
 
         const controller = new AbortController();
 
-        fetch(`/api/role/${unprefix(roleId)}`, {
+        fetch(`${process.env.API_URL}/api/role/${unprefix(roleId)}`, {
           signal: controller.signal
         })
           .then(resp => {
@@ -492,7 +502,7 @@ export function useActionsSearchResults(
 
     const controller = new AbortController();
 
-    fetch(`/api/action/${search}`, {
+    fetch(`${process.env.API_URL}/api/action/${search}`, {
       signal: controller.signal
     })
       .then(resp => {

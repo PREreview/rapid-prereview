@@ -18,3 +18,30 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 });
+
+// Keep icon badge text (counter)  up-to-date
+chrome.runtime.onConnect.addListener(port => {
+  if (port.name === 'stats') {
+    port.onMessage.addListener((msg, port) => {
+      switch (msg.type) {
+        case 'STATS':
+          chrome.browserAction.setBadgeText({
+            text: (msg.payload.nReviews + msg.payload.nRequests).toString(),
+            tabId: port.sender.tab.id
+          });
+          break;
+
+        case 'HAS_GSCHOLAR':
+          // TODO also toggle icon (`setIcon` see https://developer.chrome.com/extensions/browserAction)
+          chrome.browserAction.setBadgeBackgroundColor({
+            color: msg.payload.hasGscholar ? 'green' : 'grey',
+            tabId: port.sender.tab.id
+          });
+          break;
+
+        default:
+          break;
+      }
+    });
+  }
+});
