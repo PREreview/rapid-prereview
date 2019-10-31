@@ -29,6 +29,10 @@
       }
     }
   }
+
+  & .controls {
+    margin-top: var(--mgrd);
+  }
 }
 .shell-content__tab-button {
   & .button__contents {

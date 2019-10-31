@@ -25,7 +25,9 @@ export default function HeaderBar({ onClickMenuButton = noop }) {
       </div>
 
       <div className="header-bar__right">
-        <span className="header-bar__nav-item">Get Browser Extension</span>
+        <span className="header-bar__nav-item header-bar__nav-item--extension">
+          Get Browser Extension
+        </span>
         <span className="header-bar__nav-item">About</span>
         <span className="header-bar__nav-item">PREreview</span>
         <span className="header-bar__nav-item header-bar__nav-item--user-badge">

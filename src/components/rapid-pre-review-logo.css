@@ -15,16 +15,6 @@
     margin-right: 10px;
   }
 
-  & .rapid-pre-review-logo__os-logo-svg {
-    height: 80%;
-    position: relative;
-    top: -2px;
-
-    @media (--mobile-portrait) {
-      display: none;
-    }
-  }
-
   & .rapid-pre-review-logo__outbreak-science {
     display: flex;
     flex-direction: column;
@@ -37,15 +27,20 @@
     line-height: 16px;
     letter-spacing: 0.05em;
 
-    @media (--mobile-portrait) {
-      display: none;
-    }
     & .rapid-pre-review-logo__outbreak-science__outbreak {
       color: var(--prereview-red);
       font-weight: 700;
       letter-spacing: 0.075em;
     }
     & .rapid-pre-review-logo__outbreak-science__science {
+    }
+  }
+
+  &.rapid-pre-review-logo--responsive {
+    & .rapid-pre-review-logo__outbreak-science {
+      @media (--mobile-portrait) {
+        display: none;
+      }
     }
   }
 

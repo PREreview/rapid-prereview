@@ -5,11 +5,15 @@ import classNames from 'classnames';
 
 import PreReviewLogo from '../svgs/rapid-prereview-icon.svg';
 
-export default function RapidPreReviewLogo({ short = false }) {
+export default function RapidPreReviewLogo({
+  short = false,
+  responsive = true
+}) {
   return (
     <div
       className={classNames('rapid-pre-review-logo', {
-        'rapid-pre-review-logo--short': short
+        'rapid-pre-review-logo--short': short,
+        'rapid-pre-review-logo--responsive': responsive
       })}
     >
       <Link to="/" className="rapid-pre-review-logo__svg-container">
@@ -22,12 +26,12 @@ export default function RapidPreReviewLogo({ short = false }) {
             Science
           </span>
         </div>
-        {/* <OutbreakScienceLogo className="rapid-pre-review-logo__os-logo-svg" /> */}
       </Link>
     </div>
   );
 }
 
 RapidPreReviewLogo.propTypes = {
-  short: PropTypes.bool
+  short: PropTypes.bool,
+  responsive: PropTypes.bool
 };
