@@ -16,11 +16,12 @@ export default function Login() {
         </h2>
         <p className="login__text">
           Click below to sign in with your ORCID account, or create one if you
-          don't have one.
+          don’t have one.
         </p>
+
         <Button
           element="a"
-          href="/auth/orcid"
+          href={`${process.env.API_URL}/auth/orcid`}
           primary={true}
           className="login__login-button"
         >
