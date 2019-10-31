@@ -68,3 +68,14 @@ public/assets/.bundle-manifest.json
 public/assets/bundle.*
 public/assets/bundle-manifest.json
 public/assets/hot
+
+extension/background.js
+extension/background.js.map
+extension/content-script.css
+extension/content-script.css.map
+extension/content-script.js
+extension/content-script.js.map
+extension/popup.css
+extension/popup.css.map
+extension/popup.js
+extension/popup.js.map
