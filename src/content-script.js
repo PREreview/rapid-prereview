@@ -12,6 +12,7 @@ import './content-script.css';
 const port = chrome.runtime.connect({ name: 'stats' });
 
 // When the user open the popup, we need to grab the preprint metadata
+// => popup ask the content script the data and here we respond
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   function respond() {
     const hasGscholar = !!document.head.querySelector(
@@ -78,12 +79,14 @@ function start() {
           const cookie = response.payload;
           let user;
           if (cookie) {
+            // TODO check that cookie is not expired
             // we need to fetch the logged in user
             const r = await fetch(`${process.env.API_URL}/auth/user`, {
               method: 'GET',
               credential: 'include'
             });
             if (r.ok) {
+              // Note: `user` is kept up-to-date further down in the ExtensionShell component
               user = await r.json();
             }
           }

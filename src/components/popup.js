@@ -78,6 +78,7 @@ export default function Popup({ preprint, dispatch }) {
                 <Button
                   onClick={() => {
                     dispatch({ type: TOGGLE_SHELL_TAB, payload: 'read' });
+                    window.close();
                   }}
                 >
                   Read Reviews
@@ -92,6 +93,7 @@ export default function Popup({ preprint, dispatch }) {
                     disabled={!user}
                     onClick={() => {
                       dispatch({ type: TOGGLE_SHELL_TAB, payload: 'review' });
+                      window.close();
                     }}
                   >
                     Add Reviews{' '}
@@ -113,6 +115,7 @@ export default function Popup({ preprint, dispatch }) {
                         type: TOGGLE_SHELL_TAB,
                         payload: 'request'
                       });
+                      window.close();
                     }}
                   >
                     Add Request{' '}
@@ -129,7 +132,7 @@ export default function Popup({ preprint, dispatch }) {
         </Fragment>
       ) : (
         <section className="popup__inactive-notice">
-          <p>This extension is only active on preprint page.</p>
+          <p>This extension is only active on preprint pages.</p>
         </section>
       )}
 
@@ -144,15 +147,18 @@ export default function Popup({ preprint, dispatch }) {
               Home
             </a>
           </li>
-          <li className="popup__nav__list-item">
-            <a
-              href={`${process.env.API_URL}/settings`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Profile Settings
-            </a>
-          </li>
+
+          {!!user && (
+            <li className="popup__nav__list-item">
+              <a
+                href={`${process.env.API_URL}/settings`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Profile Settings
+              </a>
+            </li>
+          )}
 
           <li className="popup__nav__list-item">
             {user ? (

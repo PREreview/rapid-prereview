@@ -1,4 +1,8 @@
-import { CHECK_SESSION_COOKIE, SESSION_COOKIE } from './constants';
+import {
+  CHECK_SESSION_COOKIE,
+  SESSION_COOKIE,
+  SESSION_COOKIE_CHANGED
+} from './constants';
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === CHECK_SESSION_COOKIE) {
@@ -16,6 +20,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     );
 
     return true;
+  }
+});
+
+// if user login we notify all the tabs so the shell is updated
+chrome.cookies.onChanged.addListener(changeInfo => {
+  if (
+    changeInfo.cookie.name === 'rapid.sid' &&
+    changeInfo.cookie.domain === new URL(process.env.COOKIE_URL).hostname
+  ) {
+    chrome.tabs.query({}, tabs => {
+      tabs.forEach(tab => {
+        chrome.tabs.sendMessage(tab.id, {
+          type: SESSION_COOKIE_CHANGED,
+          payload: changeInfo
+        });
+      });
+    });
   }
 });
 
