@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import XLink from './xlink';
 
 import PreReviewLogo from '../svgs/rapid-prereview-icon.svg';
 
@@ -16,7 +17,7 @@ export default function RapidPreReviewLogo({
         'rapid-pre-review-logo--responsive': responsive
       })}
     >
-      <Link to="/" className="rapid-pre-review-logo__svg-container">
+      <XLink to="/" href="/" className="rapid-pre-review-logo__svg-container">
         <PreReviewLogo className="rapid-pre-review-logo__icon-svg" />
         <div className="rapid-pre-review-logo__outbreak-science">
           <span className="rapid-pre-review-logo__outbreak-science__outbreak">
@@ -26,7 +27,7 @@ export default function RapidPreReviewLogo({
             Science
           </span>
         </div>
-      </Link>
+      </XLink>
     </div>
   );
 }

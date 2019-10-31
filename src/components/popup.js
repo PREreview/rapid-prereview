@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
+import { MdChevronRight } from 'react-icons/md';
+
 import { usePreprintActions } from '../hooks/api-hooks';
 import Button from './button';
 import { getId, arrayify } from '../utils/jsonld';
@@ -53,6 +55,12 @@ export default function Popup({ preprint, dispatch }) {
       {preprint ? (
         <Fragment>
           <section className="popup__stats-section">
+            <div className="popup__preprint-info">
+              <span>{preprint.preprintServer.name}</span>
+              <MdChevronRight />
+              <span>{preprint.doi || preprint.arXivId}</span>
+            </div>
+
             <dl className="popup__stats">
               <div className="popup__stats__row">
                 <dt className="popup__stats__label">Reviews</dt>
@@ -125,9 +133,9 @@ export default function Popup({ preprint, dispatch }) {
         </section>
       )}
 
-      <nav>
-        <ul>
-          <li>
+      <nav className="popup__nav">
+        <ul className="popup__nav__list">
+          <li className="popup__nav__list-item">
             <a
               href={`${process.env.API_URL}/`}
               target="_blank"
@@ -136,17 +144,17 @@ export default function Popup({ preprint, dispatch }) {
               Home
             </a>
           </li>
-          <li>
+          <li className="popup__nav__list-item">
             <a
               href={`${process.env.API_URL}/settings`}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Settings
+              Profile Settings
             </a>
           </li>
           {!!(user || !preprint) && (
-            <li>
+            <li className="popup__nav__list-item">
               {user ? (
                 <a
                   href={`${process.env.API_URL}/logout`}

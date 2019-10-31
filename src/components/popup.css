@@ -11,6 +11,10 @@ body {
   min-width: 150px;
   width: max-content;
   padding: 0;
+  padding-bottom: var(--xsgrd);
+
+  color: var(--ui-basic-font-color);
+  font: var(--ui-basic-font);
   & .popup__logo-row {
     padding: 16px;
     height: 32px;
@@ -30,8 +34,18 @@ body {
     width: 100%;
     outline: 1px solid pink;
   }
+
+  & .popup__preprint-info {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding: var(--xsgrd) var(--sgrd) 0;
+    color: var(--ui-basic-font-color--light);
+  }
   & .popup__stats {
-    padding: var(--sgrd);
+    padding: var(--xsgrd) var(--sgrd);
     margin: 0;
     list-style: none;
 
@@ -46,14 +60,71 @@ body {
     & .popup__stats__label {
     }
     & .popup__stats__value {
+      font-weight: 600;
     }
     border-bottom: 1px solid var(--ruling-color);
   }
 
   & .popup__actions-section {
-    height: var(--lgrd);
     box-sizing: border-box;
 
     border-bottom: 1px solid var(--ruling-color);
+  }
+
+  & .popup__read-button-row {
+    /* override the default styles so button appears more like selectable menu item */
+    & .button {
+      display: block;
+      width: 100%;
+      & .button__contents {
+        justify-content: flex-start;
+        padding: var(--xsgrd) var(--sgrd);
+      }
+      &:hover {
+        opacity: 1;
+        & .button__contents {
+          background-color: var(--xlight-grey);
+          box-shadow: none;
+        }
+      }
+      &:focus,
+      &:hover:focus {
+        & .button__contents {
+          background-color: var(--prereview-black) !important;
+        }
+      }
+      &:active {
+        color: var(--ui-basic-font-color);
+      }
+    }
+  }
+
+  & .popup__nav {
+    & .popup__nav__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    & .popup__nav__list-item {
+      height: var(--lgrd);
+      font-weight: 600;
+      & :any-link {
+        display: block;
+        width: 100%;
+        height: 100%;
+        color: var(--ui-basic-font-color);
+        text-decoration: none;
+        box-sizing: border-box;
+        padding: var(--xsgrd) var(--sgrd);
+      }
+      & a:hover {
+        background-color: var(--xlight-grey);
+      }
+      & a:focus {
+        background-color: var(--prereview-black);
+        outline: none;
+        color: white;
+      }
+    }
   }
 }
