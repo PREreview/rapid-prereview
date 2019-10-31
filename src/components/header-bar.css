@@ -60,6 +60,16 @@
     &:last-of-type {
       margin-right: 0;
     }
+
+    &.header-bar__nav-item--extension {
+      /* hide extension option on mobile */
+      @media (--mobile-portrait) {
+        display: none;
+      }
+      @media (--mobile-landscape) {
+        display: none;
+      }
+    }
   }
 }
 

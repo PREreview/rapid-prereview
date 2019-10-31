@@ -1,3 +1,59 @@
+@import './variables.css';
+@import './rapid-pre-review-logo.css';
+@import './button.css';
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
 .popup {
-  background-color: red;
+  min-width: 150px;
+  width: max-content;
+  padding: 0;
+  & .popup__logo-row {
+    padding: 16px;
+    height: 32px;
+    border-bottom: 1px solid var(--ruling-color);
+    & .rapid-pre-review-logo {
+      height: 100%;
+      & :any-link {
+        text-decoration: none;
+      }
+      & svg {
+        height: 100%;
+      }
+    }
+  }
+  & .popup__logo {
+    height: var(--lgrd);
+    width: 100%;
+    outline: 1px solid pink;
+  }
+  & .popup__stats {
+    padding: var(--sgrd);
+    margin: 0;
+    list-style: none;
+
+    & .popup__stats__row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: var(--xsgrd);
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    & .popup__stats__label {
+    }
+    & .popup__stats__value {
+    }
+    border-bottom: 1px solid var(--ruling-color);
+  }
+
+  & .popup__actions-section {
+    height: var(--lgrd);
+    box-sizing: border-box;
+
+    border-bottom: 1px solid var(--ruling-color);
+  }
 }

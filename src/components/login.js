@@ -12,7 +12,7 @@ export default function Login() {
           <AnimatedLogo />
         </div>
         <h2 className="login__header">
-          To log in to PREreview you will need an ORCID ID.
+          To log in to Rapid PREreview you will need an ORCID ID.
         </h2>
         <p className="login__text">
           Click below to sign in with your ORCID account, or create one if you
