@@ -4,8 +4,9 @@ import { usePreprintActions } from '../hooks/api-hooks';
 import Button from './button';
 import { getId, arrayify } from '../utils/jsonld';
 import { useUser } from '../contexts/user-context';
+import { TOGGLE_SHELL_TAB } from '../constants';
 
-export default function Popup({ preprint }) {
+export default function Popup({ preprint, dispatch }) {
   const [user] = useUser();
 
   const [actions, fetchActionsProgress] = usePreprintActions(
@@ -50,11 +51,35 @@ export default function Popup({ preprint }) {
             <dd>{nRequests}</dd>
           </dl>
 
-          {!!nReviews && <Button>Read Reviews</Button>}
+          {!!nReviews && (
+            <Button
+              onClick={() => {
+                dispatch({ type: TOGGLE_SHELL_TAB, payload: 'read' });
+              }}
+            >
+              Read Reviews
+            </Button>
+          )}
           {user ? (
             <Fragment>
-              {!hasReviewed && <Button>Add Reviews</Button>}
-              {!hasRequested && <Button>Add Request</Button>}
+              {!hasReviewed && (
+                <Button
+                  onClick={() => {
+                    dispatch({ type: TOGGLE_SHELL_TAB, payload: 'review' });
+                  }}
+                >
+                  Add Reviews
+                </Button>
+              )}
+              {!hasRequested && (
+                <Button
+                  onClick={() => {
+                    dispatch({ type: TOGGLE_SHELL_TAB, payload: 'request' });
+                  }}
+                >
+                  Add Request
+                </Button>
+              )}
             </Fragment>
           ) : (
             <Fragment>
@@ -124,5 +149,6 @@ export default function Popup({ preprint }) {
 
 Popup.propTypes = {
   user: PropTypes.object, // if defined user is logged in
-  preprint: PropTypes.object // if defined we are on a page that is actionable
+  preprint: PropTypes.object, // if defined we are on a page that is actionable
+  dispatch: PropTypes.func.isRequired
 };

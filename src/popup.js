@@ -39,12 +39,18 @@ document.addEventListener('DOMContentLoaded', () => {
               preprint = response.payload;
             }
 
+            function dispatch(action) {
+              chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+                chrome.tabs.sendMessage(tabs[0].id, action);
+              });
+            }
+
             ReactDOM.render(
               <Router>
                 <DndProvider backend={HTML5Backend}>
                   <StoresProvider>
                     <UserProvider user={user}>
-                      <Popup preprint={preprint} />
+                      <Popup preprint={preprint} dispatch={dispatch} />
                     </UserProvider>
                   </StoresProvider>
                 </DndProvider>
