@@ -11,6 +11,7 @@ import Login from './login';
 import Settings from './settings';
 import Profile from './profile';
 import PrivateRoute from './private-route';
+import ExtensionSplash from './extension-splash';
 
 export default function App({ user }) {
   return (
@@ -27,6 +28,9 @@ export default function App({ user }) {
               </Route>
               <Route exact={true} path="/about/:roleId">
                 <Profile />
+              </Route>
+              <Route exact={true} path="/app">
+                <ExtensionSplash />
               </Route>
               <PrivateRoute exact={true} path="/settings">
                 <Settings />

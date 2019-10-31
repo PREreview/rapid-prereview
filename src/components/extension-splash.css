@@ -1,0 +1,4 @@
+.extension-splash {
+  min-height: 100vh;
+  padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd);
+}
