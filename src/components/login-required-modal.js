@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { MdErrorOutline } from 'react-icons/md';
 import Modal from './modal';
+import XLink from './xlink';
 
 export default function LoginRequiredModal({ onClose }) {
   return (
@@ -20,7 +20,9 @@ export default function LoginRequiredModal({ onClose }) {
       <p>You need to be logged in to perform this action</p>
 
       <p>
-        <Link to="/login">Log in with your ORCID</Link>
+        <XLink to="/login" href="/login">
+          Log in with your ORCID
+        </XLink>
       </p>
     </Modal>
   );

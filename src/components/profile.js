@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { MdPublic } from 'react-icons/md';
 import IncognitoIcon from '../svgs/incognito_icon.svg';
@@ -7,6 +7,7 @@ import HeaderBar from './header-bar';
 import { useRole } from '../hooks/api-hooks';
 import RoleActivity from './role-activity';
 import LabelStyle from './label-style';
+import XLink from './xlink';
 
 // TODO:
 // - other public persona + number of private persona
@@ -64,9 +65,12 @@ export default function Profile() {
                 <LabelStyle>Rapid PREreview identifier</LabelStyle>
               </dt>
               <dd>
-                <Link to={`/about/${unprefixedRoleId}`}>
+                <XLink
+                  to={`/about/${unprefixedRoleId}`}
+                  href={`/about/${unprefixedRoleId}`}
+                >
                   {unprefixedRoleId}
-                </Link>
+                </XLink>
               </dd>
               {!!role && (
                 <Fragment>

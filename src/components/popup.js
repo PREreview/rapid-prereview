@@ -157,7 +157,7 @@ export default function Popup({ preprint, dispatch }) {
           <li className="popup__nav__list-item">
             {user ? (
               <a
-                href={`${process.env.API_URL}/logout`}
+                href={`${process.env.API_URL}/auth/logout`}
                 target="_blank"
                 rel="noopener noreferrer"
               >

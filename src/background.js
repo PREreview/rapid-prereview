@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-// Keep icon badge text (counter)  up-to-date
+// Keep icon badge text (counter) up-to-date
 chrome.runtime.onConnect.addListener(port => {
   if (port.name === 'stats') {
     port.onMessage.addListener((msg, port) => {
@@ -32,7 +32,6 @@ chrome.runtime.onConnect.addListener(port => {
           break;
 
         case 'HAS_GSCHOLAR':
-          // TODO also toggle icon (`setIcon` see https://developer.chrome.com/extensions/browserAction)
           chrome.browserAction.setIcon({
             path: {
               '16': './icons/app-icon--active@16px.png',

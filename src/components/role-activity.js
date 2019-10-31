@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { MdChevronRight } from 'react-icons/md';
 import { getId } from '../utils/jsonld';
@@ -9,6 +8,7 @@ import { useActionsSearchResults } from '../hooks/api-hooks';
 import Value from './value';
 import Button from './button';
 import LabelStyle from './label-style';
+import XLink from './xlink';
 
 export default function RoleActivity({ roleId }) {
   const [bookmark, setBookmark] = useState(null);
@@ -53,9 +53,12 @@ export default function RoleActivity({ roleId }) {
                     : 'reviewed'}
                 </LabelStyle>
                 <div className="role-activity__list-item-details">
-                  <Link to={`/${doc.object.doi || doc.object.arXivId}`}>
+                  <XLink
+                    to={`/${doc.object.doi || doc.object.arXivId}`}
+                    href={`/${doc.object.doi || doc.object.arXivId}`}
+                  >
                     <Value tagName="span">{doc.object.name}</Value>
-                  </Link>
+                  </XLink>
                   <div className="role-activity__server-info">
                     <Value
                       tagName="span"

@@ -1,7 +1,5 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-
 import { getId, unprefix, arrayify } from '../utils/jsonld';
 import { getDefaultRole } from '../utils/users';
 import Button from './button';
@@ -12,6 +10,7 @@ import { RoleBadgeUI } from './role-badge';
 import Controls from './controls';
 import { usePostAction } from '../hooks/api-hooks';
 import IncognitoIcon from '../svgs/incognito_icon.svg';
+import XLink from './xlink';
 
 // TODO make user display name required
 // TODO force user to accept the code of conduct (like PREreview)
@@ -61,12 +60,13 @@ export default function SettingsRoles({ user }) {
             <div className="settings__persona-list-item__username">
               <RoleBadgeUI role={role} className="settings__persona-badge" />
 
-              <Link
+              <XLink
+                href={`/about/${unprefix(getId(role))}`}
                 to={`/about/${unprefix(getId(role))}`}
                 className="settings__persona-link"
               >
                 {role.name || unprefix(getId(role))}
-              </Link>
+              </XLink>
             </div>
             <span className="settings__persona-status">
               {role['@type'] === 'PublicReviewerRole' ? (

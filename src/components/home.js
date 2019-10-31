@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation, Link } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import PrivateRoute from './private-route';
 import omit from 'lodash/omit';
 import { MdChevronRight, MdFirstPage } from 'react-icons/md';
@@ -19,6 +19,7 @@ import LoginRequiredModal from './login-required-modal';
 import { createPreprintQs, apifyPreprintQs } from '../utils/search';
 import WelcomeModal from './welcome-modal';
 import { useIsNewVisitor } from '../hooks/ui-hooks';
+import XLink from './xlink';
 
 export default function Home() {
   const history = useHistory();
@@ -148,7 +149,9 @@ export default function Home() {
             <div>
               No results found.{' '}
               {!!apiQs && (
-                <Link to={location.pathname}>Clear search terms.</Link>
+                <XLink to={location.pathname} href={location.pathname}>
+                  Clear search terms.
+                </XLink>
               )}
             </div>
           ) : results.bookmark ===

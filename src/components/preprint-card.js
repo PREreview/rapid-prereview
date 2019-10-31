@@ -1,7 +1,6 @@
 import React, { Fragment, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
-import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import {
   MdArrowUpward,
@@ -22,6 +21,7 @@ import TagPill from './tag-pill';
 import AddPrereviewIcon from '../svgs/add_prereview_icon.svg';
 import Collapse from './collapse';
 import ReviewReader from './review-reader';
+import XLink from './xlink';
 
 export default function PreprintCard({
   user,
@@ -102,7 +102,8 @@ export default function PreprintCard({
 
         <div className="preprint-card__contents">
           <div className="preprint-card__header">
-            <Link
+            <XLink
+              href={`/${doi || arXivId}`}
               to={{
                 pathname: `/${doi || arXivId}`,
                 state: {
@@ -115,7 +116,7 @@ export default function PreprintCard({
               <Value tagName="h2" className="preprint-card__title-text">
                 {name}
               </Value>
-            </Link>
+            </XLink>
 
             <span className="preprint-card__pub-date">
               {format(new Date(datePosted), 'MMM. d, yyyy')}
