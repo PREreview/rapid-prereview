@@ -46,7 +46,7 @@
 
 .shell__control-bar {
   height: var(--shell-header-height);
-  background: red;
+
   position: relative;
   z-index: 1000001;
 }

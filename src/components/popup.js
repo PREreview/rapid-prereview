@@ -84,51 +84,51 @@ export default function Popup({ preprint, dispatch }) {
                 </Button>
               </div>
             )}
-            {user ? (
-              <Fragment>
-                {!hasReviewed && (
-                  <div className="popup__read-button-row">
-                    <Button
-                      onClick={() => {
-                        dispatch({ type: TOGGLE_SHELL_TAB, payload: 'review' });
-                      }}
-                    >
-                      Add Reviews
-                    </Button>
-                  </div>
-                )}
-                {!hasRequested && (
-                  <div className="popup__read-button-row">
-                    {' '}
-                    <Button
-                      onClick={() => {
-                        dispatch({
-                          type: TOGGLE_SHELL_TAB,
-                          payload: 'request'
-                        });
-                      }}
-                    >
-                      Add Request
-                    </Button>
-                  </div>
-                )}
-              </Fragment>
-            ) : (
-              <Fragment>
-                <a
-                  href={`${process.env.API_URL}/login`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Log in
-                </a>{' '}
-                to request or add reviews
-              </Fragment>
-            )}
+
+            <Fragment>
+              {!hasReviewed && (
+                <div className="popup__read-button-row">
+                  <Button
+                    disabled={!user}
+                    onClick={() => {
+                      dispatch({ type: TOGGLE_SHELL_TAB, payload: 'review' });
+                    }}
+                  >
+                    Add Reviews{' '}
+                    {!user && (
+                      <span className="popup__button-login-required">
+                        (Login Required)
+                      </span>
+                    )}
+                  </Button>
+                </div>
+              )}
+              {!hasRequested && (
+                <div className="popup__read-button-row">
+                  {' '}
+                  <Button
+                    disabled={!user}
+                    onClick={() => {
+                      dispatch({
+                        type: TOGGLE_SHELL_TAB,
+                        payload: 'request'
+                      });
+                    }}
+                  >
+                    Add Request{' '}
+                    {!user && (
+                      <span className="popup__button-login-required">
+                        (Login Required)
+                      </span>
+                    )}
+                  </Button>
+                </div>
+              )}
+            </Fragment>
           </section>
         </Fragment>
       ) : (
-        <section>
+        <section className="popup__inactive-notice">
           <p>This extension is only active on preprint page.</p>
         </section>
       )}
@@ -153,27 +153,26 @@ export default function Popup({ preprint, dispatch }) {
               Profile Settings
             </a>
           </li>
-          {!!(user || !preprint) && (
-            <li className="popup__nav__list-item">
-              {user ? (
-                <a
-                  href={`${process.env.API_URL}/logout`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Logout
-                </a>
-              ) : !preprint ? (
-                <a
-                  href={`${process.env.API_URL}/login`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Login
-                </a>
-              ) : null}
-            </li>
-          )}
+
+          <li className="popup__nav__list-item">
+            {user ? (
+              <a
+                href={`${process.env.API_URL}/logout`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Logout
+              </a>
+            ) : (
+              <a
+                href={`${process.env.API_URL}/login`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Login
+              </a>
+            )}
+          </li>
         </ul>
       </nav>
     </div>

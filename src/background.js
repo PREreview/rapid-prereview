@@ -33,8 +33,17 @@ chrome.runtime.onConnect.addListener(port => {
 
         case 'HAS_GSCHOLAR':
           // TODO also toggle icon (`setIcon` see https://developer.chrome.com/extensions/browserAction)
+          chrome.browserAction.setIcon({
+            path: {
+              '16': './icons/app-icon--active@16px.png',
+              '24': './icons/app-icon--active@1x.png',
+              '32': './icons/app-icon--active@1.5x.png',
+              '48': './icons/app-icon--active@2x.png'
+            },
+            tabId: port.sender.tab.id
+          });
           chrome.browserAction.setBadgeBackgroundColor({
-            color: msg.payload.hasGscholar ? 'green' : 'grey',
+            color: msg.payload.hasGscholar ? '#ff3333' : 'grey',
             tabId: port.sender.tab.id
           });
           break;

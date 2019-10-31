@@ -15,6 +15,12 @@
     "persistent": false
   },
   "browser_action": {
+    "default_icon": {
+      "16": "./icons/app-icon--inactive@16px.png",
+      "24": "./icons/app-icon--inactive@1x.png",
+      "32": "./icons/app-icon--inactive@1.5x.png",
+      "48": "./icons/app-icon--inactive@2x.png"
+    },
     "default_popup": "popup.html"
   },
   "content_scripts": [
@@ -32,7 +38,5 @@
       "run_at": "document_end"
     }
   ],
-  "web_accessible_resources": [
-    "fonts/*.woff", "fonts/*.woff2"
-  ]
+  "web_accessible_resources": ["fonts/*.woff", "fonts/*.woff2"]
 }

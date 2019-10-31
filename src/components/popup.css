@@ -35,6 +35,21 @@ body {
     outline: 1px solid pink;
   }
 
+  & .popup__notice-row {
+    padding: var(--xsgrd) var(--sgrd);
+
+    color: var(--ui-basic-font-color--light);
+    & a:any-link {
+      color: var(--ui-basic-font-color);
+    }
+  }
+
+  & .popup__inactive-notice {
+    padding: var(--xsgrd) var(--sgrd);
+    border-bottom: 1px solid var(--ruling-color);
+    background-color: var(--xlight-grey);
+    color: var(--ui-basic-font-color--light);
+  }
   & .popup__preprint-info {
     display: flex;
     align-items: center;
@@ -99,6 +114,10 @@ body {
     }
   }
 
+  & .popup__button-login-required {
+    letter-spacing: 0;
+    font-weight: 400;
+  }
   & .popup__nav {
     & .popup__nav__list {
       list-style: none;
