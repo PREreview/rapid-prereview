@@ -123,7 +123,11 @@ module.exports = {
         process.env.NODE_ENV || 'development'
       ),
       'process.env.IS_EXTENSION': false,
-      'process.env.API_URL': JSON.stringify('') // needed for compatibility with the extension where we need to specify the origin
+      'process.env.API_URL': JSON.stringify(
+        process.env.NODE_ENV === 'production'
+          ? 'https://oubreaksci.prereview.org'
+          : 'http://127.0.0.1:3000'
+      )
     }),
     isProd
       ? new MiniCssExtractPlugin({

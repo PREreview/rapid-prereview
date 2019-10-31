@@ -4,7 +4,12 @@ import { Link } from 'react-router-dom';
 
 export default function XLink({ to, href, children, ...others }) {
   return process.env.IS_EXTENSION ? (
-    <a {...others} href={`${process.env.API_URL}${href}`}>
+    <a
+      target="_blank"
+      rel="noopener noreferrer"
+      {...others}
+      href={`${process.env.API_URL}${href}`}
+    >
       {children}
     </a>
   ) : (

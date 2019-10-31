@@ -1,6 +1,5 @@
 import React, { Fragment, useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { MdShare } from 'react-icons/md';
 import copy from 'clipboard-copy';
 import {
@@ -16,6 +15,7 @@ import { unprefix } from '../utils/jsonld';
 import Modal from './modal';
 import Button from './button';
 import Controls from './controls';
+import XLink from './xlink';
 
 export default function ShareMenu({ identifier, roleIds = [] }) {
   const [permalink, setPermalink] = useState(null);
@@ -30,7 +30,7 @@ export default function ShareMenu({ identifier, roleIds = [] }) {
         <MenuList>
           <MenuItem
             onSelect={() => {
-              setPermalink(`${window.location.origin}/${identifier}`);
+              setPermalink(`${process.env.API_URL}/${identifier}`);
             }}
           >
             Permalink (all reviews)
@@ -44,7 +44,7 @@ export default function ShareMenu({ identifier, roleIds = [] }) {
                 qs.set('role', roleIds.map(unprefix));
 
                 setPermalink(
-                  `${window.location.origin}/${identifier}?${qs.toString()}`
+                  `${process.env.API_URL}/${identifier}?${qs.toString()}`
                 );
               }}
             >
@@ -55,7 +55,9 @@ export default function ShareMenu({ identifier, roleIds = [] }) {
           <MenuLink
             className="menu__list__link-item"
             download="rapid-prereview-data.jsonld"
-            href={`/api/preprint/${unprefix(createPreprintId(identifier))}`}
+            href={`${process.env.API_URL}/api/preprint/${unprefix(
+              createPreprintId(identifier)
+            )}`}
           >
             Download data (JSON-LD)
           </MenuLink>
@@ -123,7 +125,8 @@ function PermalinkModal({ permalink, onClose }) {
   const url = new URL(permalink);
   return (
     <Modal title="Get permalink" showCloseButton={true} onClose={onClose}>
-      <Link
+      <XLink
+        href={`${url.pathname}${url.search}${url.hash}`}
         to={{
           pathname: url.pathname,
           search: url.search,
@@ -131,7 +134,7 @@ function PermalinkModal({ permalink, onClose }) {
         }}
       >
         {permalink}
-      </Link>
+      </XLink>
 
       <Controls error={status.error}>
         <Button

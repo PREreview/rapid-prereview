@@ -89,22 +89,46 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
       {children ? (
         <MenuList className="menu__list">
           <MenuLink
-            as={Link}
+            as={process.env.IS_EXTENSION ? undefined : Link}
             className="menu__list__link-item"
-            to={`/about/${unprefix(roleId)}`}
+            href={
+              process.env.IS_EXTENSION
+                ? `${process.env.API_URL}/about/${unprefix(roleId)}`
+                : undefined
+            }
+            target={process.env.IS_EXTENSION ? '_blank' : undefined}
+            to={
+              process.env.IS_EXTENSION
+                ? undefined
+                : `/about/${unprefix(roleId)}`
+            }
           >
-            View Profile
+            {role && role.name && role.name !== unprefix(roleId)
+              ? `${role.name} (${unprefix(roleId)})`
+              : `View Profile (${unprefix(roleId)})`}
           </MenuLink>
           {children}
         </MenuList>
       ) : (
         <MenuList className="menu__list">
           <MenuLink
-            as={Link}
+            as={process.env.IS_EXTENSION ? undefined : Link}
             className="menu__list__link-item"
-            to={`/about/${unprefix(roleId)}`}
+            href={
+              process.env.IS_EXTENSION
+                ? `${process.env.API_URL}/about/${unprefix(roleId)}`
+                : undefined
+            }
+            target={process.env.IS_EXTENSION ? '_blank' : undefined}
+            to={
+              process.env.IS_EXTENSION
+                ? undefined
+                : `/about/${unprefix(roleId)}`
+            }
           >
-            View Profile
+            {role && role.name && role.name !== unprefix(roleId)
+              ? `${role.name} (${unprefix(roleId)})`
+              : `View Profile (${unprefix(roleId)})`}
           </MenuLink>
         </MenuList>
       )}
