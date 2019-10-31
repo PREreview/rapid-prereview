@@ -121,7 +121,9 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
         process.env.NODE_ENV || 'development'
-      )
+      ),
+      'process.env.IS_EXTENSION': false,
+      'process.env.API_URL': JSON.stringify('') // needed for compatibility with the extension where we need to specify the origin
     }),
     isProd
       ? new MiniCssExtractPlugin({

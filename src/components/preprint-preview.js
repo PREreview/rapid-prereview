@@ -29,7 +29,23 @@ export default function PreprintPreview({ preprint }) {
         <MdChevronRight className="preprint-preview__server-arrow-icon" />
         {!!(preprint.doi || preprint.arXivId) && (
           <span className="preprint-preview__id">
-            {preprint.doi || preprint.arXivId}
+            {preprint.doi ? (
+              <a
+                href={`https://doi.org/${preprint.doi}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {preprint.doi}
+              </a>
+            ) : (
+              <a
+                href={`https://arxiv.org/abs/${preprint.arXivId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {preprint.arXivId}
+              </a>
+            )}
           </span>
         )}
       </div>

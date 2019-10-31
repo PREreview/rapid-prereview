@@ -70,7 +70,7 @@ module.exports = {
                 return [
                   require('postcss-import')(),
                   require('postcss-url')({
-                    filter: asset => xo{
+                    filter: asset => {
                       return /^.*\.(svg|png|css|jpeg)$/.test(
                         asset.relativePath
                       );
@@ -115,6 +115,17 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(
         process.env.NODE_ENV || 'development'
+      ),
+      'process.env.IS_EXTENSION': true,
+      'process.env.COOKIE_URL': JSON.stringify(
+        process.env.NODE_ENV === 'production'
+          ? 'https://oubreaksci.prereview.org'
+          : 'http://127.0.0.1'
+      ),
+      'process.env.API_URL': JSON.stringify(
+        process.env.NODE_ENV === 'production'
+          ? 'https://oubreaksci.prereview.org'
+          : 'http://127.0.0.1:3000'
       )
     }),
     new MiniCssExtractPlugin({

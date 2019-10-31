@@ -4,8 +4,6 @@ import omit from 'lodash/omit';
 import { createPreprintId } from '../utils/ids';
 import { arrayify, getId } from '../utils/jsonld';
 
-// TODO use a store provider so that we can test more easily
-
 export class PreprintsWithActionsStore extends EventEmitter {
   constructor({ max = 100 } = {}) {
     super();
