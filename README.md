@@ -151,7 +151,8 @@ We use Azure.
 2. Run `az login` to login to the CLI
 3. Get the private files not checked in to GitHub: `./get-private.sh` (if you
    later update those files, run `./put-private.sh` to upload them back)
-3. Run `./deploy-app.sh` to deploy the app and `./deploy-service.sh` to deploy the service
+4. Run `npm run build` (after having run `npm install`)
+5. Run `./deploy-app.sh` to deploy the app and `./deploy-service.sh` to deploy the service
 
 To see the logs, run `./log-app.sh` or `./log-service.sh`
 

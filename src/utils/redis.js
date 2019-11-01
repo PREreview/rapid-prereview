@@ -13,7 +13,15 @@ export function createRedisClient(config = {}) {
   const redisPassword = config.redisPassword || process.env['REDIS_PASSWORD'];
   if (redisPassword) {
     opts.pass = redisPassword; // for compatibility with RedisStore (used in the session middleware)
+    opts.auth_pass = redisPassword; // for compatibility with Azure
     opts.password = redisPassword;
+  }
+
+  // See https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/cache-nodejs-get-started
+  if (opts.port.toString() === '6380') {
+    opts.tls = {
+      servername: opts.host
+    };
   }
 
   return redis.createClient(opts);
