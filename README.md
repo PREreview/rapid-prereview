@@ -112,10 +112,20 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
 
 ### Web extension
 
+#### Development
+
 For chrome:
 1. Run `npm run extension:watch` that will build and watch the extension in the
    `extension` directory. ! DO NOT EDIT THE FILES THERE or do not tack them on
    git, with the exception of manifest.json, fonts, and popup.html.
+2. Navigate to `chrome://extensions/`, be sure to toggle the "developer mode",
+   click on "load unpacked" and select the content of the `extension` directory.
+
+
+#### Production
+
+For chrome:
+1. Run `npm run extension:build`
 2. Navigate to `chrome://extensions/`, be sure to toggle the "developer mode",
    click on "load unpacked" and select the content of the `extension` directory.
 
@@ -126,3 +136,13 @@ Once cloudant is running run:
 ```sh
 npm test
 ```
+
+### Deployments
+
+We use Azure.
+
+1. install Azure CLI (see https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
+2. run `az login` to login to the CLI
+3. run `./deploy-app.sh` to deploy the app and `./deploy-service.sh` to deploy the service
+
+To see the logs, run `./log-app.sh` or `./log-service.sh`

@@ -95,7 +95,7 @@ export function createPassport(config) {
     process.env.APP_ROOT_URL ||
     'http://127.0.0.1:3000'}/auth/orcid/callback`;
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'production' && !config.isBeta) {
     strategy = new OrcidStrategy(
       {
         sandbox: false, // remove this to use the production API

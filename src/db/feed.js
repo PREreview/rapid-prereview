@@ -19,6 +19,8 @@ export default class Feed extends EventEmitter {
 
     this.seq = since;
 
+    this.emit('start', this.seq);
+
     this.feed = this.db.docs.follow({ since, include_docs: true });
     this.feed.on('change', async change => {
       const { doc } = change;
@@ -53,7 +55,7 @@ export default class Feed extends EventEmitter {
   }
 
   async resume() {
-    const seq = this.db.getLatestTriggeringSeq();
+    const seq = await this.db.getLatestTriggeringSeq();
 
     return this.start({ since: seq });
   }

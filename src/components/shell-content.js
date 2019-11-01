@@ -206,6 +206,8 @@ function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
   const location = useLocation();
   const history = useHistory();
 
+  // TODO make it work with the extension where we have no control on `location`
+
   // sanitize qs
   useEffect(() => {
     if (!fetchActionsProgress.isActive) {
