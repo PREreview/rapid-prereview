@@ -2,7 +2,7 @@
 
 ## Deploy to https://rapid-prereview.azurewebsites.net/
 
-./deploy-env.private.sh
+./deploy-env.private.sh app
 
 ## See https://docs.microsoft.com/en-us/azure/app-service/deploy-zip
 

@@ -1,7 +1,7 @@
 import http from 'http';
 import express from 'express';
-import DB from '../src/db/db';
-import Feed from '../src/db/feed';
+import DB from './db/db';
+import Feed from './db/feed';
 import {
   setIntervalAsync,
   clearIntervalAsync
@@ -9,8 +9,9 @@ import {
 import { PRODUCTION_DOMAIN } from './constants';
 
 let lastSeq = null;
-let lastErr = null;
+let lastChangeErr = null;
 let lastDateScoreUpdated = null;
+let lastScoreErr = null;
 
 const config = {
   appRootUrl: PRODUCTION_DOMAIN,
@@ -22,6 +23,7 @@ const db = new DB(config);
 const feed = new Feed(db);
 feed.resume();
 feed.on('error', err => {
+  lastChangeErr = err;
   console.error(err);
 });
 feed.on('start', seq => {
@@ -30,9 +32,6 @@ feed.on('start', seq => {
 feed.on('sync', seq => {
   lastSeq = seq;
 });
-feed.on('error', err => {
-  lastErr = err;
-});
 
 const intervalId = setIntervalAsync(
   () => {
@@ -40,18 +39,21 @@ const intervalId = setIntervalAsync(
     return db.updateScores();
   },
   5 * 60 * 1000,
-  err => console.error(err)
+  err => {
+    lastScoreErr = err;
+    console.error(err);
+  }
 );
 
 const app = express();
 
 app.get('/', (req, res, next) => {
-  res.json({ lastSeq, lastErr, lastDateScoreUpdated });
+  res.json({ lastSeq, lastChangeErr, lastScoreErr, lastDateScoreUpdated });
 });
 
 const server = http.createServer(app);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 server.listen(port, () => {
   console.log(`server listenning on port ${port}`);
 });

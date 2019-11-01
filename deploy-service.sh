@@ -2,6 +2,8 @@
 
 ## https://rapid-prereview-service.azurewebsites.net/
 
+./deploy-env.private.sh service
+
 ## See https://docs.microsoft.com/en-us/azure/app-service/deploy-zip
 
 zip -r service.zip *.json *.js dist/* src/* public/* views/* scripts/* test/*

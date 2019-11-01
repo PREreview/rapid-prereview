@@ -83,3 +83,6 @@ extension/popup.js.map
 deploy-env.private.sh
 env.private.sh
 *.private.sh
+
+app.zip
+service.zip

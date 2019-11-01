@@ -46,7 +46,19 @@ export default class DB {
     const cloudant = new Cloudant({
       username,
       password,
-      url: `${protocol}//${host}:${port}`
+      url: `${protocol}//${host}:${port}`,
+      maxAttempt: 5,
+      plugins: [
+        'cookieauth',
+        {
+          retry: {
+            retryErrors: true,
+            retryStatusCodes: [429, 500, 501, 502, 503, 504],
+            retryDelayMultiplier: 2,
+            retryInitialDelayMsecs: 500
+          }
+        }
+      ]
     });
 
     this.cloudant = cloudant;
