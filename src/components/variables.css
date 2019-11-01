@@ -81,7 +81,7 @@
     var(--ui-basic-font-leading--small) var(--ui-font-family);
 
   --ui-basic-font-size--large: 16px;
-  --ui-basic-font-leading--large: 20px;
+  --ui-basic-font-leading--large: 1.65em;
   --ui-basic-font--large: 400 var(--ui-basic-font-size--large) /
     var(--ui-basic-font-leading--large) var(--ui-font-family);
 

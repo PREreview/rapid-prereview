@@ -40,7 +40,17 @@
 
   & .header-bar__right {
     display: flex;
+
     align-items: center;
+
+    & :any-link {
+      color: var(--ui-basic-font-color);
+      text-decoration: none;
+    }
+
+    & a:hover {
+      opacity: 0.7;
+    }
   }
 
   & .header-bar__nav-item {
@@ -49,13 +59,6 @@
     display: block;
     white-space: nowrap;
     line-height: 0;
-    & :any-link {
-      color: var(--ui-basic-font-color);
-      text-decoration: none;
-    }
-    & a:hover {
-      opacity: 0.7;
-    }
 
     &:last-of-type {
       margin-right: 0;
