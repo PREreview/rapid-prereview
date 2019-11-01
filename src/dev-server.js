@@ -4,8 +4,9 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackConfig from '../webpack.config';
-import DB from '../src/db/db';
-import Feed from '../src/db/feed';
+import DB from './db/db';
+import Feed from './db/feed';
+import { createRedisClient } from './utils/redis';
 import { rapid, assets } from './index';
 import {
   setIntervalAsync,
@@ -33,6 +34,8 @@ const intervalId = setIntervalAsync(
   err => console.error(err)
 );
 
+const redisClient = createRedisClient(config);
+
 const app = express();
 app.use(
   webpackDevMiddleware(compiler, {
@@ -42,7 +45,7 @@ app.use(
 app.use(webpackHotMiddleware(compiler));
 
 app.use(assets(config));
-app.use(rapid(config));
+app.use(rapid(config, redisClient));
 
 const server = http.createServer(app);
 
@@ -53,8 +56,10 @@ server.listen(port, () => {
 
 process.once('SIGINT', function() {
   server.close(() => {
-    clearIntervalAsync(intervalId);
-    feed.stop();
-    process.exit();
+    redisClient.quit(() => {
+      clearIntervalAsync(intervalId);
+      feed.stop();
+      process.exit();
+    });
   });
 });

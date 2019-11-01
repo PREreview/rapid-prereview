@@ -2,22 +2,22 @@ import path from 'path';
 import { STATUS_CODES } from 'http';
 import express from 'express';
 import session from 'express-session';
-import redis from 'redis';
 import connectRedis from 'connect-redis';
 import authRoutes from './routes/auth-routes';
 import appRoutes from './routes/app-routes';
 import apiRoutes from './routes/api-routes';
 import addDb from './middlewares/add-db';
 import { createPassport } from './utils/orcid';
-import { createRedisConfig } from './utils/redis';
+import { createRedisClient } from './utils/redis';
 
-export function rapid(config = {}) {
+export function rapid(config = {}, redisClient) {
   const RedisStore = connectRedis(session);
 
   const passport = createPassport(config);
 
   const app = express();
   app.locals.config = config;
+  app.set('redisClient', redisClient || createRedisClient(config));
 
   app.enable('case sensitive routing');
   app.set('views', path.join(path.dirname(__dirname), 'views'));
@@ -31,7 +31,8 @@ export function rapid(config = {}) {
       resave: false,
       saveUninitialized: false,
       store: new RedisStore({
-        client: redis.createClient(createRedisConfig(config, { ns: 'sess' }))
+        client: app.get('redisClient'),
+        prefix: 'sess:'
       })
     })
   );

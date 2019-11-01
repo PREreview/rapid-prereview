@@ -2,6 +2,7 @@ import http from 'http';
 import express from 'express';
 import { rapid, assets } from './index';
 import { PRODUCTION_DOMAIN } from './constants';
+import { createRedisClient } from './utils/redis';
 
 const config = {
   appRootUrl: PRODUCTION_DOMAIN,
@@ -9,9 +10,11 @@ const config = {
   disableSsr: true
 };
 
+const redisClient = createRedisClient(config);
+
 const app = express();
 app.use(assets(config));
-app.use(rapid(config));
+app.use(rapid(config, redisClient));
 
 const server = http.createServer(app);
 
@@ -22,6 +25,8 @@ server.listen(port, () => {
 
 process.once('SIGINT', function() {
   server.close(() => {
-    process.exit();
+    redisClient.quit(() => {
+      process.exit();
+    });
   });
 });

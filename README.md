@@ -19,7 +19,7 @@ Rapid PREreview does _not_ focus on:
 
 
 **NOTE: this project is under very active development and is not currently
-accepting contributions.** Thanks for taking an interest 😊. Feel free to
+accepting contributions.** Thanks for taking an interest. Feel free to
 star/watch the repo and we'll remove this notice once we have processes and
 documentation in place to allow people to collaborate productively.
 

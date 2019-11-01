@@ -1,13 +1,12 @@
-export function createRedisConfig(config = {}, { ns } = {}) {
+import redis from 'redis';
+
+export function createRedisClient(config = {}) {
   const opts = {
     host: config.redisHost || process.env['REDIS_HOST'] || '127.0.0.1',
     port: config.redisPort || process.env['REDIS_PORT'] || 6379
   };
 
-  let redisPrefix = config.redisPrefix || 'rpos:';
-  if (ns) {
-    redisPrefix += `${ns}:`;
-  }
+  const redisPrefix = config.redisPrefix || 'rpos:';
 
   opts.prefix = redisPrefix;
 
@@ -17,5 +16,5 @@ export function createRedisConfig(config = {}, { ns } = {}) {
     opts.password = redisPassword;
   }
 
-  return opts;
+  return redis.createClient(opts);
 }
