@@ -6,6 +6,7 @@
   "permissions": [
     "tabs",
     "cookies",
+    "*://rapid-prereview.azurewebsites.net/*",
     "*://*.prereview.org/*",
     "http://127.0.0.1/*",
     "http://localhost/*"

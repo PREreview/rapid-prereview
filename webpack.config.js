@@ -125,7 +125,7 @@ module.exports = {
       'process.env.IS_EXTENSION': false,
       'process.env.API_URL': JSON.stringify(
         process.env.NODE_ENV === 'production'
-          ? 'https://oubreaksci.prereview.org'
+          ? 'https://rapid-prereview.azurewebsites.net/' // 'https://oubreaksci.prereview.org'
           : 'http://127.0.0.1:3000'
       )
     }),

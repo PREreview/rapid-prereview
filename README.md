@@ -141,8 +141,14 @@ npm test
 
 We use Azure.
 
-1. install Azure CLI (see https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
-2. run `az login` to login to the CLI
-3. run `./deploy-app.sh` to deploy the app and `./deploy-service.sh` to deploy the service
+1. Install Azure CLI (see
+   https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
+2. Run `az login` to login to the CLI
+3. Get the private files not checked in to GitHub: `./get-private.sh` (if you
+   later update those files, run `./put-private.sh` to upload them back)
+3. Run `./deploy-app.sh` to deploy the app and `./deploy-service.sh` to deploy the service
 
 To see the logs, run `./log-app.sh` or `./log-service.sh`
+
+To seed the production database run: `npm run seed:prod`. Be aware that this
+will source the production environment variables.

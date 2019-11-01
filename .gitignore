@@ -79,3 +79,7 @@ extension/popup.css
 extension/popup.css.map
 extension/popup.js
 extension/popup.js.map
+
+deploy-env.private.sh
+env.private.sh
+*.private.sh
