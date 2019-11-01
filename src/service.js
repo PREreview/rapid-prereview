@@ -6,12 +6,14 @@ import {
   setIntervalAsync,
   clearIntervalAsync
 } from './utils/set-interval-async';
+import { PRODUCTION_DOMAIN } from './constants';
 
 let lastSeq = null;
 let lastErr = null;
 let lastDateScoreUpdated = null;
 
 const config = {
+  appRootUrl: PRODUCTION_DOMAIN,
   isBeta: true,
   disableSsr: true
 };

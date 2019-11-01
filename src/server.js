@@ -1,8 +1,10 @@
 import http from 'http';
 import express from 'express';
 import { rapid, assets } from './index';
+import { PRODUCTION_DOMAIN } from './constants';
 
 const config = {
+  appRootUrl: PRODUCTION_DOMAIN,
   isBeta: true,
   disableSsr: true
 };
