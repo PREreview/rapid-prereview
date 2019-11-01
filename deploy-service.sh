@@ -10,7 +10,7 @@ zip -r service.zip *.json *.js dist/* src/* public/* views/* scripts/* test/*
 
 az webapp config appsettings set --resource-group "rapid-prereview" --name "rapid-prereview-service" --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true
 
-az webapp config set --resource-group "rapid-prereview" --name "rapid-prereview-service" --startup-file "npm run start:prod"
+az webapp config set --resource-group "rapid-prereview" --name "rapid-prereview-service" --startup-file "npm run start:service"
 
 az webapp deployment source config-zip --resource-group "rapid-prereview" --name "rapid-prereview-service" --src service.zip
 
