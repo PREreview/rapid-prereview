@@ -37,6 +37,11 @@ run:
 npm install
 ```
 
+### Redis
+
+Be sure that redis is running on the default port (6379).
+For convenience you can run: `npm run redis`.
+
 
 ### Database (CouchDB 2.x + Clouseau + Dreyfus)
 
@@ -75,7 +80,7 @@ docker logs cloudant-developer
 
 ### App
 
-Once cloudant is running run:
+Once cloudant and redis are running run:
 
 ```sh
 npm run init
@@ -131,7 +136,7 @@ For chrome:
 
 ### Tests
 
-Once cloudant is running run:
+Once cloudant and redis are running run:
 
 ```sh
 npm test

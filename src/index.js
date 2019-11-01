@@ -2,13 +2,18 @@ import path from 'path';
 import { STATUS_CODES } from 'http';
 import express from 'express';
 import session from 'express-session';
+import redis from 'redis';
+import connectRedis from 'connect-redis';
 import authRoutes from './routes/auth-routes';
 import appRoutes from './routes/app-routes';
 import apiRoutes from './routes/api-routes';
 import addDb from './middlewares/add-db';
 import { createPassport } from './utils/orcid';
+import { createRedisConfig } from './utils/redis';
 
 export function rapid(config = {}) {
+  const RedisStore = connectRedis(session);
+
   const passport = createPassport(config);
 
   const app = express();
@@ -24,7 +29,10 @@ export function rapid(config = {}) {
       secret:
         config.sessionSecret || process.env.SESSION_SECRET || 'rapid-prereview',
       resave: false,
-      saveUninitialized: false
+      saveUninitialized: false,
+      store: new RedisStore({
+        client: redis.createClient(createRedisConfig(config, { ns: 'sess' }))
+      })
     })
   );
   app.use(passport.initialize());

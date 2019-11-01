@@ -6,6 +6,7 @@ jobs:
     docker:
       - image: circleci/node:dubnium
       - image: ibmcom/cloudant-developer
+      - image: redis
     steps:
       - checkout
       - restore_cache:
