@@ -45,6 +45,15 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: var(--mgrd);
+
+    @media (--narrow-screen) {
+      display: block;
+
+      & .button {
+        margin-top: var(--sgrd);
+        width: 100%;
+      }
+    }
   }
 
   & .home__content-title {

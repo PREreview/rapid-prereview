@@ -107,7 +107,9 @@
   }
 
   & .preprint-card__pub-date {
-    white-space: nowrap;
+    @media (--wide-screen) {
+      white-space: nowrap;
+    }
     font: var(--ui-header-2-font);
     color: var(--ui-basic-font-color--light);
   }

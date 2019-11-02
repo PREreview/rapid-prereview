@@ -73,7 +73,6 @@ export default function Home() {
         <div className="home__content">
           <div className="home__content-header">
             <h3 className="home__content-title">
-              {/* Was 'Most Active Preprints" but this break with the sorting (or need to be adapted) */}
               Preprints with reviews or requests for reviews
             </h3>
             <Button
@@ -88,7 +87,7 @@ export default function Home() {
               }}
               disabled={location.pathname === '/new'}
             >
-              Add Entry
+              Add Review or Request Review
             </Button>
           </div>
 
