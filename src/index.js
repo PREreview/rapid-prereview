@@ -4,6 +4,7 @@ import express from 'express';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 import favicon from 'serve-favicon';
+import pino from 'express-pino-logger';
 import authRoutes from './routes/auth-routes';
 import appRoutes from './routes/app-routes';
 import apiRoutes from './routes/api-routes';
@@ -43,6 +44,9 @@ export function rapid(config = {}, redisClient) {
   app.use(passport.session());
 
   app.use(addDb(config));
+
+  app.use(pino());
+
   app.use('/auth', authRoutes);
   app.use('/api', apiRoutes);
   app.use('/', appRoutes);
