@@ -222,6 +222,7 @@
     "react-dropzone": "^10.1.10",
     "react-helmet-async": "^1.0.4",
     "react-icons": "^3.8.0",
+    "react-pdf": "^4.1.0",
     "react-router-dom": "^5.1.2",
     "redis": "^2.8.0",
     "serve-favicon": "^2.5.0",

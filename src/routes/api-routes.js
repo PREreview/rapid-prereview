@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import fetch from 'node-fetch';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
 import resolve from '../utils/resolve';
@@ -183,6 +184,29 @@ router.get('/resolve', cors(), async (req, res, next) => {
     res.json(data);
   } catch (err) {
     next(err);
+  }
+});
+
+/**
+ * On mobile <object /> doesn't work so we use react-pdf to render the PDF =>
+ * due to cross origin restriction we need to proxy the PDF
+ */
+router.get('/pdf', async (req, res, next) => {
+  const pdfUrl = req.query.url;
+
+  let r;
+  try {
+    r = await fetch(pdfUrl, {
+      method: 'GET'
+    });
+  } catch (err) {
+    return next(err);
+  }
+
+  if (r.ok) {
+    r.body.pipe(res);
+  } else {
+    next(createError(r.status));
   }
 });
 

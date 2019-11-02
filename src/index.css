@@ -50,6 +50,7 @@
 @import './components/role-list.css';
 @import './components/preprint-preview.css';
 @import './components/extension-splash.css';
+@import './components/pdf-viewer.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';

@@ -51,7 +51,7 @@ module.exports = {
             }
           }
         ],
-        exclude: isProd ? /node_modules/ : undefined
+        exclude: /node_modules/
       },
 
       // CSS

@@ -5,6 +5,9 @@ import { usePreprint } from '../hooks/api-hooks';
 import { getPdfUrl, getCanonicalUrl } from '../utils/preprints';
 import Shell from './shell';
 import ShellContent from './shell-content';
+import PdfViewer from './pdf-viewer';
+
+// TODO if no PDF is available display shell in full screen ?
 
 export default function ExtensionFallback() {
   const location = useLocation(); // location.state can be {preprint, tab} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
@@ -27,7 +30,7 @@ export default function ExtensionFallback() {
         <title>Rapid PREreview • {identifier}</title>
       </Helmet>
 
-      {pdfUrl && (
+      {pdfUrl ? (
         <object
           key={pdfUrl}
           data={pdfUrl}
@@ -35,14 +38,19 @@ export default function ExtensionFallback() {
           typemustmatch="true" // Note typeMustMatch doesn't seem to be currently supported by react
         >
           {/* fallback text in case we can't load the PDF */}
-          Could not retrieve the PDF.
+          <PdfViewer pdfUrl={pdfUrl} />
+        </object>
+      ) : !pdfUrl && !fetchPreprintProgress.isActive ? (
+        <div>
+          No PDF available.
           {!!canonicalUrl && (
             <span>
-              You can visit {<a href={canonicalUrl}>{canonicalUrl}</a>} instead.
+              You can visit {<a href={canonicalUrl}>{canonicalUrl}</a>} for more
+              information on the document.
             </span>
           )}
-        </object>
-      )}
+        </div>
+      ) : null}
 
       <Shell>
         {onRequireScreen =>

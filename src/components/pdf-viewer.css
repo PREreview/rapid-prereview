@@ -1,0 +1,9 @@
+.pdf-viewer {
+  max-width: 900px; /* Keep in sync with JS */
+  margin: 0 auto;
+}
+
+.pdf-viewer__fake-page {
+  outline: 1px solid grey;
+  min-height: 10px;
+}
