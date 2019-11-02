@@ -11,6 +11,9 @@
   opacity: 1;
   transition: all 0.2s;
 
+  /* the button can be a link (<a />)*/
+  text-decoration: none;
+
   &:disabled {
     pointer-events: none;
     opacity: 0.65;

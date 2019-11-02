@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import HeaderBar from './header-bar';
 import Button from './button';
 import LabelStyle from './label-style';
+import { CONTACT_EMAIL_HREF } from '../constants';
 
 export default function ExtensionSplash() {
   return (
@@ -31,6 +32,10 @@ export default function ExtensionSplash() {
           <ul className="extension-splash__browser-list">
             <li className="extension-splash__browser-list-item">
               <Button
+                element={'a'}
+                href="https://github.com/prereview/rapid-prereview/#web-extension"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="extension-splash__install-button"
                 primary={true}
               >
@@ -54,7 +59,7 @@ export default function ExtensionSplash() {
 
           <p className="extension-splash__request-browser">
             Don’t see support for your browser? <br />{' '}
-            <a href="#">let us know!</a>
+            <a href={CONTACT_EMAIL_HREF}>let us know!</a>
           </p>
         </div>
       </div>
