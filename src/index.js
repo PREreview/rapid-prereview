@@ -3,6 +3,7 @@ import { STATUS_CODES } from 'http';
 import express from 'express';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
+import favicon from 'serve-favicon';
 import authRoutes from './routes/auth-routes';
 import appRoutes from './routes/app-routes';
 import apiRoutes from './routes/api-routes';
@@ -22,6 +23,8 @@ export function rapid(config = {}, redisClient) {
   app.enable('case sensitive routing');
   app.set('views', path.join(path.dirname(__dirname), 'views'));
   app.set('view engine', 'ejs');
+
+  app.use(favicon(path.join(path.dirname(__dirname), 'public', 'favicon.ico')));
 
   app.use(
     session({
