@@ -249,6 +249,7 @@ export default function PreprintCard({
           <ReviewReader
             identifier={preprint.doi || preprint.arXivId}
             actions={reviews}
+            preview={true}
           />
         </div>
       </Collapse>

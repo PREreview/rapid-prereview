@@ -10,6 +10,7 @@ import { PotentialRoles, HighlightedRoles } from './role-list';
 import ShareMenu from './share-menu';
 
 const ReviewReader = React.memo(function ReviewReader({
+  preview,
   identifier,
   actions,
   defaultHighlightedRoleIds = [],
@@ -85,7 +86,9 @@ const ReviewReader = React.memo(function ReviewReader({
             <ShareMenu identifier={identifier} roleIds={highlightedRoleIds} />
           </Barplot>
 
-          <TextAnswers answers={getTextAnswers(highlightedActions)} />
+          {!preview && (
+            <TextAnswers answers={getTextAnswers(highlightedActions)} />
+          )}
         </Fragment>
       )}
     </div>
@@ -93,6 +96,7 @@ const ReviewReader = React.memo(function ReviewReader({
 });
 
 ReviewReader.propTypes = {
+  preview: PropTypes.bool,
   identifier: PropTypes.string.isRequired, // DOI or arXivID
   onHighlighedRoleIdsChange: PropTypes.func,
   actions: PropTypes.arrayOf(

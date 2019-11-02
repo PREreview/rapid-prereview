@@ -134,7 +134,7 @@
 
     & .barplot__bar-segment {
       display: block;
-      padding: var(--xsgrd);
+      padding: var(--xsgrd) 0;
       height: var(--sgrd);
       box-sizing: border-box;
       display: flex;
@@ -142,6 +142,8 @@
       color: transparent;
       overflow: hidden;
       text-overflow: ellipsis;
+      transition: width 0.4s ease-in-out;
+
       &:hover {
         color: white;
       }

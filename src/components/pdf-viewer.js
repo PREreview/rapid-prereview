@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import throttle from 'lodash/throttle';
-import { Document, Page } from 'react-pdf/dist/entry.webpack'; // load as a web worker
+import { Document, Page, pdfjs } from 'react-pdf';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 /**
  * Fallback for `object` as on mobile <object /> doesn't work

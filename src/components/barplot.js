@@ -50,78 +50,65 @@ export default function Barplot({
                 <caption className="barplot__question">{question}</caption>
                 <thead className="barplot__table-header">
                   <tr className="barplot__segment-titles">
-                    {yes.length > 0 && (
-                      <th
-                        className="barplot__segment-title"
-                        style={{ width: `${(yes.length / nReviews) * 100}%` }}
-                      >
-                        yes
-                      </th>
-                    )}
-                    {no.length > 0 && (
-                      <th
-                        className="barplot__segment-title"
-                        style={{ width: `${(no.length / nReviews) * 100}%` }}
-                      >
-                        no
-                      </th>
-                    )}
-                    {unsure.length > 0 && (
-                      <th
-                        className="barplot__segment-title"
-                        style={{
-                          width: `${(unsure.length / nReviews) * 100}%`
-                        }}
-                      >
-                        unsure
-                      </th>
-                    )}
-                    {na.length > 0 && (
-                      <th
-                        className="barplot__segment-title"
-                        style={{ width: `${(na.length / nReviews) * 100}%` }}
-                      >
-                        n.a.
-                      </th>
-                    )}
+                    <th
+                      className="barplot__segment-title"
+                      style={{ width: `${(yes.length / nReviews) * 100}%` }}
+                    >
+                      {yes.length > 0 ? 'yes' : ''}
+                    </th>
+
+                    <th
+                      className="barplot__segment-title"
+                      style={{ width: `${(no.length / nReviews) * 100}%` }}
+                    >
+                      {no.length > 0 ? 'no' : ''}
+                    </th>
+
+                    <th
+                      className="barplot__segment-title"
+                      style={{
+                        width: `${(unsure.length / nReviews) * 100}%`
+                      }}
+                    >
+                      {unsure.length > 0 ? 'unsure' : ''}
+                    </th>
+
+                    <th
+                      className="barplot__segment-title"
+                      style={{ width: `${(na.length / nReviews) * 100}%` }}
+                    >
+                      {na.length > 0 ? 'n.a.' : ''}
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="barplot__responses">
                   <tr className="barplot__bar-segments">
-                    {yes.length > 0 && (
-                      <td
-                        className="barplot__bar-segment barplot__bar-segment--yes"
-                        style={{ width: `${(yes.length / nReviews) * 100}%` }}
-                      >
-                        {`${((yes.length / nReviews) * 100).toFixed(1)}%`}
-                      </td>
-                    )}
-                    {no.length > 0 && (
-                      <td
-                        className="barplot__bar-segment barplot__bar-segment--no"
-                        style={{ width: `${(no.length / nReviews) * 100}%` }}
-                      >
-                        {`${((no.length / nReviews) * 100).toFixed(1)}%`}
-                      </td>
-                    )}
-                    {unsure.length > 0 && (
-                      <td
-                        className="barplot__bar-segment barplot__bar-segment--unsure"
-                        style={{
-                          width: `${(unsure.length / nReviews) * 100}%`
-                        }}
-                      >
-                        {`${((unsure.length / nReviews) * 100).toFixed(1)}%`}
-                      </td>
-                    )}
-                    {na.length > 0 && (
-                      <td
-                        className="barplot__bar-segment barplot__bar-segment--na"
-                        style={{ width: `${(na.length / nReviews) * 100}%` }}
-                      >
-                        {`${((na.length / nReviews) * 100).toFixed(1)}%`}
-                      </td>
-                    )}
+                    <td
+                      className="barplot__bar-segment barplot__bar-segment--yes"
+                      style={{ width: `${(yes.length / nReviews) * 100}%` }}
+                    >
+                      {`${((yes.length / nReviews) * 100).toFixed(1)}%`}
+                    </td>
+                    <td
+                      className="barplot__bar-segment barplot__bar-segment--no"
+                      style={{ width: `${(no.length / nReviews) * 100}%` }}
+                    >
+                      {`${((no.length / nReviews) * 100).toFixed(1)}%`}
+                    </td>
+                    <td
+                      className="barplot__bar-segment barplot__bar-segment--unsure"
+                      style={{
+                        width: `${(unsure.length / nReviews) * 100}%`
+                      }}
+                    >
+                      {`${((unsure.length / nReviews) * 100).toFixed(1)}%`}
+                    </td>
+                    <td
+                      className="barplot__bar-segment barplot__bar-segment--na"
+                      style={{ width: `${(na.length / nReviews) * 100}%` }}
+                    >
+                      {`${((na.length / nReviews) * 100).toFixed(1)}%`}
+                    </td>
                   </tr>
                 </tbody>
               </table>

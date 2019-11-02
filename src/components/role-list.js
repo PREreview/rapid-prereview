@@ -37,29 +37,27 @@ export function PotentialRoles({ roleIds = [], onRemoved }) {
     >
       {!roleIds.length && <p className="role-list__tip-text">No Reviewers</p>}
 
-      {!!roleIds.length && (
-        <ul className="role-list__list">
-          {roleIds.map(roleId => (
-            <li key={roleId}>
-              <DraggableRoleBadge
-                type={POTENTIAL_ROLE_TYPE}
-                roleId={roleId}
-                onDropped={roleId => {
+      <ul className="role-list__list">
+        {roleIds.map(roleId => (
+          <li key={roleId}>
+            <DraggableRoleBadge
+              type={POTENTIAL_ROLE_TYPE}
+              roleId={roleId}
+              onDropped={roleId => {
+                onRemoved(roleId);
+              }}
+            >
+              <MenuItem
+                onSelect={() => {
                   onRemoved(roleId);
                 }}
               >
-                <MenuItem
-                  onSelect={() => {
-                    onRemoved(roleId);
-                  }}
-                >
-                  Add to selection
-                </MenuItem>
-              </DraggableRoleBadge>
-            </li>
-          ))}
-        </ul>
-      )}
+                Add to selection
+              </MenuItem>
+            </DraggableRoleBadge>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -133,26 +131,25 @@ export function HighlightedRoles({ roleIds = [], onRemoved }) {
         )}
       </p>
       <ul className="role-list__list">
-        {!!roleIds.length &&
-          roleIds.map(roleId => (
-            <li key={roleId}>
-              <DraggableRoleBadge
-                type={HIGHLIGHTED_ROLE_TYPE}
-                roleId={roleId}
-                onDropped={roleId => {
+        {roleIds.map(roleId => (
+          <li key={roleId}>
+            <DraggableRoleBadge
+              type={HIGHLIGHTED_ROLE_TYPE}
+              roleId={roleId}
+              onDropped={roleId => {
+                onRemoved([roleId]);
+              }}
+            >
+              <MenuItem
+                onSelect={() => {
                   onRemoved([roleId]);
                 }}
               >
-                <MenuItem
-                  onSelect={() => {
-                    onRemoved([roleId]);
-                  }}
-                >
-                  Remove
-                </MenuItem>
-              </DraggableRoleBadge>
-            </li>
-          ))}
+                Remove
+              </MenuItem>
+            </DraggableRoleBadge>
+          </li>
+        ))}
       </ul>
       {roleIds.length ? (
         <IconButton
