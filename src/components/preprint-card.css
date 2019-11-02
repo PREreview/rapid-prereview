@@ -244,8 +244,9 @@
     z-index: 10;
   }
 }
+
 .preprint-card-expansion {
-  max-height: 300px;
+  max-height: 920px; /* This is the height of the viz on wide screens */
   overflow: auto;
   position: relative;
 }
