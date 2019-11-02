@@ -220,6 +220,7 @@
     "react-dnd-html5-backend": "^9.4.0",
     "react-dom": "^16.10.2",
     "react-dropzone": "^10.1.10",
+    "react-helmet-async": "^1.0.4",
     "react-icons": "^3.7.0",
     "react-router-dom": "^5.1.2",
     "redis": "^2.8.0",

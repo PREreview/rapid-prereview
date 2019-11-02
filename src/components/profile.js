@@ -2,6 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 import { MdPublic } from 'react-icons/md';
+import { Helmet } from 'react-helmet-async';
 import IncognitoIcon from '../svgs/incognito_icon.svg';
 import HeaderBar from './header-bar';
 import { useRole } from '../hooks/api-hooks';
@@ -28,6 +29,13 @@ export default function Profile() {
   return (
     <div className="profile">
       <HeaderBar />
+
+      <Helmet>
+        <title>
+          Rapid PREreview • Profile {(role && role.name) || unprefixedRoleId}
+        </title>
+      </Helmet>
+
       <section className="profile__content">
         <header className="profile__header">
           {role && role.avatar && role.avatar.contentUrl ? (

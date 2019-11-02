@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import PrivateRoute from './private-route';
+import { Helmet } from 'react-helmet-async';
 import omit from 'lodash/omit';
 import { MdChevronRight, MdFirstPage } from 'react-icons/md';
+import PrivateRoute from './private-route';
 import { usePreprintSearchResults } from '../hooks/api-hooks';
 import { useUser } from '../contexts/user-context';
 import { unprefix } from '../utils/jsonld';
@@ -99,6 +100,9 @@ export default function Home() {
                 history.push('/');
               }}
             >
+              <Helmet>
+                <title>Rapid PREreview • Add entry</title>
+              </Helmet>
               <NewPreprint
                 onCancel={() => {
                   // TODO clear local storage entry ?

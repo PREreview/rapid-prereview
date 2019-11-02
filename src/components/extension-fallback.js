@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { usePreprint } from '../hooks/api-hooks';
 import { getPdfUrl, getCanonicalUrl } from '../utils/preprints';
 import Shell from './shell';
@@ -22,6 +23,10 @@ export default function ExtensionFallback() {
 
   return (
     <div className="extension-fallback">
+      <Helmet>
+        <title>Rapid PREreview • {identifier}</title>
+      </Helmet>
+
       {pdfUrl && (
         <object
           key={pdfUrl}

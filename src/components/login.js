@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import HeaderBar from './header-bar';
 import AnimatedLogo from '../svgs/rapid-prereview-logo-animation.svg';
 import Button from './button';
@@ -6,6 +7,10 @@ import Button from './button';
 export default function Login() {
   return (
     <div className="login">
+      <Helmet>
+        <title>Rapid PREreview • Login</title>
+      </Helmet>
+
       <HeaderBar />
       <div className="login__content">
         <div className="login__logo-container">

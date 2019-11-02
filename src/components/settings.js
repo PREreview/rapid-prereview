@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useUser } from '../contexts/user-context';
 import SettingsRoles from './settings-roles';
 import HeaderBar from './header-bar';
@@ -12,6 +13,10 @@ export default function Settings() {
 
   return (
     <div className="settings">
+      <Helmet>
+        <title>Rapid PREreview • Settings</title>
+      </Helmet>
+
       <HeaderBar />
       <div className="settings__content">
         <section className="settings__section">

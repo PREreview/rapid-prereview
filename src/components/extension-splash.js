@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import HeaderBar from './header-bar';
 import Button from './button';
 import LabelStyle from './label-style';
@@ -6,6 +7,10 @@ import LabelStyle from './label-style';
 export default function ExtensionSplash() {
   return (
     <div className="extension-splash">
+      <Helmet>
+        <title>Rapid PREreview • Get the app</title>
+      </Helmet>
+
       <HeaderBar />
       <div className="extension-splash__content">
         <h1 className="extension-splash__title">
