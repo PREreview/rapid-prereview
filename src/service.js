@@ -1,5 +1,6 @@
 import http from 'http';
 import express from 'express';
+import helmet from 'helmet';
 import DB from './db/db';
 import Feed from './db/feed';
 import {
@@ -46,7 +47,7 @@ const intervalId = setIntervalAsync(
 );
 
 const app = express();
-
+app.use(helmet());
 app.get('/', (req, res, next) => {
   res.json({ lastSeq, lastChangeErr, lastScoreErr, lastDateScoreUpdated });
 });

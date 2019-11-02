@@ -3,6 +3,7 @@ import express from 'express';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
+import helmet from 'helmet';
 import webpackConfig from '../webpack.config';
 import DB from './db/db';
 import Feed from './db/feed';
@@ -43,7 +44,7 @@ app.use(
   })
 );
 app.use(webpackHotMiddleware(compiler));
-
+app.use(helmet());
 app.use(assets(config));
 app.use(rapid(config, redisClient));
 

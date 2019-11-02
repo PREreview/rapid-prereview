@@ -1,5 +1,6 @@
 import http from 'http';
 import express from 'express';
+import helmet from 'helmet';
 import { rapid, assets } from './index';
 import { PRODUCTION_DOMAIN } from './constants';
 import { createRedisClient } from './utils/redis';
@@ -13,6 +14,7 @@ const config = {
 const redisClient = createRedisClient(config);
 
 const app = express();
+app.use(helmet());
 app.use(assets(config));
 app.use(rapid(config, redisClient));
 
