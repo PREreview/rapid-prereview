@@ -3,25 +3,26 @@ import PropTypes from 'prop-types';
 import { MdMenu } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import { MenuLink } from '@reach/menu-button';
-import noop from 'lodash/noop';
 import RapidPreReviewLogo from './rapid-pre-review-logo';
 import IconButton from './icon-button';
 import { useUser } from '../contexts/user-context';
 import UserBadge from './user-badge';
 import XLink from './xlink';
 
-export default function HeaderBar({ onClickMenuButton = noop }) {
+export default function HeaderBar({ onClickMenuButton }) {
   const [user] = useUser();
 
   return (
     <div className="header-bar">
       <div className="header-bar__left">
-        <IconButton
-          onClick={onClickMenuButton}
-          className="header-bar__menu-button"
-        >
-          <MdMenu className="header-bar__menu-button-icon" />
-        </IconButton>
+        {!!onClickMenuButton && (
+          <IconButton
+            onClick={onClickMenuButton}
+            className="header-bar__menu-button"
+          >
+            <MdMenu className="header-bar__menu-button-icon" />
+          </IconButton>
+        )}
         <RapidPreReviewLogo />
       </div>
 

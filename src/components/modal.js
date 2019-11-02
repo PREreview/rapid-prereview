@@ -17,6 +17,7 @@ export default function Modal({
   return (
     <DialogOverlay onDismiss={onClose}>
       <DialogContent
+        aria-label={title}
         className="modal-container"
         style={{
           padding: '0',

@@ -4,11 +4,13 @@ import { MdSearch } from 'react-icons/md';
 import { useHistory, useLocation } from 'react-router-dom';
 import { createPreprintQs } from '../utils/search';
 import IconButton from './icon-button';
+import { useIsMobile } from '../hooks/ui-hooks';
 
 export default function SearchBar({ isFetching }) {
   const inputRef = useRef();
   const history = useHistory();
   const location = useLocation();
+  const isMobile = useIsMobile();
 
   function handleSubmit(value) {
     const search = createPreprintQs(
@@ -35,7 +37,11 @@ export default function SearchBar({ isFetching }) {
           ref={inputRef}
           type="text"
           className="search-bar__search-box__input"
-          placeholder="Search preprints with reviews or requests for reviews by DOI, arXiv ID or title"
+          placeholder={
+            isMobile
+              ? 'Search by DOI, arXiv ID or title'
+              : 'Search preprints with reviews or requests for reviews by DOI, arXiv ID or title'
+          }
           disabled={isFetching}
           onKeyDown={e => {
             if (e.key === 'Enter') {

@@ -145,6 +145,7 @@
     color: var(--ui-basic-font-color--light);
     vertical-align: baseline;
   }
+
   & .preprint-card__tag-list {
     list-style: none;
     padding: 0;

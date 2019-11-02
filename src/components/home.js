@@ -5,6 +5,7 @@ import omit from 'lodash/omit';
 import { MdChevronRight, MdFirstPage } from 'react-icons/md';
 import PrivateRoute from './private-route';
 import { usePreprintSearchResults } from '../hooks/api-hooks';
+import { useIsNewVisitor, useIsMobile } from '../hooks/ui-hooks';
 import { useUser } from '../contexts/user-context';
 import { unprefix } from '../utils/jsonld';
 import HeaderBar from './header-bar';
@@ -19,7 +20,6 @@ import Button from './button';
 import LoginRequiredModal from './login-required-modal';
 import { createPreprintQs, apifyPreprintQs } from '../utils/search';
 import WelcomeModal from './welcome-modal';
-import { useIsNewVisitor } from '../hooks/ui-hooks';
 import XLink from './xlink';
 
 export default function Home() {
@@ -27,7 +27,8 @@ export default function Home() {
   const location = useLocation();
 
   const [user] = useUser();
-  const [showLeftPanel, setShowLeftPanel] = useState(true);
+  const isMobile = useIsMobile();
+  const [showLeftPanel, setShowLeftPanel] = useState(!isMobile);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const isNewVisitor = useIsNewVisitor();
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true);
@@ -75,6 +76,7 @@ export default function Home() {
             <h3 className="home__content-title">
               Preprints with reviews or requests for reviews
             </h3>
+
             <Button
               pill={true}
               primary={true}

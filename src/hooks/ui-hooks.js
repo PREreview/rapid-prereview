@@ -56,3 +56,25 @@ export function useIsNewVisitor() {
 
   return isNewVisitor;
 }
+
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(
+    window.matchMedia('(max-width: 900px)').matches
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 900px)');
+
+    function handleChange(e) {
+      setIsMobile(e.matches);
+    }
+
+    mql.addListener(handleChange);
+
+    return () => {
+      mql.removeListener(handleChange);
+    };
+  }, []);
+
+  return isMobile;
+}

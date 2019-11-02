@@ -42,12 +42,28 @@
     display: flex;
     list-style: none;
     justify-content: center;
+    padding: 0;
+
+    @media (--mobile-portrait) {
+      display: block;
+    }
   }
 
   & .extension-splash__browser-list-item {
     text-align: center;
+    padding: 0;
     margin: var(--sgrd);
+
+
+    @media (--mobile-portrait) {
+      margin: var(--sgrd) 0;
+
+      & .button {
+        width: 100%;
+      }
+    }
   }
+
   & .extension-splash__install-button {
   }
   & .extension-splash__comming-soon {
