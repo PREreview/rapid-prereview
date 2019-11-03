@@ -18,7 +18,10 @@ router.get(
 
 router.get('/logout', (req, res) => {
   req.logout();
-  res.redirect('/');
+  req.session.destroy(err => {
+    res.clearCookie('rapid.sid');
+    res.redirect('/');
+  });
 });
 
 /**

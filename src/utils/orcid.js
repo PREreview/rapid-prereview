@@ -4,6 +4,7 @@ import Strategy from 'passport-strategy';
 import orcidUtils from 'orcid-utils';
 import DB from '../db/db';
 import { getId, cleanup } from './jsonld';
+import { createError } from './errors';
 
 /**
  * See https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
@@ -118,7 +119,14 @@ export function createPassport(config) {
   passport.deserializeUser(function(userId, done) {
     db.get(userId, { user: userId })
       .then(user => done(null, user))
-      .catch(done);
+      .catch(err => {
+        done(
+          createError(
+            err.statusCode || 500,
+            `Could not get user ${userId} (from cookie). Try deleting the rapid.sid cookie and try again. ${err.message}`
+          )
+        );
+      });
   });
 
   passport.use(strategy);
