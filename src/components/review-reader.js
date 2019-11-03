@@ -14,15 +14,18 @@ const ReviewReader = React.memo(function ReviewReader({
   preview,
   identifier,
   actions,
-  defaultHighlightedRoleIds = [],
+  defaultHighlightedRoleIds,
   onHighlighedRoleIdsChange = noop
 }) {
   const [highlightedRoleIds, setHighlightedRoleIds] = useState(
-    defaultHighlightedRoleIds
+    defaultHighlightedRoleIds || []
   );
 
   useEffect(() => {
-    if (!isEqual(defaultHighlightedRoleIds, highlightedRoleIds)) {
+    if (
+      defaultHighlightedRoleIds &&
+      !isEqual(defaultHighlightedRoleIds, highlightedRoleIds)
+    ) {
       setHighlightedRoleIds(defaultHighlightedRoleIds);
     }
   }, [defaultHighlightedRoleIds, highlightedRoleIds]);
