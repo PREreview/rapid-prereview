@@ -254,7 +254,6 @@ function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
       <PreprintPreview preprint={preprint} />
 
       <ReviewReader
-        key={roleIdsQs /* Needed to reset `defaultHighlightedRoleIds` */}
         onHighlighedRoleIdsChange={roleIds => {
           const qs = new URLSearchParams(location.search);
           if (roleIds && roleIds.length) {

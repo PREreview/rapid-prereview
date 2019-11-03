@@ -1,6 +1,7 @@
-import React, { useState, useMemo, Fragment } from 'react';
+import React, { useState, useEffect, useMemo, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
+import isEqual from 'lodash/isEqual';
 import { MdInfoOutline } from 'react-icons/md';
 import Barplot from './barplot';
 import { getId } from '../utils/jsonld';
@@ -19,6 +20,12 @@ const ReviewReader = React.memo(function ReviewReader({
   const [highlightedRoleIds, setHighlightedRoleIds] = useState(
     defaultHighlightedRoleIds
   );
+
+  useEffect(() => {
+    if (!isEqual(defaultHighlightedRoleIds, highlightedRoleIds)) {
+      setHighlightedRoleIds(defaultHighlightedRoleIds);
+    }
+  }, [defaultHighlightedRoleIds, highlightedRoleIds]);
 
   const roleIds = useMemo(() => {
     return actions

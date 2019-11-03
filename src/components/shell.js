@@ -46,36 +46,41 @@ export default function Shell({ children }) {
     }
 
     function handleChangeY(y) {
-      if (isDown) {
-        // we compute the next max-height in `%` unit
+      // we compute the next max-height in `%` unit
 
-        const nextMaxHeight = Math.min(
-          Math.max(
-            0,
-            Math.max(SHELL_HEADER_HEIGHT, window.innerHeight - y) /
-              window.innerHeight
-          ) * 100,
-          100
-        );
+      const nextMaxHeight = Math.min(
+        Math.max(
+          0,
+          Math.max(SHELL_HEADER_HEIGHT, window.innerHeight - y) /
+            window.innerHeight
+        ) * 100,
+        100
+      );
 
-        nextHeightRef.current = nextMaxHeight;
+      nextHeightRef.current = nextMaxHeight;
 
-        if (needForRafRef.current) {
-          needForRafRef.current = false; // no need to call rAF up until next frame
-          rafIdRef.current = requestAnimationFrame(resizeShell);
-        }
+      if (needForRafRef.current) {
+        needForRafRef.current = false; // no need to call rAF up until next frame
+        rafIdRef.current = requestAnimationFrame(resizeShell);
       }
     }
 
     // we only track the mouse when the user maintains the mousedown
     // we use `requestAnimationFrame` (rAF) to debounce
     function handleMouseMove(e) {
-      handleChangeY(e.clientY);
+      if (isDown) {
+        handleChangeY(e.clientY);
+      }
     }
 
     function handleTouchMove(e) {
-      const y = Math.max(...Array.from(e.touches, touch => touch.clientY), 0);
-      handleChangeY(y);
+      if (isDown) {
+        // prevent scrolling of the PDF
+        e.preventDefault();
+        e.stopPropagation();
+        const y = Math.max(...Array.from(e.touches, touch => touch.clientY), 0);
+        handleChangeY(y);
+      }
     }
 
     // callback for rAF
@@ -92,14 +97,16 @@ export default function Shell({ children }) {
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('touchend', handleTouchEnd);
-    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('touchcancel', handleTouchCancel);
 
     return () => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchend', handleTouchEnd);
-      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchmove', handleTouchMove, {
+        passive: false
+      });
       window.removeEventListener('touchcancel', handleTouchCancel);
       cancelAnimationFrame(rafIdRef.current);
       needForRafRef.current = true;
@@ -220,15 +227,17 @@ export default function Shell({ children }) {
                 <MdDragHandle className="shell__controls__button__icon" />
               </IconButton>
             </div>
+
             <div className="shell__controls__right">
               <IconButton
-                className="shell__controls__button"
+                className="shell__controls__button shell__controls__button--maximize"
                 onClick={() => {
                   setTransition('maximized');
                 }}
               >
                 <MdUnfoldMore className="shell__controls__button__icon" />
               </IconButton>
+
               <IconButton
                 className="shell__controls__button"
                 onClick={() => {
