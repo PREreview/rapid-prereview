@@ -88,6 +88,7 @@ export default function PdfViewer({ pdfUrl }) {
               width={width}
               loading={
                 <VirtualPage
+                  width={width}
                   height={getScaledPageHeight({
                     desiredWidth: width,
                     nativeWidth: dim.w,
@@ -101,6 +102,7 @@ export default function PdfViewer({ pdfUrl }) {
           ) : (
             <VirtualPage
               key={i}
+              width={width}
               height={getScaledPageHeight({
                 desiredWidth: width,
                 nativeWidth: dim.w,
@@ -128,6 +130,10 @@ function getScaledPageHeight({ desiredWidth, nativeWidth, nativeHeight }) {
 
 function findFocused(bottomScroll, dims, desiredWidth) {
   let i = 0;
+  if (!dims.length) {
+    return i;
+  }
+
   let cum = getScaledPageHeight({
     desiredWidth,
     nativeWidth: dims[0].w,
@@ -145,11 +151,15 @@ function findFocused(bottomScroll, dims, desiredWidth) {
   return Math.min(i, dims.length - 1);
 }
 
-function VirtualPage({ height }) {
+function VirtualPage({ height, width }) {
   return (
-    <div className="pdf-viewer__fake-page" style={{ height: `${height}px` }} />
+    <div
+      className="pdf-viewer__fake-page"
+      style={{ height: `${height}px`, width: `${width}px` }}
+    />
   );
 }
 VirtualPage.propTypes = {
-  height: PropTypes.number
+  height: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired
 };

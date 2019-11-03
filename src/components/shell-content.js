@@ -105,7 +105,7 @@ export default function ShellContent({
         </nav>
 
         {user ? (
-          <UserBadge user={user}>
+          <UserBadge user={user} className="shell-content__user">
             <MenuLink
               as={process.env.IS_EXTENSION ? undefined : Link}
               to={process.env.IS_EXTENSION ? undefined : '/settings'}

@@ -8,17 +8,11 @@ import React, {
 } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import {
-  MdVerticalAlignBottom,
-  MdVerticalAlignTop,
-  MdDragHandle,
-  MdUnfoldMore,
-  MdUnfoldLess
-} from 'react-icons/md';
+import { MdDragHandle, MdUnfoldMore, MdUnfoldLess } from 'react-icons/md';
 import IconButton from './icon-button';
 import RapidPreReviewLogo from './rapid-pre-review-logo';
 
-const SHELL_HEADER_HEIGHT = 56;
+const SHELL_HEADER_HEIGHT = 40; // !! keep in sync with CSS
 
 export default function Shell({ children }) {
   const [isDown, setIsDown] = useState(false);
@@ -27,10 +21,11 @@ export default function Shell({ children }) {
   const needForRafRef = useRef(true);
   const rafIdRef = useRef(null);
 
-  // shell height is set in `vh` units through the `max-height` CSS property
+  // shell height is set in `%` units through the `max-height` CSS property
   const [height, setHeight] = useState(50);
   const [status, setStatus] = useState('default'); // `minimized`, `revealed`, `maximized`, `positioned`
 
+  // reposition shell when user "drag" the handle
   useEffect(() => {
     function handleMouseUp(e) {
       if (isDown) {
@@ -38,16 +33,29 @@ export default function Shell({ children }) {
       }
     }
 
-    // we only track the mouse when the user maintains the mousedown
-    // we use `requestAnimationFrame` (rAF) to debounce
-    function handleMouseMove(e) {
+    function handleTouchEnd(e) {
       if (isDown) {
-        // we compute the next max-height in `vh` unit
-        const nextMaxHeight = Math.ceil(
+        setIsDown(false);
+      }
+    }
+
+    function handleTouchCancel(e) {
+      if (isDown) {
+        setIsDown(false);
+      }
+    }
+
+    function handleChangeY(y) {
+      if (isDown) {
+        // we compute the next max-height in `%` unit
+
+        const nextMaxHeight = Math.min(
           Math.max(
             0,
-            (window.innerHeight - Math.max(e.clientY, 0)) / window.innerHeight
-          ) * 100
+            Math.max(SHELL_HEADER_HEIGHT, window.innerHeight - y) /
+              window.innerHeight
+          ) * 100,
+          100
         );
 
         nextHeightRef.current = nextMaxHeight;
@@ -57,6 +65,17 @@ export default function Shell({ children }) {
           rafIdRef.current = requestAnimationFrame(resizeShell);
         }
       }
+    }
+
+    // we only track the mouse when the user maintains the mousedown
+    // we use `requestAnimationFrame` (rAF) to debounce
+    function handleMouseMove(e) {
+      handleChangeY(e.clientY);
+    }
+
+    function handleTouchMove(e) {
+      const y = Math.max(...Array.from(e.touches, touch => touch.clientY), 0);
+      handleChangeY(y);
     }
 
     // callback for rAF
@@ -72,32 +91,48 @@ export default function Shell({ children }) {
 
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchcancel', handleTouchCancel);
+
     return () => {
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchcancel', handleTouchCancel);
       cancelAnimationFrame(rafIdRef.current);
       needForRafRef.current = true;
     };
   }, [isDown, status]);
 
+  // Mimate the OSX shell effect
   useEffect(() => {
-    function handleMouseMove(e) {
-      if (
-        status === 'minimized' &&
-        window.innerHeight - Math.max(e.clientY, 0) < SHELL_HEADER_HEIGHT
-      ) {
+    function handle(y) {
+      if (status === 'minimized' && y < SHELL_HEADER_HEIGHT) {
         setStatus('revealed');
-      } else if (
-        status === 'revealed' &&
-        window.innerHeight - Math.max(e.clientY, 0) >= SHELL_HEADER_HEIGHT
-      ) {
+      } else if (status === 'revealed' && y >= SHELL_HEADER_HEIGHT) {
         setStatus('minimized');
       }
     }
 
+    function handleMouseMove(e) {
+      const y = window.innerHeight - Math.max(e.clientY, 0);
+      handle(y);
+    }
+
+    function handleTouchStart(e) {
+      const y =
+        window.innerHeight -
+        Math.max(...Array.from(e.touches, touch => touch.clientY), 0);
+      handle(y);
+    }
+
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchstart', handleTouchStart);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchstart', handleTouchStart);
     };
   }, [status]);
 
@@ -144,6 +179,10 @@ export default function Shell({ children }) {
     setIsDown(true);
   }, []);
 
+  const handleTouchStart = useCallback(e => {
+    setIsDown(true);
+  }, []);
+
   const onRequireScreen = useCallback(() => {
     if (status === 'minimized' || status === 'revealed') {
       setTransition('default');
@@ -160,7 +199,7 @@ export default function Shell({ children }) {
           'shell--minimized': status === 'minimized',
           'shell--maximized': status === 'maximized'
         })}
-        style={status === 'positioned' ? { height: `${height}vh` } : undefined}
+        style={status === 'positioned' ? { height: `${height}%` } : undefined}
       >
         <div className="shell__control-bar">
           <div className="shell__controls">
@@ -171,6 +210,7 @@ export default function Shell({ children }) {
               <IconButton
                 className="shell__controls__button shell__controls__button--drag"
                 onMouseDown={handleMouseDown}
+                onTouchStart={handleTouchStart}
                 onClick={() => {
                   if (status !== 'positioned') {
                     setTransition('default');

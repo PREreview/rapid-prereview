@@ -37,6 +37,7 @@
     margin-top: var(--mgrd);
   }
 }
+
 .shell-content__tab-button {
   & .button__contents {
     padding: 0 var(--sgrd) !important;

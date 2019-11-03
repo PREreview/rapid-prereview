@@ -3,10 +3,14 @@ import PropTypes from 'prop-types';
 import { getDefaultRole } from '../utils/users';
 import { RoleBadgeUI } from './role-badge';
 
-export default function UserBadge({ user, children }) {
+export default function UserBadge({ user, children, ...others }) {
   const role = getDefaultRole(user);
 
-  return <RoleBadgeUI role={role}>{children}</RoleBadgeUI>;
+  return (
+    <RoleBadgeUI {...others} role={role}>
+      {children}
+    </RoleBadgeUI>
+  );
 }
 
 UserBadge.propTypes = {
