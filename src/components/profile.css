@@ -20,6 +20,7 @@
   & .profile__header {
     padding: var(--lgrd);
     display: flex;
+    flex-wrap: wrap-reverse;
   }
   & .profile__avatar-img {
     max-height: 150px;

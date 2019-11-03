@@ -1,0 +1,33 @@
+.add-button {
+  & .button__contents {
+    padding: 0 !important;
+    display: flex !important;
+    font: var(--ui-basic-font--large) !important;
+  }
+
+  & .add-button__icon-container {
+    width: var(--mgrd);
+    height: var(--mgrd);
+    border-radius: 50%;
+    background-color: white;
+    color: red;
+    margin-left: var(--xxsgrd);
+  }
+
+  & .add-button__left {
+    border-right: 1px solid white;
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: var(--xsgrd);
+  }
+
+  & .add-button__right {
+    height: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    padding: var(--xsgrd) var(--sgrd) var(--xsgrd) var(--xsgrd);
+  }
+}

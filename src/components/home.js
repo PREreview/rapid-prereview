@@ -21,6 +21,7 @@ import LoginRequiredModal from './login-required-modal';
 import { createPreprintQs, apifyPreprintQs } from '../utils/search';
 import WelcomeModal from './welcome-modal';
 import XLink from './xlink';
+import AddButton from './add-button';
 
 export default function Home() {
   const history = useHistory();
@@ -80,8 +81,17 @@ export default function Home() {
             <h3 className="home__content-title">
               Preprints with reviews or requests for reviews
             </h3>
-
-            <Button
+            <AddButton
+              onClick={e => {
+                if (user) {
+                  history.push('/new');
+                } else {
+                  setIsLoginModalOpen(true);
+                }
+              }}
+              disabled={location.pathname === '/new'}
+            />
+            {/* <Button
               pill={true}
               primary={true}
               onClick={e => {
@@ -94,7 +104,7 @@ export default function Home() {
               disabled={location.pathname === '/new'}
             >
               Add Review or Request Review
-            </Button>
+            </Button> */}
           </div>
 
           <PrivateRoute path="/new" exact={true}>

@@ -1,11 +1,11 @@
 .score-badge {
   box-sizing: border-box;
-  border: 2px solid var(--prereview-blue);
-  color: var(--prereview-blue);
+  border: 2px solid var(--prereview-red);
+  color: var(--prereview-red);
   border-radius: 50%;
-  width: var(--lgrd);
-  height: var(--lgrd);
-  flex: 0 0 var(--lgrd);
+  width: var(--mgrd);
+  height: var(--mgrd);
+  flex: 0 0 var(--mgrd);
   display: flex;
   justify-content: center;
   align-items: center;

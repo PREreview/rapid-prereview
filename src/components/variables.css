@@ -105,7 +105,7 @@
   --ui-header-2-font: 500 var(--ui-header-2-font-size) /
     var(--ui-header-2-font-leading) var(--ui-font-family);
 
-  --ui-score-badge-font: 600 16px / 16px var(--ui-font-family);
+  --ui-score-badge-font: 600 14px / 14px var(--ui-font-family);
 
   /* button fonts */
   --ui-button-font-size: var(--ui-basic-font-size);

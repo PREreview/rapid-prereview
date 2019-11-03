@@ -4,13 +4,16 @@
 @import '@reach/tooltip/styles.css';
 
 @import './components/variables.css';
-
 @import './components/app.css';
+
+@import './components/add-button.css';
 @import './components/button.css';
 @import './components/checkbox.css';
 @import './components/controls.css';
 @import './components/count-badge.css';
+@import './components/diseases.css';
 @import './components/extension-fallback.css';
+@import './components/extension-splash.css';
 @import './components/facets.css';
 @import './components/header-bar.css';
 @import './components/home.css';
@@ -44,13 +47,11 @@
 @import './components/review-reader.css';
 @import './components/role-badge.css';
 @import './components/role-activity.css';
-@import './components/diseases.css';
 @import './components/subject-editor.css';
-@import './components/welcome-modal.css';
 @import './components/role-list.css';
 @import './components/preprint-preview.css';
-@import './components/extension-splash.css';
 @import './components/pdf-viewer.css';
+@import './components/welcome-modal.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';

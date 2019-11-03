@@ -24,11 +24,10 @@
     /* background-color: var(--card-color--tinted); */
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    padding-top: var(--sgrd);
     flex-direction: column;
 
     & .icon-button__contents {
-      opacity: 0.5;
       &:hover {
         opacity: 0.9;
       }
@@ -49,7 +48,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
     }
 
     & .preprint-card__score-panel__bottom {
@@ -61,6 +59,10 @@
       align-items: center;
       box-sizing: border-box;
       border-top: 1px solid var(--ruling-color--light);
+
+      & .icon-button {
+        color: var(--prereview-red);
+      }
     }
   }
 
@@ -83,10 +85,11 @@
     align-items: baseline;
     align-items: first-baseline;
 
-    padding: var(--sgrd) var(--mgrd) var(--xsgrd);
+    padding: var(--sgrd) var(--xsgrd) var(--xsgrd) var(--xsgrd);
 
     @media (--mobile-portrait) {
       padding-left: var(--xsgrd);
+      flex-wrap: wrap;
     }
   }
 
@@ -116,7 +119,7 @@
 
   & .preprint-card__info-row {
     box-sizing: border-box;
-    padding: 0 var(--mgrd) var(--mgrd);
+    padding: 0 var(--xsgrd) var(--mgrd) var(--xsgrd);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -188,9 +191,12 @@
     display: flex;
     align-items: center;
     border-top: 1px solid var(--ruling-color--light);
-    padding: var(--xsgrd) var(--xsgrd) var(--xsgrd) var(--sgrd);
+    padding: var(--xsgrd);
     width: 100%;
     height: var(--xlgrd);
+    & .score-badge {
+      margin-right: var(--xsgrd);
+    }
     & .preprint-card__expansion-toggle {
       margin-left: auto;
     }
@@ -202,16 +208,18 @@
   }
 
   & .preprint-card__count-badge {
-    height: 1.1em;
-    min-width: 1.1em;
-    margin-right: var(--xxsgrd);
+    margin-right: 4px;
+    font-weight: 600;
   }
-
+  & .preprint-card__count-plus {
+    color: var(--ui-basic-font-color--light);
+    margin-right: 8px;
+    font-weight: 300;
+    font-size: 1.5em;
+  }
   & .preprint-card__count-label {
     margin-right: var(--xsgrd);
     color: var(--ui-basic-font-color--light);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
 }
 

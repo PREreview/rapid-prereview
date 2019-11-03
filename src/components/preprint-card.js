@@ -53,7 +53,7 @@ export default function PreprintCard({
   return (
     <Fragment>
       <div className="preprint-card">
-        <div className="preprint-card__score-panel">
+        {/* <div className="preprint-card__score-panel">
           <Tooltip
             label={
               hasRequested
@@ -98,7 +98,7 @@ export default function PreprintCard({
               </IconButton>
             </div>
           </Tooltip>
-        </div>
+        </div> */}
 
         <div className="preprint-card__contents">
           <div className="preprint-card__header">
@@ -213,22 +213,39 @@ export default function PreprintCard({
                 ))}
                 </ul>
                 )*/}
-
-            <CountBadge
-              count={reviews.length}
-              className="preprint-card__count-badge"
-            />
+            <Tooltip label="Number of reviews and requests for reviews for this preprint">
+              <ScoreBadge
+                nRequests={requests.length}
+                nReviews={reviews.length}
+              />
+            </Tooltip>
+            <div className="preprint-card__count-badge">{reviews.length}</div>
             <div className="preprint-card__count-label">
-              review{reviews.length > 1 ? 's' : ''}
+              Review{reviews.length > 1 ? 's' : ''}
             </div>
-            <CountBadge
-              count={requests.length}
-              className="preprint-card__count-badge"
-            />
+            <div className="preprint-card__count-plus">+</div>
+            <div className="preprint-card__count-badge">{requests.length}</div>
             <div className="preprint-card__count-label">
-              request{requests.length > 1 ? 's' : ''}
+              Request{requests.length > 1 ? 's' : ''}
             </div>
-
+            <Tooltip
+              label={
+                hasReviewed
+                  ? 'You already reviewed this preprint'
+                  : 'Add your review'
+              }
+            >
+              <div className="preprint-card__score-panel__bottom">
+                <IconButton
+                  disabled={hasReviewed}
+                  onClick={() => {
+                    onNewReview(preprint);
+                  }}
+                >
+                  <AddPrereviewIcon />
+                </IconButton>
+              </div>
+            </Tooltip>
             <IconButton
               className="preprint-card__expansion-toggle"
               onClick={e => {
