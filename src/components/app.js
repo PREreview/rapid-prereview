@@ -13,6 +13,8 @@ import Settings from './settings';
 import Profile from './profile';
 import PrivateRoute from './private-route';
 import ExtensionSplash from './extension-splash';
+import ToCPage from './toc-page';
+import CodeOfConduct from './code-of-conduct';
 
 export default function App({ user }) {
   return (
@@ -28,6 +30,13 @@ export default function App({ user }) {
                 <Route exact={true} path="/login">
                   <Login />
                 </Route>
+
+                <Route exact={true} path="/code-of-conduct">
+                  <ToCPage>
+                    <CodeOfConduct />
+                  </ToCPage>
+                </Route>
+
                 <Route exact={true} path="/about/:roleId">
                   <Profile />
                 </Route>

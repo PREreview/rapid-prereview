@@ -51,6 +51,7 @@
 @import './components/preprint-preview.css';
 @import './components/extension-splash.css';
 @import './components/pdf-viewer.css';
+@import './components/toc-page.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';

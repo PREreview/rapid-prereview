@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import HeaderBar from './header-bar';
 import AnimatedLogo from '../svgs/rapid-prereview-logo-animation.svg';
 import Button from './button';
+import XLink from './xlink';
 
 // TODO make clear that by logging in user accepts the code of conduct
 
@@ -22,12 +23,24 @@ export default function Login() {
         <div className="login__logo-container">
           <AnimatedLogo />
         </div>
+
         <h2 className="login__header">
           To log in to Rapid PREreview you will need an ORCID ID.
         </h2>
+
         <p className="login__text">
           Click below to sign in with your ORCID account, or create one if you
           don’t have one.
+        </p>
+
+        <p className="login__text">
+          <strong>
+            By signing in, you agree to Rapid PREreview for Outbreak Science{' '}
+            <XLink href="/code-of-conduct" to="/code-of-conduct">
+              Code of Conduct
+            </XLink>
+            .
+          </strong>
         </p>
 
         <Button
