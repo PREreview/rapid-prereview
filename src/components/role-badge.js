@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom';
 import { MdPerson } from 'react-icons/md';
 import { Menu, MenuList, MenuButton, MenuLink } from '@reach/menu-button';
 import classNames from 'classnames';
+import Tooltip from '@reach/tooltip';
 import { unprefix, getId } from '../utils/jsonld';
 import { useRole } from '../hooks/api-hooks';
 
 const RoleBadge = React.forwardRef(function RoleBadge(
-  { roleId, children, className },
+  { roleId, children, className, tooltip },
   ref
 ) {
   const [role, fetchRoleProgress] = useRole(roleId);
@@ -16,6 +17,7 @@ const RoleBadge = React.forwardRef(function RoleBadge(
   return (
     <RoleBadgeUI
       ref={ref}
+      tooltip={tooltip}
       roleId={roleId}
       role={role}
       fetchRoleProgress={fetchRoleProgress}
@@ -27,6 +29,7 @@ const RoleBadge = React.forwardRef(function RoleBadge(
 });
 
 RoleBadge.propTypes = {
+  tooltip: PropTypes.bool,
   roleId: PropTypes.string.isRequired,
   children: PropTypes.any,
   className: PropTypes.string
@@ -38,7 +41,7 @@ export default RoleBadge;
  * Non hooked version (handy for story book and `UserBadge`)
  */
 const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
-  { roleId, role, fetchRoleProgress, className, children },
+  { roleId, role, fetchRoleProgress, className, children, tooltip },
   ref
 ) {
   if (roleId == null && fetchRoleProgress == null && !!role) {
@@ -58,31 +61,33 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
         })}
       >
         {/*NOTE: the `ref` is typically used for Drag and Drop: we need 1 DOM element that will be used as the drag preview */}
-        <div ref={ref}>
-          <div
-            className={classNames('role-badge-menu__generic-icon-container')}
-          >
-            <MdPerson className="role-badge-menu__generic-icon" />
-          </div>
+        <Tooltipify tooltip={tooltip} role={role} roleId={roleId}>
+          <div ref={ref}>
+            <div
+              className={classNames('role-badge-menu__generic-icon-container')}
+            >
+              <MdPerson className="role-badge-menu__generic-icon" />
+            </div>
 
-          <div
-            className={classNames('role-badge-menu__avatar', {
-              'role-badge-menu__avatar--loaded':
-                !!role &&
-                role.avatar &&
-                role.avatar.contentUrl &&
-                (fetchRoleProgress && !fetchRoleProgress.isActive)
-            })}
-            style={
-              role && role.avatar && role.avatar.contentUrl
-                ? {
-                    backgroundImage: `url(${role.avatar.contentUrl})`,
-                    backgroundSize: 'contain'
-                  }
-                : undefined
-            }
-          ></div>
-        </div>
+            <div
+              className={classNames('role-badge-menu__avatar', {
+                'role-badge-menu__avatar--loaded':
+                  !!role &&
+                  role.avatar &&
+                  role.avatar.contentUrl &&
+                  (fetchRoleProgress && !fetchRoleProgress.isActive)
+              })}
+              style={
+                role && role.avatar && role.avatar.contentUrl
+                  ? {
+                      backgroundImage: `url(${role.avatar.contentUrl})`,
+                      backgroundSize: 'contain'
+                    }
+                  : undefined
+              }
+            ></div>
+          </div>
+        </Tooltipify>
       </MenuButton>
 
       {/* Note: MenuList is currently bugged if children is undefined hence the ternary */}
@@ -137,6 +142,7 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
 });
 
 RoleBadgeUI.propTypes = {
+  tooltip: PropTypes.bool,
   roleId: PropTypes.string,
   role: PropTypes.shape({
     '@id': PropTypes.string.isRequired,
@@ -158,3 +164,28 @@ RoleBadgeUI.propTypes = {
 };
 
 export { RoleBadgeUI };
+
+function Tooltipify({ tooltip, roleId, role, children }) {
+  return tooltip ? (
+    <Tooltip
+      label={
+        role && role.name && role.name !== unprefix(roleId)
+          ? `${role.name} (${unprefix(roleId)})`
+          : unprefix(roleId)
+      }
+    >
+      <div>{children}</div>
+    </Tooltip>
+  ) : (
+    children
+  );
+}
+
+Tooltipify.propTypes = {
+  tooltip: PropTypes.bool,
+  roleId: PropTypes.string,
+  role: PropTypes.shape({
+    name: PropTypes.string
+  }),
+  children: PropTypes.any
+};

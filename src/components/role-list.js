@@ -83,6 +83,7 @@ function DraggableRoleBadge({ roleId, onDropped, children, type }) {
 
   return (
     <RoleBadge
+      tooltip={true}
       ref={dragRef}
       roleId={roleId}
       className={classNames('draggable-role-badge', {

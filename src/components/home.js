@@ -45,6 +45,10 @@ export default function Home() {
 
   return (
     <div className="home">
+      <Helmet>
+        <title>Rapid PREreview • Home</title>
+      </Helmet>
+
       {!!(
         (isNewVisitor || new URLSearchParams(location.search).get('welcome')) &&
         isWelcomeModalOpen
