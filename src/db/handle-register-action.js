@@ -124,7 +124,7 @@ export default async function handleRegisterAction(
         {
           '@id': publicRoleId,
           '@type': 'PublicReviewerRole',
-          name: unprefix(publicRoleId),
+          name: action.agent.name || unprefix(publicRoleId),
           startDate: now,
           modifiedDate: now
         }

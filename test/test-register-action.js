@@ -26,7 +26,7 @@ describe('RegisterAction', function() {
   });
 
   it('should have registered an user', async () => {
-    // console.log(require('util').inspect(action, { depth: null }));
+    // console.log(require('util').inspect(registerAction, { depth: null }));
 
     assert(getId(registerAction.result));
     assert(getId(registerAction.result.hasRole[0]).startsWith('role:'));
