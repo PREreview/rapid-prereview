@@ -1,6 +1,7 @@
 import http from 'http';
 import path from 'path';
 import fs from 'fs';
+import noop from 'lodash/noop';
 import express from 'express';
 import { promisify } from 'util';
 import fetch from 'node-fetch';
@@ -76,9 +77,21 @@ export function createPreprintServer(config) {
     });
   });
 
-  app.use(rapid(config));
+  const rapidApp = rapid(config);
+  app.use(rapidApp);
 
-  return http.createServer(app);
+  const server = http.createServer(app);
+
+  const close = server.close.bind(server);
+
+  // patch close method to also close redis
+  server.close = function(cb = noop) {
+    close(() => {
+      rapidApp.get('redisClient').quit(cb);
+    });
+  };
+
+  return server;
 }
 
 export function createConfig(port) {

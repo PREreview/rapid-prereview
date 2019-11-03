@@ -7,7 +7,8 @@ import sampleSize from 'lodash/sampleSize';
 import { QUESTIONS } from '../src/constants';
 import DB from '../src/db/db';
 import { createRandomOrcid } from '../src/utils/orcid';
-import { getId } from '../src/utils/jsonld';
+import { getDefaultRole } from '../src/utils/users';
+import { getId, cleanup } from '../src/utils/jsonld';
 import {
   createPreprintServer,
   createConfig,
@@ -57,40 +58,69 @@ const N_USERS = 50;
 
     let user = action.result;
 
-    // add avatars
+    // add avatars and name
     for (const type of ['AnonymousReviewerRole', 'PublicReviewerRole']) {
       const role = user.hasRole.find(role => role['@type'] === type);
 
-      const avatarUrl = faker.image.avatar();
+      let n = 0;
+      while (n < 5) {
+        const avatarUrl = faker.image.avatar();
 
-      console.log(
-        `\t\t- setting avatar ${avatarUrl} for ${type} (${getId(role)})`
-      );
-      const r = await fetch(avatarUrl);
-      if (r.ok) {
-        console.log(r.headers.get('Content-Type'));
+        console.log(
+          `\t\t- setting avatar ${avatarUrl} for ${type} (${getId(
+            role
+          )}) - try ${n + 1} / 5`
+        );
+        const r = await fetch(avatarUrl);
+        if (r.ok) {
+          const buffer = await r.buffer();
+
+          const updateRoleAction = await db.post(
+            {
+              '@type': 'UpdateRoleAction',
+              actionStatus: 'CompletedActionStatus',
+              agent: getId(user),
+              object: getId(role),
+              payload: cleanup({
+                name:
+                  type === 'AnonymousReviewerRole'
+                    ? faker.internet.userName()
+                    : undefined,
+                avatar: {
+                  '@type': 'ImageObject',
+                  encodingFormat: r.headers.get('Content-Type'),
+                  contentUrl: `data:${r.headers.get(
+                    'Content-Type'
+                  )};base64,${buffer.toString('base64')}`
+                }
+              })
+            },
+            { user }
+          );
+          user = updateRoleAction.result;
+          break;
+        }
       }
-      const buffer = await r.buffer();
+    }
 
-      const updateRoleAction = await db.post(
+    // make 50% of user public
+    if (Math.random() <= 0.5) {
+      console.log(`\t\t- Making public role default for ${user.name}`);
+      const updateDefaultRoleAction = await db.post(
         {
-          '@type': 'UpdateRoleAction',
-          actionStatus: 'CompletedActionStatus',
+          '@type': 'UpdateUserAction',
           agent: getId(user),
-          object: getId(role),
+          object: getId(user),
+          actionStatus: 'CompletedActionStatus',
           payload: {
-            avatar: {
-              '@type': 'ImageObject',
-              encodingFormat: r.headers.get('Content-Type'),
-              contentUrl: `data:${r.headers.get(
-                'Content-Type'
-              )};base64,${buffer.toString('base64')}`
-            }
+            defaultRole: getId(
+              user.hasRole.find(role => role['@type'] === 'PublicReviewerRole')
+            )
           }
         },
         { user }
       );
-      user = updateRoleAction.result;
+      user = updateDefaultRoleAction.result;
     }
 
     users.push(user);
@@ -113,7 +143,7 @@ const N_USERS = 50;
       const action = await db.post(
         {
           '@type': 'RequestForRapidPREreviewAction',
-          agent: getId(user.hasRole[0]),
+          agent: getId(getDefaultRole(user)),
           actionStatus: 'CompletedActionStatus',
           object: identifier
         },
@@ -131,7 +161,7 @@ const N_USERS = 50;
       const action = await db.post(
         {
           '@type': 'RapidPREreviewAction',
-          agent: getId(user.hasRole[0]),
+          agent: getId(getDefaultRole(user)),
           actionStatus: 'CompletedActionStatus',
           object: identifier,
           resultReview: {
