@@ -244,6 +244,7 @@ export default function Home() {
             )}
           </div>
         </div>
+
         <div className="home__main__right"></div>
       </div>
     </div>

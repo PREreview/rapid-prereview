@@ -3,7 +3,34 @@
   margin: 0;
   box-sizing: border-box;
 
-  & .toc-page__content{
-    /* TODO semantic styles (class free) for h1, h2, ul, li, p, blockquote etc. */
+  & .toc-page__main {
+    display: flex;
+    width: 100vw;
+  }
+
+  & .toc-page__right {
+    flex: 1 1 10%;
+    background: white;
+
+    @media (--narrow-screen) {
+      flex: 0 0 0px;
+    }
+  }
+
+  & .toc-page__body {
+    background: white;
+    min-height: 100vh;
+    padding: var(--sgrd);
+    flex: 0 0 var(--middle-column-default-width);
+    width: var(--middle-column-default-width);
+    max-width: calc(100vw - var(--left-panel-min-width));
+
+    position: relative;
+    box-sizing: border-box;
+    @media (--narrow-screen) {
+      max-width: 100vw;
+    }
+
+    /* TODO @halmos semantic styles (no classes) for h1, h2, h3, ul, ol, li, p and blockquote */
   }
 }
