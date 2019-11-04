@@ -92,19 +92,19 @@ export default function Home() {
               disabled={location.pathname === '/new'}
             />
             {/* <Button
-              pill={true}
-              primary={true}
-              onClick={e => {
+                pill={true}
+                primary={true}
+                onClick={e => {
                 if (user) {
-                  history.push('/new');
+                history.push('/new');
                 } else {
-                  setIsLoginModalOpen(true);
+                setIsLoginModalOpen(true);
                 }
-              }}
-              disabled={location.pathname === '/new'}
-            >
-              Add Review or Request Review
-            </Button> */}
+                }}
+                disabled={location.pathname === '/new'}
+                >
+                Add Review or Request Review
+                </Button> */}
           </div>
 
           <PrivateRoute path="/new" exact={true}>
@@ -189,6 +189,15 @@ export default function Home() {
                           preprint: omit(preprint, ['potentialAction']),
                           tab: 'request',
                           isSingleStep: true
+                        });
+                      } else {
+                        setIsLoginModalOpen(true);
+                      }
+                    }}
+                    onNew={preprint => {
+                      if (user) {
+                        history.push('/new', {
+                          preprint: omit(preprint, ['potentialAction'])
                         });
                       } else {
                         setIsLoginModalOpen(true);
