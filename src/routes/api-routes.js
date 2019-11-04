@@ -19,6 +19,9 @@ router.get('/preprint', cors(), parseQuery, (req, res, next) => {
   let hasErrored = false;
 
   const s = req.db.streamPreprints(req.query);
+  s.on('response', response => {
+    res.status(response.statusCode);
+  });
   s.on('error', err => {
     if (!hasErrored) {
       hasErrored = true;
@@ -151,6 +154,9 @@ router.get('/action', cors(), parseQuery, (req, res, next) => {
   let hasErrored = false;
 
   const s = req.db.streamActions(req.query);
+  s.on('response', response => {
+    res.status(response.statusCode);
+  });
   s.on('error', err => {
     if (!hasErrored) {
       hasErrored = true;

@@ -66,7 +66,7 @@ export default function Home() {
         }}
       />
 
-      <SearchBar key={apiQs} isFetching={fetchResultsProgress.isActive} />
+      <SearchBar isFetching={fetchResultsProgress.isActive} />
 
       <div className="home__main">
         <LeftSidePanel visible={showLeftPanel}>
@@ -91,20 +91,6 @@ export default function Home() {
               }}
               disabled={location.pathname === '/new'}
             />
-            {/* <Button
-                pill={true}
-                primary={true}
-                onClick={e => {
-                if (user) {
-                history.push('/new');
-                } else {
-                setIsLoginModalOpen(true);
-                }
-                }}
-                disabled={location.pathname === '/new'}
-                >
-                Add Review or Request Review
-                </Button> */}
           </div>
 
           <PrivateRoute path="/new" exact={true}>
@@ -120,7 +106,6 @@ export default function Home() {
               </Helmet>
               <NewPreprint
                 onCancel={() => {
-                  // TODO clear local storage entry ?
                   history.push('/');
                 }}
                 onSuccess={() => {

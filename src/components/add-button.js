@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import Button from './button';
 import AddPrereviewIcon from '../svgs/add_prereview_icon.svg';
 
