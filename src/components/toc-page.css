@@ -1,11 +1,12 @@
 .toc-page {
-  padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd);
+  padding: calc(var(--header-bar-height)) 0 var(--lgrd);
   margin: 0;
   box-sizing: border-box;
 
   & .toc-page__main {
     display: flex;
     width: 100vw;
+    padding-top: var(--sgrd);
   }
 
   & .toc-page__right {
@@ -27,10 +28,81 @@
 
     position: relative;
     box-sizing: border-box;
+
     @media (--narrow-screen) {
       max-width: 100vw;
     }
 
     /* TODO @halmos semantic styles (no classes) for h1, h2, h3, ul, ol, li, p and blockquote */
+    & h1 {
+      font: var(--ui-header-font);
+      margin-top: 1em;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    & h2 {
+      font: var(--ui-header-1-font);
+      margin-top: 1em;
+    }
+
+    & h3 {
+      font: var(--ui-header-2-font);
+      margin-top: 1em;
+    }
+
+    & h3 {
+      font: var(--ui-header-3-font);
+      margin-top: 1em;
+    }
+
+    & p {
+      font: var(--ui-basic-font);
+      line-height: 1.75em;
+    }
+
+    & strong {
+      font-weight: 600;
+    }
+
+    & ul {
+      padding-left: 2.5ch;
+      list-style: circle;
+
+      & li {
+        color: var(--ui-basic-font-color);
+      }
+    }
+
+    & blockquote {
+      border-left: 4px solid var(--ruling-color);
+      margin: 0;
+      padding: var(--sgrd) var(--mgrd);
+      & p:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+
+  & nav {
+    padding: var(--lgrd) var(--mgrd);
+    & ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+
+      & li {
+        margin-bottom: var(--xsgrd);
+        & :any-link {
+          color: var(--ui-basic-font-color);
+          text-decoration: none;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
   }
 }
