@@ -5,7 +5,12 @@ import Button from './button';
 
 export default function WelcomeModal(props) {
   return (
-    <Modal showCloseButton={false} className="welcome-modal" {...props}>
+    <Modal
+      showCloseButton={false}
+      className="welcome-modal"
+      aria-label="welcome"
+      {...props}
+    >
       <div className="welcome-modal__content">
         <header className="welcome-modal__banner">
           <div className="welcome-modal__banner__background"></div>

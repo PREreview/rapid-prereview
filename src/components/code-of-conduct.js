@@ -207,8 +207,8 @@ export default function CodeOfConduct() {
           and from{' '}
           <a href="http://reviewers.plos.org/">PLoS Peer Reviewer Center</a>. If
           you have questions, feedback (please constructive only!), or
-          suggestions on how to improve it, please contact us at
-          contact@prereview.org.{' '}
+          suggestions on how to improve it, please contact us at{' '}
+          <a href={CONTACT_EMAIL_HREF}>{unprefix(CONTACT_EMAIL_HREF)}</a>.
         </p>
 
         <p>Thank you for being a good community member!</p>
