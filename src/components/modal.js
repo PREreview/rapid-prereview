@@ -12,12 +12,13 @@ export default function Modal({
   title,
   showCloseButton = false,
   children,
-  className
+  className,
+  ...others
 }) {
   return (
     <DialogOverlay onDismiss={onClose}>
       <DialogContent
-        aria-label={title}
+        aria-label={others['aria-label'] || title}
         className="modal-container"
         style={{
           padding: '0',

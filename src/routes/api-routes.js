@@ -6,7 +6,7 @@ import concatStream from 'concat-stream';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
 import resolve from '../utils/resolve';
-import cache from '../middlewares/cache';
+import { cache } from '../middlewares/cache';
 
 const jsonParser = bodyParser.json({ limit: '2mb' });
 
@@ -121,14 +121,14 @@ router.get('/user', parseQuery, (req, res, next) => {
 });
 
 /**
- * Get a user
+ * Get a (public) user (without the anonymous roles)
  */
 router.get(
   '/user/:userId',
   cache(req => `user:${req.params.userId}`),
   async (req, res, next) => {
     try {
-      const body = await req.db.get(`user:${req.params.userId}`);
+      const body = await req.db.get(`user:${req.params.userId}`); // Note: we don't pass the logged in user so that `body` is always safe and without the anonymout roles
       req.cache(body);
       res.json(body);
     } catch (err) {
@@ -180,8 +180,6 @@ router.post('/action', cors(), jsonParser, async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-
-  // Invalidate cache
 
   res.json(body);
 });
