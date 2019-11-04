@@ -159,13 +159,14 @@ export default function PreprintCard({
           <div className="preprint-card__expansion-header">
             <Tooltip label="Number of reviews and requests for reviews for this preprint">
               {/* ScoreBadge uses forwardRef but Tooltip doesn't work without extra div :( */}
-              <div>
+              <div className="preprint-card__score-badge-container">
                 <ScoreBadge
                   nRequests={requests.length}
                   nReviews={reviews.length}
                 />
               </div>
             </Tooltip>
+
             <div className="preprint-card__count-badge">{reviews.length}</div>
             <div className="preprint-card__count-label">
               Review{reviews.length > 1 ? 's' : ''}
@@ -175,7 +176,8 @@ export default function PreprintCard({
             <div className="preprint-card__count-label">
               Request{requests.length > 1 ? 's' : ''}
             </div>
-
+            <div className="preprint-card__count-slash">/</div>
+            <span className="preprint-card__days-ago">3 days</span>
             <Tooltip
               label={
                 hasReviewed && hasRequested
@@ -187,8 +189,9 @@ export default function PreprintCard({
                   : 'Add your review or request for review'
               }
             >
-              <div className="preprint-card__score-panel__bottom">
+              <div className="preprint-card__add-button-container">
                 <IconButton
+                  className="preprint-card__add-button"
                   disabled={hasReviewed && hasRequested}
                   onClick={() => {
                     if (!hasReviewed && !hasRequested) {

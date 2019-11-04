@@ -1,6 +1,6 @@
 .score-badge {
   box-sizing: border-box;
-  border: 2px solid var(--prereview-red);
+  /* border: 2px solid var(--prereview-red); */
   color: var(--prereview-red);
   border-radius: 50%;
   width: var(--mgrd);
@@ -13,6 +13,22 @@
   font: var(--ui-score-badge-font);
   font-weight: 600;
   letter-spacing: -0.05em;
+  position: relative;
+
+  & .score-badge__clock-svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    & .score-badge__clock-svg__active-path {
+      stroke: var(--ui-score-badge-primary-color);
+    }
+    & .score-badge__clock-svg__inactive-path {
+      stroke: var(--ui-score-badge-secondary-color);
+    }
+  }
 
   & .score-badge--needs-attention {
     border-color: var(--prereview-coral);

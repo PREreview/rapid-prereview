@@ -2,14 +2,69 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const ScoreBadge = React.forwardRef(function ScoreBadge(
-  { nRequests, nReviews },
+  {
+    nRequests,
+    nReviews,
+    rankPercentile = Math.random() /* TODO @sballesteros wire actual rank value */
+  },
   ref
 ) {
   const statusClass =
     nRequests > 0 && nReviews === 0 ? 'needs-attention' : 'normal';
 
+  /* 
+    the arc polar cordinates need to be converted to x,y for svg see: 
+    https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
+    */
+
+  const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
+    var angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
+
+    return {
+      x: centerX + radius * Math.cos(angleInRadians),
+      y: centerY + radius * Math.sin(angleInRadians)
+    };
+  };
+
+  const svgArc = (x, y, radius, startAngle, endAngle) => {
+    var start = polarToCartesian(x, y, radius, endAngle);
+    var end = polarToCartesian(x, y, radius, startAngle);
+
+    var largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
+
+    var d = [
+      'M',
+      start.x,
+      start.y,
+      'A',
+      radius,
+      radius,
+      0,
+      largeArcFlag,
+      0,
+      end.x,
+      end.y
+    ].join(' ');
+
+    return d;
+  };
+
   return (
     <div ref={ref} className={`score-badge score-badge--${statusClass}`}>
+      <svg viewBox="0 0 24 24" className="score-badge__clock-svg">
+        <path
+          d={svgArc(12, 12, 11, 0, 359.9)}
+          strokeWidth="2"
+          fill="none"
+          className="score-badge__clock-svg__inactive-path"
+        />
+        <path
+          d={svgArc(12, 12, 11, 0, rankPercentile * 360)}
+          strokeWidth="2"
+          fill="none"
+          className="score-badge__clock-svg__active-path"
+        />
+      </svg>
       <div className="score-badge__score">{nRequests + nReviews}</div>
     </div>
   );
@@ -17,7 +72,8 @@ const ScoreBadge = React.forwardRef(function ScoreBadge(
 
 ScoreBadge.propTypes = {
   nRequests: PropTypes.number,
-  nReviews: PropTypes.number
+  nReviews: PropTypes.number,
+  rankPercentile: PropTypes.number // 0 - 1
 };
 
 export default ScoreBadge;
