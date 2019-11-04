@@ -20,18 +20,23 @@
   & .profile__header {
     padding: var(--lgrd);
     display: flex;
-    flex-wrap: wrap-reverse;
+    flex: 1 1 auto;
+
+    @media (--mobile-portrait) {
+      flex-wrap: wrap;
+    }
   }
   & .profile__avatar-img {
     max-height: 150px;
     max-width: 150px;
     margin-right: var(--mgrd);
     flex: 0 0 150px;
+    object-fit: scale-down;
   }
 
   & .profile__username {
     font: var(--ui-header-font);
-    margin: 0;
+    margin: 0 0 var(--sgrd) 0;
   }
 
   & .profile__identity-info {
@@ -54,6 +59,13 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: var(--mgrd);
+    align-items: baseline;
+    flex: 1 1 auto;
+
+    min-width: 100px;
+    @media (--narrow-screen) {
+      flex-wrap: wrap;
+    }
   }
 
   & .profile__persona-status {

@@ -49,9 +49,9 @@
   --link-color--hover: var(--prereview-light-blue);
 
   /* Barplot colors */
-  --barplot-yes: var(--prereview-spring-green);
+  --barplot-yes: var(--prereview-blue);
   --barplot-no: var(--prereview-coral);
-  --barplot-unsure: var(--prereview-blue);
+  --barplot-unsure: rgb(140, 140, 140);
   --barplot-na: var(--prereview-grey);
 
   /* Menu Colors */
@@ -104,6 +104,11 @@
   --ui-header-2-font-leading: 1.3em;
   --ui-header-2-font: 500 var(--ui-header-2-font-size) /
     var(--ui-header-2-font-leading) var(--ui-font-family);
+
+  --ui-header-3-font-size: 14px;
+  --ui-header-3-font-leading: 1.3em;
+  --ui-header-3-font: 500 var(--ui-header-2-font-size) /
+    var(--ui-header-3-font-leading) var(--ui-font-family);
 
   --ui-score-badge-font: 600 14px / 14px var(--ui-font-family);
 
