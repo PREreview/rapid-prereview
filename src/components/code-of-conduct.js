@@ -136,17 +136,20 @@ export default function CodeOfConduct() {
           Conflict of Interest/Competing interest
         </h2>
         <p>
-          What is considered conflict of interest (CoI) at <Org /> and why
+          What is considered conflict of interest (
+          <abbr title="Conflict of Interest">CoI</abbr>) at <Org /> and why
           should you care about them?
         </p>
         <p>
-          CoI comes in many shapes and forms. In general, as defined on{' '}
+          <abbr title="Conflict of Interest">CoI</abbr> comes in many shapes and
+          forms. In general, as defined on{' '}
           <a href="https://en.wikipedia.org/wiki/Conflict_of_interest">
             Wikipedia
           </a>
-          , a CoI emerges when “a person or organization is involved in multiple
-          interests, financial or otherwise, and serving one interest could
-          involve working against another.”
+          , a <abbr title="Conflict of Interest">CoI</abbr> emerges when “a
+          person or organization is involved in multiple interests, financial or
+          otherwise, and serving one interest could involve working against
+          another.”
         </p>
         <p>
           In the context of peer review, PLoS refers to it as competing interest
