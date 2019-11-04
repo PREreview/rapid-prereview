@@ -87,13 +87,19 @@ export default function Barplot({
                       className="barplot__bar-segment barplot__bar-segment--yes"
                       style={{ width: `${(yes.length / nReviews) * 100}%` }}
                     >
-                      {`${((yes.length / nReviews) * 100).toFixed(1)}%`}
+                      <span className="barplot__bar-segment__number">{`${(
+                        (yes.length / nReviews) *
+                        100
+                      ).toFixed(1)}%`}</span>
                     </td>
                     <td
                       className="barplot__bar-segment barplot__bar-segment--no"
                       style={{ width: `${(no.length / nReviews) * 100}%` }}
                     >
-                      {`${((no.length / nReviews) * 100).toFixed(1)}%`}
+                      <span className="barplot__bar-segment__number">{`${(
+                        (no.length / nReviews) *
+                        100
+                      ).toFixed(1)}%`}</span>
                     </td>
                     <td
                       className="barplot__bar-segment barplot__bar-segment--unsure"
@@ -101,13 +107,19 @@ export default function Barplot({
                         width: `${(unsure.length / nReviews) * 100}%`
                       }}
                     >
-                      {`${((unsure.length / nReviews) * 100).toFixed(1)}%`}
+                      <span className="barplot__bar-segment__number">{`${(
+                        (unsure.length / nReviews) *
+                        100
+                      ).toFixed(1)}%`}</span>
                     </td>
                     <td
                       className="barplot__bar-segment barplot__bar-segment--na"
                       style={{ width: `${(na.length / nReviews) * 100}%` }}
                     >
-                      {`${((na.length / nReviews) * 100).toFixed(1)}%`}
+                      <span className="barplot__bar-segment__number">{`${(
+                        (na.length / nReviews) *
+                        100
+                      ).toFixed(1)}%`}</span>
                     </td>
                   </tr>
                 </tbody>

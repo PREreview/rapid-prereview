@@ -134,7 +134,7 @@
 
     & .barplot__bar-segment {
       display: block;
-      padding: var(--xsgrd) 0;
+      padding: var(--xxsgrd) 0;
       height: var(--sgrd);
       box-sizing: border-box;
       display: flex;
@@ -146,6 +146,10 @@
 
       &:hover {
         color: white;
+      }
+
+      & .barplot__bar-segment__number {
+        margin-left: 4px;
       }
     }
 
