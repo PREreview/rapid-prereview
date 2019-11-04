@@ -38,7 +38,7 @@ export default function RoleActivity({ roleId }) {
 
       {results.total_rows === 0 && !progress.isActive ? (
         <div>No activity yet.</div>
-      ) : results.bookmark === bookmark ? (
+      ) : bookmark && results.bookmark === bookmark && !progress.isActive ? (
         <div>No more activity.</div>
       ) : (
         <section className="role-activity__history">
@@ -68,7 +68,23 @@ export default function RoleActivity({ roleId }) {
                     </Value>
                     <MdChevronRight className="role-activity__server-arrow-icon" />
                     <Value tagName="span">
-                      {doc.object.doi || doc.object.arXivId}
+                      {doc.object.doi ? (
+                        <a
+                          href={`https://doi.org/${doc.object.doi}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {doc.object.doi}
+                        </a>
+                      ) : (
+                        <a
+                          href={`https://arxiv.org/abs/${doc.object.arXivId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {doc.object.arXivId}
+                        </a>
+                      )}
                     </Value>
                   </div>
                 </div>
