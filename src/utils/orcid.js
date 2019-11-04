@@ -5,6 +5,7 @@ import orcidUtils from 'orcid-utils';
 import DB from '../db/db';
 import { getId, cleanup } from './jsonld';
 import { createError } from './errors';
+import { createCacheKey } from '../middlewares/cache';
 
 /**
  * See https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier

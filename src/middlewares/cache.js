@@ -1,8 +1,9 @@
 import noop from 'lodash/noop';
+import { arrayify } from '../utils/jsonld';
 
 const TTL_SEC = 60 * 60 * 24 * 7;
 
-export default function cache(
+export function cache(
   getKey = function(req) {
     return req.originalUrl;
   }
@@ -16,7 +17,7 @@ export default function cache(
       return next();
     }
 
-    const key = `cache:${getKey(req)}`;
+    const key = createCacheKey(getKey(req));
 
     // provides `req.cache` so user can update the cached value
     req.cache = function(payload) {
@@ -53,4 +54,12 @@ export default function cache(
       res.status(200).send(value);
     });
   };
+}
+
+export function createCacheKey(id) {
+  return `cache:${arrayify(id).join('::')}`;
+}
+
+export function invalidate(redisClient, doc) {
+  // we use scan and glob to invalidate all the docs
 }
