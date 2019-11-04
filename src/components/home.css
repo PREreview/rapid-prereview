@@ -29,7 +29,7 @@
 
   & .home__content {
     background: white;
-    min-height: 200vh;
+    min-height: 100vh;
     padding: var(--sgrd);
     flex: 0 0 var(--middle-column-default-width);
     width: var(--middle-column-default-width);
