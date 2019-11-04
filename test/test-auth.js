@@ -10,7 +10,7 @@ describe('auth', function() {
 
   let server;
   const port = 3333;
-  const config = createConfig(port);
+  const config = createConfig(port, { logLevel: 'fatal' });
   const baseUrl = `http://127.0.0.1:${port}`;
 
   before(done => {

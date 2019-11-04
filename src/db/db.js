@@ -91,11 +91,19 @@ export default class DB {
       return Object.assign({ dbName }, resp);
     }
 
-    return Promise.all([
+    const res = await Promise.all([
       setup.call(this, this.docsDbName),
       setup.call(this, this.indexDbName),
       setup.call(this, this.usersDbName)
     ]);
+
+    await new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+
+    return res;
   }
 
   async ddoc() {
@@ -174,6 +182,12 @@ export default class DB {
         )
       )
     ]);
+
+    await new Promise(resolve => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
 
     return resps;
   }

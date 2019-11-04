@@ -45,7 +45,7 @@ export function rapid(config = {}, redisClient) {
 
   app.use(addDb(config));
 
-  app.use(pino());
+  app.use(pino({ level: config.logLevel || 'info' }));
 
   app.use('/auth', authRoutes);
   app.use('/api', apiRoutes);
