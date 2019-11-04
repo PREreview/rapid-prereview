@@ -15,10 +15,10 @@ describe('resolve', function() {
 
   let server;
   const port = 3333;
-  const config = createConfig(port);
+  const config = createConfig(port, { logLevel: 'fatal' });
 
   before(done => {
-    server = createPreprintServer();
+    server = createPreprintServer({ logLevel: 'fatal' });
     server.listen(port, done);
   });
 

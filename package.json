@@ -15,6 +15,7 @@
     "seed": "babel-node ./scripts/seed.js",
     "seed:prod": "source env.private.sh && babel-node ./scripts/seed.js",
     "ddocs": "babel-node ./scripts/ddocs.js",
+    "reset-redis": "babel-node ./scripts/reset-redis.js",
     "init": "babel-node ./scripts/init.js",
     "harvest": "babel-node ./scripts/harvest.js",
     "build:client": "rm -rf ./public/assets/* && cross-env NODE_ENV=production webpack --progress",
@@ -227,6 +228,7 @@
     "redis": "^2.8.0",
     "serve-favicon": "^2.5.0",
     "slug": "^1.1.0",
+    "smoothscroll-polyfill": "^0.4.4",
     "uuid": "^3.3.3",
     "xmldom": "^0.1.27"
   }

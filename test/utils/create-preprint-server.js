@@ -94,14 +94,17 @@ export function createPreprintServer(config) {
   return server;
 }
 
-export function createConfig(port) {
-  return {
-    baseUrlDoi: `http://127.0.0.1:${port}/doi/`,
-    baseUrlArxivHtml: `http://127.0.0.1:${port}/arxivhtml/`,
-    baseUrlArxiv: `http://127.0.0.1:${port}/arxiv/`,
-    baseUrlCrossref: `http://127.0.0.1:${port}/crossref/`,
-    baseUrlOpenAire: `http://127.0.0.1:${port}/openaire/`
-  };
+export function createConfig(port, extra) {
+  return Object.assign(
+    {
+      baseUrlDoi: `http://127.0.0.1:${port}/doi/`,
+      baseUrlArxivHtml: `http://127.0.0.1:${port}/arxivhtml/`,
+      baseUrlArxiv: `http://127.0.0.1:${port}/arxiv/`,
+      baseUrlCrossref: `http://127.0.0.1:${port}/crossref/`,
+      baseUrlOpenAire: `http://127.0.0.1:${port}/openaire/`
+    },
+    extra
+  );
 }
 
 /**

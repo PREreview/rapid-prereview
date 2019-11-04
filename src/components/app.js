@@ -4,6 +4,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
+import smoothscroll from 'smoothscroll-polyfill';
 import Home from './home';
 import ExtensionFallback from './extension-fallback';
 import { UserProvider } from '../contexts/user-context';
@@ -15,6 +16,9 @@ import PrivateRoute from './private-route';
 import ExtensionSplash from './extension-splash';
 import ToCPage from './toc-page';
 import CodeOfConduct from './code-of-conduct';
+
+// kick off the polyfill!
+smoothscroll.polyfill();
 
 export default function App({ user }) {
   return (

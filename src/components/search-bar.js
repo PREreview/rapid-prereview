@@ -1,16 +1,27 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { MdSearch } from 'react-icons/md';
+import { MdSearch, MdClose } from 'react-icons/md';
 import { useHistory, useLocation } from 'react-router-dom';
 import { createPreprintQs } from '../utils/search';
 import IconButton from './icon-button';
 import { useIsMobile } from '../hooks/ui-hooks';
 
 export default function SearchBar({ isFetching }) {
-  const inputRef = useRef();
   const history = useHistory();
   const location = useLocation();
   const isMobile = useIsMobile();
+
+  const defaultValue = new URLSearchParams(location.search).get('q') || '';
+  const prevDefaultValueRef = useRef(null);
+
+  const [value, setValue] = useState(defaultValue);
+
+  useEffect(() => {
+    if (defaultValue !== prevDefaultValueRef.current) {
+      setValue(defaultValue || '');
+    }
+    prevDefaultValueRef.current = defaultValue;
+  }, [defaultValue]);
 
   function handleSubmit(value) {
     const search = createPreprintQs(
@@ -33,8 +44,7 @@ export default function SearchBar({ isFetching }) {
       <div className="search-bar__left-spacer" />
       <div className="search-bar__search-box">
         <input
-          defaultValue={new URLSearchParams(location.search).get('q') || ''}
-          ref={inputRef}
+          value={value}
           type="text"
           className="search-bar__search-box__input"
           placeholder={
@@ -48,22 +58,34 @@ export default function SearchBar({ isFetching }) {
               handleSubmit(e.target.value);
             }
           }}
+          onChange={e => {
+            setValue(e.target.value);
+          }}
           onBlur={e => {
             handleSubmit(e.target.value);
           }}
         />
-        <IconButton
-          className="search-bar__search-box__button"
-          onClick={e => {
-            e.preventDefault();
-            const $input = inputRef.current;
-            if ($input) {
-              handleSubmit($input.value);
-            }
-          }}
-        >
-          <MdSearch className="search-bar__search-box__button-icon" />
-        </IconButton>
+        {!isFetching && defaultValue && defaultValue === value ? (
+          <IconButton
+            className="search-bar__search-box__button"
+            onClick={e => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+          >
+            <MdClose className="search-bar__search-box__button-icon" />
+          </IconButton>
+        ) : (
+          <IconButton
+            className="search-bar__search-box__button"
+            onClick={e => {
+              e.preventDefault();
+              handleSubmit(value);
+            }}
+          >
+            <MdSearch className="search-bar__search-box__button-icon" />
+          </IconButton>
+        )}
       </div>
       <div className="search-bar__right-spacer" />
     </div>

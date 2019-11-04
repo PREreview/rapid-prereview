@@ -19,7 +19,7 @@ describe('search', function() {
   const requests = [];
   const reviews = [];
   const port = 3333;
-  const config = createConfig(port);
+  const config = createConfig(port, { logLevel: 'fatal' });
   const db = new DB(config);
 
   before(async () => {

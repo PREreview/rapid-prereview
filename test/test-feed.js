@@ -15,14 +15,14 @@ describe('feed', function() {
   let user;
   let server;
   const port = 3333;
-  const config = createConfig(port);
+  const config = createConfig(port, { logLevel: 'fatal' });
   const db = new DB(config);
 
   before(async () => {
     await db.init({ reset: true });
     await db.ddoc();
 
-    server = createPreprintServer();
+    server = createPreprintServer({ logLevel: 'fatal' });
     await new Promise((resolve, reject) => {
       server.listen(port, resolve);
     });

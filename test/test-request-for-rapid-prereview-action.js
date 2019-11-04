@@ -14,7 +14,7 @@ describe('RequestForRapidPREreviewAction', function() {
   let user;
   let server;
   const port = 3333;
-  const config = createConfig(port);
+  const config = createConfig(port, { logLevel: 'fatal' });
   const db = new DB(config);
 
   before(async () => {
@@ -30,7 +30,7 @@ describe('RequestForRapidPREreviewAction', function() {
 
     user = action.result;
 
-    server = createPreprintServer();
+    server = createPreprintServer({ logLevel: 'fatal' });
     await new Promise((resolve, reject) => {
       server.listen(port, resolve);
     });

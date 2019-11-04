@@ -20,7 +20,7 @@ describe('API', function() {
   const requests = [];
   const reviews = [];
   const port = 3333;
-  const config = createConfig(port);
+  const config = createConfig(port, { logLevel: 'fatal' });
   const db = new DB(config);
   const baseUrl = `http://127.0.0.1:${port}/api`;
 

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 import { format } from 'date-fns';
 import {
-  MdArrowUpward,
   MdTimeline,
   MdCode,
   MdChevronRight,
@@ -14,7 +13,6 @@ import Tooltip from '@reach/tooltip';
 import Value from './value';
 import { getTags } from '../utils/stats';
 import { checkIfHasReviewed, checkIfHasRequested } from '../utils/actions';
-import CountBadge from './count-badge';
 import ScoreBadge from './score-badge';
 import IconButton from './icon-button';
 import TagPill from './tag-pill';
@@ -27,7 +25,8 @@ export default function PreprintCard({
   user,
   preprint,
   onNewRequest,
-  onNewReview
+  onNewReview,
+  onNew
 }) {
   const [isOpened, setIsOpened] = useState(false);
 
@@ -53,53 +52,6 @@ export default function PreprintCard({
   return (
     <Fragment>
       <div className="preprint-card">
-        {/* <div className="preprint-card__score-panel">
-          <Tooltip
-            label={
-              hasRequested
-                ? 'You already requested feedback for this preprint'
-                : 'Add your request for review'
-            }
-          >
-            <div className="preprint-card__score-panel__top">
-              <IconButton
-                disabled={hasRequested}
-                onClick={() => {
-                  onNewRequest(preprint);
-                }}
-              >
-                <MdArrowUpward className="preprint-card__up-request-icon" />
-              </IconButton>
-            </div>
-          </Tooltip>
-          <Tooltip label="Number of reviews and requests for reviews for this preprint">
-            <div className="preprint-card__score-panel__middle">
-              <ScoreBadge
-                nRequests={requests.length}
-                nReviews={reviews.length}
-              />
-            </div>
-          </Tooltip>
-          <Tooltip
-            label={
-              hasReviewed
-                ? 'You already reviewed this preprint'
-                : 'Add your review'
-            }
-          >
-            <div className="preprint-card__score-panel__bottom">
-              <IconButton
-                disabled={hasReviewed}
-                onClick={() => {
-                  onNewReview(preprint);
-                }}
-              >
-                <AddPrereviewIcon />
-              </IconButton>
-            </div>
-          </Tooltip>
-        </div> */}
-
         <div className="preprint-card__contents">
           <div className="preprint-card__header">
             <XLink
@@ -205,19 +157,14 @@ export default function PreprintCard({
           </div>
 
           <div className="preprint-card__expansion-header">
-            {/* the reviewers */}
-            {/*reviews.length > 0 && (
-                <ul>
-                {reviews.map(action => (
-                <li key={getId(action)}>{unprefix(getId(action.agent))}</li>
-                ))}
-                </ul>
-                )*/}
             <Tooltip label="Number of reviews and requests for reviews for this preprint">
-              <ScoreBadge
-                nRequests={requests.length}
-                nReviews={reviews.length}
-              />
+              {/* ScoreBadge uses forwardRef but Tooltip doesn't work without extra div :( */}
+              <div>
+                <ScoreBadge
+                  nRequests={requests.length}
+                  nReviews={reviews.length}
+                />
+              </div>
             </Tooltip>
             <div className="preprint-card__count-badge">{reviews.length}</div>
             <div className="preprint-card__count-label">
@@ -228,18 +175,29 @@ export default function PreprintCard({
             <div className="preprint-card__count-label">
               Request{requests.length > 1 ? 's' : ''}
             </div>
+
             <Tooltip
               label={
-                hasReviewed
-                  ? 'You already reviewed this preprint'
-                  : 'Add your review'
+                hasReviewed && hasRequested
+                  ? 'You already reviewed and requested reviews for this preprint'
+                  : !hasReviewed && hasRequested
+                  ? 'Add your review'
+                  : hasReviewed && !hasRequested
+                  ? 'Add your request for review'
+                  : 'Add your review or request for review'
               }
             >
               <div className="preprint-card__score-panel__bottom">
                 <IconButton
-                  disabled={hasReviewed}
+                  disabled={hasReviewed && hasRequested}
                   onClick={() => {
-                    onNewReview(preprint);
+                    if (!hasReviewed && !hasRequested) {
+                      onNew(preprint);
+                    } else if (!hasReviewed && hasRequested) {
+                      onNewReview(preprint);
+                    } else if (hasReviewed && !hasRequested) {
+                      onNewRequest(preprint);
+                    }
                   }}
                 >
                   <AddPrereviewIcon />
@@ -308,5 +266,6 @@ PreprintCard.propTypes = {
     ).isRequired
   }),
   onNewRequest: PropTypes.func.isRequired,
-  onNewReview: PropTypes.func.isRequired
+  onNewReview: PropTypes.func.isRequired,
+  onNew: PropTypes.func.isRequired
 };

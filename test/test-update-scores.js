@@ -22,7 +22,7 @@ describe('update scores', function() {
     await db.init({ reset: true });
     await db.ddoc();
 
-    server = createPreprintServer();
+    server = createPreprintServer({ logLevel: 'fatal' });
     await new Promise((resolve, reject) => {
       server.listen(port, resolve);
     });
