@@ -22,13 +22,15 @@ export default function SortOptions({ value, onChange }) {
           <Tooltip
             label={`Sort by ${
               name === 'score'
-                ? 'trending activity (number of reviews and requests divided by time elapsed since first activity)'
+                ? 'trending score (number of reviews and requests divided by time elapsed since first activity)'
                 : name === 'new'
                 ? 'date of first review or request for review posted'
                 : 'date preprint posted'
             }`}
           >
-            <label htmlFor={`sort-options-${name}`}>{name}</label>
+            <label htmlFor={`sort-options-${name}`}>
+              {name === 'score' ? 'trending' : name}
+            </label>
           </Tooltip>
           <MdArrowUpward
             className={classNames('sort-options__icon', {
