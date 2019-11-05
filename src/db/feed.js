@@ -28,6 +28,7 @@ export default class Feed extends EventEmitter {
         doc['@type'] === 'RequestForRapidPREreviewAction' ||
         doc['@type'] === 'RapidPREreviewAction'
       ) {
+        this.feed.pause();
         let preprint;
         try {
           preprint = await this.db.syncIndex(doc, {
@@ -40,6 +41,10 @@ export default class Feed extends EventEmitter {
         }
         this.seq = change.seq;
         this.emit('sync', this.seq, preprint);
+        if (this.feed) {
+          // user may have called `stop`
+          this.feed.resume();
+        }
       } else {
         this.seq = change.seq;
       }
