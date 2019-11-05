@@ -58,7 +58,8 @@ export function cache(getKey) {
         // we only cache a value if its _rev (or similar in case of embeded
         // docs) matches the `cache:onlyIf` (see `invalidate`)
 
-        let watchedKeys, onlyIfValues;
+        let watchedKeys = [],
+          onlyIfValues = [];
         switch (payload['@type']) {
           case 'Person':
           case 'AnonymousReviewerRole':
@@ -82,47 +83,55 @@ export function cache(getKey) {
             break;
         }
 
-        redis.watch(...watchedKeys, err => {
-          if (err) {
-            req.log.error(
-              { err, cacheKey, watchedKeys, command: 'WATCH' },
-              'Cache error'
-            );
-          } else {
-            // assess if the retrieved value is outdated
-            redis.mget(...watchedKeys, (err, expectedOnlyIfValues) => {
-              if (err) {
-                req.log.error(
-                  { err, cacheKey, watchedKeys, command: 'MGET' },
-                  'Cache error'
-                );
-              } else {
-                const isOutdated = expectedOnlyIfValues
-                  .filter(Boolean) // there may not be onlyIf keys for all (in which case redis returns `null`)
-                  .some(value => {
-                    return !onlyIfValues.some(_value => value === _value);
-                  });
-
-                if (isOutdated) {
-                  // Do not cache the value, the CouchDB node we read from is outdated, we will try again on next read
-                  redis.unwatch();
+        if (watchedKeys.length) {
+          redis.watch(...watchedKeys, err => {
+            if (err) {
+              req.log.error(
+                { err, cacheKey, watchedKeys, command: 'WATCH' },
+                'Cache error'
+              );
+            } else {
+              // assess if the retrieved value is outdated
+              redis.mget(...watchedKeys, (err, expectedOnlyIfValues) => {
+                if (err) {
+                  req.log.error(
+                    { err, cacheKey, watchedKeys, command: 'MGET' },
+                    'Cache error'
+                  );
                 } else {
-                  redis
-                    .multi()
-                    .set(cacheKey, JSON.stringify(payload), 'EX', ttl)
-                    .exec((err, r) => {
-                      if (err) {
-                        req.log.error(
-                          { err, cacheKey, command: 'SET' },
-                          'Cache error'
-                        );
-                      }
+                  const isOutdated = expectedOnlyIfValues
+                    .filter(Boolean) // there may not be onlyIf keys for all (in which case redis returns `null`)
+                    .some(value => {
+                      return !onlyIfValues.some(_value => value === _value);
                     });
+
+                  if (isOutdated) {
+                    // Do not cache the value, the CouchDB node we read from is outdated, we will try again on next read
+                    redis.unwatch();
+                  } else {
+                    redis
+                      .multi()
+                      .set(cacheKey, JSON.stringify(payload), 'EX', ttl)
+                      .exec((err, r) => {
+                        if (err) {
+                          req.log.error(
+                            { err, cacheKey, command: 'SET' },
+                            'Cache error'
+                          );
+                        }
+                      });
+                  }
                 }
-              }
-            });
-          }
-        });
+              });
+            }
+          });
+        } else {
+          redis.set(cacheKey, JSON.stringify(payload), 'EX', ttl, (err, r) => {
+            if (err) {
+              req.log.error({ err, cacheKey, command: 'SET' }, 'Cache error');
+            }
+          });
+        }
       }
     };
 
@@ -134,7 +143,7 @@ export function cache(getKey) {
         return next();
       }
 
-      res.set('X-Cached', 'true');
+      res.set('X-Cached', cacheKey);
       res.set('Content-Type', 'application/json');
       res.status(200).send(value);
     });
@@ -194,8 +203,10 @@ export function invalidate() {
 
           case 'RequestForRapidPREreviewAction':
           case 'RapidPREreviewAction': {
-            // invalidate cache key for actionId, activity:<roleId>, home:score,
-            // home:new, home:date and preprintId containing `action`
+            // invalidate cache key for actionId, activity:<roleId> (for profile activity log), home:score,
+            // home:new, home:date (for home page with the various sort option)
+            // and preprintId (containing `action`)
+
             const batch = redis.batch();
             batch.del(createCacheKey(action));
             batch.del(createCacheKey(`activity:${getId(action.agent)}`));

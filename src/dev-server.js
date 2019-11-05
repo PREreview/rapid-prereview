@@ -17,7 +17,7 @@ import {
 const compiler = webpack(webpackConfig);
 
 const config = {
-  cache: false,
+  cache: true,
   disableSsr: true
 };
 
