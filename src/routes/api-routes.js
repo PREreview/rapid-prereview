@@ -40,7 +40,7 @@ router.get('/preprint', cors(), parseQuery, cache(), (req, res, next) => {
 
   s.pipe(
     concatStream(buffer => {
-      req.cache(buffer.toString());
+      req.cache(JSON.parse(buffer));
     })
   );
 
@@ -211,7 +211,7 @@ router.get('/action', cors(), parseQuery, cache(), (req, res, next) => {
 
   s.pipe(
     concatStream(buffer => {
-      req.cache(buffer.toString());
+      req.cache(JSON.parse(buffer));
     })
   );
 
