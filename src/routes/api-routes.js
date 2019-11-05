@@ -6,7 +6,7 @@ import concatStream from 'concat-stream';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
 import resolve from '../utils/resolve';
-import { cache } from '../middlewares/cache';
+import { cache, invalidate } from '../middlewares/cache';
 
 const jsonParser = bodyParser.json({ limit: '2mb' });
 
@@ -15,37 +15,51 @@ const router = new Router({ caseSensitive: true });
 /**
  * Search for preprints with reviews or requests for reviews
  */
-router.get('/preprint', cors(), parseQuery, cache(), (req, res, next) => {
-  res.setHeader('content-type', 'application/json');
+router.get(
+  '/preprint',
+  cors(),
+  parseQuery,
+  cache(req => req.query.key),
+  (req, res, next) => {
+    res.setHeader('content-type', 'application/json');
 
-  let hasErrored = false;
+    let hasErrored = false;
 
-  const s = req.db.streamPreprints(req.query);
+    const s = req.db.streamPreprints(req.query);
 
-  s.on('response', response => {
-    res.status(response.statusCode);
-  });
-  s.on('error', err => {
-    if (!hasErrored) {
-      hasErrored = true;
-      next(err);
-    }
+    let statusCode;
 
-    try {
-      s.destroy();
-    } catch (err) {
-      // noop
-    }
-  });
+    s.on('response', response => {
+      statusCode = response.statusCode;
+      res.status(statusCode);
+    });
+    s.on('error', err => {
+      if (!hasErrored) {
+        hasErrored = true;
+        next(err);
+      }
 
-  s.pipe(
-    concatStream(buffer => {
-      req.cache(JSON.parse(buffer));
-    })
-  );
+      try {
+        s.destroy();
+      } catch (err) {
+        // noop
+      }
+    });
 
-  s.pipe(res);
-});
+    s.pipe(
+      concatStream(buffer => {
+        if (statusCode === 200) {
+          req.cache(
+            JSON.parse(buffer),
+            req.app.locals.config.updateScoreInterval || 5 * 60 * 1000
+          );
+        }
+      })
+    );
+
+    s.pipe(res);
+  }
+);
 
 /**
  * Get a preprint
@@ -168,55 +182,69 @@ router.get(
 /**
  * Post an action (side effects)
  */
-router.post('/action', cors(), jsonParser, async (req, res, next) => {
-  if (!req.isAuthenticated()) {
-    return next(createError(401, 'Login required'));
+router.post(
+  '/action',
+  cors(),
+  jsonParser,
+  invalidate(),
+  async (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      return next(createError(401, 'Login required'));
+    }
+
+    let body;
+
+    try {
+      body = await req.db.post(req.body, { user: req.user });
+    } catch (err) {
+      return next(err);
+    }
+
+    req.invalidate(body);
+
+    res.json(body);
   }
-
-  let body;
-
-  try {
-    body = await req.db.post(req.body, { user: req.user });
-  } catch (err) {
-    return next(err);
-  }
-
-  res.json(body);
-});
+);
 
 /**
  * Search for actions
  */
-router.get('/action', cors(), parseQuery, cache(), (req, res, next) => {
-  res.setHeader('content-type', 'application/json');
+router.get(
+  '/action',
+  cors(),
+  parseQuery,
+  cache(req => req.query.key),
+  (req, res, next) => {
+    res.setHeader('content-type', 'application/json');
 
-  let hasErrored = false;
+    let hasErrored = false;
 
-  const s = req.db.streamActions(req.query);
-  s.on('response', response => {
-    res.status(response.statusCode);
-  });
-  s.on('error', err => {
-    if (!hasErrored) {
-      hasErrored = true;
-      next(err);
-    }
+    const s = req.db.streamActions(req.query);
+    s.on('response', response => {
+      res.status(response.statusCode);
+    });
+    s.on('error', err => {
+      if (!hasErrored) {
+        hasErrored = true;
+        next(err);
+      }
 
-    try {
-      s.destroy();
-    } catch (err) {
-      // noop
-    }
-  });
+      try {
+        s.destroy();
+      } catch (err) {
+        // noop
+      }
+    });
 
-  s.pipe(
-    concatStream(buffer => {
-      req.cache(JSON.parse(buffer));
-    })
-  );
+    s.pipe(
+      concatStream(buffer => {
+        req.cache(JSON.parse(buffer));
+      })
+    );
 
-  s.pipe(res);
-});
+    s.pipe(res);
+  }
+);
 
 /**
  * Resolve (get metadata) for an identifier passed as query string paramenter

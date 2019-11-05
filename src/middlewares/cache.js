@@ -1,238 +1,228 @@
 import noop from 'lodash/noop';
-import { promisify } from 'util';
-import EventEmitter from 'events';
-import { arrayify, getId } from '../utils/jsonld';
+import { getId, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 
-const TTL_SEC = 60 * 60 * 24 * 7;
+/**
+ * return a value that can be used as an ETag (that is is guarantee to change
+ * if `obj` changes)
+ */
+function getOnlyIfValue(obj = {}) {
+  switch (obj['@type']) {
+    case 'Person':
+    case 'RequestForRapidPREreviewAction':
+    case 'RapidPREreviewAction':
+      return obj._rev;
 
-export function cache(
-  getKey = function(req) {
-    return req.originalUrl;
+    // roles are embedded in user docs so don't have a _rev
+    case 'AnonymousReviewerRole':
+    case 'PublicReviewerRole':
+      return obj.modifiedDate;
+
+    default:
+      throw createError(500, 'getOnlyIfValue: invalid type for obj');
   }
-) {
-  const lua = `
--- ARGV are the doc ids that need to be checked (may be invalidated)
+}
 
-local isInvalidated = false;
+function createCacheKey(id) {
+  id = getId(id);
 
-for _,docId in ipairs(ARGV) do
-  local isMember = redis.call('SISMEMBER', 'rpos:cache:invalidate', docId)
+  return id ? `cache:value:${id}` : id;
+}
 
-  if (isMember) then
-    isInvalidated = true
-    -- delete cached document
-    local cacheKey = 'rpos:cache:doc:'..docId
-    redis.call('DEL', cacheKey)
+function createOnlyIfKey(id) {
+  id = getId(id);
 
-    -- delete search results containing cached documents
-    local searchResultsByDocIdKey = 'rpos:cache:search:'..docId
-    local searchResultCacheKeys = redis.call('SMEMBERS', searchResultsByDocIdKey)
-    redis.call('DEL', unpack(searchResultCacheKeys))
+  return id ? `cache:onlyIf:${id}` : id;
+}
 
-    -- everything was invalidated so we can remove the docId from the invalidate set
-    redis.call('SREM', 'rpos:cache:invalidate', docId)
-  end
-
-end
-
-return isInvalidated
-`;
+export function cache(getKey) {
+  if (typeof getKey !== 'function') {
+    throw createError(500, `cache must be called with a getKey function`);
+  }
 
   return function(req, res, next) {
     const redis = req.app.get('redisClient');
     const config = req.app.locals.config;
 
-    if (!config || !config.cache) {
+    const cacheKey = createCacheKey(getKey(req));
+
+    if (!config || !config.cache || !cacheKey || typeof cacheKey !== 'string') {
       req.cache = noop;
       return next();
     }
 
-    const key = createCacheKey(getKey(req));
-
     // provides `req.cache` so user can update the cached value
-    req.cache = function(payload) {
-      // TODO add `key` to  cache:search:<docId> for each docId of payload
+    req.cache = function(payload, ttl = 60 * 60 * 24 /* 1 day in sec */) {
+      if (payload) {
+        // we work around CouchDB 2.x eventual consistency window:
+        // we only cache a value if its _rev (or similar in case of embeded
+        // docs) matches the `cache:onlyIf` (see `invalidate`)
 
-      redis.set(key, JSON.stringify(payload), 'EX', TTL_SEC, err => {
-        if (err) {
-          req.log.error({ err, key, command: 'SET' }, 'Cache error');
+        let watchedKeys, onlyIfValues;
+        switch (payload['@type']) {
+          case 'Person':
+          case 'AnonymousReviewerRole':
+          case 'PublicReviewerRole':
+          case 'RequestForRapidPREreviewAction':
+          case 'RapidPREreviewAction':
+            watchedKeys = [createOnlyIfKey(payload)];
+            onlyIfValues = [getOnlyIfValue(payload)];
+            break;
+
+          case 'ScholarlyPreprint':
+            watchedKeys = arrayify(
+              payload.potentialAction.map(createOnlyIfKey)
+            );
+            onlyIfValues = arrayify(
+              payload.potentialAction.map(getOnlyIfValue)
+            );
+            break;
+
+          default:
+            break;
         }
-      });
+
+        redis.watch(...watchedKeys, err => {
+          if (err) {
+            req.log.error(
+              { err, cacheKey, watchedKeys, command: 'WATCH' },
+              'Cache error'
+            );
+          } else {
+            // assess if the retrieved value is outdated
+            redis.mget(...watchedKeys, (err, expectedOnlyIfValues) => {
+              if (err) {
+                req.log.error(
+                  { err, cacheKey, watchedKeys, command: 'MGET' },
+                  'Cache error'
+                );
+              } else {
+                const isOutdated = expectedOnlyIfValues
+                  .filter(Boolean) // there may not be onlyIf keys for all (in which case redis returns `null`)
+                  .some(value => {
+                    return !onlyIfValues.some(_value => value === _value);
+                  });
+
+                if (isOutdated) {
+                  // Do not cache the value, the CouchDB node we read from is outdated, we will try again on next read
+                  redis.unwatch();
+                } else {
+                  redis
+                    .multi()
+                    .set(cacheKey, JSON.stringify(payload), 'EX', ttl)
+                    .exec((err, r) => {
+                      if (err) {
+                        req.log.error(
+                          { err, cacheKey, command: 'SET' },
+                          'Cache error'
+                        );
+                      }
+                    });
+                }
+              }
+            });
+          }
+        });
+      }
     };
 
-    redis.get(key, (err, value) => {
+    redis.get(cacheKey, (err, value) => {
       if (err || value == null) {
         if (err) {
-          req.log.error({ err, key, command: 'GET' }, 'Cache error');
+          req.log.error({ err, cacheKey, command: 'GET' }, 'Cache error');
         }
         return next();
       }
 
-      // Respond with the cached value if (and only if) it hasn't been
-      // invalidated
-      const data = JSON.parse(value);
-      let docIds = [];
-      if ('@id' in data) {
-        docIds = [getId(data)];
-      } else if (data.rows) {
-        docIds = data.rows.map(row => row.id);
-      }
-
-      redis.eval(lua, 0, ...docIds, (err, isInvalidated) => {
-        if (err) {
-          req.log.error({ err, key, command: 'ISMEMBER' }, 'Cache error');
-          // we don't know if cache is invalidated, we serve data from DB
-          return next();
-        }
-
-        if (isInvalidated) {
-          return next();
-        }
-
-        res.set('X-Cached', 'true');
-        res.set('Content-Type', 'application/json');
-        res.status(200).send(value);
-      });
+      res.set('X-Cached', 'true');
+      res.set('Content-Type', 'application/json');
+      res.status(200).send(value);
     });
   };
 }
 
-export function createCacheKey(id) {
-  return `cache:${arrayify(id).join('::')}`;
-}
+export function invalidate() {
+  return function(req, res, next) {
+    const redis = req.app.get('redisClient');
+    const config = req.app.locals.config;
 
-// TODO make 3 separate classes
-export class CacheInvalidator extends EventEmitter {
-  constructor(db, redisClient) {
-    super();
-    this.redis = redisClient;
-    this.db = db;
-  }
-
-  async start() {
-    if (this.feedDocs || this.feedIndex || this.feedUsers) {
-      throw createError(400, 'cache invalidator is already started');
+    if (!config || !config.cache) {
+      req.invalidate = noop;
+      return next();
     }
 
-    const mget = promisify(this.redis.mget).bind(this.redis);
+    req.invalidate = function(action) {
+      if (action) {
+        // In order to work around CouchDB 2.x eventual consistency we store the
+        // _rev (or similar for embedded docs) of the latest update so that `cache`
+        // only set a cached value in case of _rev match. This prevents a lagging
+        // node to reset the cache to a value different from the latest
 
-    const [sinceDocs, sinceIndex, sinceUsers] = await mget(
-      `cache:seq:docs`,
-      `cache:seq:index`,
-      `cache:seq:users`
-    );
+        switch (action['@type']) {
+          case 'RegisterAction':
+          case 'CreateRoleAction':
+          case 'UpdateUserAction':
+          case 'UpdateRoleAction':
+          case 'DeanonymizeRoleAction': {
+            // invalidate cacheKey for userId and roleId
+            const user = action.result;
+            const batch = redis.batch();
+            batch.set(
+              createOnlyIfKey(user),
+              getOnlyIfValue(user),
+              'EX',
+              60 * 60 // 1 hour in sec
+            );
+            batch.del(createCacheKey(user));
+            arrayify(user.hasRole).forEach(role => {
+              batch.set(
+                createOnlyIfKey(role),
+                getOnlyIfValue(role),
+                'EX',
+                60 * 60 // 1 hour in sec
+              );
+              batch.del(createCacheKey(role));
+            });
 
-    this.feedDocs = this.db.docs.follow({
-      since: sinceDocs || 'now',
-      include_docs: true
-    });
-    this.feedDocs.on('change', change => {
-      const { doc } = change;
+            batch.exec((err, res) => {
+              if (err) {
+                req.log.error({ err, action }, 'Invalidate error');
+              }
+            });
+            break;
+          }
 
-      if (
-        doc['@type'] === 'RequestForRapidPREreviewAction' ||
-        doc['@type'] === 'RapidPREreviewAction'
-      ) {
-        this.feedDocs.pause();
+          case 'RequestForRapidPREreviewAction':
+          case 'RapidPREreviewAction': {
+            // invalidate cache key for actionId, activity:<roleId>, home:score,
+            // home:new, home:date and preprintId containing `action`
+            const batch = redis.batch();
+            batch.del(createCacheKey(action));
+            batch.del(createCacheKey(`activity:${getId(action.agent)}`));
+            batch.del(createCacheKey('home:score'));
+            batch.del(createCacheKey('home:new'));
+            batch.del(createCacheKey('home:date'));
+            batch.del(createCacheKey(action.object));
+            batch.set(
+              createOnlyIfKey(action),
+              getOnlyIfValue(action),
+              'EX',
+              60 * 60 // 1 hour in sec
+            );
+            batch.exec((err, res) => {
+              if (err) {
+                req.log.error({ err, action }, 'Invalidate error');
+              }
+            });
+            break;
+          }
 
-        this.redis
-          .multi()
-          .sadd('cache:invalidate', getId(doc), getId(doc.object))
-          .set('cache:seq:docs', change.seq)
-          .exec((err, replies) => {
-            if (err) {
-              err.seq = change.seq;
-              err.db = 'docs';
-              this.emit('error', err);
-            }
-
-            if (this.feedDocs) {
-              // user may have called `stop`
-              this.feedDocs.resume();
-            }
-          });
+          default:
+            break;
+        }
       }
-    });
-    this.feedDocs.follow();
+    };
 
-    this.feedIndex = this.db.index.follow({
-      since: sinceIndex || 'now',
-      include_docs: true
-    });
-    this.feedIndex.on('change', change => {
-      const { doc } = change;
-
-      if (doc['@type'] === 'ScholarlyPreprint') {
-        this.feedIndex.pause();
-
-        this.redis
-          .multi()
-          .sadd('cache:invalidate', getId(doc))
-          .set('cache:seq:index', change.seq)
-          .exec((err, replies) => {
-            if (err) {
-              err.seq = change.seq;
-              err.db = 'index';
-              this.emit('error', err);
-            }
-
-            if (this.feedIndex) {
-              // user may have called `stop`
-              this.feedIndex.resume();
-            }
-          });
-      }
-    });
-    this.feedIndex.follow();
-
-    this.feedUsers = this.db.users.follow({
-      since: sinceUsers || 'now',
-      include_docs: true
-    });
-    this.feedUsers.on('change', change => {
-      const { doc } = change;
-
-      if (doc['@type'] === 'Person') {
-        this.feedUsers.pause();
-
-        this.redis
-          .multi()
-          .sadd('cache:invalidate', [getId(doc)].concat(doc.hasRole.map(getId)))
-          .set('cache:seq:user', change.seq)
-          .exec((err, replies) => {
-            if (err) {
-              err.seq = change.seq;
-              err.db = 'users';
-              this.emit('error', err);
-            }
-
-            if (this.feedUser) {
-              // user may have called `stop`
-              this.feedUser.resume();
-            }
-          });
-      }
-    });
-    this.feedUsers.follow();
-
-    return { sinceDocs, sinceIndex, sinceUsers };
-  }
-
-  stop() {
-    if (this.feedDocs) {
-      this.feedDocs.stop();
-      this.feedDocs = null;
-    }
-
-    if (this.feedIndex) {
-      this.feedIndex.stop();
-      this.feedIndex = null;
-    }
-
-    if (this.feedUsers) {
-      this.feedUsers.stop();
-      this.feedUsers = null;
-    }
-  }
+    next();
+  };
 }
