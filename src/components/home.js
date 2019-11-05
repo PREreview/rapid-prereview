@@ -211,10 +211,7 @@ export default function Home() {
                 onClick={() => {
                   history.push({
                     pathname: location.pathame,
-                    search: createPreprintQs(
-                      { bookmark: null },
-                      location.search
-                    )
+                    search: createPreprintQs({}, location.search)
                   });
                 }}
               >
@@ -231,10 +228,7 @@ export default function Home() {
                 onClick={() => {
                   history.push({
                     pathname: location.pathame,
-                    search: createPreprintQs(
-                      { bookmark: results.bookmark },
-                      location.search
-                    ),
+                    search: createPreprintQs({}, location.search),
                     state: { bookmark: results.bookmark }
                   });
                 }}

@@ -12,8 +12,7 @@ export function createPreprintQs(
     hasCode,
     subjects,
     // sort
-    sort = `score`, // `new` or `date`
-    bookmark
+    sort // `score`, `new` or `date`
   } = {},
   uiQs = ''
 ) {
