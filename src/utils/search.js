@@ -173,6 +173,11 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
 
   api.set('limit', 10);
 
+  // cache key
+  if (api.get('q') === '*:*' && !bookmark) {
+    api.set('key', `home:${ui.get('sort') || 'score'}`);
+  }
+
   const sapi = api.toString();
 
   return sapi ? `?${sapi}` : undefined;
@@ -194,6 +199,11 @@ export function createActivityQs({ roleId, bookmark }) {
   api.set('include_docs', true);
   api.set('counts', JSON.stringify(['@type']));
   api.set('limit', 10);
+
+  // cache key
+  if (!bookmark) {
+    api.set('key', `activity:${roleId}`);
+  }
 
   const sapi = api.toString();
 

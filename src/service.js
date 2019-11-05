@@ -39,7 +39,7 @@ const intervalId = setIntervalAsync(
     lastDateScoreUpdated = new Date().toISOString();
     return db.updateScores();
   },
-  5 * 60 * 1000,
+  config.updateScoreInterval || 5 * 60 * 1000,
   err => {
     lastScoreErr = err;
     console.error(err);

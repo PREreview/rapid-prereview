@@ -17,7 +17,7 @@ import {
 const compiler = webpack(webpackConfig);
 
 const config = {
-  cache: false,
+  cache: true,
   disableSsr: true
 };
 
@@ -32,7 +32,7 @@ const intervalId = setIntervalAsync(
   () => {
     return db.updateScores();
   },
-  5 * 60 * 1000,
+  config.updateScoreInterval || 5 * 60 * 1000,
   err => console.error(err)
 );
 
