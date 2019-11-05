@@ -12,7 +12,11 @@
     justify-content: flex-end;
 
     & .button {
-      margin-left: var(--mgrd);
+      margin-left: var(--sgrd);
+
+      &:first-child {
+        margin-left: 0;
+      }
     }
   }
 

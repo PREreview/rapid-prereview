@@ -54,10 +54,14 @@
     color: var(--ui-basic-font-color--light);
     text-transform: uppercase;
     letter-spacing: 0.035em;
+
     & .settings__persona-list-header__active {
       padding: 0 var(--sgrd);
       flex: 0 0 128px;
       box-sizing: border-box;
+      @media (--mobile-portrait) {
+        flex: 0 1 auto;
+      }
     }
 
     & .settings__persona-list-header__username {
@@ -112,6 +116,9 @@
   & .settings__persona-list-item__active-state {
     padding-right: var(--sgrd);
     flex: 0 0 110px;
+    @media (--mobile-portrait) {
+      flex: 0 0 50px;
+    }
   }
   & .settings__persona-list-item__is-active {
     display: flex;
@@ -119,7 +126,7 @@
     padding-left: var(--xsgrd);
   }
 
-  .settings__persona-active-icon {
+  & .settings__persona-active-icon {
     width: var(--mgrd);
     height: var(--mgrd);
     fill: var(--prereview-gold);
@@ -127,6 +134,12 @@
 
     &.settings__persona-active-icon--inactive {
       fill: var(--light-grey);
+    }
+  }
+
+  & .settings__persona-active-label {
+    @media (--mobile-portrait) {
+      display: none;
     }
   }
   & .settings__persona-status {
@@ -140,7 +153,7 @@
 
     & .settings__persona-status__icon-container {
       height: var(--mgrd);
-      padding: 0 var(--sgrd) 0 var(--xsgrd);
+      padding: 0 var(--xsgrd) 0 var(--xsgrd);
       color: white;
       border-radius: 12px;
 
@@ -153,14 +166,24 @@
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+      @media (--mobile-portrait) {
+        padding: 0;
+        width: var(--mgrd);
+      }
     }
 
     & .settings__persona-status__icon {
       width: 18px;
       height: 18px;
       fill: white;
-      margin-right: var(--xxsgrd);
+
       flex: 0 0 18px;
+    }
+  }
+  & .settings__persona-status__label {
+    margin: 0 var(--xxsgrd);
+    @media (--mobile-portrait) {
+      display: none;
     }
   }
 }

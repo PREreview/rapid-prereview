@@ -25,6 +25,7 @@
     margin-right: var(--xsgrd);
     height: var(--sgrd);
     width: var(--sgrd);
+    flex: 0 0 var(--sgrd);
   }
 
   & .review-review__persona-selector {

@@ -50,7 +50,7 @@ export default function SettingsRoles({ user }) {
               {getId(role) === getId(defaultRole) ? (
                 <span className="settings__persona-list-item__is-active">
                   <MdStar className="settings__persona-active-icon" />
-                  Active
+                  <span className="settings__persona-active-label">Active</span>
                 </span>
               ) : (
                 <MakeActivePersonaModalButton user={user} role={role} />
@@ -70,12 +70,17 @@ export default function SettingsRoles({ user }) {
             <span className="settings__persona-status">
               {role['@type'] === 'PublicReviewerRole' ? (
                 <div className="settings__persona-status__icon-container">
-                  <MdPublic className="settings__persona-status__icon" /> Public
+                  <MdPublic className="settings__persona-status__icon" />{' '}
+                  <span className="settings__persona-status__label">
+                    Public
+                  </span>
                 </div>
               ) : (
                 <div className="settings__persona-status__icon-container">
                   <IncognitoIcon className="settings__persona-status__icon" />{' '}
-                  Anonymous
+                  <span className="settings__persona-status__label">
+                    Anonymous
+                  </span>
                 </div>
               )}
             </span>
@@ -168,7 +173,7 @@ function MakeActivePersonaModalButton({ user, role }) {
         }}
       >
         <MdStarBorder className="settings__persona-active-icon settings__persona-active-icon--inactive" />
-        Activate...
+        <span className="settings__persona-active-label">Activate...</span>
       </Button>
 
       {isOpen && (

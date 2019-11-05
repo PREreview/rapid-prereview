@@ -59,7 +59,7 @@ const ReviewReader = React.memo(function ReviewReader({
         <Fragment>
           <p className="review-reader__help-text">
             <MdInfoOutline className="review-reader__help-text-icon" />
-            View only the reviews you are interested in by draging-and-dropping
+            View only the reviews you are interested in by dragging-and-dropping
             user badges to the filter bubble below.
           </p>
           <h4 className="review-reader__sub-header">Reviewers</h4>

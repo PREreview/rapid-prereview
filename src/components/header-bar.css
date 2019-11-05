@@ -55,12 +55,12 @@
 
   & .header-bar__nav-item {
     font: var(--ui-header-menu-font);
-    margin: 0 var(--sgrd);
+    margin: 0 var(--mgrd) 0 0;
     display: block;
     white-space: nowrap;
     line-height: 0;
 
-    &:last-of-type {
+    &:last-child {
       margin-right: 0;
     }
 

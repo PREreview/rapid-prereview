@@ -224,5 +224,8 @@
     &:last-child {
       border-right: none;
     }
+    &:empty {
+      display: none;
+    }
   }
 }

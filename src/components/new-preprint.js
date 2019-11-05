@@ -275,7 +275,20 @@ function StepReview({
           >
             {isSingleStep ? 'Cancel' : 'Go Back'}
           </Button>
+
           <Button
+            onClick={e => {
+              onViewInContext({
+                preprint,
+                tab: 'review'
+              });
+            }}
+            disabled={postData.isActive}
+          >
+            View In Context
+          </Button>
+          <Button
+            primary={true}
             onClick={e => {
               post(
                 {
@@ -298,17 +311,6 @@ function StepReview({
             disabled={postData.isActive || !canSubmit}
           >
             Submit
-          </Button>
-          <Button
-            onClick={e => {
-              onViewInContext({
-                preprint,
-                tab: 'review'
-              });
-            }}
-            disabled={postData.isActive}
-          >
-            View In Context
           </Button>
         </Controls>
       </form>
@@ -348,7 +350,17 @@ function StepRequest({
         >
           {isSingleStep ? 'Cancel' : 'Go Back'}
         </Button>
+
         <Button
+          onClick={e => {
+            onViewInContext({ preprint, tab: 'request' });
+          }}
+          disabled={postData.isActive}
+        >
+          View In Context
+        </Button>
+        <Button
+          primary={true}
           onClick={e => {
             post(
               {
@@ -363,14 +375,6 @@ function StepRequest({
           disabled={postData.isActive}
         >
           Submit
-        </Button>
-        <Button
-          onClick={e => {
-            onViewInContext({ preprint, tab: 'request' });
-          }}
-          disabled={postData.isActive}
-        >
-          View In Context
         </Button>
       </Controls>
     </div>

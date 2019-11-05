@@ -109,8 +109,8 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
             }
           >
             {role && role.name && role.name !== unprefix(roleId)
-              ? `${role.name} (${unprefix(roleId)})`
-              : `View Profile (${unprefix(roleId)})`}
+              ? `${role.name} (${unprefix(roleId).substring(0, 5)}…)`
+              : `View Profile (${unprefix(roleId).substring(0, 5)}…)`}
           </MenuLink>
           {children}
         </MenuList>
@@ -132,8 +132,8 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
             }
           >
             {role && role.name && role.name !== unprefix(roleId)
-              ? `${role.name} (${unprefix(roleId)})`
-              : `View Profile (${unprefix(roleId)})`}
+              ? `${role.name} (${unprefix(roleId).substring(0, 5)}…)`
+              : `View Profile (${unprefix(roleId).substring(0, 5)}…)`}
           </MenuLink>
         </MenuList>
       )}

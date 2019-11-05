@@ -235,7 +235,9 @@ export default function Shell({ children }) {
                   setTransition('maximized');
                 }}
               >
-                <MdUnfoldMore className="shell__controls__button__icon" />
+                <div className="shell__controls__button__icon-container">
+                  <MdUnfoldMore className="shell__controls__button__icon" />
+                </div>
               </IconButton>
 
               <IconButton
@@ -244,7 +246,9 @@ export default function Shell({ children }) {
                   setTransition('minimized');
                 }}
               >
-                <MdUnfoldLess className="shell__controls__button__icon" />
+                <div className="shell__controls__button__icon-container">
+                  <MdUnfoldLess className="shell__controls__button__icon" />
+                </div>
               </IconButton>
             </div>
           </div>
