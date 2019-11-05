@@ -7,7 +7,7 @@
 
   & .role-editor__name_input {
     flex: 1 1 50%;
-    padding-right: var(--mgrd);
+    margin-bottom: var(--mgrd);
   }
   & .role-editor__avatar-block {
     flex: 1 0 50%;
@@ -24,7 +24,7 @@
     border: 2px solid var(--ruling-color);
     text-align: center;
     position: relative;
-    background: var(--light-grey);
+    background: var(--prereview-grey);
     display: block;
     min-width: 200px;
     line-height: 0;
@@ -61,10 +61,6 @@
     position: absolute;
     bottom: 0;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
-  }
-
-  & .role-editor__name_input {
-    margin-bottom: var(--mgrd);
   }
 
   & .role-editor__image-controls-label {

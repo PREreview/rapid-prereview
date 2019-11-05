@@ -78,7 +78,7 @@ export default function RoleEditor({ user, role, onCancel, onSaved }) {
               borderRadius={75}
               scale={scale}
               rotate={rotate}
-              style={{ width: '100%', height: '100%' }}
+              /*style={{ width: '100%', height: '100%' }}*/
             />
             {!image && <input {...getInputProps()} />}
             {!image && (
