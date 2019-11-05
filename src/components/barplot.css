@@ -7,27 +7,31 @@
   & .barplot__question-list-header {
     box-sizing: border-box;
     display: flex;
-    padding-bottom: var(--sgrd);
+    flex-wrap: wrap;
+    padding: var(--sgrd) 0 var(--sgrd) var(--sgrd);
     margin-bottom: 0;
-
+    justify-content: space-between;
     border-bottom: 1px solid var(--ruling-color);
 
     & .barplot__question-list-header__left {
       box-sizing: border-box;
-      flex: 0 0 50%;
+      flex: 1 1 50%;
+
       color: var(--text-color--light);
       font: var(--ui-basic-font--small);
       color: var(--ui-basic-font-color--light);
-      padding-left: var(--sgrd);
+
       text-transform: uppercase;
       display: flex;
       align-items: center;
+      box-sizing: border-box;
     }
 
     & .barplot__question-list-header__right {
       box-sizing: border-box;
       display: flex;
-      flex: 0 0 50%;
+      flex: 1 1 50%;
+      /* margin-left: 16px; */
     }
   }
 

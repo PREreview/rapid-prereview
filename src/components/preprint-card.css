@@ -270,6 +270,8 @@
 }
 
 .preprint-card-expansion {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 100%;
   position: relative;
 }
