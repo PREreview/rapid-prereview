@@ -74,3 +74,24 @@ export class PreprintsWithActionsStore extends EventEmitter {
     }
   }
 }
+
+export class PreprintsSearchResultsStore extends EventEmitter {
+  constructor() {
+    super();
+    // only cache the last result
+    this.cache = new LRU({ max: 1 });
+  }
+
+  has(search) {
+    return this.cache.has(search);
+  }
+
+  get(search) {
+    return this.cache.get(search);
+  }
+
+  set(search, payload) {
+    this.emit('SET', search, payload);
+    this.cache.set(search, payload);
+  }
+}
