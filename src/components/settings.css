@@ -5,7 +5,7 @@
   box-sizing: border-box;
   font: var(--ui-basic-font);
   margin: 0;
-  min-height: 100vh;
+  min-height: calc(100vh);
   padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd);
   box-sizing: border-box;
 
@@ -14,8 +14,9 @@
     margin: 0 auto;
     background-color: white;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
-    min-height: 100vh;
+    min-height: calc(100vh - var(--header-bar-height) - 2*var(--lgrd));
   }
+
   & .settings__title {
     margin: 0 0 var(--mgrd) 0;
     font: var(--ui-header-1-font);

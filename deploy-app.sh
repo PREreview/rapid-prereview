@@ -12,7 +12,13 @@ zip -r app.zip *.json *.js dist/* src/* public/* views/* scripts/* test/*
 
 az webapp config appsettings set --resource-group "rapid-prereview" --name "rapid-prereview" --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true
 
-az webapp config set --resource-group "rapid-prereview" --name "rapid-prereview" --startup-file "npm run start:prod"
+
+## https://docs.microsoft.com/en-us/azure/app-service/containers/configure-language-nodejs#run-with-pm2
+
+# az webapp config set --resource-group "rapid-prereview" --name "rapid-prereview" --startup-file "npm run start:prod"
+
+# Azure App service will start the file with pm2
+az webapp config set --resource-group "rapid-prereview" --name "rapid-prereview" --startup-file "./dist/server.js"
 
 az webapp deployment source config-zip --resource-group "rapid-prereview" --name "rapid-prereview" --src app.zip
 

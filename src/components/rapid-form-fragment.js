@@ -17,7 +17,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
   );
 
   const [isOpenedMap, setIsOpenedMap] = useState(
-    yesNoQuestions.map((map, q) => {
+    yesNoQuestions.reduce((map, q) => {
       map[q.identifier] = false;
       return map;
     }, {})
@@ -28,7 +28,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
   return (
     <div className="rapid-form-fragment">
       <fieldset className="rapid-form-fragment__multi-choice-questions">
-        {yesNoQuestions.map(({ identifier, question, help }, i) => {
+        {yesNoQuestions.map(({ identifier, question, help, required }, i) => {
           const answer = answerMap[identifier];
 
           return (
@@ -41,6 +41,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
                     <IconButton
                       className="radid-form-fragment__help"
                       onClick={e => {
+                        e.preventDefault();
                         setIsOpenedMap(
                           Object.assign({}, isOpenedMap, {
                             [identifier]: !isOpenedMap[identifier]
@@ -55,6 +56,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
 
                 <div className="rapid-form-fragment__radio-group">
                   <RadioButton
+                    required={required}
                     inputId={`question-${identifier}-yes`}
                     name={identifier}
                     value="yes"
@@ -66,6 +68,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
                   />
 
                   <RadioButton
+                    required={required}
                     inputId={`question-${identifier}-no`}
                     name={identifier}
                     value="no"
@@ -77,6 +80,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
                   />
 
                   <RadioButton
+                    required={required}
                     inputId={`question-${identifier}-na`}
                     name={identifier}
                     value="n.a."
@@ -88,6 +92,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
                   />
 
                   <RadioButton
+                    required={required}
                     inputId={`question-${identifier}-unsure`}
                     name={identifier}
                     value="unsure"
@@ -118,7 +123,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
       <hr className="rapid-form-fragment__divider" />
 
       <fieldset className="rapid-form-fragment__text-response-questions">
-        {freeFormQuestions.map(({ identifier, question }) => {
+        {freeFormQuestions.map(({ identifier, question, required }) => {
           const answer = answerMap[identifier];
 
           return (
@@ -135,6 +140,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
               </Value>
 
               <textarea
+                required={required}
                 className="radid-form-fragment__text-answer"
                 id={`question-${identifier}`}
                 name={identifier}

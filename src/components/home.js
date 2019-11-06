@@ -61,7 +61,7 @@ export default function Home() {
         />
       )}
       <HeaderBar
-        onClickMenuButton={() => {
+        onClickMenuButton={e => {
           setShowLeftPanel(!showLeftPanel);
         }}
       />

@@ -14,7 +14,7 @@
     margin: 0 auto;
     background-color: white;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
-    min-height: 100vh;
+    min-height: calc(100vh - var(--header-bar-height) - 2*var(--lgrd));
     padding: var(--mgrd) var(--xlgrd);
     box-sizing: border-box;
     position: relative;

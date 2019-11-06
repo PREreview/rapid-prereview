@@ -17,10 +17,14 @@ export default function HeaderBar({ onClickMenuButton }) {
       <div className="header-bar__left">
         {!!onClickMenuButton && (
           <IconButton
+            data-noclickoutside="true"
             onClick={onClickMenuButton}
             className="header-bar__menu-button"
           >
-            <MdMenu className="header-bar__menu-button-icon" />
+            <MdMenu
+              className="header-bar__menu-button-icon"
+              data-noclickoutside="true"
+            />
           </IconButton>
         )}
         <RapidPreReviewLogo />

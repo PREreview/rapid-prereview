@@ -15,8 +15,11 @@ export default function LeftSidePanel({
         // inside click
         return;
       }
-      // outside click
-      onClickOutside();
+
+      if (!e.target.hasAttribute('data-noclickoutside')) {
+        // outside click
+        onClickOutside();
+      }
     }
 
     if (visible) {
