@@ -27,7 +27,7 @@ export default function WelcomeModal(props) {
             This platform was designed to facilitate rapid, open review or
             preprint related to outbreaks.
           </p>
-          <p>
+          <div>
             Here you can:
             <ol>
               <li>Find rapid reviews of existing preprints.</li>
@@ -37,7 +37,7 @@ export default function WelcomeModal(props) {
               </li>
               <li>Review preprints.</li>
             </ol>
-          </p>
+          </div>
 
           <div className="welcome-modal__controls">
             <Link className="welcome-modal__get-app" to="/app">
