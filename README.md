@@ -158,7 +158,8 @@ TODO
 4. Run `npm run build` (after having run `npm install`)
 5. Run `./deploy-app.sh` to deploy the app and `./deploy-service.sh` to deploy the service
 
-To see the logs, run `./log-app.sh` or `./log-service.sh`
+To see the logs, run `./log-app.sh` or `./log-service.sh`. We use
+[pino](https://getpino.io/) for logging.
 
 To seed the production database run: `npm run seed:prod`. Be aware that this
 will source the production environment variables.

@@ -1,11 +1,15 @@
 import http from 'http';
 import express from 'express';
 import helmet from 'helmet';
+import pino from 'pino';
 import { rapid, assets } from './index';
 import { PRODUCTION_DOMAIN } from './constants';
 import { createRedisClient } from './utils/redis';
 
+const logger = pino({ logLevel: 'info' });
+
 const config = {
+  pino: logger,
   appRootUrl: PRODUCTION_DOMAIN,
   isBeta: true,
   disableSsr: true
@@ -22,7 +26,7 @@ const server = http.createServer(app);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
-  console.log(`server listenning on port ${port}`);
+  logger.info({ port }, `server listenning on port ${port}`);
 });
 
 process.once('SIGINT', function() {

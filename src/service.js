@@ -1,6 +1,7 @@
 import http from 'http';
 import express from 'express';
 import helmet from 'helmet';
+import pino from 'pino';
 import DB from './db/db';
 import Feed from './db/feed';
 import {
@@ -16,7 +17,10 @@ let lastChangeErr = null;
 let lastDateScoreUpdated = null;
 let lastScoreErr = null;
 
+const logger = pino({ logLevel: 'info' });
+
 const config = {
+  pino: logger,
   appRootUrl: PRODUCTION_DOMAIN,
   isBeta: true,
   disableSsr: true
@@ -27,13 +31,15 @@ const feed = new Feed(db);
 feed.resume();
 feed.on('error', err => {
   lastChangeErr = err;
-  console.error(err);
+  logger.error({ err }, 'Feed error');
 });
 feed.on('start', seq => {
   lastSeq = seq;
+  logger.info({ seq }, 'Feed started');
 });
-feed.on('sync', seq => {
+feed.on('sync', (seq, preprint) => {
   lastSeq = seq;
+  logger.info({ seq, id: preprint._id, rev: preprint._rev }, 'Feed synced');
 });
 
 const redisClient = createRedisClient(config);
@@ -41,7 +47,9 @@ const redisClient = createRedisClient(config);
 const intervalId = setIntervalAsync(
   () => {
     lastDateScoreUpdated = new Date().toISOString();
-    return db.updateScores().then(() => {
+    return db.updateScores().then(updatedDocs => {
+      logger.info({ nDocs: updatedDocs.length }, 'Updated scores');
+
       redisClient
         .batch()
         .del(createCacheKey('home:score'))
@@ -49,7 +57,7 @@ const intervalId = setIntervalAsync(
         .del(createCacheKey('home:date'))
         .exec(err => {
           if (err) {
-            console.error(err);
+            logger.error({ err }, 'Error invalidating cache on score update');
           }
         });
     });
@@ -57,7 +65,7 @@ const intervalId = setIntervalAsync(
   config.updateScoreInterval || 5 * 60 * 1000,
   err => {
     lastScoreErr = err;
-    console.error(err);
+    logger.error({ err }, 'Error updating score');
   }
 );
 
@@ -71,7 +79,7 @@ const server = http.createServer(app);
 
 const port = process.env.PORT || 3001;
 server.listen(port, () => {
-  console.log(`server listenning on port ${port}`);
+  logger.info({ port }, `server listenning on port ${port}`);
 });
 
 process.once('SIGINT', function() {
