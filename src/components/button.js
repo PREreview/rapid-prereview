@@ -10,6 +10,7 @@ export default function Button({
   primary = false,
   onMouseUp = noop,
   element = 'button',
+  isWaiting = false,
   ...buttonProps
 }) {
   const El = element;
@@ -17,7 +18,8 @@ export default function Button({
     <El
       className={classNames('button', className, {
         'button--pill': pill,
-        'button--primary': primary
+        'button--primary': primary,
+        'button--waiting': isWaiting
       })}
       {...buttonProps}
       onMouseUp={e => {
@@ -27,7 +29,10 @@ export default function Button({
         onMouseUp(e);
       }}
     >
-      <span className="button__contents">{children}</span>
+      <span className="button__contents">
+        {children}
+        <div className="button__heartbeat" />
+      </span>
     </El>
   );
 }
@@ -38,5 +43,6 @@ Button.propTypes = {
   pill: PropTypes.bool,
   primary: PropTypes.bool,
   onMouseUp: PropTypes.func,
-  element: PropTypes.string
+  element: PropTypes.string,
+  isWaiting: PropTypes.bool
 };

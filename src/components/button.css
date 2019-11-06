@@ -63,7 +63,7 @@
   }
 
   &.button--pill .button__contents {
-    border-radius: 12px;
+    border-radius: 16px;
   }
 
   &.button--primary .button__contents {
@@ -75,5 +75,36 @@
   &.button--primary.button--pill .button__contents {
     border-radius: 16px;
     padding: var(--xxsgrd) var(--sgrd);
+  }
+
+  & .button__heartbeat {
+    width: 0;
+    height: var(--xsgrd);
+    border-radius: 50%;
+    background-color: currentcolor;
+    margin-left: var(--xxsgrd);
+    opacity: 0;
+    transition: width 0.2s;
+  }
+
+  &.button--waiting {
+    & .button__heartbeat {
+      width: var(--xsgrd);
+      animation-name: heartbeat;
+      animation-duration: 1.5s;
+      animation-iteration-count: infinite;
+    }
+  }
+}
+
+@keyframes heartbeat {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
