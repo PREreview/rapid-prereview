@@ -163,6 +163,7 @@ export default function RoleEditor({ user, role, onCancel, onSaved }) {
         </Button>
 
         <Button
+          isWaiting={postProgressData.isActive}
           disabled={
             (name === role.name && !hasNewAvatar) || postProgressData.isActive
           }

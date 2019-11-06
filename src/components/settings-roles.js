@@ -198,6 +198,7 @@ function MakeActivePersonaModalButton({ user, role }) {
               Cancel
             </Button>
             <Button
+              isWaiting={postProgress.isActive}
               disabled={postProgress.isActive}
               onClick={() => {
                 post(
