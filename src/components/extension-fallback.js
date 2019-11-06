@@ -34,21 +34,23 @@ export default function ExtensionFallback() {
         <object
           key={pdfUrl}
           data={pdfUrl}
-          type="application/pdf"
+          type="" // we leave this empty since it seems to break pdf loading in safari
           typemustmatch="true" // Note typeMustMatch doesn't seem to be currently supported by react
         >
           {/* fallback text in case we can't load the PDF */}
           <PdfViewer pdfUrl={pdfUrl} />
         </object>
       ) : !pdfUrl && !fetchPreprintProgress.isActive ? (
-        <div>
-          No PDF available.
-          {!!canonicalUrl && (
-            <span>
-              You can visit {<a href={canonicalUrl}>{canonicalUrl}</a>} for more
-              information on the document.
-            </span>
-          )}
+        <div className="extension-fallback__no-pdf-message">
+          <div>
+            No PDF available.
+            {!!canonicalUrl && (
+              <span>
+                {` `}You can visit {<a href={canonicalUrl}>{canonicalUrl}</a>}{' '}
+                for more information on the document.
+              </span>
+            )}
+          </div>
         </div>
       ) : null}
 

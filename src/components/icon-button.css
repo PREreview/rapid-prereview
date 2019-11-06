@@ -4,9 +4,9 @@
   margin: 0;
   background-color: transparent;
   height: var(--lgrd);
-  min-width: var(--lgrd);
+  width: var(--lgrd);
   cursor: pointer;
-  flex: 0 0 auto;
+  flex: 0 0 var(--lgrd);
 
   &:focus {
     outline: none;

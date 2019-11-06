@@ -1,12 +1,26 @@
-.extension-fallback{
+.extension-fallback {
   min-height: 100vh;
   height: 100%;
-  background-color: rgb(83,86,89);
+  background-color: rgb(83, 86, 89);
+
+  & .extension-fallback__no-pdf-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    color: white;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    & a {
+      &:hover {
+        color: white;
+      }
+    }
+  }
 }
 
 object {
-  display: block;       /* iframes are inline by default */
-  border: none;         /* Reset default border */
-  height: 100vh;        /* Viewport-relative units */
+  display: block; /* iframes are inline by default */
+  border: none; /* Reset default border */
+  height: 100vh; /* Viewport-relative units */
   width: 100vw;
 }
