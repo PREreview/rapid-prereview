@@ -10,6 +10,7 @@
     border: none;
     margin: 0;
   }
+
   & .radid-form-fragment__question-row {
     display: flex;
     flex-wrap: wrap;
@@ -19,13 +20,21 @@
       background-color: var(--xlight-grey);
     }
   }
+
   & .radid-form-fragment__question {
     width: 50%;
     margin: 0;
     padding-right: var(--sgrd);
     box-sizing: border-box;
     hyphens: auto;
+    display: flex;
+    align-items: center;
   }
+
+  & .radid-form-fragment__help {
+    margin-left: var(--xsgrd);
+  }
+
   & .rapid-form-fragment__radio-group {
     display: flex;
     width: 50%;

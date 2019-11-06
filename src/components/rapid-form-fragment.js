@@ -1,8 +1,11 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
+import { MdHelpOutline } from 'react-icons/md';
 import { QUESTIONS } from '../constants';
 import Value from './value';
 import RadioButton from './radio-button';
+import IconButton from './icon-button';
+import Collapse from './collapse';
 
 export default function RapidFormFragment({ answerMap = {}, onChange }) {
   function handleChange(key, value) {
@@ -13,20 +16,43 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
     ({ type }) => type === 'YesNoQuestion'
   );
 
+  const [isOpenedMap, setIsOpenedMap] = useState(
+    yesNoQuestions.map((map, q) => {
+      map[q.identifier] = false;
+      return map;
+    }, {})
+  );
+
   const freeFormQuestions = QUESTIONS.filter(({ type }) => type === 'Question');
 
   return (
     <div className="rapid-form-fragment">
       <fieldset className="rapid-form-fragment__multi-choice-questions">
-        {yesNoQuestions.map(({ identifier, question }, i) => {
+        {yesNoQuestions.map(({ identifier, question, help }, i) => {
           const answer = answerMap[identifier];
 
           return (
             <Fragment key={identifier}>
               <div className="radid-form-fragment__question-row">
-                <Value tagName="p" className="radid-form-fragment__question">
-                  {question}
-                </Value>
+                <div className="radid-form-fragment__question">
+                  <Value tagName="p">{question}</Value>
+
+                  {!!help && (
+                    <IconButton
+                      className="radid-form-fragment__help"
+                      onClick={e => {
+                        setIsOpenedMap(
+                          Object.assign({}, isOpenedMap, {
+                            [identifier]: !isOpenedMap[identifier]
+                          })
+                        );
+                      }}
+                    >
+                      <MdHelpOutline />
+                    </IconButton>
+                  )}
+                </div>
+
                 <div className="rapid-form-fragment__radio-group">
                   <RadioButton
                     inputId={`question-${identifier}-yes`}
@@ -72,12 +98,20 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
                     label="Unsure"
                   />
                 </div>
+
+                {!!help && (
+                  <Collapse isOpened={isOpenedMap[identifier]}>
+                    <Value tagName="p">{help}</Value>
+                  </Collapse>
+                )}
               </div>
             </Fragment>
           );
         })}
       </fieldset>
+
       <hr className="rapid-form-fragment__divider" />
+
       <fieldset className="rapid-form-fragment__text-response-questions">
         {freeFormQuestions.map(({ identifier, question }) => {
           const answer = answerMap[identifier];
