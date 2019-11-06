@@ -101,7 +101,12 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
 
                 {!!help && (
                   <Collapse isOpened={isOpenedMap[identifier]}>
-                    <Value tagName="p">{help}</Value>
+                    <Value
+                      tagName="p"
+                      className="rapid-form-fragment__help-text"
+                    >
+                      {help}
+                    </Value>
                   </Collapse>
                 )}
               </div>

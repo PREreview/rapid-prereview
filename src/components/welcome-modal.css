@@ -101,7 +101,7 @@
     display: flex;
     justify-content: center;
     & svg {
-      height: 100%;
+      height: var(--lgrd);
       margin: 0 var(--sgrd);
     }
   }
