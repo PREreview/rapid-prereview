@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { action } from '@storybook/addon-actions';
 
 import Button from './button';
@@ -40,7 +40,23 @@ export function pillButton() {
 }
 
 export function PrimaryButton() {
-  return <Button primary={true}>Label</Button>;
+  const [waiting, setWaiting] = useState(false);
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <Button primary={true} isWaiting={waiting}>
+        Label
+      </Button>
+      <div style={{ padding: '24px' }}>
+        <Button
+          onClick={() => {
+            setWaiting(!waiting);
+          }}
+        >
+          Set Waiting
+        </Button>
+      </div>
+    </div>
+  );
 }
 
 export function PrimaryButtonDisabled() {
@@ -52,9 +68,21 @@ export function PrimaryButtonDisabled() {
 }
 
 export function PrimaryPillButton() {
+  const [waiting, setWaiting] = useState(false);
   return (
-    <Button primary={true} pill={true}>
-      Label
-    </Button>
+    <div style={{ textAlign: 'center' }}>
+      <Button primary={true} pill={true} isWaiting={waiting}>
+        Label
+      </Button>
+      <div style={{ padding: '24px' }}>
+        <Button
+          onClick={() => {
+            setWaiting(!waiting);
+          }}
+        >
+          Set Waiting
+        </Button>
+      </div>
+    </div>
   );
 }
