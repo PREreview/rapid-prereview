@@ -24,25 +24,44 @@
     align-items: center;
     justify-content: center;
 
+    /* set up the selection dot */
     &:after {
       content: '';
       display: block;
       background-color: black;
-      width: 0px;
-      height: 0px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      transition: height 0.2s, width 0.2s;
+      transition: opacity 0.2s;
+      z-index: 10;
+      position: relative;
+      opacity: 0;
     }
 
+    /* make selection dot visible */
     &:checked {
       &:after {
-        width: 8px;
-        height: 8px;
+        opacity: 1;
       }
     }
 
+    /* add the focus ring */
     &:focus {
       outline: none;
+      &:before {
+        z-index: -1;
+        content: '';
+        display: block;
+        border: 2px solid black;
+        box-sizing: border-box;
+        width: 18px;
+        height: 18px;
+        position: absolute;
+        left: -3px;
+        top: -3px;
+        border-radius: 50%;
+        transition: height 0.2s, width 0.2s;
+      }
     }
   }
 
