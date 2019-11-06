@@ -8,7 +8,7 @@
   }
 
   & .welcome-modal__banner {
-    height: 100px;
+    height: 120px;
     overflow: hidden;
     position: relative;
 
@@ -34,7 +34,7 @@
     height: 100%;
     overflow: hidden;
     background-image: url('../images/epidemics-chart-2.svg');
-    opacity: 0.5;
+    opacity: 0.8;
     background-size: cover;
     background-position: center bottom;
   }
@@ -48,13 +48,61 @@
   }
 
   & .welcome-modal__body {
-    padding: var(--lgrd);
+    padding: var(--xlgrd);
     min-height: 100px;
+
+    & ol {
+      padding-left: 2ch;
+    }
   }
 
   & .welcome-modal__controls {
     margin-top: var(--mgrd);
     display: flex;
     justify-content: center;
+  }
+
+  & .welcome-modal__get-app {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--xxsgrd) var(--sgrd);
+    letter-spacing: 0.04em;
+    border-radius: 16px;
+    background-color: var(--button-background-color--primary);
+    color: var(--button-foreground-color--primary);
+    font: var(--ui-button-font--primary);
+    height: var(--lgrd);
+    white-space: pre;
+
+    margin-right: var(--lgrd);
+    &:any-link {
+      text-decoration: none;
+      color: var(--button-foreground-color--primary);
+    }
+    &:focus,
+    &:active {
+      outline: none;
+      background-color: var(--button-background-focus-color--primary);
+      color: var(--button-foreground-focus-color--primary);
+    }
+    &:hover {
+      opacity: 0.8;
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  & .welcome-modal__logo-row {
+    border-top: 1px solid var(--ruling-color);
+    padding: var(--mgrd) var(--xlgrd);
+    margin-top: var(--lgrd);
+    height: var(--lgrd);
+    display: flex;
+    justify-content: center;
+    & svg {
+      height: 100%;
+      margin: 0 var(--sgrd);
+    }
   }
 }

@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import Modal from './modal';
 import Button from './button';
+import PrereviewLogo from '../svgs/prereview-logo.svg';
+import OutbreakSciLogo from '../svgs/outbreak-science-logo.svg';
 
 export default function WelcomeModal(props) {
   return (
@@ -21,16 +24,32 @@ export default function WelcomeModal(props) {
           </h2>
 
           <p>
-            Rapid PREreview allows to request and provide feedback (in the form
-            of structured review rapid to complete) on <em>existing</em>{' '}
-            preprints relevant to the outbreak science community.
+            This platform was designed to facilitate rapid, open review or
+            preprint related to outbreaks.
+          </p>
+          <p>
+            Here you can:
+            <ol>
+              <li>Find rapid reviews of existing preprints.</li>
+              <li>
+                Request reviews of preprints (your own, or preprints you are
+                interested in).
+              </li>
+              <li>Review preprints.</li>
+            </ol>
           </p>
 
           <div className="welcome-modal__controls">
+            <Link className="welcome-modal__get-app" to="/app">
+              Get App
+            </Link>
             <Button pill={true} primary={true} onClick={props.onClose}>
               Get Started
             </Button>
           </div>
+        </div>
+        <div className="welcome-modal__logo-row">
+          <PrereviewLogo /> <OutbreakSciLogo />
         </div>
       </div>
     </Modal>
