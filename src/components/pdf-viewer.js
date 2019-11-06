@@ -68,6 +68,11 @@ export default function PdfViewer({ pdfUrl }) {
         file={`${process.env.API_URL}/api/pdf?url=${encodeURIComponent(
           pdfUrl
         )}`}
+        loading={
+          <div className="pdf-viewer__loading">
+            <div className="pdf-viewer__loading__text">Loading Pdf...</div>
+          </div>
+        }
         onLoadSuccess={async pdf => {
           let dims = [];
           for (let i = 0; i < pdf.numPages; i++) {
