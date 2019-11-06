@@ -49,3 +49,23 @@ export function getScore(
 
   return score <= threshold ? 0 : score;
 }
+
+/**
+ * Used to display the filling of the hourglass visualization in the score badge
+ * Returned value must be between 0 and 1
+ */
+export function getTimeScore(
+  dateTimeFirstActivity,
+  now = new Date().toISOString()
+) {
+  const timeSinceFirstActivityHours =
+    Math.max(
+      new Date(now).getTime() - new Date(dateTimeFirstActivity).getTime(),
+      0
+    ) /
+    (1000 * 60 * 60);
+
+  const timeScore = 1 / Math.pow(timeSinceFirstActivityHours + 1, 0.2);
+
+  return timeScore;
+}

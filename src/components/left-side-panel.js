@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 export default function LeftSidePanel({ visible, children }) {
   return (
@@ -11,3 +12,8 @@ export default function LeftSidePanel({ visible, children }) {
     </div>
   );
 }
+
+LeftSidePanel.propTypes = {
+  visible: PropTypes.bool,
+  children: PropTypes.any
+};
