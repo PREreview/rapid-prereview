@@ -1,9 +1,38 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
+import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 
-export default function LeftSidePanel({ visible, children }) {
+export default function LeftSidePanel({
+  visible,
+  children,
+  onClickOutside = noop
+}) {
+  const ref = useRef();
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (ref.current.contains(e.target)) {
+        // inside click
+        return;
+      }
+      // outside click
+      onClickOutside();
+    }
+
+    if (visible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [visible, onClickOutside]);
+
   return (
     <div
+      ref={ref}
       className={`left-side-panel ${
         visible ? 'left-side-panel--visible' : 'left-side-panel--hidden'
       }`}
@@ -15,5 +44,6 @@ export default function LeftSidePanel({ visible, children }) {
 
 LeftSidePanel.propTypes = {
   visible: PropTypes.bool,
-  children: PropTypes.any
+  children: PropTypes.any,
+  onClickOutside: PropTypes.func
 };

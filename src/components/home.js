@@ -69,7 +69,12 @@ export default function Home() {
       <SearchBar isFetching={fetchResultsProgress.isActive} />
 
       <div className="home__main">
-        <LeftSidePanel visible={showLeftPanel}>
+        <LeftSidePanel
+          visible={showLeftPanel}
+          onClickOutside={() => {
+            setShowLeftPanel(false);
+          }}
+        >
           <Facets
             counts={results.counts}
             isFetching={fetchResultsProgress.isActive}

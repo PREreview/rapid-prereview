@@ -61,7 +61,12 @@ export default function TocPage({ children }) {
       />
 
       <div className="toc-page__main">
-        <LeftSidePanel visible={showLeftPanel}>
+        <LeftSidePanel
+          visible={showLeftPanel}
+          onClickOutside={() => {
+            setShowLeftPanel(false);
+          }}
+        >
           <nav>
             <ul>
               {toc.map($h2 => (
