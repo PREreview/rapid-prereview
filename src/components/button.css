@@ -63,7 +63,7 @@
   }
 
   &.button--pill .button__contents {
-    border-radius: 12px;
+    border-radius: 16px;
   }
 
   &.button--primary .button__contents {
