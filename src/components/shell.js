@@ -14,7 +14,7 @@ import RapidPreReviewLogo from './rapid-pre-review-logo';
 
 const SHELL_HEADER_HEIGHT = 40; // !! keep in sync with CSS
 
-export default function Shell({ children }) {
+export default function Shell({ children, defaultStatus = 'default' }) {
   const [isDown, setIsDown] = useState(false);
   const ref = useRef();
   const nextHeightRef = useRef(null);
@@ -23,7 +23,7 @@ export default function Shell({ children }) {
 
   // shell height is set in `%` units through the `max-height` CSS property
   const [height, setHeight] = useState(50);
-  const [status, setStatus] = useState('default'); // `minimized`, `revealed`, `maximized`, `positioned`
+  const [status, setStatus] = useState(defaultStatus);
 
   // reposition shell when user "drag" the handle
   useEffect(() => {
@@ -268,5 +268,12 @@ export default function Shell({ children }) {
 }
 
 Shell.propTypes = {
-  children: PropTypes.func
+  children: PropTypes.func,
+  defaultStatus: PropTypes.oneOf([
+    'default',
+    'minimized',
+    'revealed',
+    'maximized',
+    'positioned'
+  ])
 };

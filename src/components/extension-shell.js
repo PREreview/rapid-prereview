@@ -24,7 +24,7 @@ export default function ExtensionShell({
         >
           <UserProvider user={user}>
             <div className="extension-shell">
-              <Shell>
+              <Shell defaultStatus="minimized">
                 {onRequireScreen => (
                   <ExtensionShellContent
                     onRequireScreen={onRequireScreen}
