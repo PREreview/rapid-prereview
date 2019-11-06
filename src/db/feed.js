@@ -1,6 +1,11 @@
 import EventEmitter from 'events';
 import { createError } from '../utils/errors';
 
+/**
+ * This is used to keep the `index` DB up-to-date
+ * The index DB is used to perform faceted and full text search on reviewed
+ * preprints
+ */
 export default class Feed extends EventEmitter {
   constructor(
     db // an instance of DB

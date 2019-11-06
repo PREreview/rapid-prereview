@@ -1,101 +1,111 @@
 // See https://github.com/PREreview/rapid-prereview/issues/6
 export const QUESTIONS = [
   {
-    identifier: 'ynCoherent',
-    question: 'Do the findings support the conclusion?',
-    type: 'YesNoQuestion'
-  },
-  //
-  {
-    identifier: 'ynRecommend',
-    question: 'Would you recommend this?',
-    type: 'YesNoQuestion'
-  },
-  //
-  {
-    identifier: 'ynRelevantPolicy',
-    groupPrefix: 'ynRelevant',
-    question: 'Is this relevant to policy?',
-    type: 'YesNoQuestion'
-  },
-  {
-    identifier: 'ynRelevantClinic',
-    groupPrefix: 'ynRelevant',
-    question: 'Is this relevant to clinic?',
-    type: 'YesNoQuestion'
-  },
-  //
-  {
     identifier: 'ynNovel',
-    question: 'Are the finding novel?',
+    question: 'Are the findings novel?',
+    help:
+      'In your judgement, does the manuscript have information that has not been previously known or published?',
     type: 'YesNoQuestion'
   },
-  //
+
   {
-    identifier: 'ynBasisFuture',
-    question: 'Is there a basis for future work?',
+    identifier: 'ynCoherent',
+    question:
+      'Are the principal conclusions supported by the data and analysis?',
+    help:
+      'Is there sufficient evidence to support the key findings of the manuscript?',
     type: 'YesNoQuestion'
   },
-  //
+
   {
-    identifier: 'ynAttentionStats',
-    groupPrefix: 'ynAttention',
-    question: 'Is special attention needed for statistics?',
+    identifier: 'ynFuture',
+    question: 'Are the results likely to lead to future research?',
+    help:
+      'Do the data, findings, or analysis point to clear directions for additional research?',
     type: 'YesNoQuestion'
   },
+
   {
-    identifier: 'ynAttentionMethods',
-    groupPrefix: 'ynAttention',
-    question: 'Is special attention needed for methods?',
+    identifier: 'ynEthics',
+    question: 'Have the authors adequately discussed ethical concerns',
+    help:
+      'For example, if a human study, is Institutional Review Board (IRB) approval presented?',
     type: 'YesNoQuestion'
   },
-  {
-    identifier: 'ynAttentionModel',
-    groupPrefix: 'ynAttention',
-    question: 'Is special attention needed for model?',
-    type: 'YesNoQuestion'
-  },
-  {
-    identifier: 'ynAttentionEthics',
-    groupPrefix: 'ynAttention',
-    question: 'Is special attention needed for ethics?',
-    type: 'YesNoQuestion'
-  },
-  {
-    identifier: 'ynAttentionData',
-    groupPrefix: 'ynAttention',
-    question: 'Is special attention needed for data quality?',
-    type: 'YesNoQuestion'
-  },
-  //
-  {
-    identifier: 'ynAvailableData',
-    groupPrefix: 'ynAvailable',
-    question: 'Are data available?',
-    type: 'YesNoQuestion'
-  },
-  {
-    identifier: 'ynAvailableCode',
-    groupPrefix: 'ynAvailable',
-    question: 'Is code available?',
-    type: 'YesNoQuestion'
-  },
-  //
+
   {
     identifier: 'ynLimitations',
-    question: 'Does the paper discuss limitations?',
+    question: 'Does the manuscript discuss limitations?',
+    help: 'Are the most important limitations clearly presented?',
     type: 'YesNoQuestion'
   },
+
+  {
+    identifier: 'ynNewData',
+    question: 'Does the manuscript include new data?',
+    help: 'Were data collected or made available specifically for this study?',
+    type: 'YesNoQuestion'
+  },
+
+  //
+  {
+    identifier: 'ynAvailableData', // DO NOT CHANGE THIS IS USED IN THE INDEX (or update everywhere)
+    indexed: true,
+    question: 'Are the data used in the manuscript available?',
+    help:
+      'In the paper, supplement, on a public repository, or from a cited source?',
+    type: 'YesNoQuestion'
+  },
+  {
+    identifier: 'ynAvailableCode', // DO NOT CHANGE THIS IS USED IN THE INDEX (or update everywhere)
+    indexed: true,
+    question: 'Is the code used in the manuscript available?',
+    help:
+      'In the paper, supplement, on a public repository, or from a cited source?',
+    type: 'YesNoQuestion'
+  },
+
+  //
+  {
+    identifier: 'ynReproducibility',
+    question: 'Is sufficient detail provided allow reproduction of the study?',
+    type: 'YesNoQuestion'
+  },
+
+  {
+    identifier: 'ynMethods',
+    question: 'Are the methods and statistics appropriate for the analysis?',
+    type: 'YesNoQuestion'
+  },
+
+  {
+    identifier: 'ynRecommend',
+    question: 'Would you recommend this manuscript to others?',
+    help:
+      'Consider any possible audience: scientists in the same field or others, policy makers, the public, etc.',
+    type: 'YesNoQuestion'
+  },
+
+  {
+    identifier: 'ynPeerReview',
+    question: 'Do you recommend this manuscript for peer review?',
+    help:
+      'Would you recommend this manuscript to a journal editor for formal peer review?',
+    type: 'YesNoQuestion'
+  },
+
   //
   {
     identifier: 'cMethods',
-    question: 'Technical comments on methods, data and limitations',
-    type: 'Question'
+    question: 'Technical comments on methods, data, limitations',
+    type: 'Question',
+    required: false
   },
   {
     identifier: 'cRelevance',
-    question: 'Technical comments on novelty, importance, relevance',
-    type: 'Question'
+    question: 'Editorial comments on novelty, importance, relevance',
+    type: 'Question',
+    required: false
   }
 ];
 
