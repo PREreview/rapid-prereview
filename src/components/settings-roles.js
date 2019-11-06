@@ -12,8 +12,6 @@ import { usePostAction } from '../hooks/api-hooks';
 import IncognitoIcon from '../svgs/incognito_icon.svg';
 import XLink from './xlink';
 
-// TODO make user display name required
-
 export default function SettingsRoles({ user }) {
   const [editedRoleId, setEditedRoleId] = useState(null);
 
@@ -173,7 +171,7 @@ function MakeActivePersonaModalButton({ user, role }) {
         }}
       >
         <MdStarBorder className="settings__persona-active-icon settings__persona-active-icon--inactive" />
-        <span className="settings__persona-active-label">Activate...</span>
+        <span className="settings__persona-active-label">Activate…</span>
       </Button>
 
       {isOpen && (

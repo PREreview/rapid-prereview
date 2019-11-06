@@ -49,6 +49,15 @@ export default function PreprintCard({
 
   const { hasData, hasCode, subjects } = getTags(preprint.potentialAction);
 
+  // date of first activity (`dateFirstActivity`)
+  const firstAction = preprint.potentialAction
+    .filter(action => action && action.startTime)
+    .sort((a, b) => {
+      return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+    })[0];
+
+  const ago = '3 days';
+
   return (
     <Fragment>
       <div className="preprint-card">
@@ -163,6 +172,7 @@ export default function PreprintCard({
                 <ScoreBadge
                   nRequests={requests.length}
                   nReviews={reviews.length}
+                  rankPercentile={Math.random() /* TODO */}
                 />
               </div>
             </Tooltip>
@@ -177,7 +187,7 @@ export default function PreprintCard({
               Request{requests.length > 1 ? 's' : ''}
             </div>
             <div className="preprint-card__count-slash">/</div>
-            <span className="preprint-card__days-ago">3 days</span>
+            <span className="preprint-card__days-ago">{ago}</span>
             <Tooltip
               label={
                 hasReviewed && hasRequested
@@ -267,7 +277,7 @@ PreprintCard.propTypes = {
         })
       ])
     ).isRequired
-  }),
+  }).isRequired,
   onNewRequest: PropTypes.func.isRequired,
   onNewReview: PropTypes.func.isRequired,
   onNew: PropTypes.func.isRequired

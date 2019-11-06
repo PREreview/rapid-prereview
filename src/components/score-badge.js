@@ -2,18 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const ScoreBadge = React.forwardRef(function ScoreBadge(
-  {
-    nRequests,
-    nReviews,
-    rankPercentile = Math.random() /* TODO @sballesteros wire actual rank value */
-  },
+  { nRequests, nReviews, rankPercentile },
   ref
 ) {
   const statusClass =
     nRequests > 0 && nReviews === 0 ? 'needs-attention' : 'normal';
 
-  /* 
-    the arc polar cordinates need to be converted to x,y for svg see: 
+  /*
+    the arc polar cordinates need to be converted to x,y for svg see:
     https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
     */
 
@@ -71,9 +67,9 @@ const ScoreBadge = React.forwardRef(function ScoreBadge(
 });
 
 ScoreBadge.propTypes = {
-  nRequests: PropTypes.number,
-  nReviews: PropTypes.number,
-  rankPercentile: PropTypes.number // 0 - 1
+  nRequests: PropTypes.number.isRequired,
+  nReviews: PropTypes.number.isRequired,
+  rankPercentile: PropTypes.number.isRequired // 0 - 1
 };
 
 export default ScoreBadge;

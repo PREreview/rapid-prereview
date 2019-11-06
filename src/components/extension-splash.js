@@ -30,7 +30,7 @@ export default function ExtensionSplash() {
             homepage.
           </p>
           <img
-            src="images/extension-preview.png"
+            src="/images/extension-preview.png"
             className="extension-splash__screenshot"
           />
           <ul className="extension-splash__browser-list">
