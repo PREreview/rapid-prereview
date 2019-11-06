@@ -24,7 +24,7 @@ export default function WelcomeModal(props) {
           </h2>
 
           <p>
-            This platform was designed to facilitate rapid, open review or
+            This platform was designed to facilitate rapid, open review of
             preprint related to outbreaks.
           </p>
           <div>

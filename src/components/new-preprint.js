@@ -308,6 +308,7 @@ function StepReview({
                 onSuccess
               );
             }}
+            isWaiting={postData.isActive}
             disabled={postData.isActive || !canSubmit}
           >
             Submit
@@ -361,6 +362,7 @@ function StepRequest({
         </Button>
         <Button
           primary={true}
+          isWaiting={postData.isActive}
           onClick={e => {
             post(
               {

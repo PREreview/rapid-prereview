@@ -153,6 +153,7 @@ export default function ShellContent({
                 setTab('request#success');
               });
             }}
+            isPosting={postProgress.isActive}
             disabled={postProgress.isActive}
             error={
               postProgress.body &&
@@ -169,6 +170,7 @@ export default function ShellContent({
                 setTab('review#success');
               });
             }}
+            isPosting={postProgress.isActive}
             disabled={postProgress.isActive}
             error={
               postProgress.body &&
@@ -282,7 +284,14 @@ ShellContentRead.propTypes = {
   fetchActionsProgress: PropTypes.object.isRequired
 };
 
-function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
+function ShellContentReview({
+  user,
+  preprint,
+  onSubmit,
+  disabled,
+  isPosting,
+  error
+}) {
   const [subjects, setSubjects] = useLocalState(
     'subjects',
     getId(getDefaultRole(user)),
@@ -341,6 +350,7 @@ function ShellContentReview({ user, preprint, onSubmit, disabled, error }) {
         <Controls error={error}>
           <Button
             type="submit"
+            isWaiting={isPosting}
             disabled={disabled || !canSubmit}
             onClick={() => {
               onSubmit({
@@ -370,11 +380,19 @@ ShellContentReview.propTypes = {
   user: PropTypes.object,
   preprint: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  isPosting: PropTypes.bool,
   disabled: PropTypes.bool,
   error: PropTypes.instanceOf(Error)
 };
 
-function ShellContentRequest({ user, preprint, onSubmit, disabled, error }) {
+function ShellContentRequest({
+  user,
+  preprint,
+  onSubmit,
+  disabled,
+  isPosting,
+  error
+}) {
   return (
     <div className="shell-content-request">
       <header className="shell-content-request__title">
@@ -385,6 +403,7 @@ function ShellContentRequest({ user, preprint, onSubmit, disabled, error }) {
 
       <Controls error={error}>
         <Button
+          isWaiting={isPosting}
           disabled={disabled}
           onClick={() => {
             onSubmit({
@@ -406,6 +425,7 @@ ShellContentRequest.propTypes = {
   preprint: PropTypes.object.isRequired,
   onSubmit: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
+  isPosting: PropTypes.bool,
   error: PropTypes.instanceOf(Error)
 };
 
