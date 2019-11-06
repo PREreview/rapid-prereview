@@ -50,10 +50,7 @@ router.get(
     s.pipe(
       concatStream(buffer => {
         if (statusCode === 200) {
-          req.cache(
-            JSON.parse(buffer),
-            req.app.locals.config.updateScoreInterval || 5 * 60 * 1000 // We need to invalidate at least at the same frequency as score update loop
-          );
+          req.cache(JSON.parse(buffer));
         }
       })
     );

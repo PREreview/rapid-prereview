@@ -7,7 +7,9 @@ import {
   setIntervalAsync,
   clearIntervalAsync
 } from './utils/set-interval-async';
+import { createRedisClient } from './utils/redis';
 import { PRODUCTION_DOMAIN } from './constants';
+import { createCacheKey } from './middlewares/cache';
 
 let lastSeq = null;
 let lastChangeErr = null;
@@ -34,10 +36,23 @@ feed.on('sync', seq => {
   lastSeq = seq;
 });
 
+const redisClient = createRedisClient(config);
+
 const intervalId = setIntervalAsync(
   () => {
     lastDateScoreUpdated = new Date().toISOString();
-    return db.updateScores();
+    return db.updateScores().then(() => {
+      redisClient
+        .batch()
+        .del(createCacheKey('home:score'))
+        .del(createCacheKey('home:new'))
+        .del(createCacheKey('home:date'))
+        .exec(err => {
+          if (err) {
+            console.error(err);
+          }
+        });
+    });
   },
   config.updateScoreInterval || 5 * 60 * 1000,
   err => {
@@ -61,8 +76,10 @@ server.listen(port, () => {
 
 process.once('SIGINT', function() {
   server.close(() => {
-    clearIntervalAsync(intervalId);
-    feed.stop();
-    process.exit();
+    redisClient.quit(() => {
+      clearIntervalAsync(intervalId);
+      feed.stop();
+      process.exit();
+    });
   });
 });

@@ -23,7 +23,7 @@ function getOnlyIfValue(obj = {}) {
   }
 }
 
-function createCacheKey(id) {
+export function createCacheKey(id) {
   id = getId(id);
 
   return id ? `cache:value:${id}` : id;
