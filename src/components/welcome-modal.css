@@ -76,7 +76,7 @@
     height: var(--lgrd);
     white-space: pre;
 
-    margin-right: var(--lgrd);
+    margin-left: var(--lgrd);
     &:any-link {
       text-decoration: none;
       color: var(--button-foreground-color--primary);

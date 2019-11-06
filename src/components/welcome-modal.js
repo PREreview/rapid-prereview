@@ -40,12 +40,12 @@ export default function WelcomeModal(props) {
           </p>
 
           <div className="welcome-modal__controls">
-            <Link className="welcome-modal__get-app" to="/app">
-              Get App
-            </Link>
             <Button pill={true} primary={true} onClick={props.onClose}>
               Get Started
             </Button>
+            <Link className="welcome-modal__get-app" to="/app">
+              Get App
+            </Link>
           </div>
         </div>
         <div className="welcome-modal__logo-row">
