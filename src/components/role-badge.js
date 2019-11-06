@@ -170,7 +170,7 @@ function Tooltipify({ tooltip, roleId, role, children }) {
     <Tooltip
       label={
         role && role.name && role.name !== unprefix(roleId)
-          ? `${role.name} (${unprefix(roleId)})`
+          ? `${role.name} (${unprefix(roleId).substring(0, 5)}…)`
           : unprefix(roleId)
       }
     >

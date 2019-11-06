@@ -1,21 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { getTimeScore } from '../utils/score';
 
 const ScoreBadge = React.forwardRef(function ScoreBadge(
-  {
-    nRequests,
-    nReviews,
-    rankPercentile = Math.random() /* TODO @sballesteros wire actual rank value */
-  },
+  { nRequests, nReviews, dateFirstActivity },
   ref
 ) {
+  const timeScore = getTimeScore(dateFirstActivity);
+
   const statusClass =
     nRequests > 0 && nReviews === 0 ? 'needs-attention' : 'normal';
 
-  /* 
-    the arc polar cordinates need to be converted to x,y for svg see: 
-    https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
-    */
+  /*
+     the arc polar cordinates need to be converted to x,y for svg see:
+     https://stackoverflow.com/questions/5736398/how-to-calculate-the-svg-path-for-an-arc-of-a-circle
+   */
 
   const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
     var angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
@@ -59,7 +58,7 @@ const ScoreBadge = React.forwardRef(function ScoreBadge(
           className="score-badge__clock-svg__inactive-path"
         />
         <path
-          d={svgArc(12, 12, 11, 0, rankPercentile * 360)}
+          d={svgArc(12, 12, 11, 0, timeScore * 360)}
           strokeWidth="2"
           fill="none"
           className="score-badge__clock-svg__active-path"
@@ -71,9 +70,9 @@ const ScoreBadge = React.forwardRef(function ScoreBadge(
 });
 
 ScoreBadge.propTypes = {
-  nRequests: PropTypes.number,
-  nReviews: PropTypes.number,
-  rankPercentile: PropTypes.number // 0 - 1
+  nRequests: PropTypes.number.isRequired,
+  nReviews: PropTypes.number.isRequired,
+  dateFirstActivity: PropTypes.string.isRequired
 };
 
 export default ScoreBadge;

@@ -142,7 +142,13 @@ npm test
 
 ### Deployments
 
-We use Azure.
+We use Azure and IBM Cloudant.
+
+#### Architecture
+
+TODO
+
+#### Process
 
 1. Install Azure CLI (see
    https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
@@ -156,3 +162,7 @@ To see the logs, run `./log-app.sh` or `./log-service.sh`
 
 To seed the production database run: `npm run seed:prod`. Be aware that this
 will source the production environment variables.
+
+#### Backups
+
+TODO

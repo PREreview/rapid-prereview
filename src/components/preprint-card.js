@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
-import { format } from 'date-fns';
+import { format, formatDistanceStrict } from 'date-fns';
 import {
   MdTimeline,
   MdCode,
@@ -48,6 +48,13 @@ export default function PreprintCard({
   const hasRequested = checkIfHasRequested(user, requests);
 
   const { hasData, hasCode, subjects } = getTags(preprint.potentialAction);
+
+  // date of first activity (`dateFirstActivity`)
+  const firstAction = preprint.potentialAction
+    .filter(action => action && action.startTime)
+    .sort((a, b) => {
+      return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+    })[0];
 
   return (
     <Fragment>
@@ -163,6 +170,7 @@ export default function PreprintCard({
                 <ScoreBadge
                   nRequests={requests.length}
                   nReviews={reviews.length}
+                  dateFirstActivity={firstAction.startTime}
                 />
               </div>
             </Tooltip>
@@ -177,7 +185,12 @@ export default function PreprintCard({
               Request{requests.length > 1 ? 's' : ''}
             </div>
             <div className="preprint-card__count-slash">/</div>
-            <span className="preprint-card__days-ago">3 days</span>
+            <span className="preprint-card__days-ago">
+              {formatDistanceStrict(
+                new Date(firstAction.startTime),
+                new Date()
+              )}
+            </span>
             <Tooltip
               label={
                 hasReviewed && hasRequested
@@ -267,7 +280,7 @@ PreprintCard.propTypes = {
         })
       ])
     ).isRequired
-  }),
+  }).isRequired,
   onNewRequest: PropTypes.func.isRequired,
   onNewReview: PropTypes.func.isRequired,
   onNew: PropTypes.func.isRequired

@@ -326,6 +326,21 @@ export default class DB {
     return body.rows && body.rows[0] ? body.rows[0].value : undefined;
   }
 
+  async getMaxScore() {
+    const body = await this.index.view(
+      'ddoc-index',
+      'preprintsByScoreAndDatePosted',
+      {
+        include_docs: false,
+        reduce: false,
+        limit: 1,
+        descending: true
+      }
+    );
+
+    return body.rows && body.rows[0] ? body.rows[0].key[0] : 1;
+  }
+
   // search
   async searchPreprints(params, { user = null } = {}) {
     const results = await this.index.search('ddoc-index', 'preprints', params);

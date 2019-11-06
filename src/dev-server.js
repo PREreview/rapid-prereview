@@ -13,6 +13,7 @@ import {
   setIntervalAsync,
   clearIntervalAsync
 } from './utils/set-interval-async';
+import { createCacheKey } from './middlewares/cache';
 
 const compiler = webpack(webpackConfig);
 
@@ -23,20 +24,31 @@ const config = {
 
 const db = new DB(config);
 const feed = new Feed(db);
-feed.start(); // TODO use feed.resume()
+feed.resume();
 feed.on('error', err => {
   console.error(err);
 });
 
+const redisClient = createRedisClient(config);
+
 const intervalId = setIntervalAsync(
   () => {
-    return db.updateScores();
+    return db.updateScores().then(() => {
+      redisClient
+        .batch()
+        .del(createCacheKey('home:score'))
+        .del(createCacheKey('home:new'))
+        .del(createCacheKey('home:date'))
+        .exec(err => {
+          if (err) {
+            console.error(err);
+          }
+        });
+    });
   },
   config.updateScoreInterval || 5 * 60 * 1000,
   err => console.error(err)
 );
-
-const redisClient = createRedisClient(config);
 
 const app = express();
 app.use(

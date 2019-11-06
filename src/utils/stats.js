@@ -82,7 +82,7 @@ export function getTags(actions) {
     return false;
   });
 
-  const hasData = reviewsWithData.length >= threshold;
+  const hasData = reviewsWithData.length && reviewsWithData.length >= threshold;
 
   // hasCode
   const reviewsWithCode = reviewActions.filter(action => {
@@ -102,7 +102,7 @@ export function getTags(actions) {
     return false;
   });
 
-  const hasCode = reviewsWithCode.length >= threshold;
+  const hasCode = reviewsWithCode.length && reviewsWithCode.length >= threshold;
 
   // subjects
   const subjectCountMap = {};

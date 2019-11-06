@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import HeaderBar from './header-bar';
 import Button from './button';
@@ -6,6 +6,10 @@ import LabelStyle from './label-style';
 import { CONTACT_EMAIL_HREF } from '../constants';
 
 export default function ExtensionSplash() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="extension-splash">
       <Helmet>
@@ -26,7 +30,7 @@ export default function ExtensionSplash() {
             homepage.
           </p>
           <img
-            src="images/extension-preview.png"
+            src="/images/extension-preview.png"
             className="extension-splash__screenshot"
           />
           <ul className="extension-splash__browser-list">

@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import fetch from 'node-fetch';
 import concatStream from 'concat-stream';
+import omit from 'lodash/omit';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
 import resolve from '../utils/resolve';
@@ -25,7 +26,7 @@ router.get(
 
     let hasErrored = false;
 
-    const s = req.db.streamPreprints(req.query);
+    const s = req.db.streamPreprints(omit(req.query, ['key']));
 
     let statusCode;
 
@@ -49,10 +50,7 @@ router.get(
     s.pipe(
       concatStream(buffer => {
         if (statusCode === 200) {
-          req.cache(
-            JSON.parse(buffer),
-            req.app.locals.config.updateScoreInterval || 5 * 60 * 1000 // We need to invalidate at least at the same frequency as score update loop
-          );
+          req.cache(JSON.parse(buffer));
         }
       })
     );
@@ -219,7 +217,7 @@ router.get(
 
     let hasErrored = false;
 
-    const s = req.db.streamActions(req.query);
+    const s = req.db.streamActions(omit(req.query, ['key']));
     s.on('response', response => {
       res.status(response.statusCode);
     });
