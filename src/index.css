@@ -53,6 +53,7 @@
 @import './components/pdf-viewer.css';
 @import './components/welcome-modal.css';
 @import './components/toc-page.css';
+@import './components/settings-roles.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';

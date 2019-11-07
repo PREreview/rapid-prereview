@@ -10,6 +10,9 @@
   box-sizing: border-box;
 
   & .settings__content {
+    box-sizing: border-box;
+    position: relative;
+    padding-bottom: 52px; /* we position the DONE button absolutely in settings-roles => we ensure that there is enough space */
     max-width: var(--middle-column-default-width);
     margin: 0 auto;
     background-color: white;

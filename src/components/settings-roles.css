@@ -1,0 +1,24 @@
+.settings-roles__body-controls {
+  position: absolute;
+  right: var(--lgrd);
+  bottom: var(--lgrd);
+}
+
+.settings-roles__notice {
+  box-sizing: border-box;
+  font: var(--ui-basic-font);
+  color: var(--ui-basic-font-color--light);
+  margin-top: var(--lgrd);
+  border: 1px solid var(--ruling-color);
+  padding: var(--xsgrd);
+  border-radius: var(--xxsgrd);
+  display: flex;
+  align-items: center;
+}
+
+.settings-roles__notice-icon {
+  margin-right: var(--xsgrd);
+  height: var(--sgrd);
+  width: var(--sgrd);
+  flex: 0 0 var(--sgrd);
+}

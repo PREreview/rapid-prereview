@@ -1,24 +1,33 @@
 import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
+import { MdInfoOutline, MdPublic, MdStar, MdStarBorder } from 'react-icons/md';
 import { getId, unprefix, arrayify } from '../utils/jsonld';
 import { getDefaultRole } from '../utils/users';
 import Button from './button';
-import { MdPublic, MdStar, MdStarBorder } from 'react-icons/md';
 import Modal from './modal';
 import RoleEditor from './role-editor';
 import { RoleBadgeUI } from './role-badge';
 import Controls from './controls';
 import { usePostAction } from '../hooks/api-hooks';
+import { useIsFirstTimeOnSettings } from '../hooks/ui-hooks';
 import IncognitoIcon from '../svgs/incognito_icon.svg';
 import XLink from './xlink';
 
 export default function SettingsRoles({ user }) {
+  const isFirstTimeOnSettings = useIsFirstTimeOnSettings();
   const [editedRoleId, setEditedRoleId] = useState(null);
 
   const defaultRole = getDefaultRole(user);
 
+  const allHaveNames = user.hasRole.every(
+    role => role.name && role.name !== unprefix(getId(role))
+  );
+  const allHaveAvatars = user.hasRole.every(
+    role => role.avatar && role.avatar.contentUrl
+  );
+
   return (
-    <section className="settings__section">
+    <section className="settings-roles settings__section">
       <h3 className="settings__title">Personas</h3>
 
       <p>
@@ -27,18 +36,37 @@ export default function SettingsRoles({ user }) {
         <a href={`https://orcid.org/${user.orcid}`}>ORCID</a> profile) or kept
         anonymous.
       </p>
+
       <p>
         The <strong>active</strong> persona is the persona that will be used
         when you write <em>new</em> Rapid PREreviews or <em>new</em> request for
         feedback on preprints. It can be changed at any time.
       </p>
+
+      {(!allHaveNames || !allHaveAvatars) && (
+        <p className="settings-roles__notice">
+          <MdInfoOutline className="settings-roles__notice-icon" />
+
+          <span>
+            It is recommended that you set{' '}
+            {!allHaveNames && !allHaveAvatars
+              ? 'a display name and an avatar'
+              : !allHaveNames
+              ? 'a display name'
+              : 'an avatar'}{' '}
+            for each of your personas. Click on the <strong>Edit</strong>{' '}
+            buttons below to do so.
+          </span>
+        </p>
+      )}
+
       <ul className="settings__persona-list">
         <li className="settings__persona-list-header">
           <div className="settings__persona-list-header__active">
             <span>Active</span>
           </div>
           <span className="settings__persona-list-header__username">
-            Username
+            Display name
           </span>
           <span className="settings__persona-list-header__anon">Anonymity</span>
           <span />
@@ -96,6 +124,12 @@ export default function SettingsRoles({ user }) {
           </li>
         ))}
       </ul>
+
+      <Controls className="settings-roles__body-controls">
+        <Button element="XLink" to="/" href="/" primary={isFirstTimeOnSettings}>
+          {isFirstTimeOnSettings ? 'Start Reviewing' : 'Done'}
+        </Button>
+      </Controls>
 
       {!!editedRoleId && (
         <Modal

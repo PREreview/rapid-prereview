@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 import cors from 'cors';
+import { getId, unprefix } from '../utils/jsonld';
 
 const router = new Router({ caseSensitive: true });
 
@@ -10,10 +11,19 @@ router.get('/orcid', passport.authenticate('orcid'));
 // finish authenticating with ORCID
 router.get(
   '/orcid/callback',
-  passport.authenticate('orcid', {
-    successRedirect: '/',
-    failureRedirect: '/login?error=true'
-  })
+  passport.authenticate('orcid'),
+  (req, res, next) => {
+    if (
+      !req.user.hasRole.every(
+        role => role.name && role.name && role.name !== unprefix(getId(role))
+      ) ||
+      !req.user.hasRole.every(role => role.avatar && role.avatar.contentUrl)
+    ) {
+      res.redirect('/settings');
+    } else {
+      res.redirect('/');
+    }
+  }
 );
 
 router.get('/logout', (req, res) => {

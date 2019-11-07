@@ -57,6 +57,18 @@ export function useIsNewVisitor() {
   return isNewVisitor;
 }
 
+export function useIsFirstTimeOnSettings() {
+  const [isFirstTimeOnSettings] = useState(
+    localStorage.getItem('isFirstTimeOnSettings') !== 'false'
+  );
+
+  useEffect(() => {
+    localStorage.setItem('isFirstTimeOnSettings', 'false');
+  }, []);
+
+  return isFirstTimeOnSettings;
+}
+
 export function useIsMobile() {
   const [isMobile, setIsMobile] = useState(
     window.matchMedia('(max-width: 900px)').matches
