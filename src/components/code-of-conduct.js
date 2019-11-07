@@ -27,7 +27,9 @@ export default function CodeOfConduct() {
           because we are convinced that one can be honest AND respectful at the
           same time.{' '}
         </p>
+      </section>
 
+      <section>
         <h2 id="our-responsibilities">Our Responsibilities</h2>
         <p>
           The <Org /> team is responsible for clarifying the standards of
