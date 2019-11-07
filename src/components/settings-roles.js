@@ -28,7 +28,7 @@ export default function SettingsRoles({ user }) {
 
   return (
     <section className="settings-roles settings__section">
-      {!isFirstTimeOnSettings && (
+      {isFirstTimeOnSettings && (
         <div className="settings__welcome">
           <h3 className="settings__title settings__title--center">
             Welcome to Outbreak Science Rapid PREreview!
