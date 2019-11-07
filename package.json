@@ -4,6 +4,7 @@
   "description": "rapid PREreview (outbreak science)",
   "main": "index.js",
   "scripts": {
+    "profile": "cross-env NODE_ENV=production webpack --mode production --profile --json > stats.json && webpack-bundle-analyzer stats.json public/assets",
     "cloudant": "docker restart cloudant-developer",
     "redis": "redis-server /usr/local/etc/redis.conf",
     "log-cloudant": "docker logs cloudant-developer",
@@ -43,6 +44,7 @@
       "@babel/preset-react"
     ],
     "plugins": [
+      "@babel/plugin-syntax-dynamic-import",
       "@babel/plugin-transform-runtime",
       "@babel/plugin-transform-async-to-generator",
       "@babel/plugin-proposal-class-properties"
@@ -143,6 +145,7 @@
     "@babel/core": "^7.7.2",
     "@babel/node": "^7.7.0",
     "@babel/plugin-proposal-class-properties": "^7.7.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-async-to-generator": "^7.7.0",
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.7.1",
@@ -165,6 +168,7 @@
     "faker": "^4.1.0",
     "mini-css-extract-plugin": "^0.8.0",
     "mocha": "^6.2.2",
+    "null-loader": "^3.0.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
     "pino-pretty": "^3.3.0",
     "postcss-import": "^12.0.1",
@@ -176,6 +180,7 @@
     "style-loader": "^1.0.0",
     "url-loader": "^2.2.0",
     "webpack": "^4.41.2",
+    "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.10",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-hot-middleware": "^2.25.0"

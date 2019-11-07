@@ -38,6 +38,16 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /unicode\/category\/So/,
+        use: [
+          {
+            loader: 'null-loader'
+          }
+        ],
+        include: path.resolve(__dirname, 'node_modules')
+      },
+
+      {
         test: /\.js$/,
         use: [
           {
@@ -45,6 +55,7 @@ module.exports = {
             options: {
               presets: babel.presets,
               plugins: [
+                '@babel/plugin-syntax-dynamic-import',
                 '@babel/plugin-transform-async-to-generator',
                 '@babel/plugin-proposal-class-properties'
               ]

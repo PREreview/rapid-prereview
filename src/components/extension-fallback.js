@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { usePreprint } from '../hooks/api-hooks';
 import { getPdfUrl, getCanonicalUrl } from '../utils/preprints';
 import Shell from './shell';
 import ShellContent from './shell-content';
-import PdfViewer from './pdf-viewer';
+
+const PdfViewer = React.lazy(() =>
+  import(/* webpackChunkName: "pdf-viewer" */ './pdf-viewer')
+);
 
 // TODO if no PDF is available display shell in full screen ?
 
@@ -38,9 +41,11 @@ export default function ExtensionFallback() {
           // typemustmatch="true" commented out as it doesn't seem to be currently supported by react
         >
           {/* fallback text in case we can't load the PDF */}
-          <PdfViewer pdfUrl={pdfUrl} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <PdfViewer pdfUrl={pdfUrl} />
+          </Suspense>
         </object>
-      ) : !pdfUrl && !fetchPreprintProgress.isActive ? (
+      ) : preprint && !pdfUrl && !fetchPreprintProgress.isActive ? (
         <div className="extension-fallback__no-pdf-message">
           <div>
             No PDF available.
