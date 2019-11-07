@@ -16,7 +16,7 @@ export default function LeftSidePanel({
         return;
       }
 
-      if (!e.target.hasAttribute('data-noclickoutside')) {
+      if (!hasNoclickoutside(e.target)) {
         // outside click
         onClickOutside();
       }
@@ -50,3 +50,17 @@ LeftSidePanel.propTypes = {
   children: PropTypes.any,
   onClickOutside: PropTypes.func
 };
+
+function hasNoclickoutside(node) {
+  if (!node) return false;
+
+  let el = node;
+  while (el && el.hasAttribute) {
+    if (el.hasAttribute('data-noclickoutside')) {
+      return true;
+    }
+    el = el.parentElement;
+  }
+
+  return false;
+}

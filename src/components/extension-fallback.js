@@ -34,8 +34,8 @@ export default function ExtensionFallback() {
         <object
           key={pdfUrl}
           data={pdfUrl}
-          type="" // we leave this empty since it seems to break pdf loading in safari
-          typemustmatch="true" // Note typeMustMatch doesn't seem to be currently supported by react
+          // type="application/pdf" commented out as it seems to break pdf loading in safari
+          // typemustmatch="true" commented out as it doesn't seem to be currently supported by react
         >
           {/* fallback text in case we can't load the PDF */}
           <PdfViewer pdfUrl={pdfUrl} />

@@ -18,7 +18,7 @@ export default function HeaderBar({ onClickMenuButton }) {
         {!!onClickMenuButton && (
           <IconButton
             data-noclickoutside="true"
-            onClick={onClickMenuButton}
+            onClickCapture={onClickMenuButton}
             className="header-bar__menu-button"
           >
             <MdMenu
