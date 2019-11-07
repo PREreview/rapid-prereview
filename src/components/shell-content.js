@@ -274,6 +274,12 @@ function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
         actions={actions.filter(
           action => action['@type'] === 'RapidPREreviewAction'
         )}
+        nRequests={actions.reduce((count, action) => {
+          if (action['@type'] === 'RequestForRapidPREreviewAction') {
+            count++;
+          }
+          return count;
+        }, 0)}
       />
     </div>
   );

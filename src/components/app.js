@@ -16,6 +16,7 @@ import PrivateRoute from './private-route';
 import ExtensionSplash from './extension-splash';
 import ToCPage from './toc-page';
 import CodeOfConduct from './code-of-conduct';
+import NotFound from './not-found';
 
 // kick off the polyfill!
 smoothscroll.polyfill();
@@ -52,6 +53,10 @@ export default function App({ user }) {
                 </PrivateRoute>
                 <Route exact={true} path="/:identifierPart1/:identifierPart2?">
                   <ExtensionFallback />
+                </Route>
+
+                <Route>
+                  <NotFound />
                 </Route>
               </Switch>
             </Router>

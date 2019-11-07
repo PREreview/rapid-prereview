@@ -87,19 +87,17 @@ export default function Barplot({
                       className="barplot__bar-segment barplot__bar-segment--yes"
                       style={{ width: `${(yes.length / nReviews) * 100}%` }}
                     >
-                      <span className="barplot__bar-segment__number">{`${(
-                        (yes.length / nReviews) *
-                        100
-                      ).toFixed(1)}%`}</span>
+                      <span className="barplot__bar-segment__number">
+                        {yes.length}
+                      </span>
                     </td>
                     <td
                       className="barplot__bar-segment barplot__bar-segment--no"
                       style={{ width: `${(no.length / nReviews) * 100}%` }}
                     >
-                      <span className="barplot__bar-segment__number">{`${(
-                        (no.length / nReviews) *
-                        100
-                      ).toFixed(1)}%`}</span>
+                      <span className="barplot__bar-segment__number">
+                        {no.length}
+                      </span>
                     </td>
                     <td
                       className="barplot__bar-segment barplot__bar-segment--unsure"
@@ -107,19 +105,17 @@ export default function Barplot({
                         width: `${(unsure.length / nReviews) * 100}%`
                       }}
                     >
-                      <span className="barplot__bar-segment__number">{`${(
-                        (unsure.length / nReviews) *
-                        100
-                      ).toFixed(1)}%`}</span>
+                      <span className="barplot__bar-segment__number">
+                        {unsure.length}
+                      </span>
                     </td>
                     <td
                       className="barplot__bar-segment barplot__bar-segment--na"
                       style={{ width: `${(na.length / nReviews) * 100}%` }}
                     >
-                      <span className="barplot__bar-segment__number">{`${(
-                        (na.length / nReviews) *
-                        100
-                      ).toFixed(1)}%`}</span>
+                      <span className="barplot__bar-segment__number">
+                        {na.length}
+                      </span>
                     </td>
                   </tr>
                 </tbody>
@@ -133,6 +129,8 @@ export default function Barplot({
 }
 
 Barplot.propTypes = {
+  nTotalReviews: PropTypes.number.isRequired,
+  nHighlightedReviews: PropTypes.number.isRequired,
   stats: PropTypes.arrayOf(
     PropTypes.shape({
       questionId: PropTypes.string.isRequired,

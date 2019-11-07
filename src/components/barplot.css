@@ -186,6 +186,7 @@
     right: 0;
     z-index: 10;
   }
+
   & .barplot__question-table:hover,
   & .barplot__question-table:focus {
     & .barplot__table-header {
@@ -207,6 +208,7 @@
     pointer-events: none;
     z-index: 20;
   }
+
   & .barplot__question-list__item:hover,
   & .barplot__question-list__item:focus {
     outline: none;
@@ -214,7 +216,12 @@
       top: -18px;
       opacity: 0.95;
     }
+
+    & .barplot__bar-segment {
+      color: white;
+    }
   }
+
   & .barplot__segment-title {
     padding: var(--xxsgrd) var(--xsgrd);
     box-sizing: border-box;

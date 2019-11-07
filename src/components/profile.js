@@ -9,6 +9,7 @@ import { useRole } from '../hooks/api-hooks';
 import RoleActivity from './role-activity';
 import LabelStyle from './label-style';
 import XLink from './xlink';
+import NotFound from './not-found';
 
 // TODO:
 // - other public persona + number of private persona
@@ -25,6 +26,10 @@ export default function Profile() {
   }, []);
 
   const user = role && role.isRoleOf;
+
+  if (fetchRoleProgress.error && fetchRoleProgress.error.statusCode >= 404) {
+    return <NotFound />;
+  }
 
   return (
     <div className="profile">

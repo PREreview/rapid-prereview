@@ -5,6 +5,7 @@ import { usePreprint } from '../hooks/api-hooks';
 import { getPdfUrl, getCanonicalUrl } from '../utils/preprints';
 import Shell from './shell';
 import ShellContent from './shell-content';
+import NotFound from './not-found';
 
 const PdfViewer = React.lazy(() =>
   import(/* webpackChunkName: "pdf-viewer" */ './pdf-viewer')
@@ -23,6 +24,13 @@ export default function ExtensionFallback() {
     identifier,
     location.state && location.state.preprint
   );
+
+  if (
+    fetchPreprintProgress.error &&
+    fetchPreprintProgress.error.statusCode >= 400
+  ) {
+    return <NotFound />;
+  }
 
   const pdfUrl = getPdfUrl(preprint);
   const canonicalUrl = getCanonicalUrl(preprint);

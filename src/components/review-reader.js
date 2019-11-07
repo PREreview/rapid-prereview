@@ -14,6 +14,7 @@ const ReviewReader = React.memo(function ReviewReader({
   preview,
   identifier,
   actions,
+  nRequests,
   defaultHighlightedRoleIds,
   onHighlighedRoleIdsChange = noop
 }) {
@@ -52,7 +53,10 @@ const ReviewReader = React.memo(function ReviewReader({
   return (
     <div className="review-reader">
       <h3 className="review-reader__title">
-        {actions.length} Rapid PREreviews
+        {actions.length} review{actions.length !== 1 ? 's' : ''}
+        {nRequests != null
+          ? ` | ${nRequests} request${nRequests !== 1 ? 's' : ''}`
+          : ''}
       </h3>
 
       {!!actions.length && (
@@ -115,6 +119,7 @@ ReviewReader.propTypes = {
       agent: PropTypes.string.isRequired
     })
   ).isRequired,
+  nRequests: PropTypes.number,
   defaultHighlightedRoleIds: PropTypes.arrayOf(PropTypes.string)
 };
 

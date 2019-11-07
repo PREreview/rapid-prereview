@@ -11,12 +11,20 @@ export class PreprintsWithActionsStore extends EventEmitter {
   }
 
   has(preprintId) {
-    preprintId = createPreprintId(preprintId);
+    try {
+      preprintId = createPreprintId(preprintId);
+    } catch (err) {
+      return false;
+    }
     return this.cache.has(preprintId);
   }
 
   get(preprintId, { actions = true } = {}) {
-    preprintId = createPreprintId(preprintId);
+    try {
+      preprintId = createPreprintId(preprintId);
+    } catch (err) {
+      return;
+    }
     return this.cache.get(preprintId);
   }
 
@@ -27,7 +35,11 @@ export class PreprintsWithActionsStore extends EventEmitter {
   }
 
   peek(preprintId, { actions = true } = {}) {
-    preprintId = createPreprintId(preprintId);
+    try {
+      preprintId = createPreprintId(preprintId);
+    } catch (err) {
+      return;
+    }
     const preprint = this.cache.peek(preprintId);
     if (preprint) {
       return actions ? preprint : omit(preprint, ['potentialAction']);
@@ -43,12 +55,20 @@ export class PreprintsWithActionsStore extends EventEmitter {
       if (emit) {
         this.emit('SET', preprint);
       }
-      this.cache.set(createPreprintId(preprint), preprint);
+      try {
+        this.cache.set(createPreprintId(preprint), preprint);
+      } catch (err) {
+        // noop
+      }
     }
   }
 
   del(preprintId, { emit = true } = {}) {
-    preprintId = createPreprintId(preprintId);
+    try {
+      preprintId = createPreprintId(preprintId);
+    } catch (err) {
+      return;
+    }
     if (emit) {
       this.emit('DEL', this.peek(preprintId));
     }

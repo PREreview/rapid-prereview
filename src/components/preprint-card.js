@@ -221,6 +221,7 @@ export default function PreprintCard({
                 </IconButton>
               </div>
             </Tooltip>
+
             <IconButton
               className="preprint-card__expansion-toggle"
               onClick={e => {
