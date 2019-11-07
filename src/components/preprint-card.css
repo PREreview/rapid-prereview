@@ -274,4 +274,12 @@
   overflow-x: hidden;
   max-width: 100%;
   position: relative;
+
+  & .preprint-card__view-more {
+    display: flex;
+    padding: var(--sgrd);
+    & .button {
+      margin-left: auto;
+    }
+  }
 }

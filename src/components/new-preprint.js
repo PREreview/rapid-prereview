@@ -89,9 +89,17 @@ export default function NewPreprint({ onCancel, onSuccess, onViewInContext }) {
           onViewInContext={onViewInContext}
         />
       ) : preprint && step === 'REVIEW_SUCCESS' ? (
-        <StepReviewSuccess preprint={preprint} onClose={onSuccess} />
+        <StepReviewSuccess
+          preprint={preprint}
+          onClose={onSuccess}
+          onViewInContext={onViewInContext}
+        />
       ) : preprint && step === 'REQUEST_SUCCESS' ? (
-        <StepRequestSuccess preprint={preprint} onClose={onSuccess} />
+        <StepRequestSuccess
+          preprint={preprint}
+          onClose={onSuccess}
+          onViewInContext={onViewInContext}
+        />
       ) : null}
     </div>
   );
@@ -390,7 +398,7 @@ StepRequest.propTypes = {
   onViewInContext: PropTypes.func.isRequired
 };
 
-function StepReviewSuccess({ preprint, onClose }) {
+function StepReviewSuccess({ preprint, onClose, onViewInContext }) {
   return (
     <div className="new-preprint__step-review-success">
       <header className="new-preprint__title">Success</header>
@@ -400,6 +408,13 @@ function StepReviewSuccess({ preprint, onClose }) {
       <p>Your review has been successfully posted.</p>
 
       <Controls>
+        <Button
+          onClick={() => {
+            onViewInContext({ preprint, tab: 'read' });
+          }}
+        >
+          View In Context
+        </Button>
         <Button onClick={onClose}>Close</Button>
       </Controls>
     </div>
@@ -407,10 +422,11 @@ function StepReviewSuccess({ preprint, onClose }) {
 }
 StepReviewSuccess.propTypes = {
   preprint: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  onViewInContext: PropTypes.func.isRequired
 };
 
-function StepRequestSuccess({ preprint, onClose }) {
+function StepRequestSuccess({ preprint, onClose, onViewInContext }) {
   return (
     <div className="new-preprint__step-review-success">
       <header className="new-preprint__title">Success</header>
@@ -420,6 +436,13 @@ function StepRequestSuccess({ preprint, onClose }) {
       <p>Your request has been successfully posted.</p>
 
       <Controls>
+        <Button
+          onClick={() => {
+            onViewInContext({ preprint, tab: 'read' });
+          }}
+        >
+          View In Context
+        </Button>
         <Button onClick={onClose}>Close</Button>
       </Controls>
     </div>
@@ -427,5 +450,6 @@ function StepRequestSuccess({ preprint, onClose }) {
 }
 StepRequestSuccess.propTypes = {
   preprint: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  onViewInContext: PropTypes.func.isRequired
 };

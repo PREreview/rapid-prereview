@@ -20,6 +20,7 @@ import AddPrereviewIcon from '../svgs/add_prereview_icon.svg';
 import Collapse from './collapse';
 import ReviewReader from './review-reader';
 import XLink from './xlink';
+import Button from './button';
 
 export default function PreprintCard({
   user,
@@ -242,6 +243,18 @@ export default function PreprintCard({
             actions={reviews}
             preview={true}
           />
+
+          <div className="preprint-card__view-more">
+            <Button
+              element="XLink"
+              primary={true}
+              pill={true}
+              to={`/${preprint.doi || preprint.arXivId}`}
+              href={`/${preprint.doi || preprint.arXivId}`}
+            >
+              View
+            </Button>
+          </div>
         </div>
       </Collapse>
     </Fragment>

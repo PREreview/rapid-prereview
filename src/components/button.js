@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import noop from 'lodash/noop';
+import XLink from './xlink';
 
 export default function Button({
   children,
@@ -13,7 +14,7 @@ export default function Button({
   isWaiting = false,
   ...buttonProps
 }) {
-  const El = element;
+  const El = element === 'XLink' ? XLink : element;
   return (
     <El
       className={classNames('button', className, {

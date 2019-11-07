@@ -24,3 +24,15 @@ export function WithError() {
     </Controls>
   );
 }
+
+export function WithLink() {
+  const error = new Error('Error message');
+  return (
+    <Controls error={error}>
+      <Button element="a" href="/">
+        Cancel
+      </Button>
+      <Button>Submit</Button>
+    </Controls>
+  );
+}

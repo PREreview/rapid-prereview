@@ -9,6 +9,7 @@ import { createRedisClient } from './utils/redis';
 const logger = pino({ logLevel: 'info' });
 
 const config = {
+  cache: true,
   pino: logger,
   appRootUrl: PRODUCTION_DOMAIN,
   isBeta: true,
