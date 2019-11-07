@@ -4,6 +4,8 @@
   background-color: rgb(83, 86, 89);
 
   & .extension-fallback__no-pdf-message {
+    text-align: center;
+    padding: var(--sgrd);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,11 +18,12 @@
       }
     }
   }
-}
 
-object {
-  display: block; /* iframes are inline by default */
-  border: none; /* Reset default border */
-  height: 100vh; /* Viewport-relative units */
-  width: 100vw;
+  & object {
+    display: block; /* iframes are inline by default */
+    border: none; /* Reset default border */
+    height: 100vh; /* Viewport-relative units */
+    width: 100vw;
+  }
+
 }

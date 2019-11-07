@@ -24,7 +24,7 @@ module.exports = {
   output: {
     filename: `bundle.[name]${isProd ? '.[chunkhash]' : ''}.js`,
     path: path.resolve(__dirname, 'public/assets/'),
-    publicPath: isProd ? '/assets/' : 'http://127.0.0.1:3000/assets/',
+    publicPath: '/assets/',
     hotUpdateChunkFilename: 'hot/[id].[hash].hot-update.js',
     hotUpdateMainFilename: 'hot/[hash].hot-update.json'
   },

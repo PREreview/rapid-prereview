@@ -1,24 +1,11 @@
 .pdf-viewer {
   max-width: 900px; /* Keep in sync with JS */
   margin: 0 auto;
+}
 
-  & .pdf-viewer__loading {
-    /* padding: var(--lgrd);
-    background: white;
-    width: 100%;
-    max-width: 320px; */
-    color: white;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-    width: 100vw;
-    height: 50vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0.8;
-
-    & .pdf-viewer__loading__text {
-      margin: auto;
-    }
+@keyframes pdf-viewer__loading__text-ellipsis {
+  to {
+    width: 1.25em;
   }
 }
 

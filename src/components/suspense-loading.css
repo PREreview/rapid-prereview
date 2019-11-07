@@ -1,0 +1,28 @@
+.suspense-loading {
+  display: flex;
+  justify-content: center;
+  height: 50vh; /* Right now this is specific to the extension fallback page where the shell takes the 50vh of the bottom of the page */
+  align-items: center;
+  opacity: 0.8;
+  color: white;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.suspense-loading__content {
+  position: relative;
+  &::after {
+    position: absolute;
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    animation: suspense-loading-ellipsis steps(4,end) 900ms infinite;
+    content: "\2026"; /* ascii code for the ellipsis character */
+    width: 0px;
+  }
+}
+
+@keyframes suspense-loading-ellipsis {
+  to {
+    width: 1em;
+  }
+}

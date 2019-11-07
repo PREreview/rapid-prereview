@@ -209,6 +209,7 @@
     "helmet": "^3.21.2",
     "identifiers-arxiv": "^0.1.1",
     "identifiers-orcid": "^0.1.1",
+    "is-mobile": "^2.1.0",
     "jsdom": "^15.2.1",
     "lodash": "^4.17.15",
     "lru-cache": "^5.1.1",

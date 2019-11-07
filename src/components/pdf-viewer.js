@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import throttle from 'lodash/throttle';
-import { Document, Page, pdfjs } from 'react-pdf';
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+import { Document, Page } from 'react-pdf/dist/entry.webpack';
+
+const CSS_MAX_WIDTH = 900; // keep in sync with CSS
 
 /**
  * Fallback for `object` as on mobile <object /> doesn't work
@@ -10,7 +11,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
  * This implement an infinite scroll mechanism so that we never load more than a
  * few pages at the time
  */
-export default function PdfViewer({ pdfUrl }) {
+export default function PdfViewer({ pdfUrl, loading }) {
   const [width, setWidth] = useState(getWidth());
   const [focused, setFocused] = useState(0);
   const [dims, setDims] = useState([]);
@@ -68,11 +69,7 @@ export default function PdfViewer({ pdfUrl }) {
         file={`${process.env.API_URL}/api/pdf?url=${encodeURIComponent(
           pdfUrl
         )}`}
-        loading={
-          <div className="pdf-viewer__loading">
-            <div className="pdf-viewer__loading__text">Loading Pdf...</div>
-          </div>
-        }
+        loading={loading}
         onLoadSuccess={async pdf => {
           let dims = [];
           for (let i = 0; i < pdf.numPages; i++) {
@@ -122,11 +119,12 @@ export default function PdfViewer({ pdfUrl }) {
 }
 
 PdfViewer.propTypes = {
-  pdfUrl: PropTypes.string.isRequired
+  pdfUrl: PropTypes.string.isRequired,
+  loading: PropTypes.element
 };
 
 function getWidth() {
-  return Math.min(window.innerWidth, 900);
+  return Math.min(window.innerWidth, CSS_MAX_WIDTH);
 }
 
 function getScaledPageHeight({ desiredWidth, nativeWidth, nativeHeight }) {
