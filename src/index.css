@@ -55,6 +55,7 @@
 @import './components/toc-page.css';
 @import './components/settings-roles.css';
 @import './components/not-found.css';
+@import './components/suspense-loading.css';
 
 /* reach ui */
 @import '../node_modules/@reach/menu-button/styles.css';

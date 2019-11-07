@@ -1,11 +1,13 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useMemo } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
+import mobile from 'is-mobile';
 import { usePreprint } from '../hooks/api-hooks';
 import { getPdfUrl, getCanonicalUrl } from '../utils/preprints';
 import Shell from './shell';
 import ShellContent from './shell-content';
 import NotFound from './not-found';
+import SuspenseLoading from './suspense-loading';
 
 const PdfViewer = React.lazy(() =>
   import(/* webpackChunkName: "pdf-viewer" */ './pdf-viewer')
@@ -19,6 +21,8 @@ export default function ExtensionFallback() {
   const identifier = [identifierPart1, identifierPart2]
     .filter(Boolean)
     .join('/');
+
+  const isMobile = useMemo(() => mobile({ tablet: true }), []);
 
   const [preprint, fetchPreprintProgress] = usePreprint(
     identifier,
@@ -42,24 +46,46 @@ export default function ExtensionFallback() {
       </Helmet>
 
       {pdfUrl ? (
-        <object
-          key={pdfUrl}
-          data={pdfUrl}
-          // type="application/pdf" commented out as it seems to break pdf loading in safari
-          // typemustmatch="true" commented out as it doesn't seem to be currently supported by react
-        >
-          {/* fallback text in case we can't load the PDF */}
-          <Suspense fallback={<div>Loading...</div>}>
-            <PdfViewer pdfUrl={pdfUrl} />
+        isMobile ? (
+          /* for mobile devices we always use the fallback */
+          <Suspense fallback={<SuspenseLoading>Loading PDF</SuspenseLoading>}>
+            <PdfViewer
+              pdfUrl={pdfUrl}
+              loading={<SuspenseLoading>Loading PDF</SuspenseLoading>}
+            />
           </Suspense>
-        </object>
+        ) : (
+          <object
+            key={pdfUrl}
+            data={pdfUrl}
+            // type="application/pdf" commented out as it seems to break pdf loading in safari
+            // typemustmatch="true" commented out as it doesn't seem to be currently supported by react
+          >
+            {/* fallback text in case we can't load the PDF */}
+            <Suspense fallback={<SuspenseLoading>Loading PDF</SuspenseLoading>}>
+              <PdfViewer
+                pdfUrl={pdfUrl}
+                loading={<SuspenseLoading>Loading PDF</SuspenseLoading>}
+              />
+            </Suspense>
+          </object>
+        )
       ) : preprint && !pdfUrl && !fetchPreprintProgress.isActive ? (
         <div className="extension-fallback__no-pdf-message">
           <div>
             No PDF available.
             {!!canonicalUrl && (
               <span>
-                {` `}You can visit {<a href={canonicalUrl}>{canonicalUrl}</a>}{' '}
+                {` `}You can visit{' '}
+                {
+                  <a
+                    href={canonicalUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    {canonicalUrl}
+                  </a>
+                }{' '}
                 for more information on the document.
               </span>
             )}
