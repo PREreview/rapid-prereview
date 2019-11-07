@@ -49,30 +49,30 @@
       to right,
       var(--xlight-grey) 0px,
       var(--xlight-grey) 32px,
-      transparent 64px,
-      transparent
+      rgba(255, 255, 255, 0) 64px,
+      rgba(255, 255, 255, 0)
     ),
     /* left inset shadow (fixed) */
       linear-gradient(
         to right,
         rgba(0, 0, 0, 0.3) 0px,
         var(--xlight-grey) 24px,
-        transparent
+        rgba(255, 255, 255, 0)
       ),
     /* left shadow cover mask (scrolls) */
       linear-gradient(
         to left,
         var(--xlight-grey) 0px,
         var(--xlight-grey) 32px,
-        transparent 64px,
-        transparent
+        rgba(255, 255, 255, 0) 64px,
+        rgba(255, 255, 255, 0)
       ),
     /* left inset shadow (fixed) */
       linear-gradient(
         to left,
         rgba(0, 0, 0, 0.3) 0px,
         var(--xlight-grey) 24px,
-        transparent
+        rgba(255, 255, 255, 0)
       );
   background-repeat: no-repeat;
   background-size: 100% 100%, 100% 100%;
