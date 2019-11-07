@@ -17,12 +17,16 @@
     margin: 0 auto;
     background-color: white;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
-    min-height: calc(100vh - var(--header-bar-height) - 2*var(--lgrd));
+    min-height: calc(100vh - var(--header-bar-height) - 2 * var(--lgrd));
   }
 
   & .settings__title {
     margin: 0 0 var(--mgrd) 0;
     font: var(--ui-header-1-font);
+
+    &.settings__title--center {
+      text-align: center;
+    }
   }
 
   & .settings__info-list {
@@ -46,6 +50,17 @@
     border-top: 1px solid var(--ruling-color);
   }
 
+  & .settings__welcome {
+    margin: var(--mgrd) 0 var(--xlgrd);
+    background-color: var(--xlight-grey);
+    padding: var(--lgrd) var(--mgrd) var(--sgrd);
+    & .settings__title {
+      color: var(--prereview-red);
+    }
+  }
+  & .settings__large-text {
+    font: var(--ui-basic-font--large);
+  }
   & .settings__persona-list {
     padding: 0;
     padding-top: var(--mgrd);

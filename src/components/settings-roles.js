@@ -28,6 +28,17 @@ export default function SettingsRoles({ user }) {
 
   return (
     <section className="settings-roles settings__section">
+      {!isFirstTimeOnSettings && (
+        <div className="settings__welcome">
+          <h3 className="settings__title settings__title--center">
+            Welcome to Outbreak Science Rapid PREreview!
+          </h3>
+          <p className="settings__large-text">
+            As a new member of our community, please take a moment to set up
+            your public and anonymous persona profiles.
+          </p>
+        </div>
+      )}
       <h3 className="settings__title">Personas</h3>
 
       <p>
@@ -126,7 +137,7 @@ export default function SettingsRoles({ user }) {
       </ul>
 
       <Controls className="settings-roles__body-controls">
-        <Button element="XLink" to="/" href="/" primary={isFirstTimeOnSettings}>
+        <Button element="XLink" to="/" href="/" primary={true}>
           {isFirstTimeOnSettings ? 'Start Reviewing' : 'Done'}
         </Button>
       </Controls>
