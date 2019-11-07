@@ -238,7 +238,7 @@ function StepReview({
 
   return (
     <div className="new-preprint__step-review">
-      <header className="new-preprint__title">Add a Rapid PREreview</header>
+      <header className="new-preprint__title">Add a review</header>
 
       <PreprintPreview preprint={preprint} />
 

@@ -315,9 +315,7 @@ function ShellContentReview({
 
   return (
     <div className="shell-content-review">
-      <header className="shell-content-review__title">
-        Add a Rapid PREreview
-      </header>
+      <header className="shell-content-review__title">Add a review</header>
 
       <PreprintPreview preprint={preprint} />
 
@@ -402,7 +400,7 @@ function ShellContentRequest({
   return (
     <div className="shell-content-request">
       <header className="shell-content-request__title">
-        Add a request for Rapid PREreview
+        Add a request for review
       </header>
 
       <PreprintPreview preprint={preprint} />

@@ -39,8 +39,8 @@ export default function SettingsRoles({ user }) {
 
       <p>
         The <strong>active</strong> persona is the persona that will be used
-        when you write <em>new</em> Rapid PREreviews or <em>new</em> request for
-        feedback on preprints. It can be changed at any time.
+        when you write <em>new</em> reviews or <em>new</em> request for feedback
+        on preprints. It can be changed at any time.
       </p>
 
       {(!allHaveNames || !allHaveAvatars) && (
@@ -218,8 +218,8 @@ function MakeActivePersonaModalButton({ user, role }) {
         >
           <p>
             The <strong>active</strong> persona is the persona that will be used
-            when you write <em>new</em> Rapid PREreviews or <em>new</em> request
-            for feedback on preprints. It can be changed at any time.
+            when you write <em>new</em> reviews or <em>new</em> request for
+            feedback on preprints. It can be changed at any time.
           </p>
 
           <Controls error={postProgress.error}>
