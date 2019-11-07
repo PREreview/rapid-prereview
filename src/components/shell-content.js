@@ -255,32 +255,34 @@ function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
 
       <PreprintPreview preprint={preprint} />
 
-      <ReviewReader
-        onHighlighedRoleIdsChange={roleIds => {
-          const qs = new URLSearchParams(location.search);
-          if (roleIds && roleIds.length) {
-            qs.set('role', roleIds.map(unprefix));
-          } else {
-            qs.delete('role');
-          }
-          history.push({
-            hash: location.hash,
-            pathname: location.pathname,
-            search: qs.toString()
-          });
-        }}
-        defaultHighlightedRoleIds={roleIds}
-        identifier={preprint.doi || preprint.arXivId}
-        actions={actions.filter(
-          action => action['@type'] === 'RapidPREreviewAction'
-        )}
-        nRequests={actions.reduce((count, action) => {
-          if (action['@type'] === 'RequestForRapidPREreviewAction') {
-            count++;
-          }
-          return count;
-        }, 0)}
-      />
+      {!fetchActionsProgress.isActive && (
+        <ReviewReader
+          onHighlighedRoleIdsChange={roleIds => {
+            const qs = new URLSearchParams(location.search);
+            if (roleIds && roleIds.length) {
+              qs.set('role', roleIds.map(unprefix));
+            } else {
+              qs.delete('role');
+            }
+            history.push({
+              hash: location.hash,
+              pathname: location.pathname,
+              search: qs.toString()
+            });
+          }}
+          defaultHighlightedRoleIds={roleIds}
+          identifier={preprint.doi || preprint.arXivId}
+          actions={actions.filter(
+            action => action['@type'] === 'RapidPREreviewAction'
+          )}
+          nRequests={actions.reduce((count, action) => {
+            if (action['@type'] === 'RequestForRapidPREreviewAction') {
+              count++;
+            }
+            return count;
+          }, 0)}
+        />
+      )}
     </div>
   );
 }

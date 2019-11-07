@@ -114,7 +114,7 @@ function PermalinkModal({ permalink, onClose }) {
         if (isMountedRef.current) {
           setStatus({ isActive: false, success: false, error: null });
         }
-      }, 500);
+      }, 1000);
 
       return () => {
         clearTimeout(timeoutId);
@@ -124,7 +124,12 @@ function PermalinkModal({ permalink, onClose }) {
 
   const url = new URL(permalink);
   return (
-    <Modal title="Get permalink" showCloseButton={true} onClose={onClose}>
+    <Modal
+      title="Get permalink"
+      showCloseButton={true}
+      onClose={onClose}
+      className="permalink-modal"
+    >
       <XLink
         href={`${url.pathname}${url.search}${url.hash}`}
         to={{

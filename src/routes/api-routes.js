@@ -248,21 +248,29 @@ router.get(
  * Resolve (get metadata) for an identifier passed as query string paramenter
  * `identifier` (wrapped in `encodeURIComponent)
  */
-router.get('/resolve', cors(), async (req, res, next) => {
-  const { identifier } = req.query;
-  if (!identifier) {
-    return next(createError(400, 'missing identifier query string parameter'));
-  }
+router.get(
+  '/resolve',
+  cors(),
+  cache(req => req.query.identifier),
+  async (req, res, next) => {
+    const { identifier } = req.query;
+    if (!identifier) {
+      return next(
+        createError(400, 'missing identifier query string parameter')
+      );
+    }
 
-  const { config } = req.app.locals;
+    const { config } = req.app.locals;
 
-  try {
-    const data = await resolve(identifier, config);
-    res.json(data);
-  } catch (err) {
-    next(err);
+    try {
+      const data = await resolve(identifier, config);
+      req.cache(data);
+      res.json(data);
+    } catch (err) {
+      next(err);
+    }
   }
-});
+);
 
 /**
  * On mobile <object /> doesn't work so we use react-pdf to render the PDF =>
@@ -270,6 +278,9 @@ router.get('/resolve', cors(), async (req, res, next) => {
  */
 router.get('/pdf', async (req, res, next) => {
   const pdfUrl = req.query.url;
+  if (!pdfUrl) {
+    return next(createError(400, 'missing url query string parameter'));
+  }
 
   let r;
   try {

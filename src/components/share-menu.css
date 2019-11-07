@@ -30,3 +30,9 @@
     height: var(--sgrd);
   }
 }
+
+.permalink-modal {
+  & .controls {
+    margin-top: var(--sgrd);
+  }
+}

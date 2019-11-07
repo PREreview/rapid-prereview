@@ -71,11 +71,11 @@ export function cache(getKey) {
             break;
 
           case 'ScholarlyPreprint':
-            watchedKeys = arrayify(
-              payload.potentialAction.map(createOnlyIfKey)
+            watchedKeys = arrayify(payload.potentialAction).map(
+              createOnlyIfKey
             );
-            onlyIfValues = arrayify(
-              payload.potentialAction.map(getOnlyIfValue)
+            onlyIfValues = arrayify(payload.potentialAction).map(
+              getOnlyIfValue
             );
             break;
 
