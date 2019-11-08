@@ -1,0 +1,32 @@
+.api {
+  & table {
+    width: 100%;
+    border-collapse: collapse;
+
+    border-left: 1px solid var(--xlight-grey);
+    border-right: 1px solid var(--xlight-grey);
+
+    & td, th {
+      border-left: 1px solid var(--xlight-grey);
+      border-right: 1px solid var(--xlight-grey);
+    }
+
+    & tr {
+      border-top: 1px solid var(--xlight-grey);
+      border-bottom: 1px solid var(--xlight-grey);
+    }
+
+    & caption {
+      text-align: start;
+      padding-bottom: var(--xsgrd);
+    }
+
+    & tr:nth-child(2n) {
+      background-color: var(--xlight-grey);
+    }
+
+    & tr:hover {
+      background-color: var(--light-grey);
+    }
+  }
+}

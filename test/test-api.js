@@ -116,6 +116,7 @@ describe('API', function() {
 
   it('should get a review', async () => {
     const [review] = reviews;
+
     const resp = await fetch(`${baseUrl}/review/${unprefix(getId(review))}`);
     const body = await resp.json();
     assert.equal(getId(body), getId(review));

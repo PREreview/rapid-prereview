@@ -1,4 +1,3 @@
-import slug from 'slug';
 import doiRegex from 'doi-regex';
 import identifiersArxiv from 'identifiers-arxiv';
 import { getId, unprefix } from '../utils/jsonld';
@@ -41,7 +40,7 @@ export function createPreprintId(
     );
   }
 
-  return `preprint:${vendor}-${slug(unprefix(id).replace('/', '-'))}`;
+  return `preprint:${vendor}-${unprefix(id).replace('/', '-')}`;
 }
 
 export function createPreprintIdentifierCurie(

@@ -42,6 +42,11 @@ const ddoc = {
             index('agentId', agentId);
           }
 
+          var objectId = doc.object['@id'] || doc.object;
+          if (typeof objectId === 'string') {
+            index('objectId', agentId);
+          }
+
           var startTime = doc.startTime
             ? new Date(doc.startTime).getTime()
             : new Date('0000').getTime();

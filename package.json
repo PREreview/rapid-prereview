@@ -234,7 +234,6 @@
     "react-router-dom": "^5.1.2",
     "redis": "^2.8.0",
     "serve-favicon": "^2.5.0",
-    "slug": "^1.1.0",
     "smoothscroll-polyfill": "^0.4.4",
     "uuid": "^3.3.3",
     "xmldom": "^0.1.27"
