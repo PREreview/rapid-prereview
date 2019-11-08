@@ -146,7 +146,26 @@ We use Azure and IBM Cloudant.
 
 #### Architecture
 
-TODO
+We use [Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/) and run 2 apps:
+- `rapid-prereview` for the web server
+- `rapid-prereview-service` for a process that takes care of:
+  - maintaining our search index (listening to CouchDB changes feed)
+  - updating the "trending" score of preprints with reviews or requests for
+    reviews on a periodical interval
+
+These 2 apps are run on the same service plan (`rapid-prereview-service-plan`).
+
+The databases are hosted on IBM Cloudant (CouchDB) and are composed of 3
+databases:
+- `rapid-prereview-users` storing all the user and role data
+- `rapid-prereview-docs` storing the reviews and requests for reviews
+- `rapid-prereview-index` storing the preprint with reviews or request for
+  reviews search index
+
+We use [Azure Cache for
+Redis](https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/) to store:
+- session data
+- cached data for the payload of the public API.
 
 #### Process
 
@@ -161,9 +180,13 @@ TODO
 To see the logs, run `./log-app.sh` or `./log-service.sh`. We use
 [pino](https://getpino.io/) for logging.
 
+Apps can be restarted with `./restart-app.sh` and `./restart-service.sh`.
+
 To seed the production database run: `npm run seed:prod`. Be aware that this
 will source the production environment variables.
 
-#### Backups
+To reset the redis cache run: `npm run reset-cache:prod`. Be aware that this
+will source the production environment variables.
 
-TODO
+To reset all redis data (including sessions) run: `npm run reset-redis:prod`. Be
+aware that this will source the production environment variables.
