@@ -10,7 +10,7 @@ const actions = Array.from({ length: 10 }, (_, i) => {
       Math.random() <= 0.5
         ? 'RapidPREreviewAction'
         : 'RequestForRapidPREreviewAction',
-    startTime: new Date(Date.now() - i * 1000 * 60 * 60).toISOString()
+    startTime: new Date(new Date().getTime() - i * 1000 * 60 * 60).toISOString()
   };
 });
 
@@ -46,17 +46,19 @@ function AnimatedScore({ actions }) {
     setIndex(null);
   }
 
+  console.log(index, sorted.length, index === null ? 0 : sorted.length - index);
+
   const nRequests =
     index === -1
       ? 0
       : getNRequests(
-          actions.slice(0, index === null ? actions.length : index + 1)
+          sorted.slice(0, index === null ? actions.length : index + 1)
         );
   const nReviews =
     index === -1
       ? 0
       : getNReviews(
-          actions.slice(0, index === null ? actions.length : index + 1)
+          sorted.slice(0, index === null ? actions.length : index + 1)
         );
   return (
     <div
@@ -65,13 +67,16 @@ function AnimatedScore({ actions }) {
       style={{ display: 'flex', alignItems: 'center' }}
     >
       <ScoreBadge
+        now={
+          index === null
+            ? undefined
+            : index === -1
+            ? sorted[0].startTime
+            : sorted[index].startTime
+        }
         nRequests={nRequests}
         nReviews={nReviews}
-        dateFirstActivity={
-          index === -1
-            ? new Date().toISOString()
-            : actions[index === null ? actions.length - 1 : index].startTime
-        }
+        dateFirstActivity={sorted[0].startTime}
       />
       <span style={{ marginLeft: '4px' }}>
         reviews {nReviews} + requests {nRequests}

@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { getTimeScore } from '../utils/score';
 
 const ScoreBadge = React.forwardRef(function ScoreBadge(
-  { nRequests, nReviews, dateFirstActivity },
+  { nRequests, nReviews, dateFirstActivity, now },
   ref
 ) {
-  const timeScore = getTimeScore(dateFirstActivity);
+  const timeScore = getTimeScore(dateFirstActivity, now);
 
   const statusClass =
     nRequests > 0 && nReviews === 0 ? 'needs-attention' : 'normal';
@@ -70,6 +70,7 @@ const ScoreBadge = React.forwardRef(function ScoreBadge(
 });
 
 ScoreBadge.propTypes = {
+  now: PropTypes.string,
   nRequests: PropTypes.number.isRequired,
   nReviews: PropTypes.number.isRequired,
   dateFirstActivity: PropTypes.string.isRequired
