@@ -46,8 +46,6 @@ function AnimatedScore({ actions }) {
     setIndex(null);
   }
 
-  console.log(index, sorted.length, index === null ? 0 : sorted.length - index);
-
   const nRequests =
     index === -1
       ? 0
