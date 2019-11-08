@@ -71,3 +71,9 @@
   font: var(--ui-header-1-font);
   margin-bottom: var(--mgrd);
 }
+
+.shell-content-read {
+  & .review-reader {
+    margin-top: var(--mgrd);
+  }
+}

@@ -20,7 +20,7 @@
 
   & .toc-page__body {
     background: white;
-    min-height: 100vh;
+    min-height: calc(100vh - var(--header-bar-height) - 2 * var(--lgrd));
     padding: var(--sgrd);
     flex: 0 0 var(--middle-column-default-width);
     width: var(--middle-column-default-width);

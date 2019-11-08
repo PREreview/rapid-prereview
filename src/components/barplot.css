@@ -2,7 +2,6 @@
   background-color: white;
   font: var(--ui-basic-font);
   color: var(--ui-basic-font-color);
-  padding-top: var(--mgrd);
 
   & .barplot__question-list-header {
     box-sizing: border-box;

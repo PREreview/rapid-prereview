@@ -1,13 +1,14 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { CONTACT_EMAIL_HREF } from '../constants';
+import { CONTACT_EMAIL_HREF, ORG } from '../constants';
 import { unprefix } from '../utils/jsonld';
+import Org from './org';
 
 export default function CodeOfConduct() {
   return (
     <article>
       <Helmet>
-        <title>Rapid PREreview • Code of Conduct</title>
+        <title>{ORG} • Code of Conduct</title>
       </Helmet>
       <h1 id="code-of-conduct">Code of Conduct</h1>
       <section>
@@ -27,7 +28,9 @@ export default function CodeOfConduct() {
           because we are convinced that one can be honest AND respectful at the
           same time.{' '}
         </p>
+      </section>
 
+      <section>
         <h2 id="our-responsibilities">Our Responsibilities</h2>
         <p>
           The <Org /> team is responsible for clarifying the standards of
@@ -218,8 +221,4 @@ export default function CodeOfConduct() {
       </footer>
     </article>
   );
-}
-
-function Org() {
-  return <span>Rapid PREreview for Outbreak Science</span>;
 }

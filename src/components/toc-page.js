@@ -18,7 +18,7 @@ export default function TocPage({ children }) {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
     const doc = ref.current;
@@ -26,11 +26,16 @@ export default function TocPage({ children }) {
       const $h2s = doc.querySelectorAll('h2[id]');
       setToc(Array.from($h2s));
     }
-  }, []);
+  }, [location.pathname]);
 
   const handleClick = useCallback(
     e => {
-      const [, id] = e.target.href.split('#');
+      let $a = e.target;
+      while ($a.localName !== 'a') {
+        $a = $a.parentElement;
+      }
+
+      const [, id] = $a.href.split('#');
       const $el = document.getElementById(id);
       if ($el) {
         window.scroll({
@@ -78,9 +83,8 @@ export default function TocPage({ children }) {
                       hash: `#${$h2.id}`
                     }}
                     onClick={handleClick}
-                  >
-                    {$h2.textContent}
-                  </Link>
+                    dangerouslySetInnerHTML={{ __html: $h2.innerHTML }}
+                  />
                 </li>
               ))}
             </ul>

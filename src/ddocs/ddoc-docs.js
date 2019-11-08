@@ -17,6 +17,18 @@ const ddoc = {
         }
       },
       reduce: '_count'
+    },
+
+    actionsByType: {
+      map: function(doc) {
+        if (
+          doc['@type'] === 'RapidPREreviewAction' ||
+          doc['@type'] === 'RequestForRapidPREreviewAction'
+        ) {
+          emit(doc['@type'], null);
+        }
+      },
+      reduce: '_count'
     }
   },
   indexes: {
@@ -40,6 +52,11 @@ const ddoc = {
           var agentId = doc.agent['@id'] || doc.agent;
           if (typeof agentId === 'string') {
             index('agentId', agentId);
+          }
+
+          var objectId = doc.object['@id'] || doc.object;
+          if (typeof objectId === 'string') {
+            index('objectId', agentId);
           }
 
           var startTime = doc.startTime

@@ -1,7 +1,12 @@
 import { createRedisClient } from '../src/utils/redis';
 
 const redis = createRedisClient();
-redis.keys('rpos:*', (err, keys) => {
+
+const prefix = process.argv[2] === '--cache-only' ? 'rpos:cache:*' : 'rpos:*';
+
+redis.keys(prefix, (err, keys) => {
+  console.log(`deleting ${prefix}`);
+
   if (err) {
     console.error(err);
   }
@@ -11,7 +16,7 @@ redis.keys('rpos:*', (err, keys) => {
     return;
   }
 
-  // ! redis client will re-ads the rpos: prefix
+  // ! redis client will re-add the rpos: prefix
   redis.del(...keys.map(key => key.replace(/^rpos:/, '')), (err, res) => {
     if (err) {
       console.error(err);

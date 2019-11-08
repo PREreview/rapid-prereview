@@ -8,6 +8,7 @@ import Shell from './shell';
 import ShellContent from './shell-content';
 import NotFound from './not-found';
 import SuspenseLoading from './suspense-loading';
+import { ORG } from '../constants';
 
 const PdfViewer = React.lazy(() =>
   import(/* webpackChunkName: "pdf-viewer" */ './pdf-viewer')
@@ -23,6 +24,11 @@ export default function ExtensionFallback() {
     .join('/');
 
   const isMobile = useMemo(() => mobile({ tablet: true }), []);
+
+  // See https://github.com/PREreview/rapid-prereview/issues/13
+  // Drag and drop over a PDF object is currently broken in Chrome for Mac
+  // Bug is tracked here: https://bugs.chromium.org/p/chromium/issues/detail?id=984891&q=drag%20object&colspec=ID%20Pri%20M%20Stars%20ReleaseBlock%20Component%20Status%20Owner%20Summary%20OS%20Modified
+  const isChromeOnMac = !!window.chrome && navigator.platform.includes('Mac');
 
   const [preprint, fetchPreprintProgress] = usePreprint(
     identifier,
@@ -42,11 +48,13 @@ export default function ExtensionFallback() {
   return (
     <div className="extension-fallback">
       <Helmet>
-        <title>Rapid PREreview • {identifier}</title>
+        <title>
+          {ORG} • {identifier}
+        </title>
       </Helmet>
 
       {pdfUrl ? (
-        isMobile ? (
+        isMobile || isChromeOnMac ? (
           /* for mobile devices we always use the fallback */
           <Suspense fallback={<SuspenseLoading>Loading PDF</SuspenseLoading>}>
             <PdfViewer

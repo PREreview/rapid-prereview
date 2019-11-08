@@ -4,6 +4,8 @@ import HeaderBar from './header-bar';
 import AnimatedLogo from '../svgs/rapid-prereview-logo-animation.svg';
 import Button from './button';
 import XLink from './xlink';
+import Org from './org';
+import { ORG } from '../constants';
 
 // TODO make clear that by logging in user accepts the code of conduct
 
@@ -15,7 +17,7 @@ export default function Login() {
   return (
     <div className="login">
       <Helmet>
-        <title>Rapid PREreview • Login</title>
+        <title>{ORG} • Login</title>
       </Helmet>
 
       <HeaderBar />
@@ -25,7 +27,7 @@ export default function Login() {
         </div>
 
         <h2 className="login__header">
-          To log in to Rapid PREreview you will need an ORCID ID.
+          To log in to <Org /> you will need an ORCID ID.
         </h2>
 
         <p className="login__text">
@@ -35,7 +37,7 @@ export default function Login() {
 
         <p className="login__text">
           <strong>
-            By signing in, you agree to Rapid PREreview for Outbreak Science{' '}
+            By signing in, you agree to <Org />{' '}
             <XLink href="/code-of-conduct" to="/code-of-conduct">
               Code of Conduct
             </XLink>

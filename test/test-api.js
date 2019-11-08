@@ -116,6 +116,7 @@ describe('API', function() {
 
   it('should get a review', async () => {
     const [review] = reviews;
+
     const resp = await fetch(`${baseUrl}/review/${unprefix(getId(review))}`);
     const body = await resp.json();
     assert.equal(getId(body), getId(review));
@@ -134,6 +135,12 @@ describe('API', function() {
     const resp = await fetch(`${baseUrl}/preprint/${unprefix(preprintId)}`);
     const body = await resp.json();
     assert.equal(getId(body), preprintId);
+  });
+
+  it('should get a question', async () => {
+    const resp = await fetch(`${baseUrl}/question/${QUESTIONS[0].identifier}`);
+    const body = await resp.json();
+    assert.equal(getId(body), `question:${QUESTIONS[0].identifier}`);
   });
 
   it('should search preprints', async () => {

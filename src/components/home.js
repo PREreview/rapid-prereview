@@ -22,6 +22,7 @@ import { createPreprintQs, apifyPreprintQs } from '../utils/search';
 import WelcomeModal from './welcome-modal';
 import XLink from './xlink';
 import AddButton from './add-button';
+import { ORG } from '../constants';
 
 export default function Home() {
   const history = useHistory();
@@ -47,7 +48,7 @@ export default function Home() {
   return (
     <div className="home">
       <Helmet>
-        <title>Rapid PREreview • Home</title>
+        <title>{ORG} • Home</title>
       </Helmet>
 
       {!!(

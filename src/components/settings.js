@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { useUser } from '../contexts/user-context';
 import SettingsRoles from './settings-roles';
 import HeaderBar from './header-bar';
+import { ORG } from '../constants';
 
 export default function Settings() {
   const [user] = useUser();
@@ -14,7 +15,7 @@ export default function Settings() {
   return (
     <div className="settings">
       <Helmet>
-        <title>Rapid PREreview • Settings</title>
+        <title>{ORG} • Settings</title>
       </Helmet>
 
       <HeaderBar />

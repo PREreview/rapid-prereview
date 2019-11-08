@@ -17,6 +17,7 @@ import ExtensionSplash from './extension-splash';
 import ToCPage from './toc-page';
 import CodeOfConduct from './code-of-conduct';
 import NotFound from './not-found';
+import API from './api';
 
 // kick off the polyfill!
 smoothscroll.polyfill();
@@ -39,6 +40,12 @@ export default function App({ user }) {
                 <Route exact={true} path="/code-of-conduct">
                   <ToCPage>
                     <CodeOfConduct />
+                  </ToCPage>
+                </Route>
+
+                <Route exact={true} path="/api">
+                  <ToCPage>
+                    <API />
                   </ToCPage>
                 </Route>
 

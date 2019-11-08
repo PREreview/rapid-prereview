@@ -35,7 +35,10 @@ export default function HeaderBar({ onClickMenuButton }) {
           Code of Conduct
         </Link>
         <Link className="header-bar__nav-item" to="/app">
-          Get App
+          App
+        </Link>
+        <Link className="header-bar__nav-item" to="/api">
+          API
         </Link>
         <span className="header-bar__nav-item header-bar__nav-item--user-badge">
           {user ? (
