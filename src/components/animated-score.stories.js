@@ -21,37 +21,43 @@ export function Demo() {
 function AnimatedScore({ actions }) {
   const sorted = useMemo(() => {
     return actions.slice().sort((a, b) => {
-      return new Date(b).getTime() - new Date(a).getTime();
+      return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
     });
   }, [actions]);
 
   const [index, setIndex] = useState(null);
 
   useEffect(() => {
-    if (index > 1) {
+    if (index !== null && index < actions.length - 1) {
       const timeoutId = setTimeout(() => {
-        setIndex(index - 1);
+        setIndex(index + 1);
       }, 100);
 
       return () => {
         clearTimeout(timeoutId);
       };
     }
-  }, [index]);
+  }, [index, actions]);
 
   function handleStartAnim() {
-    setIndex(sorted.length - 1);
+    setIndex(-1);
   }
   function handleStopAnim() {
     setIndex(null);
   }
 
-  const nRequests = getNRequests(
-    actions.slice(0, index === null ? actions.length : index)
-  );
-  const nReviews = getNReviews(
-    actions.slice(0, index === null ? actions.length : index)
-  );
+  const nRequests =
+    index === -1
+      ? 0
+      : getNRequests(
+          actions.slice(0, index === null ? actions.length : index + 1)
+        );
+  const nReviews =
+    index === -1
+      ? 0
+      : getNReviews(
+          actions.slice(0, index === null ? actions.length : index + 1)
+        );
   return (
     <div
       onMouseEnter={handleStartAnim}
@@ -62,7 +68,9 @@ function AnimatedScore({ actions }) {
         nRequests={nRequests}
         nReviews={nReviews}
         dateFirstActivity={
-          actions[index === null ? actions.length - 1 : index].startTime
+          index === -1
+            ? new Date().toISOString()
+            : actions[index === null ? actions.length - 1 : index].startTime
         }
       />
       <span style={{ marginLeft: '4px' }}>
