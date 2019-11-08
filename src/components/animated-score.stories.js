@@ -42,3 +42,32 @@ export function Demo() {
     </div>
   );
 }
+
+export function OneCase() {
+  const {
+    nRequests,
+    nReviews,
+    now,
+    onStartAnim,
+    onStopAnim,
+    dateFirstActivity
+  } = useAnimatedScore(actions.slice(0, 1));
+
+  return (
+    <div
+      onMouseEnter={onStartAnim}
+      onMouseLeave={onStopAnim}
+      style={{ display: 'flex', alignItems: 'center' }}
+    >
+      <ScoreBadge
+        now={now}
+        nRequests={nRequests}
+        nReviews={nReviews}
+        dateFirstActivity={dateFirstActivity}
+      />
+      <span style={{ marginLeft: '4px' }}>
+        reviews {nReviews} + requests {nRequests}
+      </span>
+    </div>
+  );
+}

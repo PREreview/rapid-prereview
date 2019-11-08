@@ -1,5 +1,9 @@
 import { useMemo, useState, useEffect, useCallback } from 'react';
 
+/**
+ * Note actions should always have a length of at least 1 as only preprint
+ * with reviews or requests for reviews are listed
+ */
 export function useAnimatedScore(actions) {
   const sorted = useMemo(() => {
     return actions.slice().sort((a, b) => {
@@ -17,13 +21,19 @@ export function useAnimatedScore(actions) {
       const tmax = new Date(sorted[sorted.length - 1].startTime).getTime();
 
       const t = new Date(sorted[Math.max(index, 0)].startTime).getTime();
-      const nextT = new Date(
-        sorted[Math.max(index + 1, 0)].startTime
-      ).getTime();
 
-      const rT = ((t - tmin) / (tmax - tmin)) * totalAnimTime;
-      const rNextT = ((nextT - tmin) / (tmax - tmin)) * totalAnimTime;
-      const timeout = rNextT - rT;
+      let timeout;
+      if (sorted.length > 1) {
+        const nextT = new Date(
+          sorted[Math.max(index + 1, 0)].startTime
+        ).getTime();
+
+        const rT = ((t - tmin) / (tmax - tmin)) * totalAnimTime;
+        const rNextT = ((nextT - tmin) / (tmax - tmin)) * totalAnimTime;
+        timeout = rNextT - rT;
+      } else {
+        timeout = totalAnimTime;
+      }
 
       const timeoutId = setTimeout(() => {
         setIndex(index + 1);
@@ -59,14 +69,14 @@ export function useAnimatedScore(actions) {
     index === null
       ? undefined
       : index === -1
-      ? sorted[0].startTime
+      ? sorted[0] && sorted[0].startTime
       : sorted[index].startTime;
 
   return {
     nRequests,
     nReviews,
     now,
-    dateFirstActivity: sorted[0].startTime,
+    dateFirstActivity: sorted[0] && sorted[0].startTime,
     onStartAnim: handleStartAnim,
     onStopAnim: handleStopAnim
   };
