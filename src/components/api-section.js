@@ -84,7 +84,7 @@ export default function APISection({ id, title, children }) {
 
       {children}
 
-      {!!data.body && run && (
+      {!!data.body && run && !data.isActive && (
         <div className="api-section__payload-viewer">
           <pre>
             <code>{JSON.stringify(data.body, null, 2)}</code>

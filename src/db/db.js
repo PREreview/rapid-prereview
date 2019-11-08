@@ -14,6 +14,7 @@ import { getId, unprefix, nodeify, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import { INDEXED_PREPRINT_PROPS, QUESTIONS } from '../constants';
 import { getScore, SCORE_THRESHOLD } from '../utils/score';
+import { getDefaultRole } from '../utils/users';
 import striptags from '../utils/striptags';
 import { dehydrateAction } from '../utils/preprints';
 
@@ -217,8 +218,14 @@ export default class DB {
           return doc;
         } else {
           // we need to remove the anonymous roles
+          const defaultRole = getDefaultRole(doc);
           return cleanup(
             Object.assign({}, doc, {
+              // be sure not to leak identity of of the default Role if it is Anon
+              defaultRole:
+                defaultRole && defaultRole['@type'] === 'PublicReviewerRole'
+                  ? doc.defaultRole
+                  : undefined,
               hasRole: arrayify(doc.hasRole).filter(
                 role => role['@type'] !== 'AnonymousReviewerRole'
               )
