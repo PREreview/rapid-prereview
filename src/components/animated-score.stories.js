@@ -28,16 +28,30 @@ function AnimatedScore({ actions }) {
   const [index, setIndex] = useState(null);
 
   useEffect(() => {
-    if (index !== null && index < actions.length - 1) {
+    if (index !== null && index < sorted.length - 1) {
+      const totalAnimTime = 600;
+
+      const tmin = new Date(sorted[0].startTime).getTime();
+      const tmax = new Date(sorted[sorted.length - 1].startTime).getTime();
+
+      const t = new Date(sorted[Math.max(index, 0)].startTime).getTime();
+      const nextT = new Date(
+        sorted[Math.max(index + 1, 0)].startTime
+      ).getTime();
+
+      const rT = ((t - tmin) / (tmax - tmin)) * totalAnimTime;
+      const rNextT = ((nextT - tmin) / (tmax - tmin)) * totalAnimTime;
+      const timeout = rNextT - rT;
+
       const timeoutId = setTimeout(() => {
         setIndex(index + 1);
-      }, 100);
+      }, timeout);
 
       return () => {
         clearTimeout(timeoutId);
       };
     }
-  }, [index, actions]);
+  }, [index, sorted]);
 
   function handleStartAnim() {
     setIndex(-1);
