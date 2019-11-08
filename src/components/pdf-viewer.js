@@ -84,7 +84,11 @@ export default function PdfViewer({ pdfUrl, loading }) {
         }}
       >
         {dims.map((dim, i) =>
-          i === focused || i - 1 === focused || i + 1 === focused ? (
+          i === focused ||
+          i === focused - 1 ||
+          i === focused - 2 ||
+          i === focused + 1 ||
+          i === focused + 2 ? (
             <Page
               key={i}
               width={width}
