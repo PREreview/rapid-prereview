@@ -10,9 +10,9 @@ import handleRequestForRapidPrereviewAction from './handle-request-for-rapid-pre
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
 import ddocIndex from '../ddocs/ddoc-index';
-import { getId, nodeify, cleanup, arrayify } from '../utils/jsonld';
+import { getId, unprefix, nodeify, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
-import { INDEXED_PREPRINT_PROPS } from '../constants';
+import { INDEXED_PREPRINT_PROPS, QUESTIONS } from '../constants';
 import { getScore, SCORE_THRESHOLD } from '../utils/score';
 import striptags from '../utils/striptags';
 import { dehydrateAction } from '../utils/preprints';
@@ -251,6 +251,22 @@ export default class DB {
       case 'review':
       case 'request':
         return this.docs.get(id);
+
+      case 'question': {
+        const question = QUESTIONS.find(
+          question => question.identifier === unprefix(id)
+        );
+        if (!question) {
+          throw createError(404, 'Not found');
+        }
+
+        return {
+          '@id': id,
+          '@type': question.type,
+          text: question.question,
+          description: question.help
+        };
+      }
 
       case 'preprint': {
         // Note we don't use `this.index.get(id)` as it may be outdated

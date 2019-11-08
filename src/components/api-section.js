@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Button from './button';
 import IconButton from './icon-button';
 import { createError } from '../utils/errors';
+import Controls from './controls';
 
 export default function APISection({ id, title, children }) {
   const [run, setRun] = useState(false);
@@ -19,11 +20,11 @@ export default function APISection({ id, title, children }) {
 
       setData({
         body: null,
-        isActive: false,
+        isActive: true,
         error: null
       });
 
-      fetch(`/api/demo?key=${id}`, {
+      fetch(`/api/demo?key=demo:${id}`, {
         method: 'GET',
         signal: controller.signal
       })
@@ -70,6 +71,7 @@ export default function APISection({ id, title, children }) {
         <h2 id={id}>{title}</h2>
 
         <Button
+          isWaiting={data.isActive}
           disabled={run || data.isActive}
           primary={true}
           onClick={() => {
@@ -97,6 +99,8 @@ export default function APISection({ id, title, children }) {
           </IconButton>
         </div>
       )}
+
+      <Controls error={data.error} />
     </section>
   );
 }
@@ -107,6 +111,7 @@ APISection.propTypes = {
     'get-request',
     'get-user',
     'get-role',
+    'get-question',
     'search-action'
   ]).isRequired,
   title: PropTypes.any.isRequired,

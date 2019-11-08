@@ -4,7 +4,7 @@ import cors from 'cors';
 import fetch from 'node-fetch';
 import concatStream from 'concat-stream';
 import omit from 'lodash/omit';
-import { getId } from '../utils/jsonld';
+import { QUESTIONS } from '../constants';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
 import resolve from '../utils/resolve';
@@ -300,6 +300,24 @@ router.get('/pdf', async (req, res, next) => {
 });
 
 /**
+ * Get a question by id
+ */
+router.get(
+  '/question/:questionId',
+  cors(),
+  cache(req => `question:${req.params.questionId}`),
+  async (req, res, next) => {
+    try {
+      const body = await req.db.get(`question:${req.params.questionId}`);
+      req.cache(body);
+      res.json(body);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
  * This is used for the API documentation to provide examples of the response
  * payloads
  */
@@ -309,7 +327,7 @@ router.get(
   cache(req => req.query.key),
   async (req, res, next) => {
     switch (req.query.key) {
-      case 'get-review': {
+      case 'demo:get-review': {
         try {
           const body = await req.db.docs.view('ddoc-docs', 'actionsByType', {
             key: 'RapidPREreviewAction',
@@ -331,7 +349,7 @@ router.get(
         break;
       }
 
-      case 'get-request': {
+      case 'demo:get-request': {
         try {
           const body = await req.db.docs.view('ddoc-docs', 'actionsByType', {
             key: 'RequestForRapidPREreviewAction',
@@ -354,7 +372,7 @@ router.get(
         break;
       }
 
-      case 'get-user': {
+      case 'demo:get-user': {
         try {
           const body = await req.db.users.list({
             start_key: 'user:', // skip the ddocs
@@ -376,7 +394,7 @@ router.get(
         break;
       }
 
-      case 'get-role': {
+      case 'demo:get-role': {
         try {
           const body = await req.db.users.view('ddoc-users', 'usersByRoleId', {
             include_docs: false,
@@ -398,13 +416,26 @@ router.get(
         break;
       }
 
-      case 'search-action': {
+      case 'demo:search-action': {
         try {
           const payload = await req.db.searchActions({
             limit: 2,
             include_docs: true,
             q: '*:*'
           });
+          req.cache(payload);
+          res.json(payload);
+        } catch (err) {
+          return next(err);
+        }
+        break;
+      }
+
+      case 'demo:get-question': {
+        try {
+          const payload = await req.db.get(
+            `question:${QUESTIONS[0].identifier}`
+          );
           req.cache(payload);
           res.json(payload);
         } catch (err) {

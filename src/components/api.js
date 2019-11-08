@@ -66,6 +66,19 @@ export default function API() {
       </APISection>
 
       <APISection
+        id="get-question"
+        title={
+          <Fragment>
+            GET <code>/api/question/:id</code>
+          </Fragment>
+        }
+      >
+        <p>
+          Get a question by <code>id</code>.
+        </p>
+      </APISection>
+
+      <APISection
         id="search-action"
         title={
           <Fragment>

@@ -137,6 +137,12 @@ describe('API', function() {
     assert.equal(getId(body), preprintId);
   });
 
+  it('should get a question', async () => {
+    const resp = await fetch(`${baseUrl}/question/${QUESTIONS[0].identifier}`);
+    const body = await resp.json();
+    assert.equal(getId(body), `question:${QUESTIONS[0].identifier}`);
+  });
+
   it('should search preprints', async () => {
     const qs = {
       q: '*:*',
