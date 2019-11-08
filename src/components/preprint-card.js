@@ -165,75 +165,113 @@ export default function PreprintCard({
           </div>
 
           <div className="preprint-card__expansion-header">
-            <Tooltip label="Number of reviews and requests for reviews for this preprint">
-              {/* ScoreBadge uses forwardRef but Tooltip doesn't work without extra div :( */}
-              <div className="preprint-card__score-badge-container">
-                <ScoreBadge
-                  nRequests={requests.length}
-                  nReviews={reviews.length}
-                  dateFirstActivity={firstAction.startTime}
-                />
+            <div className="preprint-card__expansion-header__left">
+              <Tooltip label="Number of reviews and requests for reviews for this preprint">
+                {/* ScoreBadge uses forwardRef but Tooltip doesn't work without extra div :( */}
+                <div className="preprint-card__score-badge-container">
+                  <ScoreBadge
+                    nRequests={requests.length}
+                    nReviews={reviews.length}
+                    dateFirstActivity={firstAction.startTime}
+                  />
+                </div>
+              </Tooltip>
+              <button
+                className="preprint-card__cta-button"
+                disabled={hasReviewed && hasRequested}
+                onClick={() => {
+                  if (!hasReviewed && !hasRequested) {
+                    onNew(preprint);
+                  } else if (!hasReviewed && hasRequested) {
+                    onNewReview(preprint);
+                  } else if (hasReviewed && !hasRequested) {
+                    onNewRequest(preprint);
+                  }
+                }}
+              >
+                <div className="preprint-card__cta-button__contents">
+                  <div className="preprint-card__cta-button__icon-container">
+                    <AddPrereviewIcon className="preprint-card__cta-button__icon" />
+                  </div>
+                  <div className="preprint-card__count-badge">
+                    {reviews.length}
+                  </div>
+                  <div className="preprint-card__count-label">
+                    Review{reviews.length > 1 ? 's' : ''}
+                  </div>
+                  <div className="preprint-card__count-divider"></div>
+                  <div className="preprint-card__count-badge">
+                    {requests.length}
+                  </div>
+                  <div className="preprint-card__count-label">
+                    Request{requests.length > 1 ? 's' : ''}
+                  </div>
+                </div>
+              </button>
+              {/* <div className="preprint-card__count-badge">{reviews.length}</div>
+              <div className="preprint-card__count-label">
+                Review{reviews.length > 1 ? 's' : ''}
               </div>
-            </Tooltip>
-
-            <div className="preprint-card__count-badge">{reviews.length}</div>
-            <div className="preprint-card__count-label">
-              Review{reviews.length > 1 ? 's' : ''}
-            </div>
-            <div className="preprint-card__count-plus">+</div>
-            <div className="preprint-card__count-badge">{requests.length}</div>
-            <div className="preprint-card__count-label">
-              Request{requests.length > 1 ? 's' : ''}
-            </div>
-            <div className="preprint-card__count-slash">/</div>
-            <span className="preprint-card__days-ago">
-              {formatDistanceStrict(
-                new Date(firstAction.startTime),
-                new Date()
-              )}
-            </span>
-            <Tooltip
-              label={
-                hasReviewed && hasRequested
-                  ? 'You already reviewed and requested reviews for this preprint'
-                  : !hasReviewed && hasRequested
-                  ? 'Add your review'
-                  : hasReviewed && !hasRequested
-                  ? 'Add your request for review'
-                  : 'Add your review or request for review'
-              }
-            >
-              <div className="preprint-card__add-button-container">
-                <IconButton
-                  className="preprint-card__add-button"
-                  disabled={hasReviewed && hasRequested}
-                  onClick={() => {
-                    if (!hasReviewed && !hasRequested) {
-                      onNew(preprint);
-                    } else if (!hasReviewed && hasRequested) {
-                      onNewReview(preprint);
-                    } else if (hasReviewed && !hasRequested) {
-                      onNewRequest(preprint);
-                    }
-                  }}
-                >
-                  <AddPrereviewIcon />
-                </IconButton>
+              <div className="preprint-card__count-plus">+</div>
+              <div className="preprint-card__count-badge">
+                {requests.length}
               </div>
-            </Tooltip>
+              <div className="preprint-card__count-label">
+                Request{requests.length > 1 ? 's' : ''}
+              </div>
 
-            <IconButton
-              className="preprint-card__expansion-toggle"
-              onClick={e => {
-                setIsOpened(!isOpened);
-              }}
-            >
-              {isOpened ? (
-                <MdExpandLess className="preprint-card__expansion-toggle-icon" />
-              ) : (
-                <MdExpandMore className="preprint-card__expansion-toggle-icon" />
-              )}
-            </IconButton>
+              <Tooltip
+                label={
+                  hasReviewed && hasRequested
+                    ? 'You already reviewed and requested reviews for this preprint'
+                    : !hasReviewed && hasRequested
+                    ? 'Add your review'
+                    : hasReviewed && !hasRequested
+                    ? 'Add your request for review'
+                    : 'Add your review or request for review'
+                }
+              >
+                <div className="preprint-card__add-button-container">
+                  <IconButton
+                    className="preprint-card__add-button"
+                    disabled={hasReviewed && hasRequested}
+                    onClick={() => {
+                      if (!hasReviewed && !hasRequested) {
+                        onNew(preprint);
+                      } else if (!hasReviewed && hasRequested) {
+                        onNewReview(preprint);
+                      } else if (hasReviewed && !hasRequested) {
+                        onNewRequest(preprint);
+                      }
+                    }}
+                  >
+                    <AddPrereviewIcon />
+                  </IconButton>
+                </div>
+              </Tooltip> */}
+            </div>
+            <div className="preprint-card__expansion-header__right">
+              <span className="preprint-card__days-ago">
+                Added{' '}
+                {formatDistanceStrict(
+                  new Date(firstAction.startTime),
+                  new Date()
+                )}{' '}
+                ago
+              </span>
+              <IconButton
+                className="preprint-card__expansion-toggle"
+                onClick={e => {
+                  setIsOpened(!isOpened);
+                }}
+              >
+                {isOpened ? (
+                  <MdExpandLess className="preprint-card__expansion-toggle-icon" />
+                ) : (
+                  <MdExpandMore className="preprint-card__expansion-toggle-icon" />
+                )}
+              </IconButton>
+            </div>
           </div>
         </div>
       </div>
