@@ -2,6 +2,8 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import HeaderBar from './header-bar';
 import XLink from './xlink';
+import Org from './org';
+import { ORG } from '../constants';
 
 export default function NotFound() {
   return (
@@ -9,14 +11,14 @@ export default function NotFound() {
       <HeaderBar />
 
       <Helmet>
-        <title>Rapid PREreview • Not Found</title>
+        <title>{ORG} • Not Found</title>
       </Helmet>
 
       <div className="not-found__body">
         <h1>Not found</h1>
 
         <p>
-          Visit Outbreak Science Rapid PREreview{' '}
+          Visit <Org />{' '}
           <XLink to="/" href="/">
             Homepage
           </XLink>

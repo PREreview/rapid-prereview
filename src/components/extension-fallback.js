@@ -8,6 +8,7 @@ import Shell from './shell';
 import ShellContent from './shell-content';
 import NotFound from './not-found';
 import SuspenseLoading from './suspense-loading';
+import { ORG } from '../constants';
 
 const PdfViewer = React.lazy(() =>
   import(/* webpackChunkName: "pdf-viewer" */ './pdf-viewer')
@@ -42,7 +43,9 @@ export default function ExtensionFallback() {
   return (
     <div className="extension-fallback">
       <Helmet>
-        <title>Rapid PREreview • {identifier}</title>
+        <title>
+          {ORG} • {identifier}
+        </title>
       </Helmet>
 
       {pdfUrl ? (

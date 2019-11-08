@@ -10,6 +10,7 @@ import RoleActivity from './role-activity';
 import LabelStyle from './label-style';
 import XLink from './xlink';
 import NotFound from './not-found';
+import { ORG } from '../constants';
 
 // TODO:
 // - other public persona + number of private persona
@@ -37,7 +38,7 @@ export default function Profile() {
 
       <Helmet>
         <title>
-          Rapid PREreview • Profile {(role && role.name) || unprefixedRoleId}
+          {ORG} • Profile {(role && role.name) || unprefixedRoleId}
         </title>
       </Helmet>
 

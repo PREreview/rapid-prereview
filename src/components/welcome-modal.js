@@ -5,6 +5,7 @@ import Modal from './modal';
 import Button from './button';
 import PrereviewLogo from '../svgs/prereview-logo.svg';
 import OutbreakSciLogo from '../svgs/outbreak-science-logo.svg';
+import Org from './org';
 
 export default function WelcomeModal(props) {
   return (
@@ -20,7 +21,7 @@ export default function WelcomeModal(props) {
         </header>
         <div className="welcome-modal__body">
           <h2 className="welcome-modal__title">
-            Welcome to Rapid PREreview for Outbreak Science
+            Welcome to <Org />
           </h2>
 
           <p>

@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { CONTACT_EMAIL_HREF } from '../constants';
+import { CONTACT_EMAIL_HREF, ORG } from '../constants';
 import APISection from './api-section';
 
 export default function API() {
   return (
     <article className="api">
       <Helmet>
-        <title>Rapid PREreview • API documentation</title>
+        <title>{ORG} • Public API documentation</title>
       </Helmet>
 
       <h1>Public API documentation</h1>

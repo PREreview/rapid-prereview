@@ -3,7 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import HeaderBar from './header-bar';
 import Button from './button';
 import LabelStyle from './label-style';
-import { CONTACT_EMAIL_HREF } from '../constants';
+import { CONTACT_EMAIL_HREF, ORG } from '../constants';
+import Org from './org';
 
 export default function ExtensionSplash() {
   useEffect(() => {
@@ -13,7 +14,7 @@ export default function ExtensionSplash() {
   return (
     <div className="extension-splash">
       <Helmet>
-        <title>Rapid PREreview • Get the app</title>
+        <title>{ORG} • Get the app</title>
       </Helmet>
 
       <HeaderBar />
@@ -24,10 +25,9 @@ export default function ExtensionSplash() {
 
         <div className="extension-splash__body">
           <p>
-            The Outbreak Science Rapid PREreview app lets you read and add
-            reviews (or requests for feedback) directly from the preprint sites
-            you visit without having to navigate to the Rapid PREreview
-            homepage.
+            The <Org /> app lets you read and add reviews (or requests for
+            feedback) directly from the preprint sites you visit without having
+            to navigate to the Rapid PREreview homepage.
           </p>
           <img
             src="/images/extension-preview.png"
