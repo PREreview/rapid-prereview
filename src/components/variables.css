@@ -110,9 +110,10 @@
   --ui-header-3-font: 500 var(--ui-header-2-font-size) /
     var(--ui-header-3-font-leading) var(--ui-font-family);
 
-  --ui-score-badge-font: 600 14px / 14px var(--ui-font-family);
-  --ui-score-badge-primary-color: var(--prereview-red);
-  --ui-score-badge-secondary-color: rgb(172, 172, 172);
+  --ui-score-badge-font: 600 12px / 12px var(--ui-font-family);
+  --ui-score-badge-primary-color: rgb(120, 120, 120);
+  --ui-score-badge-primary-color--focus: var(--prereview-red);
+  --ui-score-badge-secondary-color: rgb(180, 180, 180);
 
   /* button fonts */
   --ui-button-font-size: var(--ui-basic-font-size);

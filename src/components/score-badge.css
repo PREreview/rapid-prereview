@@ -1,10 +1,10 @@
 .score-badge {
   box-sizing: border-box;
   /* border: 2px solid var(--prereview-red); */
-  color: var(--prereview-red);
+  color: var(--ui-score-badge-primary-color);
   border-radius: 50%;
-  width: var(--mgrd);
-  height: var(--mgrd);
+  width: 20px;
+  height: 20px;
   flex: 0 0 var(--mgrd);
   display: flex;
   justify-content: center;
@@ -14,6 +14,7 @@
   font-weight: 600;
   letter-spacing: -0.05em;
   position: relative;
+  transition: color 0.1s;
 
   & .score-badge__clock-svg {
     width: 100%;
@@ -29,7 +30,12 @@
       stroke: var(--ui-score-badge-secondary-color);
     }
   }
-
+  &:hover {
+    color: var(--ui-score-badge-primary-color--focus);
+    & .score-badge__clock-svg__active-path {
+      stroke: var(--ui-score-badge-primary-color--focus);
+    }
+  }
   & .score-badge--needs-attention {
     border-color: var(--prereview-coral);
     color: var(--prereview-coral);
