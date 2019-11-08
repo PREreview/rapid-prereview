@@ -246,15 +246,35 @@ export default function PreprintCard({
           />
 
           <div className="preprint-card__view-more">
-            <Button
-              element="XLink"
-              primary={true}
-              pill={true}
-              to={`/${preprint.doi || preprint.arXivId}`}
-              href={`/${preprint.doi || preprint.arXivId}`}
-            >
-              View
-            </Button>
+            <div>
+              {!hasReviewed && (
+                <Button
+                  onClick={() => {
+                    onNewReview(preprint);
+                  }}
+                >
+                  Add Review
+                </Button>
+              )}
+
+              {!hasRequested && (
+                <Button
+                  onClick={() => {
+                    onNewRequest(preprint);
+                  }}
+                >
+                  Request Review
+                </Button>
+              )}
+
+              <Button
+                element="XLink"
+                to={`/${preprint.doi || preprint.arXivId}`}
+                href={`/${preprint.doi || preprint.arXivId}`}
+              >
+                View More
+              </Button>
+            </div>
           </div>
         </div>
       </Collapse>

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 export default function Barplot({
+  preview,
   nTotalReviews,
   nHighlightedReviews,
   stats,
@@ -12,7 +13,8 @@ export default function Barplot({
       <div className="barplot__question-list-header">
         <div className="barplot__question-list-header__left">
           <span>
-            Showing {nHighlightedReviews} of {nTotalReviews} Reviews
+            Showing {!preview ? nHighlightedReviews : 'results'} of{' '}
+            {nTotalReviews} Reviews
           </span>
         </div>
 
@@ -22,17 +24,20 @@ export default function Barplot({
               <div className="barplot__key-color-chip barplot__key-color-chip--yes" />
               <span className="barplot__key-label">Yes</span>
             </div>
-            <div className="barplot__key-item">
-              <div className="barplot__key-color-chip barplot__key-color-chip--no" />
-              <span className="barplot__key-label">No</span>
-            </div>
+
             <div className="barplot__key-item">
               <div className="barplot__key-color-chip barplot__key-color-chip--unsure" />
               <span className="barplot__key-label">Unsure</span>
             </div>
+
             <div className="barplot__key-item">
               <div className="barplot__key-color-chip barplot__key-color-chip--na" />
               <span className="barplot__key-label">N/A</span>
+            </div>
+
+            <div className="barplot__key-item">
+              <div className="barplot__key-color-chip barplot__key-color-chip--no" />
+              <span className="barplot__key-label">No</span>
             </div>
           </div>
           {!!children && <div className="barplot__share">{children}</div>}
@@ -59,13 +64,6 @@ export default function Barplot({
 
                     <th
                       className="barplot__segment-title"
-                      style={{ width: `${(no.length / nReviews) * 100}%` }}
-                    >
-                      {no.length > 0 ? 'no' : ''}
-                    </th>
-
-                    <th
-                      className="barplot__segment-title"
                       style={{
                         width: `${(unsure.length / nReviews) * 100}%`
                       }}
@@ -79,6 +77,13 @@ export default function Barplot({
                     >
                       {na.length > 0 ? 'n.a.' : ''}
                     </th>
+
+                    <th
+                      className="barplot__segment-title"
+                      style={{ width: `${(no.length / nReviews) * 100}%` }}
+                    >
+                      {no.length > 0 ? 'no' : ''}
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="barplot__responses">
@@ -91,14 +96,7 @@ export default function Barplot({
                         {yes.length}
                       </span>
                     </td>
-                    <td
-                      className="barplot__bar-segment barplot__bar-segment--no"
-                      style={{ width: `${(no.length / nReviews) * 100}%` }}
-                    >
-                      <span className="barplot__bar-segment__number">
-                        {no.length}
-                      </span>
-                    </td>
+
                     <td
                       className="barplot__bar-segment barplot__bar-segment--unsure"
                       style={{
@@ -109,12 +107,22 @@ export default function Barplot({
                         {unsure.length}
                       </span>
                     </td>
+
                     <td
                       className="barplot__bar-segment barplot__bar-segment--na"
                       style={{ width: `${(na.length / nReviews) * 100}%` }}
                     >
                       <span className="barplot__bar-segment__number">
                         {na.length}
+                      </span>
+                    </td>
+
+                    <td
+                      className="barplot__bar-segment barplot__bar-segment--no"
+                      style={{ width: `${(no.length / nReviews) * 100}%` }}
+                    >
+                      <span className="barplot__bar-segment__number">
+                        {no.length}
                       </span>
                     </td>
                   </tr>
@@ -129,6 +137,7 @@ export default function Barplot({
 }
 
 Barplot.propTypes = {
+  preview: PropTypes.bool,
   nTotalReviews: PropTypes.number.isRequired,
   nHighlightedReviews: PropTypes.number.isRequired,
   stats: PropTypes.arrayOf(

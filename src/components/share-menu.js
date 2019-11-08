@@ -33,7 +33,7 @@ export default function ShareMenu({ identifier, roleIds = [] }) {
               setPermalink(`${process.env.API_URL}/${identifier}`);
             }}
           >
-            Permalink (all reviews)
+            Permalink
           </MenuItem>
 
           {!!(roleIds && roleIds.length) && (

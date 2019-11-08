@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
 import isEqual from 'lodash/isEqual';
 import { MdInfoOutline } from 'react-icons/md';
+import classNames from 'classnames';
 import Barplot from './barplot';
 import { getId } from '../utils/jsonld';
 import { getYesNoStats, getTextAnswers } from '../utils/stats';
@@ -51,48 +52,60 @@ const ReviewReader = React.memo(function ReviewReader({
   }, [actions, highlightedRoleIds]);
 
   return (
-    <div className="review-reader">
-      <h3 className="review-reader__title">
-        {actions.length} review{actions.length !== 1 ? 's' : ''}
-        {nRequests != null
-          ? ` | ${nRequests} request${nRequests !== 1 ? 's' : ''}`
-          : ''}
-      </h3>
+    <div
+      className={classNames('review-reader', {
+        'review-reader--full': !preview,
+        'review-reader--preview': preview
+      })}
+    >
+      {!preview && (
+        <h3 className="review-reader__title">
+          {actions.length} review{actions.length !== 1 ? 's' : ''}
+          {nRequests != null
+            ? ` | ${nRequests} request${nRequests !== 1 ? 's' : ''}`
+            : ''}
+        </h3>
+      )}
 
       {!!actions.length && (
         <Fragment>
-          <p className="review-reader__help-text">
-            <MdInfoOutline className="review-reader__help-text-icon" />
-            View only the reviews you are interested in by dragging-and-dropping
-            user badges to the filter bubble below.
-          </p>
-          <h4 className="review-reader__sub-header">Reviewers</h4>
-          <div className="review-reader__persona-selector">
-            <PotentialRoles
-              roleIds={roleIds}
-              onRemoved={roleId => {
-                const nextHighlightedRoleIds = highlightedRoleIds.concat(
-                  roleId
-                );
-                onHighlighedRoleIdsChange(nextHighlightedRoleIds);
-                setHighlightedRoleIds(nextHighlightedRoleIds);
-              }}
-            />
-            <h4 className="review-reader__sub-header">Reviewers Filter</h4>
+          {!preview && (
+            <Fragment>
+              <p className="review-reader__help-text">
+                <MdInfoOutline className="review-reader__help-text-icon" />
+                View only the reviews you are interested in by
+                dragging-and-dropping user badges to the filter bubble below.
+              </p>
+              <h4 className="review-reader__sub-header">Reviewers</h4>
+              <div className="review-reader__persona-selector">
+                <PotentialRoles
+                  roleIds={roleIds}
+                  onRemoved={roleId => {
+                    const nextHighlightedRoleIds = highlightedRoleIds.concat(
+                      roleId
+                    );
+                    onHighlighedRoleIdsChange(nextHighlightedRoleIds);
+                    setHighlightedRoleIds(nextHighlightedRoleIds);
+                  }}
+                />
+                <h4 className="review-reader__sub-header">Reviewers Filter</h4>
 
-            <HighlightedRoles
-              roleIds={highlightedRoleIds}
-              onRemoved={ids => {
-                const nextHighlightedRoleIds = highlightedRoleIds.filter(
-                  roleId => !ids.some(id => roleId === id)
-                );
-                onHighlighedRoleIdsChange(nextHighlightedRoleIds);
-                setHighlightedRoleIds(nextHighlightedRoleIds);
-              }}
-            />
-          </div>
+                <HighlightedRoles
+                  roleIds={highlightedRoleIds}
+                  onRemoved={ids => {
+                    const nextHighlightedRoleIds = highlightedRoleIds.filter(
+                      roleId => !ids.some(id => roleId === id)
+                    );
+                    onHighlighedRoleIdsChange(nextHighlightedRoleIds);
+                    setHighlightedRoleIds(nextHighlightedRoleIds);
+                  }}
+                />
+              </div>
+            </Fragment>
+          )}
 
           <Barplot
+            preview={preview}
             stats={getYesNoStats(highlightedActions)}
             nHighlightedReviews={highlightedRoleIds.length || actions.length}
             nTotalReviews={actions.length}

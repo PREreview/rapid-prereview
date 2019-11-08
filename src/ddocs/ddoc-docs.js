@@ -17,6 +17,18 @@ const ddoc = {
         }
       },
       reduce: '_count'
+    },
+
+    actionsByType: {
+      map: function(doc) {
+        if (
+          doc['@type'] === 'RapidPREreviewAction' ||
+          doc['@type'] === 'RequestForRapidPREreviewAction'
+        ) {
+          emit(doc['@type'], null);
+        }
+      },
+      reduce: '_count'
     }
   },
   indexes: {

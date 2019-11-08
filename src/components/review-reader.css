@@ -1,6 +1,4 @@
 .review-reader {
-  padding-top: var(--mgrd);
-
   & .review-reader__title {
     font: var(--ui-header-1-font);
     margin: 0 var(--xsgrd) var(--xsgrd);
@@ -31,5 +29,11 @@
   & .review-review__persona-selector {
     outline: 1px solid red;
     width: 100%;
+  }
+}
+
+.review-reader--full  {
+  & .barplot {
+    margin-top: var(--mgrd);
   }
 }

@@ -47,7 +47,8 @@ export default function API() {
         }
       >
         <p>
-          Get a user by <code>id</code>.
+          Get a (public) user by <code>id</code>. Note that anonymous roles are
+          never returned in order to preserve their anonymity.
         </p>
       </APISection>
 
@@ -82,10 +83,11 @@ export default function API() {
           <a href="http://lucene.apache.org/core/4_3_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Overview">
             Lucene Query Parser Syntax
           </a>{' '}
-          using the <code>q</code> query string parameter. Pagination is handled
-          through a <code>bookmark</code> value that needs to be passed as a
-          query string parameter (<code>bookmark</code>) to get to the next
-          page.
+          using the <code>q</code> query string parameter. Results are returned
+          by batch controled by the <code>limit</code> querystring parameter.
+          Pagination is handled through a <code>bookmark</code> value that needs
+          to be passed as a query string parameter (<code>bookmark</code>) to
+          get to the next batch.
         </p>
 
         <table>

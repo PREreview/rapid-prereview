@@ -277,9 +277,14 @@
 
   & .preprint-card__view-more {
     display: flex;
-    padding: var(--sgrd);
-    & .button {
+
+    padding: var(--sgrd) var(--sgrd) var(--sgrd) 0 ;
+
+    & div {
       margin-left: auto;
+      & .button:nth-child(n+2) {
+        margin-left: var(--xsgrd);
+      }
     }
   }
 }
