@@ -31,8 +31,14 @@ describe('RegisterAction', function() {
     assert(getId(registerAction.result));
     assert(getId(registerAction.result.hasRole[0]).startsWith('role:'));
     assert.equal(
-      registerAction.result.hasRole[0]['@type'],
+      registerAction.createdRole[0]['@type'],
       'AnonymousReviewerRole'
+    );
+    assert(!registerAction.createdRole[0].isRoleOf);
+    assert(registerAction.createdRole[0]._rev);
+    assert.equal(
+      registerAction.createdRole[1].isRoleOf,
+      getId(registerAction.result)
     );
   });
 
@@ -55,13 +61,11 @@ describe('RegisterAction', function() {
       new Date(action.result.dateModified).getTime() >
         new Date(registerAction.result.dateModified).getTime()
     );
-    assert.equal(
-      getId(action.result.hasRole[0]),
-      getId(registerAction.result.hasRole[0])
-    );
+    assert.equal(getId(action.defaultRole), getId(registerAction.defaultRole));
+    assert.deepEqual(action.hasRole, registerAction.hasRole);
 
-    // console.log(
-    //   require('util').inspect({ registerAction, action }, { depth: null })
-    // );
+    //console.log(
+    //  require('util').inspect({ registerAction, action }, { depth: null })
+    //);
   });
 });

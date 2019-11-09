@@ -33,7 +33,6 @@ export default async function handleUpdateUserAction(
     );
   }
 
-  // TODO handle conflicts on read
   const nextUser = await this.get(userId, { user, acl: false });
 
   Object.assign(nextUser, action.payload, { dateModified: now });

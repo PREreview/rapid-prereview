@@ -7,7 +7,7 @@ const ddoc = {
       map: function(doc) {
         if (doc['@type'] === 'Person') {
           (doc.hasRole || []).forEach(function(role) {
-            var roleId = role['@id'];
+            var roleId = role['@id'] || role;
             if (typeof roleId === 'string') {
               emit(roleId, null);
             }

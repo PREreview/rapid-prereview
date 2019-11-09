@@ -85,6 +85,7 @@ export default function SettingsRoles({ user }) {
         <li className="settings__persona-list-divider">
           <hr></hr>
         </li>
+
         {arrayify(user.hasRole).map(role => (
           <li key={getId(role)} className="settings__persona-list-item">
             <div className="settings__persona-list-item__active-state">

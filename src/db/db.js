@@ -14,7 +14,6 @@ import { getId, unprefix, nodeify, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import { INDEXED_PREPRINT_PROPS, QUESTIONS } from '../constants';
 import { getScore, SCORE_THRESHOLD } from '../utils/score';
-import { getDefaultRole } from '../utils/users';
 import striptags from '../utils/striptags';
 import { dehydrateAction } from '../utils/preprints';
 
@@ -206,53 +205,22 @@ export default class DB {
 
     const [prefix] = id.split(':');
 
-    // TODO `question:`
     switch (prefix) {
       case 'user': {
         const doc = await this.users.get(id);
         if (acl) {
           delete doc.token;
+          // To be sure not to leak identity we do not return the roles
+          delete doc.defaultRole;
+          delete doc.hasRole;
         }
 
-        if (getId(user) === getId(doc)) {
-          return doc;
-        } else {
-          // we need to remove the anonymous roles
-          const defaultRole = getDefaultRole(doc);
-          return cleanup(
-            Object.assign({}, doc, {
-              // be sure not to leak identity of of the default Role if it is Anon
-              defaultRole:
-                defaultRole && defaultRole['@type'] === 'PublicReviewerRole'
-                  ? doc.defaultRole
-                  : undefined,
-              hasRole: arrayify(doc.hasRole).filter(
-                role => role['@type'] !== 'AnonymousReviewerRole'
-              )
-            }),
-            { removeEmptyArray: true }
-          );
-        }
+        return doc;
       }
 
       case 'role': {
-        const embedder = await this.getUserByRoleId(id);
-        const role = arrayify(embedder.hasRole).find(
-          role => getId(role) === id
-        );
-
-        return role['@type'] === 'PublicReviewerRole'
-          ? Object.assign({}, role, {
-              isRoleOf: cleanup(
-                Object.assign({}, omit(embedder, ['token']), {
-                  hasRole: arrayify(embedder.hasRole).filter(
-                    role => role['@type'] !== 'AnonymousReviewerRole'
-                  )
-                }),
-                { removeEmptyArray: true }
-              )
-            })
-          : role;
+        const doc = await this.docs.get(id);
+        return doc;
       }
 
       case 'review':
@@ -385,10 +353,15 @@ export default class DB {
     return this.docs.searchAsStream('ddoc-docs', 'actions', params);
   }
 
-  async searchReviews(params, { user = null } = {}) {}
-  async searchRequests(params, { user = null } = {}) {}
-  async searchUsers(params, { user = null } = {}) {}
-  async searchRoles(params, { user = null } = {}) {}
+  async searchRoles(params, { user = null } = {}) {
+    const results = await this.docs.search('ddoc-docs', 'roles', params);
+
+    return results;
+  }
+
+  streamRoles(params, { user = null } = {}) {
+    return this.docs.searchAsStream('ddoc-docs', 'roles', params);
+  }
 
   async syncIndex(
     action,
@@ -556,16 +529,16 @@ export default class DB {
       case 'RegisterAction':
         return handleRegisterAction.call(this, action, { strict, now });
 
-      case 'CreateRoleAction':
-        // TODO
-        break;
-
       case 'UpdateUserAction':
         return handleUpdateUserAction.call(this, action, {
           strict,
           user,
           now
         });
+
+      case 'CreateRoleAction':
+        // TODO
+        break;
 
       case 'UpdateRoleAction':
         return handleUpdateRoleAction.call(this, action, {

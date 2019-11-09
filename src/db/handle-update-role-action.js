@@ -24,20 +24,16 @@ export default async function handleUpdateRoleAction(
     throw createError(403, 'Forbidden');
   }
 
-  const nextUser = await this.getUserByRoleId(roleId);
-  // TODO handle conflicts on user on read
+  const role = await this.get(roleId);
 
-  const nextRole = nextUser.hasRole.find(role => getId(role) === roleId);
-  if (!nextRole) {
-    throw createError(400, 'Cannot find role ${roleId} in ${getId(nextUser)}');
-  }
+  const nextRole = Object.assign({}, role, action.payload, {
+    modifiedDate: now
+  });
 
-  Object.assign(nextRole, action.payload, { modifiedDate: now });
-
-  const resp = await this.users.insert(nextUser, getId(nextUser));
+  const resp = await this.docs.insert(nextRole, getId(nextRole));
 
   return Object.assign({}, action, {
-    result: Object.assign({}, nextUser, {
+    result: Object.assign({}, nextRole, {
       _id: resp.id,
       _rev: resp.rev
     })

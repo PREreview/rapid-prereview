@@ -32,7 +32,7 @@ describe('UpdateUserAction', function() {
         actionStatus: 'CompletedActionStatus',
         object: getId(user),
         payload: {
-          defaultRole: getId(user.hasRole[1])
+          defaultRole: user.hasRole[1]
         }
       },
       { user, now }
@@ -40,7 +40,7 @@ describe('UpdateUserAction', function() {
 
     // console.log(require('util').inspect(action, { depth: null }));
 
-    assert.equal(action.result.defaultRole, getId(user.hasRole[1]));
+    assert.equal(action.result.defaultRole, user.hasRole[1]);
     // we need `dateModified` for the reconciliation logic
     assert.equal(action.result.dateModified, now);
   });

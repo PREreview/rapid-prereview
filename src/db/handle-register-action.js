@@ -1,7 +1,7 @@
 import orcidUtils from 'orcid-utils';
 import uuid from 'uuid';
 import pick from 'lodash/pick';
-import groupBy from 'lodash/groupBy';
+import uniq from 'lodash/uniq';
 import { arrayify, getId, unprefix, cleanup } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 
@@ -39,7 +39,7 @@ export default async function handleRegisterAction(
     .filter(entry => entry.ok && !entry.ok._deleted)
     .map(entry => entry.ok);
 
-  let merged;
+  let merged, createdRoles;
   if (docs.length) {
     const specialProps = ['token', 'hasRole', '_rev']; // those need special logic to be merged
 
@@ -52,7 +52,10 @@ export default async function handleRegisterAction(
       ) {
         merged = Object.assign(
           pick(merged, specialProps),
-          pick(doc, Object.keys(doc).filter(p => !specialProps.includes(p)))
+          pick(
+            doc,
+            Object.keys(doc).filter(p => !specialProps.includes(p))
+          )
         );
       }
 
@@ -68,22 +71,11 @@ export default async function handleRegisterAction(
       }
 
       // `hasRole`
-      const roles = arrayify(merged.hasRole).concat(arrayify(doc.hasRole));
-      const grouped = groupBy(roles, getId);
-      merged.hasRole = Object.keys(grouped).map(roleId => {
-        const conflicting = grouped[roleId];
-        return conflicting.reduce((merged, role) => {
-          // latest wins
-          if (
-            new Date(merged.modifiedDate).getTime() <
-            new Date(doc.modifiedDate).getTime()
-          ) {
-            return doc;
-          }
-
-          return merged;
-        }, conflicting[0]);
-      });
+      // We can NOT lose role @ids => we ALWAYS merge
+      // Later we can sameAs in case the user reconciles
+      merged.hasRole = uniq(
+        arrayify(merged.hasRole).concat(arrayify(doc.hasRole))
+      );
 
       return merged;
     }, Object.assign({}, docs[0]));
@@ -104,6 +96,39 @@ export default async function handleRegisterAction(
     const anonRoleId = `role:${uuid.v4()}`;
     const publicRoleId = `role:${uuid.v4()}`;
 
+    createdRoles = [
+      {
+        _id: anonRoleId,
+        '@id': anonRoleId,
+        '@type': 'AnonymousReviewerRole',
+        name: unprefix(anonRoleId),
+        startDate: now,
+        modifiedDate: now
+      },
+      {
+        _id: publicRoleId,
+        '@id': publicRoleId,
+        '@type': 'PublicReviewerRole',
+        name: action.agent.name || unprefix(publicRoleId),
+        startDate: now,
+        modifiedDate: now,
+        isRoleOf: userId
+      }
+    ];
+
+    const resp = await this.docs.bulk({ docs: createdRoles });
+    if (!resp.every(resp => resp.ok)) {
+      throw createError(500, `Could not create roles for ${userId}`);
+    }
+    const revMap = resp.reduce((map, r) => {
+      map[r.id] = r.rev;
+      return map;
+    }, {});
+
+    createdRoles.forEach(role => {
+      role._rev = revMap[role._id];
+    });
+
     merged = cleanup({
       _id: userId,
       '@id': userId,
@@ -113,22 +138,7 @@ export default async function handleRegisterAction(
       orcid: orcidUtils.toDashFormat(orcid),
       name: action.agent.name,
       defaultRole: anonRoleId,
-      hasRole: [
-        {
-          '@id': anonRoleId,
-          '@type': 'AnonymousReviewerRole',
-          name: unprefix(anonRoleId),
-          startDate: now,
-          modifiedDate: now
-        },
-        {
-          '@id': publicRoleId,
-          '@type': 'PublicReviewerRole',
-          name: action.agent.name || unprefix(publicRoleId),
-          startDate: now,
-          modifiedDate: now
-        }
-      ]
+      hasRole: createdRoles.map(getId)
     });
   }
 
@@ -147,10 +157,13 @@ export default async function handleRegisterAction(
     _rev: resp[0].rev
   });
 
-  return Object.assign({}, action, {
-    agent: getId(user),
-    startTime: now,
-    endTime: now,
-    result: user
-  });
+  return cleanup(
+    Object.assign({}, action, {
+      agent: getId(user),
+      startTime: now,
+      endTime: now,
+      result: user,
+      createdRole: createdRoles
+    })
+  );
 }
