@@ -254,7 +254,7 @@ export default function PreprintCard({
             </div>
             <div className="preprint-card__expansion-header__right">
               <span className="preprint-card__days-ago">
-                Added{' '}
+                Started{' '}
                 {formatDistanceStrict(new Date(dateFirstActivity), new Date())}{' '}
                 ago
               </span>
