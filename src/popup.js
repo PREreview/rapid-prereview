@@ -6,10 +6,12 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { UserProvider } from './contexts/user-context';
 import { StoresProvider } from './contexts/store-context';
 import Popup from './components/popup';
-import { CHECK_PREPRINT } from './constants';
+import { CHECK_PREPRINT, CSS_SCOPE_ID } from './constants';
 import './popup.css';
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.documentElement.id = CSS_SCOPE_ID;
+
   chrome.cookies.get(
     {
       url: process.env.COOKIE_URL,

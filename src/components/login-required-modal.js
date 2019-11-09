@@ -10,6 +10,7 @@ export default function LoginRequiredModal({ onClose }) {
       className="login-required-modal"
       showCloseButton={true}
       onClose={onClose}
+      aria-label="log in required"
       title={
         <Fragment>
           <MdErrorOutline className="login-required-modal__title-icon" />

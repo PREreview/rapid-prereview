@@ -1,5 +1,5 @@
 .welcome-modal {
-  & .modal__content {
+  & .rpos-modal__content {
     padding: 0;
   }
 

@@ -2,22 +2,24 @@
   z-index: 100000;
 }
 
-.modal-container {
+/* Note the rpos- prefix as modal is a common class in the host sites where the content script is injected */
+.rpos-modal-container {
   max-width: 800px;
   min-width: 400px;
   width: fit-content !important;
 }
-.modal {
+
+.rpos-modal {
   font: var(--ui-basic-font--large);
 
-  & .modal__header-bar {
+  & .rpos-modal__header-bar {
     display: flex;
     justify-content: space-between;
     padding: var(--mgrd) var(--mgrd) var(--sgrd) var(--lgrd);
     align-items: baseline;
   }
 
-  & .modal__title {
+  & .rpos-modal__title {
     font: var(--ui-basic-font);
     color: var(--ui-basic-font-color--light);
     text-transform: uppercase;
@@ -27,7 +29,7 @@
     align-items: center;
   }
 
-  & .modal__content {
+  & .rpos-modal__content {
     padding: 0 var(--lgrd) var(--lgrd);
   }
 }

@@ -1,7 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
-const { babel } = require('./package.json');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { babel } = require('./package.json');
+
 const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
@@ -84,7 +85,17 @@ module.exports = {
                       'custom-media-queries': true
                     }
                   }),
-                  require('postcss-nested') /*replace cssnext nesting with this one which allows for sass style nesting*/
+                  require('postcss-nested'), // replace cssnext nesting with this one which allows for sass style nesting
+                  require('postcss-plugin-namespace')('#rpos-ext', {
+                    ignore: [
+                      ':root',
+                      'html',
+                      /^body/,
+                      /^\[data-reach/,
+                      /#rpos-ext/
+                    ]
+                  })
+                  // require('postcss-scopify')('#rpos-ext')
                 ];
               }
             }

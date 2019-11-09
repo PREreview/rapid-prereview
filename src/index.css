@@ -2,6 +2,9 @@
 
 @import 'normalize.css';
 @import '@reach/tooltip/styles.css';
+@import '@reach/menu-button/styles.css';
+@import '@reach/dialog/styles.css';
+@import '@reach/combobox/styles.css';
 
 @import './components/variables.css';
 @import './components/app.css';
@@ -58,8 +61,3 @@
 @import './components/suspense-loading.css';
 @import './components/api.css';
 @import './components/api-section.css';
-
-/* reach ui */
-@import '../node_modules/@reach/menu-button/styles.css';
-@import '../node_modules/@reach/dialog/styles.css';
-@import '../node_modules/@reach/combobox/styles.css';

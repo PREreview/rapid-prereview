@@ -1,55 +1,47 @@
 @import 'normalize.css';
 
+/* reach ui */
+@import '@reach/tooltip/styles.css';
+@import '@reach/menu-button/styles.css';
+@import '@reach/dialog/styles.css';
+@import '@reach/combobox/styles.css';
+
 @import './components/extension-fonts.css';
 @import './components/variables.css';
 
-@import './components/app.css';
+@import './components/extension-body.css'; /* replaces app.css */
+@import './components/add-button.css';
 @import './components/button.css';
 @import './components/checkbox.css';
 @import './components/controls.css';
 @import './components/count-badge.css';
+@import './components/diseases.css';
 @import './components/extension-fallback.css';
-@import './components/facets.css';
 @import './components/header-bar.css';
-@import './components/home.css';
 @import './components/icon-button.css';
 @import './components/label-style.css';
-@import './components/left-side-panel.css';
 @import './components/menu.css';
 @import './components/modal.css';
-@import './components/new-preprint.css';
-@import './components/preprint-card.css';
 @import './components/radio-button.css';
 @import './components/rapid-form-fragment.css';
 @import './components/rapid-pre-review-logo.css';
 @import './components/role-editor.css';
 @import './components/score-badge.css';
-@import './components/search-bar.css';
 @import './components/share-menu.css';
 @import './components/shell.css';
-@import './components/sort-options.css';
 @import './components/tag-pill.css';
 @import './components/text-input.css';
 @import './components/shell-content.css';
 @import './components/login-required-modal.css';
 @import './components/barplot.css';
 @import './components/collapse.css';
-@import './components/login.css';
-@import './components/settings.css';
-@import './components/profile.css';
 @import './components/text-answers.css';
 @import './components/tooltip.css';
 @import './components/review-reader.css';
 @import './components/role-badge.css';
 @import './components/role-activity.css';
-@import './components/diseases.css';
 @import './components/subject-editor.css';
-@import './components/welcome-modal.css';
 @import './components/role-list.css';
 @import './components/preprint-preview.css';
-
-/* reach ui */
-@import '../node_modules/@reach/tooltip/styles.css';
-@import '../node_modules/@reach/menu-button/styles.css';
-@import '../node_modules/@reach/dialog/styles.css';
-@import '../node_modules/@reach/combobox/styles.css';
+@import './components/settings-roles.css';
+@import './components/suspense-loading.css';

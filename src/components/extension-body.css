@@ -1,0 +1,18 @@
+/**
+ * Substitute for app.css for the extension content-script
+ * We do not include app.css to not pollute the body we use the following instead
+ */
+#rpos-ext {
+  background-color: white;
+  margin: 0;
+  border: 0;
+  padding: 0;
+  color: var(--ui-basic-font-color);
+  font: var(--ui-basic-font);
+  & :any-link {
+    color: var(--link-color);
+    &:hover {
+      color: var(--prereview-black);
+    }
+  }
+}

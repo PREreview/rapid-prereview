@@ -2,7 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ExtensionShell from './components/extension-shell';
 import { parseGoogleScholar } from './utils/scholar';
-import { CHECK_SESSION_COOKIE, CHECK_PREPRINT, PREPRINT } from './constants';
+import {
+  CHECK_SESSION_COOKIE,
+  CHECK_PREPRINT,
+  PREPRINT,
+  CSS_SCOPE_ID
+} from './constants';
 import { PreprintsWithActionsStore } from './stores/preprint-stores';
 import { RoleStore } from './stores/user-stores';
 import { arrayify } from './utils/jsonld';
@@ -54,6 +59,7 @@ if (
 
 function start() {
   const $div = document.createElement('div');
+  $div.id = CSS_SCOPE_ID;
   document.body.appendChild($div);
 
   function detect() {
