@@ -205,14 +205,15 @@ ShellContent.propTypes = {
 };
 
 function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
+  // Note: !! this needs to work both in the webApp where it is URL driven and in
+  // the extension where it is shell driven
+
   const location = useLocation();
   const history = useHistory();
 
-  // TODO make it work with the extension where we have no control on `location`
-
   // sanitize qs
   useEffect(() => {
-    if (!fetchActionsProgress.isActive) {
+    if (!process.env.IS_EXTENSION && !fetchActionsProgress.isActive) {
       const qs = new URLSearchParams(location.search);
       const roleIdsQs = qs.get('role');
 
@@ -243,11 +244,19 @@ function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
     }
   }, [history, location, actions, fetchActionsProgress]);
 
-  const qs = new URLSearchParams(location.search);
-  const roleIdsQs = qs.get('role');
-  const roleIds = roleIdsQs
-    ? roleIdsQs.split(',').map(id => `role:${id}`)
-    : undefined;
+  let appRoleIds;
+  if (process.env.IS_EXTENSION) {
+    const qs = new URLSearchParams(location.search);
+    const roleIdsQs = qs.get('role');
+
+    appRoleIds = roleIdsQs
+      ? roleIdsQs.split(',').map(id => `role:${id}`)
+      : undefined;
+  }
+
+  const [extensionRoleIds, setExtensionRoleIds] = useState();
+
+  const roleIds = process.env.IS_EXTENSION ? extensionRoleIds : appRoleIds;
 
   return (
     <div className="shell-content-read">
@@ -258,17 +267,21 @@ function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
       {!fetchActionsProgress.isActive && (
         <ReviewReader
           onHighlighedRoleIdsChange={roleIds => {
-            const qs = new URLSearchParams(location.search);
-            if (roleIds && roleIds.length) {
-              qs.set('role', roleIds.map(unprefix));
+            if (process.env.IS_EXTENSION) {
+              setExtensionRoleIds(roleIds);
             } else {
-              qs.delete('role');
+              const qs = new URLSearchParams(location.search);
+              if (roleIds && roleIds.length) {
+                qs.set('role', roleIds.map(unprefix));
+              } else {
+                qs.delete('role');
+              }
+              history.push({
+                hash: location.hash,
+                pathname: location.pathname,
+                search: qs.toString()
+              });
             }
-            history.push({
-              hash: location.hash,
-              pathname: location.pathname,
-              search: qs.toString()
-            });
           }}
           defaultHighlightedRoleIds={roleIds}
           identifier={preprint.doi || preprint.arXivId}

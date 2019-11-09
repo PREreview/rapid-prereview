@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MdClose } from 'react-icons/md';
 import PropTypes from 'prop-types';
 import Button from './button';
 import IconButton from './icon-button';
 import { createError } from '../utils/errors';
 import Controls from './controls';
+import { CSS_HEADER_HEIGHT } from '../constants';
 
 export default function APISection({ id, title, children }) {
+  const ref = useRef();
   const [run, setRun] = useState(false);
   const [data, setData] = useState({
     body: null,
@@ -48,6 +50,19 @@ export default function APISection({ id, title, children }) {
             isActive: false,
             error: null
           });
+          if (ref.current) {
+            window.scroll({
+              top: Math.max(
+                ref.current.getBoundingClientRect().top +
+                  window.scrollY -
+                  CSS_HEADER_HEIGHT -
+                  120,
+                0
+              ),
+              left: 0,
+              behavior: 'smooth'
+            });
+          }
         })
         .catch(err => {
           if (err.name !== 'AbortError') {
@@ -85,7 +100,7 @@ export default function APISection({ id, title, children }) {
       {children}
 
       {!!data.body && run && !data.isActive && (
-        <div className="api-section__payload-viewer">
+        <div className="api-section__payload-viewer" ref={ref}>
           <pre>
             <code>{JSON.stringify(data.body, null, 2)}</code>
           </pre>

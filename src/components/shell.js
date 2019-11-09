@@ -230,6 +230,7 @@ export default function Shell({ children, defaultStatus = 'default' }) {
 
             <div className="shell__controls__right">
               <IconButton
+                disabled={status === 'maximized'}
                 className="shell__controls__button shell__controls__button--maximize"
                 onClick={() => {
                   setTransition('maximized');
