@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import mobile from 'is-mobile';
 import HTML5Backend from 'react-dnd-html5-backend';
+import TouchBackend from 'react-dnd-touch-backend';
 import { DndProvider } from 'react-dnd';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
@@ -25,7 +27,9 @@ smoothscroll.polyfill();
 export default function App({ user }) {
   return (
     <HelmetProvider>
-      <DndProvider backend={HTML5Backend}>
+      <DndProvider
+        backend={mobile({ tablet: true }) ? TouchBackend : HTML5Backend}
+      >
         <StoresProvider>
           <UserProvider user={user}>
             <Router>

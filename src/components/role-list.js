@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { useDrag, useDrop } from 'react-dnd';
 import classNames from 'classnames';
 import { MdClear } from 'react-icons/md';
 import { MenuItem } from '@reach/menu-button';
+
 import RoleBadge from './role-badge';
 import IconButton from './icon-button';
 
@@ -82,16 +83,18 @@ function DraggableRoleBadge({ roleId, onDropped, children, type }) {
   });
 
   return (
-    <RoleBadge
-      tooltip={true}
-      ref={dragRef}
-      roleId={roleId}
-      className={classNames('draggable-role-badge', {
-        'draggable-role-badge--dragging': isDragging
-      })}
-    >
-      {children}
-    </RoleBadge>
+    <Fragment>
+      <RoleBadge
+        tooltip={true}
+        ref={dragRef}
+        roleId={roleId}
+        className={classNames('draggable-role-badge', {
+          'draggable-role-badge--dragging': isDragging
+        })}
+      >
+        {children}
+      </RoleBadge>
+    </Fragment>
   );
 }
 
