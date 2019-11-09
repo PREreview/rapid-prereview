@@ -169,19 +169,19 @@ export default function PreprintCard({
 
           <div className="preprint-card__expansion-header">
             <div className="preprint-card__expansion-header__left">
-              <Tooltip label="Number of reviews and requests for reviews for this preprint">
-                {/* ScoreBadge uses forwardRef but Tooltip doesn't work without extra div :( */}
-                <div className="preprint-card__score-badge-container">
-                  <ScoreBadge
-                    now={now}
-                    nRequests={nRequests}
-                    nReviews={nReviews}
-                    dateFirstActivity={dateFirstActivity}
-                    onMouseEnter={onStartAnim}
-                    onMouseLeave={onStopAnim}
-                  />
-                </div>
-              </Tooltip>
+              {/*<Tooltip label="Number of reviews and requests for reviews for this preprint">*/}
+              {/* ScoreBadge uses forwardRef but Tooltip doesn't work without extra div :( */}
+              <div className="preprint-card__score-badge-container">
+                <ScoreBadge
+                  now={now}
+                  nRequests={nRequests}
+                  nReviews={nReviews}
+                  dateFirstActivity={dateFirstActivity}
+                  onMouseEnter={onStartAnim}
+                  onMouseLeave={onStopAnim}
+                />
+              </div>
+              {/*</Tooltip>*/}
               <button
                 className="preprint-card__cta-button"
                 disabled={hasReviewed && hasRequested}
