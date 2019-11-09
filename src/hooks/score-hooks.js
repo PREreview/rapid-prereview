@@ -15,7 +15,7 @@ export function useAnimatedScore(actions) {
 
   useEffect(() => {
     if (index !== null && index < sorted.length - 1) {
-      const totalAnimTime = 600;
+      const totalAnimTime = Math.min(sorted.length * 100, 600);
 
       const tmin = new Date(sorted[0].startTime).getTime();
       const tmax = new Date(sorted[sorted.length - 1].startTime).getTime();

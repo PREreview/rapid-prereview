@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { getTimeScore } from '../utils/score';
 
 const ScoreBadge = React.forwardRef(function ScoreBadge(
-  { nRequests, nReviews, dateFirstActivity, now },
+  { nRequests, nReviews, dateFirstActivity, now, ...others },
   ref
 ) {
   const timeScore = getTimeScore(dateFirstActivity, now);
@@ -49,7 +49,11 @@ const ScoreBadge = React.forwardRef(function ScoreBadge(
   };
 
   return (
-    <div ref={ref} className={`score-badge score-badge--${statusClass}`}>
+    <div
+      ref={ref}
+      className={`score-badge score-badge--${statusClass}`}
+      {...others}
+    >
       <svg viewBox="0 0 24 24" className="score-badge__clock-svg">
         <path
           d={svgArc(12, 12, 11, 0, 359.9)}

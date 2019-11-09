@@ -21,6 +21,7 @@ import Collapse from './collapse';
 import ReviewReader from './review-reader';
 import XLink from './xlink';
 import Button from './button';
+import { useAnimatedScore } from '../hooks/score-hooks';
 
 export default function PreprintCard({
   user,
@@ -50,12 +51,14 @@ export default function PreprintCard({
 
   const { hasData, hasCode, subjects } = getTags(preprint.potentialAction);
 
-  // date of first activity (`dateFirstActivity`)
-  const firstAction = preprint.potentialAction
-    .filter(action => action && action.startTime)
-    .sort((a, b) => {
-      return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
-    })[0];
+  const {
+    nRequests,
+    nReviews,
+    now,
+    onStartAnim,
+    onStopAnim,
+    dateFirstActivity
+  } = useAnimatedScore(preprint.potentialAction);
 
   return (
     <Fragment>
@@ -170,9 +173,12 @@ export default function PreprintCard({
                 {/* ScoreBadge uses forwardRef but Tooltip doesn't work without extra div :( */}
                 <div className="preprint-card__score-badge-container">
                   <ScoreBadge
-                    nRequests={requests.length}
-                    nReviews={reviews.length}
-                    dateFirstActivity={firstAction.startTime}
+                    now={now}
+                    nRequests={nRequests}
+                    nReviews={nReviews}
+                    dateFirstActivity={dateFirstActivity}
+                    onMouseEnter={onStartAnim}
+                    onMouseLeave={onStopAnim}
                   />
                 </div>
               </Tooltip>
@@ -193,70 +199,63 @@ export default function PreprintCard({
                   <div className="preprint-card__cta-button__icon-container">
                     <AddPrereviewIcon className="preprint-card__cta-button__icon" />
                   </div>
-                  <div className="preprint-card__count-badge">
-                    {reviews.length}
-                  </div>
+                  <div className="preprint-card__count-badge">{nReviews}</div>
                   <div className="preprint-card__count-label">
-                    Review{reviews.length > 1 ? 's' : ''}
+                    Review{nReviews > 1 ? 's' : ''}
                   </div>
                   <div className="preprint-card__count-divider"></div>
-                  <div className="preprint-card__count-badge">
-                    {requests.length}
-                  </div>
+                  <div className="preprint-card__count-badge">{nRequests}</div>
                   <div className="preprint-card__count-label">
-                    Request{requests.length > 1 ? 's' : ''}
+                    Request{nRequests > 1 ? 's' : ''}
                   </div>
                 </div>
               </button>
               {/* <div className="preprint-card__count-badge">{reviews.length}</div>
-              <div className="preprint-card__count-label">
-                Review{reviews.length > 1 ? 's' : ''}
-              </div>
-              <div className="preprint-card__count-plus">+</div>
-              <div className="preprint-card__count-badge">
-                {requests.length}
-              </div>
-              <div className="preprint-card__count-label">
-                Request{requests.length > 1 ? 's' : ''}
-              </div>
+                  <div className="preprint-card__count-label">
+                  Review{reviews.length > 1 ? 's' : ''}
+                  </div>
+                  <div className="preprint-card__count-plus">+</div>
+                  <div className="preprint-card__count-badge">
+                  {requests.length}
+                  </div>
+                  <div className="preprint-card__count-label">
+                  Request{requests.length > 1 ? 's' : ''}
+                  </div>
 
-              <Tooltip
-                label={
+                  <Tooltip
+                  label={
                   hasReviewed && hasRequested
-                    ? 'You already reviewed and requested reviews for this preprint'
-                    : !hasReviewed && hasRequested
-                    ? 'Add your review'
-                    : hasReviewed && !hasRequested
-                    ? 'Add your request for review'
-                    : 'Add your review or request for review'
-                }
-              >
-                <div className="preprint-card__add-button-container">
-                  <IconButton
-                    className="preprint-card__add-button"
-                    disabled={hasReviewed && hasRequested}
-                    onClick={() => {
-                      if (!hasReviewed && !hasRequested) {
-                        onNew(preprint);
-                      } else if (!hasReviewed && hasRequested) {
-                        onNewReview(preprint);
-                      } else if (hasReviewed && !hasRequested) {
-                        onNewRequest(preprint);
-                      }
-                    }}
+                  ? 'You already reviewed and requested reviews for this preprint'
+                  : !hasReviewed && hasRequested
+                  ? 'Add your review'
+                  : hasReviewed && !hasRequested
+                  ? 'Add your request for review'
+                  : 'Add your review or request for review'
+                  }
                   >
-                    <AddPrereviewIcon />
+                  <div className="preprint-card__add-button-container">
+                  <IconButton
+                  className="preprint-card__add-button"
+                  disabled={hasReviewed && hasRequested}
+                  onClick={() => {
+                  if (!hasReviewed && !hasRequested) {
+                  onNew(preprint);
+                  } else if (!hasReviewed && hasRequested) {
+                  onNewReview(preprint);
+                  } else if (hasReviewed && !hasRequested) {
+                  onNewRequest(preprint);
+                  }
+                  }}
+                  >
+                  <AddPrereviewIcon />
                   </IconButton>
-                </div>
-              </Tooltip> */}
+                  </div>
+                  </Tooltip> */}
             </div>
             <div className="preprint-card__expansion-header__right">
               <span className="preprint-card__days-ago">
                 Added{' '}
-                {formatDistanceStrict(
-                  new Date(firstAction.startTime),
-                  new Date()
-                )}{' '}
+                {formatDistanceStrict(new Date(dateFirstActivity), new Date())}{' '}
                 ago
               </span>
               <IconButton

@@ -30,12 +30,14 @@
       stroke: var(--ui-score-badge-secondary-color);
     }
   }
+
   &:hover {
     color: var(--ui-score-badge-primary-color--focus);
     & .score-badge__clock-svg__active-path {
       stroke: var(--ui-score-badge-primary-color--focus);
     }
   }
+
   & .score-badge--needs-attention {
     border-color: var(--prereview-coral);
     color: var(--prereview-coral);
