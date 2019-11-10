@@ -169,7 +169,10 @@ export function invalidate() {
           case 'UpdateUserAction':
           case 'CreateRoleAction':
           case 'UpdateRoleAction':
-          case 'DeanonymizeRoleAction': {
+          case 'DeanonymizeRoleAction':
+          case 'GrantModeratorRoleAction':
+          case 'RevokeModeratorRoleAction':
+          case 'ModerateRoleAction': {
             // invalidate cacheKey for result
             const doc = action.result;
             const batch = redis.batch();
@@ -188,8 +191,13 @@ export function invalidate() {
             break;
           }
 
+          case 'ModerateRapidPREReviewAction':
           case 'RequestForRapidPREreviewAction':
           case 'RapidPREreviewAction': {
+            if (action['@type'] === 'ModerateRapidPREReviewAction') {
+              action = action.result;
+            }
+
             // invalidate cache key for actionId, activity:<roleId> (for profile activity log), home:score,
             // home:new, home:date (for home page with the various sort option)
             // and preprintId (`action.object`) containing `action`

@@ -36,14 +36,18 @@ export default function ShellContent({
     preprint.doi || preprint.arXivId
   );
 
+  const completedActions = actions.filter(
+    action => action.actionStatus === 'CompletedActionStatus'
+  );
+
   const [post, postProgress] = usePostAction();
 
   const [tab, setTab] = useState(defaultTab);
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  const hasReviewed = checkIfHasReviewed(user, actions);
-  const hasRequested = checkIfHasRequested(user, actions);
+  const hasReviewed = checkIfHasReviewed(user, actions); // `actions` (_all_ of them including moderated ones) not `completedActions`
+  const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `completedActions`
 
   return (
     <div className="shell-content">
@@ -140,7 +144,7 @@ export default function ShellContent({
         {tab === 'read' ? (
           <ShellContentRead
             preprint={preprint}
-            actions={actions}
+            actions={completedActions}
             fetchActionsProgress={fetchActionsProgress}
           />
         ) : tab === 'request' ? (

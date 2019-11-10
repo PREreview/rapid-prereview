@@ -118,4 +118,8 @@ export class PreprintsSearchResultsStore extends EventEmitter {
     this.emit('SET', search, payload);
     this.cache.set(search, payload);
   }
+
+  reset() {
+    this.cache.reset();
+  }
 }

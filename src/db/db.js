@@ -558,10 +558,6 @@ export default class DB {
           now
         });
 
-      case 'CreateRoleAction':
-        // TODO
-        break;
-
       case 'UpdateRoleAction':
         return handleUpdateRoleAction.call(this, action, {
           strict,

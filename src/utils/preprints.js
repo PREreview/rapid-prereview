@@ -16,7 +16,6 @@ export function dehydrateAction(action) {
 
       case '_id':
       case '_rev':
-      case 'actionStatus':
       case 'object':
         break;
 

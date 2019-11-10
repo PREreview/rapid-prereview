@@ -60,56 +60,65 @@ const ddoc = {
         // @inject(striptags)
 
         if (doc['@type'] === 'ScholarlyPreprint') {
-          ['@id', '@type', 'doi', 'arXivId'].forEach(function(identifier) {
-            if (doc[identifier] && typeof doc[identifier] === 'string') {
-              index(identifier, doc[identifier]);
-            }
+          // We only index preprint with non moderated reviews or request for review
+          var actions = (doc.potentialAction || []).filter(function(action) {
+            return (
+              action.actionStatus === 'CompletedActionStatus' &&
+              (action['@type'] === 'RapidPREreviewAction' ||
+                action['@type'] === 'RequestForRapidPREreviewAction')
+            );
           });
 
-          if (doc.name) {
-            var name = doc.name['@value']
-              ? striptags(doc.name['@value'])
-              : doc.name;
-            if (typeof name === 'string') {
-              index('name', name);
+          if (actions.length) {
+            ['@id', '@type', 'doi', 'arXivId'].forEach(function(identifier) {
+              if (doc[identifier] && typeof doc[identifier] === 'string') {
+                index(identifier, doc[identifier]);
+              }
+            });
+
+            if (doc.name) {
+              var name = doc.name['@value']
+                ? striptags(doc.name['@value'])
+                : doc.name;
+              if (typeof name === 'string') {
+                index('name', name);
+              }
             }
-          }
 
-          if (doc.preprintServer && doc.preprintServer.name) {
-            var preprintServerName = doc.preprintServer.name['@value']
-              ? striptags(doc.preprintServer.name['@value'])
-              : doc.preprintServer.name;
-            if (typeof preprintServerName === 'string') {
-              index('preprintServerName', preprintServerName);
+            if (doc.preprintServer && doc.preprintServer.name) {
+              var preprintServerName = doc.preprintServer.name['@value']
+                ? striptags(doc.preprintServer.name['@value'])
+                : doc.preprintServer.name;
+              if (typeof preprintServerName === 'string') {
+                index('preprintServerName', preprintServerName);
+              }
             }
-          }
 
-          index('score', doc.score || 0, { facet: true });
+            index('score', doc.score || 0, { facet: true });
 
-          var datePosted = doc.datePosted
-            ? new Date(doc.datePosted).getTime()
-            : new Date('0000').getTime();
-          index('datePosted', datePosted, { facet: true });
+            var datePosted = doc.datePosted
+              ? new Date(doc.datePosted).getTime()
+              : new Date('0000').getTime();
+            index('datePosted', datePosted, { facet: true });
 
-          // date of first activity (`dateFirstActivity`)
-          var firstAction = (doc.potentialAction || [])
-            .filter(function(action) {
-              return action && action.startTime;
-            })
-            .sort(function(a, b) {
-              return (
-                new Date(a.startTime).getTime() -
-                new Date(b.startTime).getTime()
-              );
-            })[0];
-          var dateFirstActivity = firstAction
-            ? new Date(firstAction.startTime).getTime()
-            : new Date('0000').getTime();
-          index('dateFirstActivity', dateFirstActivity);
+            // date of first activity (`dateFirstActivity`)
+            var firstAction = actions
+              .filter(function(action) {
+                return action && action.startTime;
+              })
+              .sort(function(a, b) {
+                return (
+                  new Date(a.startTime).getTime() -
+                  new Date(b.startTime).getTime()
+                );
+              })[0];
+            var dateFirstActivity = firstAction
+              ? new Date(firstAction.startTime).getTime()
+              : new Date('0000').getTime();
+            index('dateFirstActivity', dateFirstActivity);
 
-          if (doc.potentialAction) {
             // reviewer and requester
-            doc.potentialAction.forEach(function(action) {
+            actions.forEach(function(action) {
               if (action.agent) {
                 var agentId = action.agent['@id'] || action.agent;
                 if (typeof agentId === 'string') {
@@ -124,12 +133,12 @@ const ddoc = {
               }
             });
 
-            var hasReviews = doc.potentialAction.some(function(action) {
+            var hasReviews = actions.some(function(action) {
               return action['@type'] === 'RapidPREreviewAction';
             });
             index('hasReviews', hasReviews ? 'true' : 'false', { facet: true });
 
-            var hasRequests = doc.potentialAction.some(function(action) {
+            var hasRequests = actions.some(function(action) {
               return action['@type'] === 'RequestForRapidPREreviewAction';
             });
             index('hasRequests', hasRequests ? 'true' : 'false', {
@@ -138,7 +147,7 @@ const ddoc = {
 
             // facets based on the reviews and requests
             // we index if the majority of reviews have the same answer
-            var reviewActions = doc.potentialAction.filter(function(action) {
+            var reviewActions = actions.filter(function(action) {
               return action['@type'] === 'RapidPREreviewAction';
             });
 

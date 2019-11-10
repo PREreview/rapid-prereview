@@ -36,7 +36,11 @@ export function usePostAction() {
     body: null
   });
 
-  const { preprintsWithActionsStore, roleStore } = useStores();
+  const {
+    preprintsWithActionsStore,
+    preprintsSearchResultsStore,
+    roleStore
+  } = useStores();
 
   // Note: `onSuccess` and `onError` are only called if the component is still
   // mounted
@@ -84,6 +88,8 @@ export function usePostAction() {
 
         if (body['@type'] === 'UpdateUserAction') {
           setUser(body.result);
+        } else if (body['@type'] === 'ModerateRapidPREReviewAction') {
+          preprintsSearchResultsStore.reset();
         }
 
         if (isMounted.current) {

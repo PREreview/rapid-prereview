@@ -129,6 +129,7 @@ ReviewReader.propTypes = {
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       '@type': PropTypes.oneOf(['RapidPREreviewAction']).isRequired,
+      actionStatus: PropTypes.oneOf(['CompletedActionStatus']).isRequired, // all moderated content must be excluded upstream
       agent: PropTypes.string.isRequired
     })
   ).isRequired,

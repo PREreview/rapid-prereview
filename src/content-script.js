@@ -102,18 +102,18 @@ function start() {
 
           // Keep the popup badge up to date
           preprintsWithActionsStore.on('SET', preprintWithActions => {
-            const nRequests = arrayify(
+            const actions = arrayify(
               preprintWithActions.potentialAction
-            ).reduce((count, action) => {
+            ).filter(action => action.actionStatus === 'CompletedActionStatus');
+
+            const nRequests = actions.reduce((count, action) => {
               if (action['@type'] === 'RequestForRapidPREreviewAction') {
                 count++;
               }
               return count;
             }, 0);
 
-            const nReviews = arrayify(
-              preprintWithActions.potentialAction
-            ).reduce((count, action) => {
+            const nReviews = actions.reduce((count, action) => {
               if (action['@type'] === 'RapidPREreviewAction') {
                 count++;
               }
