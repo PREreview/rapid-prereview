@@ -43,13 +43,13 @@ const ddoc = {
           agentId: 'keyword'
         }
       },
-      // This is used to display the activity feed of the profile page
       index: function(doc) {
         if (
           doc['@type'] === 'RapidPREreviewAction' ||
           doc['@type'] === 'RequestForRapidPREreviewAction'
         ) {
           index('@type', doc['@type'], { facet: true });
+          index('actionStatus', doc.actionStatus, { facet: true });
 
           var agentId = doc.agent['@id'] || doc.agent;
           if (typeof agentId === 'string') {

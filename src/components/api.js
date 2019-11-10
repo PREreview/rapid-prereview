@@ -231,6 +231,17 @@ export default function API() {
 
             <tr>
               <td>
+                <code>actionStatus</code>
+              </td>
+              <td>The action status</td>
+              <td>
+                One of <code>CompletedActionStatus</code>,{' '}
+                <code>ModeratedActionStatus</code>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
                 <code>agentId</code>
               </td>
               <td>The identifier of the agent</td>
