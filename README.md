@@ -179,7 +179,7 @@ Be aware that all the following will source the production environment variables
 3. Run `npm run cloudant:get-security` to verify the [security
 object](https://cloud.ibm.com/docs/services/Cloudant/offerings?topic=cloudant-authorization)
 
-To seed the production database (for demos **only**) run: `npm run seed:prod`
+To seed the production database (for demos **only**) run: `npm run cloudant:seed`
 (!! note that this performs a hard reset and delete all data in the databases
 before seeding).
 
@@ -198,8 +198,8 @@ To see the logs, run `./log-app.sh` or `./log-service.sh`. We use
 
 Apps can be restarted with `./restart-app.sh` and `./restart-service.sh`.
 
-To reset the redis cache run: `npm run reset-cache:prod`. Be aware that this
+To reset the redis cache run: `npm run azure:reset-cache`. Be aware that this
 will source the production environment variables.
 
-To reset all redis data (including sessions) run: `npm run reset-redis:prod`. Be
+To reset all redis data (including sessions) run: `npm run azure:reset-redis`. Be
 aware that this will source the production environment variables.
