@@ -31,7 +31,7 @@ const schema = {
     },
     object: {
       type: 'string',
-      pattern: '^role:'
+      pattern: '^review:'
     },
     moderationReason: {
       type: 'string'

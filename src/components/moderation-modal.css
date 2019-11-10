@@ -1,0 +1,6 @@
+.moderation-modal {
+  & textarea {
+    width: 100%;
+    margin: var(--xsgrd) 0 var(--mgrd) 0;
+  }
+}

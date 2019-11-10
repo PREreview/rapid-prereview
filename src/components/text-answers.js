@@ -1,9 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { MenuItem } from '@reach/menu-button';
 import Value from './value';
 import RoleBadge from './role-badge';
 
-export default function TextAnswers({ answers }) {
+export default function TextAnswers({
+  answers,
+  canModerate,
+  isModerationInProgress,
+  onModerate
+}) {
   return (
     <div className="text-answers">
       <dl>
@@ -12,10 +18,31 @@ export default function TextAnswers({ answers }) {
             <dt className="text-answers__question">
               <Value tagName="span">{question}</Value>
             </dt>
-            {answers.map(({ roleId, text }) => (
+            {answers.map(({ actionId, roleId, text }) => (
               <dd className="text-answers__response-row" key={roleId}>
                 <div className="text-answers__user-badge-container">
-                  <RoleBadge roleId={roleId} />
+                  <RoleBadge roleId={roleId}>
+                    {!!canModerate && (
+                      <MenuItem
+                        disabled={isModerationInProgress}
+                        onSelect={() => {
+                          onModerate('role', roleId);
+                        }}
+                      >
+                        Report Author
+                      </MenuItem>
+                    )}
+                    {!!canModerate && (
+                      <MenuItem
+                        disabled={isModerationInProgress}
+                        onSelect={() => {
+                          onModerate('review', actionId);
+                        }}
+                      >
+                        Report Author’s Review
+                      </MenuItem>
+                    )}
+                  </RoleBadge>
                 </div>
 
                 <Value className="text-answers__response">{text}</Value>
@@ -40,5 +67,8 @@ TextAnswers.propTypes = {
         })
       )
     })
-  ).isRequired
+  ).isRequired,
+  canModerate: PropTypes.bool,
+  isModerationInProgress: PropTypes.bool,
+  onModerate: PropTypes.func
 };

@@ -32,7 +32,7 @@ const schema = {
       type: 'string',
       pattern: '^role:'
     },
-    moderatinReason: {
+    moderationReason: {
       type: 'string'
     }
   },

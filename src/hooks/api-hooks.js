@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import noop from 'lodash/noop';
 import { createError } from '../utils/errors';
 import { unprefix, getId, arrayify } from '../utils/jsonld';
@@ -44,68 +44,79 @@ export function usePostAction() {
 
   // Note: `onSuccess` and `onError` are only called if the component is still
   // mounted
-  function post(action, onSuccess = noop, onError = noop) {
-    if (isMounted.current) {
-      setState({
-        isActive: true,
-        error: null,
-        body: action
-      });
-    }
-
-    const controller = new AbortController();
-    if (controllerRef.current) {
-      controllerRef.current.abort();
-    }
-    controllerRef.current = controller;
-
-    fetch(`${process.env.API_URL}/api/action`, {
-      signal: controller.signal,
-      method: 'POST',
-      body: JSON.stringify(action),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
+  const post = useCallback(
+    function post(action, onSuccess = noop, onError = noop) {
+      if (isMounted.current) {
+        setState({
+          isActive: true,
+          error: null,
+          body: action
+        });
       }
-    })
-      .then(resp => {
-        if (resp.ok) {
-          return resp.json();
-        } else {
-          return resp.json().then(
-            body => {
-              throw createError(resp.status, body.description || body.name);
-            },
-            err => {
-              throw createError(resp.status, 'something went wrong');
-            }
-          );
+
+      const controller = new AbortController();
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+      controllerRef.current = controller;
+
+      fetch(`${process.env.API_URL}/api/action`, {
+        signal: controller.signal,
+        method: 'POST',
+        body: JSON.stringify(action),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
         }
       })
-      .then(body => {
-        preprintsWithActionsStore.upsertAction(body);
-        roleStore.setFromAction(body);
+        .then(resp => {
+          if (resp.ok) {
+            return resp.json();
+          } else {
+            return resp.json().then(
+              body => {
+                throw createError(resp.status, body.description || body.name);
+              },
+              err => {
+                throw createError(resp.status, 'something went wrong');
+              }
+            );
+          }
+        })
+        .then(body => {
+          preprintsWithActionsStore.upsertAction(body);
+          roleStore.setFromAction(body);
 
-        if (body['@type'] === 'UpdateUserAction') {
-          setUser(body.result);
-        } else if (body['@type'] === 'ModerateRapidPREReviewAction') {
-          preprintsSearchResultsStore.reset();
-        }
+          if (body['@type'] === 'UpdateUserAction') {
+            setUser(body.result);
+          } else if (body['@type'] === 'ModerateRapidPREReviewAction') {
+            preprintsSearchResultsStore.reset();
+          }
 
-        if (isMounted.current) {
-          setState({ isActive: false, error: null, body });
-          onSuccess(body);
-        }
-      })
-      .catch(error => {
-        if (error.name !== 'AbortError' && isMounted.current) {
-          setState({ isActive: false, error, body: action });
-          onError(error);
-        }
-      });
-  }
+          if (isMounted.current) {
+            setState({ isActive: false, error: null, body });
+            onSuccess(body);
+          }
+        })
+        .catch(error => {
+          if (error.name !== 'AbortError' && isMounted.current) {
+            setState({ isActive: false, error, body: action });
+            onError(error);
+          }
+        });
+    },
+    [preprintsWithActionsStore, preprintsSearchResultsStore, roleStore, setUser]
+  );
 
-  return [post, state];
+  const resetPostState = useCallback(function resetPostState() {
+    setState({
+      isActive: false,
+      error: null,
+      body: null
+    });
+  }, []);
+
+  return [post, state, resetPostState];
 }
 
 /**

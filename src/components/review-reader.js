@@ -17,7 +17,10 @@ const ReviewReader = React.memo(function ReviewReader({
   actions,
   nRequests,
   defaultHighlightedRoleIds,
-  onHighlighedRoleIdsChange = noop
+  onHighlighedRoleIdsChange = noop,
+  isModerationInProgress,
+  canModerate,
+  onModerate
 }) {
   const [highlightedRoleIds, setHighlightedRoleIds] = useState(
     defaultHighlightedRoleIds || []
@@ -114,7 +117,12 @@ const ReviewReader = React.memo(function ReviewReader({
           </Barplot>
 
           {!preview && (
-            <TextAnswers answers={getTextAnswers(highlightedActions)} />
+            <TextAnswers
+              answers={getTextAnswers(highlightedActions)}
+              isModerationInProgress={isModerationInProgress}
+              canModerate={canModerate}
+              onModerate={onModerate}
+            />
           )}
         </Fragment>
       )}
@@ -134,7 +142,10 @@ ReviewReader.propTypes = {
     })
   ).isRequired,
   nRequests: PropTypes.number,
-  defaultHighlightedRoleIds: PropTypes.arrayOf(PropTypes.string)
+  defaultHighlightedRoleIds: PropTypes.arrayOf(PropTypes.string),
+  canModerate: PropTypes.bool,
+  isModerationInProgress: PropTypes.bool,
+  onModerate: PropTypes.func
 };
 
 export default ReviewReader;
