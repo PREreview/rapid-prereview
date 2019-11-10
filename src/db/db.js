@@ -196,9 +196,31 @@ export default class DB {
   }
 
   async secure() {
-    // TODO see https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-authorization
-    // and set_security method
-    // we make the docs DB public for read
+    //  see https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-authorization
+    const results = {};
+
+    results.docs = await this.docs.set_security({
+      nobody: [] // TODO? '_reader', '_replicator'
+    });
+    results.index = await this.index.set_security({
+      nobody: []
+    });
+    results.users = await this.users.set_security({
+      nobody: []
+    });
+
+    return results;
+  }
+
+  async getSecurity() {
+    //  see https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-authorization
+    const results = {};
+
+    results.docs = await this.docs.get_security();
+    results.index = await this.index.get_security();
+    results.users = await this.users.get_security();
+
+    return results;
   }
 
   async get(

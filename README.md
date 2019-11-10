@@ -169,6 +169,22 @@ Redis](https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/) to store:
 
 #### Process
 
+##### Cloudant
+
+Be aware that all the following will source the production environment variables
+(see the Azure section below for information to get them)
+
+1. Run `npm run cloudant:init` to create the databases and push the design documents
+2. Run `npm run cloudant:set-security` to secure the databases
+3. Run `npm run cloudant:get-security` to verify the [security
+object](https://cloud.ibm.com/docs/services/Cloudant/offerings?topic=cloudant-authorization)
+
+To seed the production database (for demos **only**) run: `npm run seed:prod`
+(!! note that this performs a hard reset and delete all data in the databases
+before seeding).
+
+##### Azure
+
 1. Install Azure CLI (see
    https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
 2. Run `az login` to login to the CLI
@@ -181,9 +197,6 @@ To see the logs, run `./log-app.sh` or `./log-service.sh`. We use
 [pino](https://getpino.io/) for logging.
 
 Apps can be restarted with `./restart-app.sh` and `./restart-service.sh`.
-
-To seed the production database run: `npm run seed:prod`. Be aware that this
-will source the production environment variables.
 
 To reset the redis cache run: `npm run reset-cache:prod`. Be aware that this
 will source the production environment variables.

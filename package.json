@@ -6,6 +6,9 @@
   "scripts": {
     "profile": "cross-env NODE_ENV=production webpack --mode production --profile --json > stats.json && webpack-bundle-analyzer stats.json public/assets",
     "cloudant": "docker restart cloudant-developer",
+    "cloudant:init": "source env.private.sh && babel-node ./scripts/ddocs.js",
+    "cloudant:set-security": "source env.private.sh && babel-node ./scripts/set-security.js",
+    "cloudant:get-security": "source env.private.sh && babel-node ./scripts/get-security.js",
     "redis": "redis-server /usr/local/etc/redis.conf",
     "log-cloudant": "docker logs cloudant-developer",
     "extension:watch": "webpack --config webpack-extension.config.js --watch --mode development",
