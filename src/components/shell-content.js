@@ -19,7 +19,6 @@ import { getId, cleanup, unprefix } from '../utils/jsonld';
 import { useLocalState } from '../hooks/ui-hooks';
 import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
-import { getDefaultRole } from '../utils/users';
 import UserBadge from './user-badge';
 import SubjectEditor from './subject-editor';
 import ReviewReader from './review-reader';
@@ -315,13 +314,13 @@ function ShellContentReview({
 }) {
   const [subjects, setSubjects] = useLocalState(
     'subjects',
-    getId(getDefaultRole(user)),
+    user.defaultRole,
     createPreprintId(preprint),
     []
   );
   const [answerMap, setAnswerMap] = useLocalState(
     'answerMap',
-    getId(getDefaultRole(user)),
+    user.defaultRole,
     createPreprintId(preprint),
     {}
   );
@@ -375,7 +374,7 @@ function ShellContentReview({
               onSubmit({
                 '@type': 'RapidPREreviewAction',
                 actionStatus: 'CompletedActionStatus',
-                agent: getId(getDefaultRole(user)),
+                agent: getId(user.defaultRole),
                 object: createPreprintIdentifierCurie(preprint),
                 resultReview: cleanup(
                   {
@@ -428,7 +427,7 @@ function ShellContentRequest({
             onSubmit({
               '@type': 'RequestForRapidPREreviewAction',
               actionStatus: 'CompletedActionStatus',
-              agent: getId(getDefaultRole(user)),
+              agent: user.defaultRole,
               object: createPreprintIdentifierCurie(preprint)
             });
           }}

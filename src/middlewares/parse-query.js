@@ -23,6 +23,7 @@ export default function parseQuery(req, res, next) {
         case 'drilldown':
         case 'include_fields':
         case 'hydrate':
+        case 'ids':
           if (value) {
             try {
               parsed = JSON.parse(value);

@@ -11,12 +11,9 @@ function getOnlyIfValue(obj = {}) {
     case 'Person':
     case 'RequestForRapidPREreviewAction':
     case 'RapidPREreviewAction':
-      return obj._rev;
-
-    // roles are embedded in user docs so don't have a _rev
     case 'AnonymousReviewerRole':
     case 'PublicReviewerRole':
-      return obj.modifiedDate;
+      return obj._rev;
 
     default:
       throw createError(500, 'getOnlyIfValue: invalid type for obj');
@@ -169,30 +166,20 @@ export function invalidate() {
 
         switch (action['@type']) {
           case 'RegisterAction':
-          case 'CreateRoleAction':
           case 'UpdateUserAction':
+          case 'CreateRoleAction':
           case 'UpdateRoleAction':
           case 'DeanonymizeRoleAction': {
-            // invalidate cacheKey for userId and roleId
-            const user = action.result;
+            // invalidate cacheKey for result
+            const doc = action.result;
             const batch = redis.batch();
             batch.set(
-              createOnlyIfKey(user),
-              getOnlyIfValue(user),
+              createOnlyIfKey(doc),
+              getOnlyIfValue(doc),
               'EX',
               60 * 60 // 1 hour in sec
             );
-            batch.del(createCacheKey(user));
-            arrayify(user.hasRole).forEach(role => {
-              batch.set(
-                createOnlyIfKey(role),
-                getOnlyIfValue(role),
-                'EX',
-                60 * 60 // 1 hour in sec
-              );
-              batch.del(createCacheKey(role));
-            });
-
+            batch.del(createCacheKey(doc));
             batch.exec((err, res) => {
               if (err) {
                 req.log.error({ err, action }, 'Invalidate error');
@@ -205,7 +192,7 @@ export function invalidate() {
           case 'RapidPREreviewAction': {
             // invalidate cache key for actionId, activity:<roleId> (for profile activity log), home:score,
             // home:new, home:date (for home page with the various sort option)
-            // and preprintId (containing `action`)
+            // and preprintId (`action.object`) containing `action`
 
             const batch = redis.batch();
             batch.del(createCacheKey(action));

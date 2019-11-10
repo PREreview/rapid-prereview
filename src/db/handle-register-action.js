@@ -39,7 +39,7 @@ export default async function handleRegisterAction(
     .filter(entry => entry.ok && !entry.ok._deleted)
     .map(entry => entry.ok);
 
-  let merged, createdRoles;
+  let merged, resultRoles;
   if (docs.length) {
     const specialProps = ['token', 'hasRole', '_rev']; // those need special logic to be merged
 
@@ -96,7 +96,7 @@ export default async function handleRegisterAction(
     const anonRoleId = `role:${uuid.v4()}`;
     const publicRoleId = `role:${uuid.v4()}`;
 
-    createdRoles = [
+    resultRoles = [
       {
         _id: anonRoleId,
         '@id': anonRoleId,
@@ -116,7 +116,7 @@ export default async function handleRegisterAction(
       }
     ];
 
-    const resp = await this.docs.bulk({ docs: createdRoles });
+    const resp = await this.docs.bulk({ docs: resultRoles });
     if (!resp.every(resp => resp.ok)) {
       throw createError(500, `Could not create roles for ${userId}`);
     }
@@ -125,7 +125,7 @@ export default async function handleRegisterAction(
       return map;
     }, {});
 
-    createdRoles.forEach(role => {
+    resultRoles.forEach(role => {
       role._rev = revMap[role._id];
     });
 
@@ -138,7 +138,7 @@ export default async function handleRegisterAction(
       orcid: orcidUtils.toDashFormat(orcid),
       name: action.agent.name,
       defaultRole: anonRoleId,
-      hasRole: createdRoles.map(getId)
+      hasRole: resultRoles.map(getId)
     });
   }
 
@@ -163,7 +163,7 @@ export default async function handleRegisterAction(
       startTime: now,
       endTime: now,
       result: user,
-      createdRole: createdRoles
+      resultRole: resultRoles
     })
   );
 }

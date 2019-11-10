@@ -157,9 +157,9 @@ These 2 apps are run on the same service plan (`rapid-prereview-service-plan`).
 
 The databases are hosted on IBM Cloudant (CouchDB) and are composed of 3
 databases:
-- `rapid-prereview-users` storing all the user and role data
-- `rapid-prereview-docs` storing the reviews and requests for reviews
-- `rapid-prereview-index` storing the preprint with reviews or request for
+- `rapid-prereview-docs` (public) storing the roles, reviews and requests for reviews
+- `rapid-prereview-users` (private) storing all the user data (and the links user <-> role)
+- `rapid-prereview-index` (private) storing the preprint with reviews or request for
   reviews search index
 
 We use [Azure Cache for

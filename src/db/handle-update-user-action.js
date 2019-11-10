@@ -33,7 +33,7 @@ export default async function handleUpdateUserAction(
     );
   }
 
-  const nextUser = await this.get(userId, { user, acl: false });
+  const nextUser = await this.get(userId, { user, raw: true });
 
   Object.assign(nextUser, action.payload, { dateModified: now });
 

@@ -7,7 +7,6 @@ import sampleSize from 'lodash/sampleSize';
 import { QUESTIONS } from '../src/constants';
 import DB from '../src/db/db';
 import { createRandomOrcid } from '../src/utils/orcid';
-import { getDefaultRole } from '../src/utils/users';
 import { getId, cleanup } from '../src/utils/jsonld';
 import {
   createPreprintServer,
@@ -57,10 +56,11 @@ const N_USERS = 50;
     console.log(`\t- ${action.result.name} (${action.result.orcid})`);
 
     let user = action.result;
+    const roles = action.resultRole;
 
     // add avatars and name
     for (const type of ['AnonymousReviewerRole', 'PublicReviewerRole']) {
-      const role = user.hasRole.find(role => role['@type'] === type);
+      const role = roles.find(role => role['@type'] === type);
 
       let n = 0;
       while (n < 5) {
@@ -97,7 +97,6 @@ const N_USERS = 50;
             },
             { user }
           );
-          user = updateRoleAction.result;
           break;
         }
       }
@@ -114,7 +113,7 @@ const N_USERS = 50;
           actionStatus: 'CompletedActionStatus',
           payload: {
             defaultRole: getId(
-              user.hasRole.find(role => role['@type'] === 'PublicReviewerRole')
+              roles.find(role => role['@type'] === 'PublicReviewerRole')
             )
           }
         },
@@ -143,7 +142,7 @@ const N_USERS = 50;
       const action = await db.post(
         {
           '@type': 'RequestForRapidPREreviewAction',
-          agent: getId(getDefaultRole(user)),
+          agent: user.defaultRole,
           actionStatus: 'CompletedActionStatus',
           object: identifier
         },
@@ -161,7 +160,7 @@ const N_USERS = 50;
       const action = await db.post(
         {
           '@type': 'RapidPREreviewAction',
-          agent: getId(getDefaultRole(user)),
+          agent: user.defaultRole,
           actionStatus: 'CompletedActionStatus',
           object: identifier,
           resultReview: {

@@ -130,6 +130,24 @@ router.get(
 );
 
 /**
+ * Get a role
+ */
+router.get(
+  '/role/:roleId',
+  cors(),
+  cache(req => `role:${req.params.roleId}`),
+  async (req, res, next) => {
+    try {
+      const body = await req.db.get(`role:${req.params.roleId}`);
+      req.cache(body);
+      res.json(body);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+/**
  * Search for roles
  */
 router.get(
@@ -172,24 +190,6 @@ router.get(
     );
 
     s.pipe(res);
-  }
-);
-
-/**
- * Get a role
- */
-router.get(
-  '/role/:roleId',
-  cors(),
-  cache(req => `role:${req.params.roleId}`),
-  async (req, res, next) => {
-    try {
-      const body = await req.db.get(`role:${req.params.roleId}`);
-      req.cache(body);
-      res.json(body);
-    } catch (err) {
-      next(err);
-    }
   }
 );
 

@@ -198,23 +198,24 @@ export default class DB {
     // we make the docs DB public for read
   }
 
-  async get(id, { user = null, acl = true } = {}) {
-    if (acl == null) {
-      acl = true;
-    }
-
+  async get(
+    id,
+    {
+      user = null,
+      raw = false // setting raw to `true` is the only way to get the role associated with a user
+    } = {}
+  ) {
     const [prefix] = id.split(':');
 
     switch (prefix) {
       case 'user': {
         const doc = await this.users.get(id);
-        if (acl) {
+        if (!raw) {
           delete doc.token;
           // To be sure not to leak identity we do not return the roles
           delete doc.defaultRole;
           delete doc.hasRole;
         }
-
         return doc;
       }
 
@@ -330,6 +331,20 @@ export default class DB {
     );
 
     return body.rows && body.rows[0] ? body.rows[0].key[0] : 1;
+  }
+
+  async getRoles(roleIds) {
+    const body = await this.docs.list({
+      keys: roleIds,
+      include_docs: true,
+      reduce: false
+    });
+
+    if (!body.rows || !body.rows.length) {
+      throw createError(404);
+    }
+
+    return body.rows.map(row => row.doc);
   }
 
   // search

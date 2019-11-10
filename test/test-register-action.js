@@ -31,13 +31,13 @@ describe('RegisterAction', function() {
     assert(getId(registerAction.result));
     assert(getId(registerAction.result.hasRole[0]).startsWith('role:'));
     assert.equal(
-      registerAction.createdRole[0]['@type'],
+      registerAction.resultRole[0]['@type'],
       'AnonymousReviewerRole'
     );
-    assert(!registerAction.createdRole[0].isRoleOf);
-    assert(registerAction.createdRole[0]._rev);
+    assert(!registerAction.resultRole[0].isRoleOf);
+    assert(registerAction.resultRole[0]._rev);
     assert.equal(
-      registerAction.createdRole[1].isRoleOf,
+      registerAction.resultRole[1].isRoleOf,
       getId(registerAction.result)
     );
   });

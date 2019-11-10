@@ -31,6 +31,7 @@ describe('auth', function() {
     assert(cookie);
 
     const res2 = await fetch(location, { headers: { cookie } });
+    assert(res2.ok);
   });
 
   after(done => {

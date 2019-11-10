@@ -82,12 +82,7 @@ export function usePostAction() {
         preprintsWithActionsStore.upsertAction(body);
         roleStore.setFromAction(body);
 
-        if (
-          body['@type'] === 'CreateRoleAction' ||
-          body['@type'] === 'UpdateRoleAction' ||
-          body['@type'] === 'UpdateUserAction' ||
-          body['@type'] === 'DeanonymizeRoleAction'
-        ) {
+        if (body['@type'] === 'UpdateUserAction') {
           setUser(body.result);
         }
 
@@ -491,6 +486,117 @@ export function useRole(roleId) {
   }, [roleId, roleStore]);
 
   return [role, progress];
+}
+
+/*
+ * Get user roles (all or nothing)
+ */
+export function useUserRoles(user) {
+  const [progress, setProgress] = useState({
+    isActive: false,
+    error: null
+  });
+
+  const { roleStore } = useStores();
+  const [roles, setRoles] = useState(roleStore.getUserRoles(user) || null);
+
+  useEffect(() => {
+    // keep `role` up-to-date
+    function update(role) {
+      if (roles && user.hasRole.some(roleId => roleId === getId(role))) {
+        setRoles(prevRoles => {
+          return prevRoles.map(_role => {
+            return getId(_role) === getId(role) ? role : _role;
+          });
+        });
+      }
+    }
+
+    roleStore.addListener('SET', update);
+
+    return () => {
+      roleStore.removeListener('SET', update);
+    };
+  }, [user, roleStore, roles]);
+
+  useEffect(() => {
+    const cached = roleStore.getUserRoles(user);
+    if (cached) {
+      setProgress({
+        isActive: false,
+        error: null
+      });
+      setRoles(cached);
+    } else {
+      setProgress({
+        isActive: true,
+        error: null
+      });
+      setRoles(null);
+
+      const controllers = [];
+
+      Promise.all(
+        user.hasRole.map(roleId => {
+          if (roleStore.has(roleId)) {
+            return Promise.resolve(roleStore.get(roleId));
+          }
+
+          const controller = new AbortController();
+          controllers.push(controller);
+
+          return fetch(`${process.env.API_URL}/api/role/${unprefix(roleId)}`, {
+            signal: controller.signal
+          })
+            .then(resp => {
+              if (resp.ok) {
+                return resp.json();
+              } else {
+                return resp.json().then(
+                  body => {
+                    throw createError(
+                      resp.status,
+                      body.description || body.name
+                    );
+                  },
+                  err => {
+                    throw createError(resp.status, 'something went wrong');
+                  }
+                );
+              }
+            })
+            .then(data => {
+              roleStore.set(data);
+              return data;
+            })
+            .catch(err => {
+              if (err.name !== 'AbortError') {
+                throw err;
+              }
+            });
+        })
+      )
+        .then(roles => {
+          setProgress({
+            isActive: false,
+            error: null
+          });
+          setRoles(roles);
+        })
+        .catch(err => {
+          setProgress({ isActive: false, error: err });
+          setRoles(null);
+        });
+
+      return () => {
+        controllers.forEach(controller => {
+          controller.abort();
+        });
+      };
+    }
+  }, [user, roleStore]);
+
+  return [roles, progress];
 }
 
 /**
