@@ -1,12 +1,15 @@
 import Cloudant from '@cloudant/cloudant';
 import uniqBy from 'lodash/uniqBy';
-import omit from 'lodash/omit';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
 import handleUpdateRoleAction from './handle-update-role-action';
 import handleUpdateUserAction from './handle-update-user-action';
 import handleRequestForRapidPrereviewAction from './handle-request-for-rapid-prereview-action';
+import handleGrantModeratorRoleAction from './handle-grant-moderator-role-action';
+import handleRevokeModeratorRoleAction from './handle-revoke-moderator-role-action';
+import handleModerateRoleAction from './handle-moderate-role-action';
+import handleModerateRapidPrereviewAction from './handle-moderate-rapid-prereview-action';
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
 import ddocIndex from '../ddocs/ddoc-index';
@@ -534,7 +537,7 @@ export default class DB {
 
   async post(
     action = {},
-    { user = null, strict = true, now = new Date().toISOString() } = {}
+    { user = null, strict = true, now = new Date().toISOString(), isAdmin } = {}
   ) {
     if (!action['@type']) {
       throw createError(400, 'action must have a @type');
@@ -542,7 +545,11 @@ export default class DB {
 
     switch (action['@type']) {
       case 'RegisterAction':
-        return handleRegisterAction.call(this, action, { strict, now });
+        return handleRegisterAction.call(this, action, {
+          strict,
+          now,
+          isAdmin
+        });
 
       case 'UpdateUserAction':
         return handleUpdateUserAction.call(this, action, {
@@ -557,6 +564,34 @@ export default class DB {
 
       case 'UpdateRoleAction':
         return handleUpdateRoleAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'GrantModeratorRoleAction':
+        return handleGrantModeratorRoleAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'RevokeModeratorRoleAction':
+        return handleRevokeModeratorRoleAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'ModerateRoleAction':
+        return handleModerateRoleAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'ModerateRapidPREReviewAction':
+        return handleModerateRapidPrereviewAction.call(this, action, {
           strict,
           user,
           now

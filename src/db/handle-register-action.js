@@ -1,7 +1,9 @@
 import orcidUtils from 'orcid-utils';
+import Ajv from 'ajv';
 import uuid from 'uuid';
 import pick from 'lodash/pick';
 import uniq from 'lodash/uniq';
+import schema from '../schemas/register-action';
 import { arrayify, getId, unprefix, cleanup } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 
@@ -13,8 +15,18 @@ import { createError } from '../utils/errors';
  */
 export default async function handleRegisterAction(
   action,
-  { strict = true, now = new Date().toISOString() } = {}
+  {
+    strict = true,
+    now = new Date().toISOString(),
+    isAdmin // if true make the user admin
+  } = {}
 ) {
+  const ajv = new Ajv();
+  const isValid = ajv.validate(schema, action);
+  if (!isValid) {
+    throw createError(400, ajv.errorsText());
+  }
+
   const orcid = unprefix(getId(action.agent.orcid));
 
   if (!orcidUtils.isValid(orcid)) {
@@ -103,7 +115,8 @@ export default async function handleRegisterAction(
         '@type': 'AnonymousReviewerRole',
         name: unprefix(anonRoleId),
         startDate: now,
-        modifiedDate: now
+        modifiedDate: now,
+        isModerator: false
       },
       {
         _id: publicRoleId,
@@ -112,7 +125,8 @@ export default async function handleRegisterAction(
         name: action.agent.name || unprefix(publicRoleId),
         startDate: now,
         modifiedDate: now,
-        isRoleOf: userId
+        isRoleOf: userId,
+        isModerator: false
       }
     ];
 
@@ -138,7 +152,8 @@ export default async function handleRegisterAction(
       orcid: orcidUtils.toDashFormat(orcid),
       name: action.agent.name,
       defaultRole: anonRoleId,
-      hasRole: resultRoles.map(getId)
+      hasRole: resultRoles.map(getId),
+      isAdmin: !!isAdmin
     });
   }
 

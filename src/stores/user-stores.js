@@ -49,6 +49,9 @@ export class RoleStore extends EventEmitter {
         break;
       }
 
+      case 'RevokeModeratorRoleAction':
+      case 'GrantModeratorRoleAction':
+      case 'ModerateRoleAction':
       case 'DeanonymizeRoleAction':
       case 'UpdateRoleAction': {
         this.set(action.result);

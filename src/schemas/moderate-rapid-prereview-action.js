@@ -32,6 +32,9 @@ const schema = {
     object: {
       type: 'string',
       pattern: '^role:'
+    },
+    moderationReason: {
+      type: 'string'
     }
   },
   additionalProperties: false,

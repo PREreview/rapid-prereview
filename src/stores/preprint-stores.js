@@ -76,6 +76,10 @@ export class PreprintsWithActionsStore extends EventEmitter {
   }
 
   upsertAction(action) {
+    if (action['@type'] === 'ModerateRapidPREReviewAction') {
+      action = action.result;
+    }
+
     if (
       (action['@type'] === 'RapidPREreviewAction' ||
         action['@type'] === 'RequestForRapidPREreviewAction') &&
