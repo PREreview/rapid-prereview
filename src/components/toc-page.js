@@ -28,30 +28,32 @@ export default function TocPage({ children }) {
     }
   }, [location.pathname]);
 
+  // scroll to hash
+  useEffect(() => {
+    const hash = location.hash;
+
+    const [, id] = hash.split('#');
+    const $el = document.getElementById(id);
+    if ($el) {
+      window.scroll({
+        top: Math.max(
+          $el.getBoundingClientRect().top +
+            window.scrollY -
+            CSS_HEADER_HEIGHT -
+            10,
+          0
+        ),
+        left: 0,
+        behavior: 'smooth'
+      });
+    }
+  }, [location.hash]);
+
+  // close side panel
   const handleClick = useCallback(
     e => {
-      let $a = e.target;
-      while ($a.localName !== 'a') {
-        $a = $a.parentElement;
-      }
-
-      const [, id] = $a.href.split('#');
-      const $el = document.getElementById(id);
-      if ($el) {
-        window.scroll({
-          top: Math.max(
-            $el.getBoundingClientRect().top +
-              window.scrollY -
-              CSS_HEADER_HEIGHT -
-              10,
-            0
-          ),
-          left: 0,
-          behavior: 'smooth'
-        });
-        if (isMobile) {
-          setShowLeftPanel(false);
-        }
+      if (isMobile) {
+        setShowLeftPanel(false);
       }
     },
     [isMobile]

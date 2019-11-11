@@ -127,6 +127,7 @@ APISection.propTypes = {
     'get-user',
     'get-role',
     'get-question',
+    'search-role',
     'search-action'
   ]).isRequired,
   title: PropTypes.any.isRequired,

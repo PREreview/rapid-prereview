@@ -18,7 +18,7 @@ az webapp config appsettings set --resource-group "rapid-prereview" --name "rapi
 az webapp config set --resource-group "rapid-prereview" --name "rapid-prereview-service" --startup-file "./dist/service.js"
 
 # to use without pm2:
-# az webapp config set --resource-group "rapid-prereview" --name "rapid-prereview-service" --startup-file "npm run start:service"
+# az webapp config set --resource-group "rapid-prereview" --name "rapid-prereview-service" --startup-file "npm run start:service-prod"
 
 az webapp deployment source config-zip --resource-group "rapid-prereview" --name "rapid-prereview-service" --src service.zip
 

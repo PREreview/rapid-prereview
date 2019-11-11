@@ -40,8 +40,8 @@ describe('UpdateRoleAction', function() {
 
     // console.log(require('util').inspect(action, { depth: null }));
 
-    assert.equal(action.result.hasRole[0].name, 'updated name');
+    assert.equal(action.result.name, 'updated name');
     // we need `modifiedDate` for the reconciliation logic
-    assert.equal(action.result.hasRole[0].modifiedDate, now);
+    assert.equal(action.result.modifiedDate, now);
   });
 });

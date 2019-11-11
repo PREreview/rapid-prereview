@@ -29,13 +29,14 @@ describe('DeanonymizeRoleAction', function() {
         '@type': 'DeanonymizeRoleAction',
         agent: getId(user),
         actionStatus: 'CompletedActionStatus',
-        object: getId(user.hasRole[0])
+        object: user.hasRole[0]
       },
       { user }
     );
 
     // console.log(require('util').inspect(action, { depth: null }));
 
-    assert.equal(action.result.hasRole[0]['@type'], 'PublicReviewerRole');
+    assert.equal(action.result['@type'], 'PublicReviewerRole');
+    assert.equal(action.result.isRoleOf, getId(user));
   });
 });

@@ -1,8 +1,6 @@
 import { EventEmitter } from 'events';
 import LRU from 'lru-cache';
-import { getId } from '../utils/jsonld';
-
-// TODO use a store provider so that we can test more easily
+import { getId, arrayify } from '../utils/jsonld';
 
 export class RoleStore extends EventEmitter {
   constructor({ max = 1000 } = {}) {
@@ -23,6 +21,12 @@ export class RoleStore extends EventEmitter {
     return this.cache.peek(getId(roleId));
   }
 
+  getUserRoles(user) {
+    if (user.hasRole.every(roleId => this.has(roleId))) {
+      return user.hasRole.map(roleId => this.get(roleId));
+    }
+  }
+
   set(role, { emit = true, onlyIfNotExisting = false } = {}) {
     if (onlyIfNotExisting) {
       if (!this.has(role)) {
@@ -38,13 +42,19 @@ export class RoleStore extends EventEmitter {
 
   setFromAction(action) {
     switch (action['@type']) {
+      case 'RegisterAction': {
+        arrayify(action.resultRole).forEach(role => {
+          this.set(role);
+        });
+        break;
+      }
+
+      case 'RevokeModeratorRoleAction':
+      case 'GrantModeratorRoleAction':
+      case 'ModerateRoleAction':
+      case 'DeanonymizeRoleAction':
       case 'UpdateRoleAction': {
-        const updatedRole = action.result.hasRole.find(
-          role => getId(role) === getId(action.object)
-        );
-        if (updatedRole) {
-          this.set(updatedRole);
-        }
+        this.set(action.result);
         break;
       }
 

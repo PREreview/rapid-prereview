@@ -36,20 +36,25 @@ export default function PreprintCard({
 
   const reviews = useMemo(() => {
     return preprint.potentialAction.filter(
-      action => action['@type'] === 'RapidPREreviewAction'
+      action =>
+        action.actionStatus === 'CompletedActionStatus' &&
+        action['@type'] === 'RapidPREreviewAction'
     );
   }, [preprint]);
 
-  const requests = useMemo(() => {
+  const completedActions = useMemo(() => {
     return preprint.potentialAction.filter(
-      action => action['@type'] === 'RequestForRapidPREreviewAction'
+      action =>
+        action.actionStatus === 'CompletedActionStatus' &&
+        (action['@type'] === 'RequestForRapidPREreviewAction' ||
+          action['@type'] === 'RapidPREreviewAction')
     );
   }, [preprint]);
 
-  const hasReviewed = checkIfHasReviewed(user, reviews);
-  const hasRequested = checkIfHasRequested(user, requests);
+  const hasReviewed = checkIfHasReviewed(user, preprint.potentialAction); // `actions` (_all_ of them including moderated ones) not `completedActions`
+  const hasRequested = checkIfHasRequested(user, preprint.potentialAction); // `actions` (_all_ of them including moderated ones) not `completedActions`
 
-  const { hasData, hasCode, subjects } = getTags(preprint.potentialAction);
+  const { hasData, hasCode, subjects } = getTags(completedActions);
 
   const {
     nRequests,
@@ -58,7 +63,7 @@ export default function PreprintCard({
     onStartAnim,
     onStopAnim,
     dateFirstActivity
-  } = useAnimatedScore(preprint.potentialAction);
+  } = useAnimatedScore(completedActions);
 
   return (
     <Fragment>
@@ -210,47 +215,6 @@ export default function PreprintCard({
                   </div>
                 </div>
               </button>
-              {/* <div className="preprint-card__count-badge">{reviews.length}</div>
-                  <div className="preprint-card__count-label">
-                  Review{reviews.length > 1 ? 's' : ''}
-                  </div>
-                  <div className="preprint-card__count-plus">+</div>
-                  <div className="preprint-card__count-badge">
-                  {requests.length}
-                  </div>
-                  <div className="preprint-card__count-label">
-                  Request{requests.length > 1 ? 's' : ''}
-                  </div>
-
-                  <Tooltip
-                  label={
-                  hasReviewed && hasRequested
-                  ? 'You already reviewed and requested reviews for this preprint'
-                  : !hasReviewed && hasRequested
-                  ? 'Add your review'
-                  : hasReviewed && !hasRequested
-                  ? 'Add your request for review'
-                  : 'Add your review or request for review'
-                  }
-                  >
-                  <div className="preprint-card__add-button-container">
-                  <IconButton
-                  className="preprint-card__add-button"
-                  disabled={hasReviewed && hasRequested}
-                  onClick={() => {
-                  if (!hasReviewed && !hasRequested) {
-                  onNew(preprint);
-                  } else if (!hasReviewed && hasRequested) {
-                  onNewReview(preprint);
-                  } else if (hasReviewed && !hasRequested) {
-                  onNewRequest(preprint);
-                  }
-                  }}
-                  >
-                  <AddPrereviewIcon />
-                  </IconButton>
-                  </div>
-                  </Tooltip> */}
             </div>
             <div className="preprint-card__expansion-header__right">
               <span className="preprint-card__days-ago">

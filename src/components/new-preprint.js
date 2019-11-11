@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import identifiersArxiv from 'identifiers-arxiv';
 import doiRegex from 'doi-regex';
 import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
-import { getId, unprefix, cleanup } from '../utils/jsonld';
+import { unprefix, cleanup } from '../utils/jsonld';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
 import { useLocalState } from '../hooks/ui-hooks';
 import SubjectEditor from './subject-editor';
@@ -14,7 +14,6 @@ import { getReviewAnswers, checkIfAllAnswered } from '../utils/actions';
 import Controls from './controls';
 import Button from './button';
 import TextInput from './text-input';
-import { getDefaultRole } from '../utils/users';
 import PreprintPreview from './preprint-preview';
 
 export default function NewPreprint({ onCancel, onSuccess, onViewInContext }) {
@@ -223,13 +222,13 @@ function StepReview({
   const [post, postData] = usePostAction();
   const [subjects, setSubjects] = useLocalState(
     'subjects',
-    getId(getDefaultRole(user)),
+    user.defaultRole,
     createPreprintId(preprint),
     []
   );
   const [answerMap, setAnswerMap] = useLocalState(
     'answerMap',
-    getId(getDefaultRole(user)),
+    user.defaultRole,
     createPreprintId(preprint),
     {}
   );
@@ -302,7 +301,7 @@ function StepReview({
                 {
                   '@type': 'RapidPREreviewAction',
                   actionStatus: 'CompletedActionStatus',
-                  agent: getId(getDefaultRole(user)),
+                  agent: user.defaultRole,
                   object: createPreprintIdentifierCurie(preprint),
                   resultReview: cleanup(
                     {
@@ -376,7 +375,7 @@ function StepRequest({
               {
                 '@type': 'RequestForRapidPREreviewAction',
                 actionStatus: 'CompletedActionStatus',
-                agent: getId(getDefaultRole(user)),
+                agent: user.defaultRole,
                 object: createPreprintIdentifierCurie(preprint)
               },
               onSuccess

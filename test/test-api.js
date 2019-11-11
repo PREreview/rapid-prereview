@@ -191,6 +191,23 @@ describe('API', function() {
     });
   });
 
+  it('should search roles', async () => {
+    const qs = {
+      q: '*:*',
+      include_docs: true,
+      counts: JSON.stringify(['@type'])
+    };
+
+    const resp = await fetch(`${baseUrl}/role?${querystring.stringify(qs)}`);
+    const body = await resp.json();
+
+    // console.log(require('util').inspect(body, { depth: null }));
+
+    assert.deepEqual(body.counts, {
+      '@type': { AnonymousReviewerRole: 1, PublicReviewerRole: 1 }
+    });
+  });
+
   it('should get metadata about an identifier', async () => {
     const resp = await fetch(
       `${baseUrl}/resolve?identifier=${encodeURIComponent(crossrefDoi)}`

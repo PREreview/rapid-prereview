@@ -5,7 +5,7 @@ import uniq from 'lodash/uniq';
 import classNames from 'classnames';
 import { MenuLink } from '@reach/menu-button';
 import { useUser } from '../contexts/user-context';
-import { usePreprintActions, usePostAction } from '../hooks/api-hooks';
+import { usePreprintActions, usePostAction, useRole } from '../hooks/api-hooks';
 import Controls from './controls';
 import Button from './button';
 import RapidFormFragment from './rapid-form-fragment';
@@ -19,12 +19,12 @@ import { getId, cleanup, unprefix } from '../utils/jsonld';
 import { useLocalState } from '../hooks/ui-hooks';
 import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
-import { getDefaultRole } from '../utils/users';
 import UserBadge from './user-badge';
 import SubjectEditor from './subject-editor';
 import ReviewReader from './review-reader';
 import PreprintPreview from './preprint-preview';
 import XLink from './xlink';
+import ModerationModal from './moderation-modal';
 
 export default function ShellContent({
   preprint,
@@ -37,14 +37,18 @@ export default function ShellContent({
     preprint.doi || preprint.arXivId
   );
 
+  const completedActions = actions.filter(
+    action => action.actionStatus === 'CompletedActionStatus'
+  );
+
   const [post, postProgress] = usePostAction();
 
   const [tab, setTab] = useState(defaultTab);
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  const hasReviewed = checkIfHasReviewed(user, actions);
-  const hasRequested = checkIfHasRequested(user, actions);
+  const hasReviewed = checkIfHasReviewed(user, actions); // `actions` (_all_ of them including moderated ones) not `completedActions`
+  const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `completedActions`
 
   return (
     <div className="shell-content">
@@ -140,8 +144,9 @@ export default function ShellContent({
       <div className="shell-content__body">
         {tab === 'read' ? (
           <ShellContentRead
+            user={user}
             preprint={preprint}
-            actions={actions}
+            actions={completedActions}
             fetchActionsProgress={fetchActionsProgress}
           />
         ) : tab === 'request' ? (
@@ -204,12 +209,15 @@ ShellContent.propTypes = {
   defaultTab: PropTypes.oneOf(['read', 'review', 'request'])
 };
 
-function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
+function ShellContentRead({ user, preprint, actions, fetchActionsProgress }) {
   // Note: !! this needs to work both in the webApp where it is URL driven and in
   // the extension where it is shell driven
 
   const location = useLocation();
   const history = useHistory();
+  const [moderation, setModeration] = useState(null);
+  const [post, postProgress, resetPostState] = usePostAction();
+  const [role, fetchRoleProgress] = useRole(user && user.defaultRole);
 
   // sanitize qs
   useEffect(() => {
@@ -266,6 +274,12 @@ function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
 
       {!fetchActionsProgress.isActive && (
         <ReviewReader
+          isModerationInProgress={postProgress.isActive}
+          canModerate={role && role.isModerator}
+          onModerate={(type, object) => {
+            resetPostState();
+            setModeration({ type, object });
+          }}
           onHighlighedRoleIdsChange={roleIds => {
             if (process.env.IS_EXTENSION) {
               setExtensionRoleIds(roleIds);
@@ -296,10 +310,38 @@ function ShellContentRead({ preprint, actions, fetchActionsProgress }) {
           }, 0)}
         />
       )}
+
+      {!!moderation && (
+        <ModerationModal
+          title={`Moderate ${moderation.type}`}
+          moderationProgress={postProgress}
+          onSubmit={moderationReason => {
+            post(
+              cleanup({
+                '@type':
+                  moderation.type === 'role'
+                    ? 'ModerateRoleAction'
+                    : 'ModerateRapidPREReviewAction',
+                agent: user.defaultRole,
+                actionStatus: 'CompletedActionStatus',
+                object: moderation.object,
+                moderationReason
+              }),
+              () => {
+                setModeration(null);
+              }
+            );
+          }}
+          onCancel={() => {
+            setModeration(null);
+          }}
+        />
+      )}
     </div>
   );
 }
 ShellContentRead.propTypes = {
+  user: PropTypes.object,
   preprint: PropTypes.object.isRequired,
   actions: PropTypes.array.isRequired,
   fetchActionsProgress: PropTypes.object.isRequired
@@ -315,13 +357,13 @@ function ShellContentReview({
 }) {
   const [subjects, setSubjects] = useLocalState(
     'subjects',
-    getId(getDefaultRole(user)),
+    user.defaultRole,
     createPreprintId(preprint),
     []
   );
   const [answerMap, setAnswerMap] = useLocalState(
     'answerMap',
-    getId(getDefaultRole(user)),
+    user.defaultRole,
     createPreprintId(preprint),
     {}
   );
@@ -375,7 +417,7 @@ function ShellContentReview({
               onSubmit({
                 '@type': 'RapidPREreviewAction',
                 actionStatus: 'CompletedActionStatus',
-                agent: getId(getDefaultRole(user)),
+                agent: getId(user.defaultRole),
                 object: createPreprintIdentifierCurie(preprint),
                 resultReview: cleanup(
                   {
@@ -428,7 +470,7 @@ function ShellContentRequest({
             onSubmit({
               '@type': 'RequestForRapidPREreviewAction',
               actionStatus: 'CompletedActionStatus',
-              agent: getId(getDefaultRole(user)),
+              agent: user.defaultRole,
               object: createPreprintIdentifierCurie(preprint)
             });
           }}

@@ -1,12 +1,15 @@
 import Cloudant from '@cloudant/cloudant';
 import uniqBy from 'lodash/uniqBy';
-import omit from 'lodash/omit';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
 import handleUpdateRoleAction from './handle-update-role-action';
 import handleUpdateUserAction from './handle-update-user-action';
 import handleRequestForRapidPrereviewAction from './handle-request-for-rapid-prereview-action';
+import handleGrantModeratorRoleAction from './handle-grant-moderator-role-action';
+import handleRevokeModeratorRoleAction from './handle-revoke-moderator-role-action';
+import handleModerateRoleAction from './handle-moderate-role-action';
+import handleModerateRapidPrereviewAction from './handle-moderate-rapid-prereview-action';
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
 import ddocIndex from '../ddocs/ddoc-index';
@@ -14,7 +17,6 @@ import { getId, unprefix, nodeify, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import { INDEXED_PREPRINT_PROPS, QUESTIONS } from '../constants';
 import { getScore, SCORE_THRESHOLD } from '../utils/score';
-import { getDefaultRole } from '../utils/users';
 import striptags from '../utils/striptags';
 import { dehydrateAction } from '../utils/preprints';
 
@@ -194,65 +196,57 @@ export default class DB {
   }
 
   async secure() {
-    // TODO see https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-authorization
-    // and set_security method
-    // we make the docs DB public for read
+    //  see https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-authorization
+    const results = {};
+
+    results.docs = await this.docs.set_security({
+      nobody: [] // TODO? '_reader', '_replicator'
+    });
+    results.index = await this.index.set_security({
+      nobody: []
+    });
+    results.users = await this.users.set_security({
+      nobody: []
+    });
+
+    return results;
   }
 
-  async get(id, { user = null, acl = true } = {}) {
-    if (acl == null) {
-      acl = true;
-    }
+  async getSecurity() {
+    //  see https://cloud.ibm.com/docs/services/Cloudant?topic=cloudant-authorization
+    const results = {};
 
+    results.docs = await this.docs.get_security();
+    results.index = await this.index.get_security();
+    results.users = await this.users.get_security();
+
+    return results;
+  }
+
+  async get(
+    id,
+    {
+      user = null,
+      raw = false // setting raw to `true` is the only way to get the role associated with a user
+    } = {}
+  ) {
     const [prefix] = id.split(':');
 
-    // TODO `question:`
     switch (prefix) {
       case 'user': {
         const doc = await this.users.get(id);
-        if (acl) {
+        if (!raw) {
           delete doc.token;
+          // To be sure not to leak identity we do not return the roles
+          delete doc.defaultRole;
+          delete doc.hasRole;
         }
-
-        if (getId(user) === getId(doc)) {
-          return doc;
-        } else {
-          // we need to remove the anonymous roles
-          const defaultRole = getDefaultRole(doc);
-          return cleanup(
-            Object.assign({}, doc, {
-              // be sure not to leak identity of of the default Role if it is Anon
-              defaultRole:
-                defaultRole && defaultRole['@type'] === 'PublicReviewerRole'
-                  ? doc.defaultRole
-                  : undefined,
-              hasRole: arrayify(doc.hasRole).filter(
-                role => role['@type'] !== 'AnonymousReviewerRole'
-              )
-            }),
-            { removeEmptyArray: true }
-          );
-        }
+        return doc;
       }
 
       case 'role': {
-        const embedder = await this.getUserByRoleId(id);
-        const role = arrayify(embedder.hasRole).find(
-          role => getId(role) === id
-        );
-
-        return role['@type'] === 'PublicReviewerRole'
-          ? Object.assign({}, role, {
-              isRoleOf: cleanup(
-                Object.assign({}, omit(embedder, ['token']), {
-                  hasRole: arrayify(embedder.hasRole).filter(
-                    role => role['@type'] !== 'AnonymousReviewerRole'
-                  )
-                }),
-                { removeEmptyArray: true }
-              )
-            })
-          : role;
+        const doc = await this.docs.get(id);
+        return doc;
       }
 
       case 'review':
@@ -364,6 +358,20 @@ export default class DB {
     return body.rows && body.rows[0] ? body.rows[0].key[0] : 1;
   }
 
+  async getRoles(roleIds) {
+    const body = await this.docs.list({
+      keys: roleIds,
+      include_docs: true,
+      reduce: false
+    });
+
+    if (!body.rows || !body.rows.length) {
+      throw createError(404);
+    }
+
+    return body.rows.map(row => row.doc);
+  }
+
   // search
   async searchPreprints(params, { user = null } = {}) {
     const results = await this.index.search('ddoc-index', 'preprints', params);
@@ -385,10 +393,15 @@ export default class DB {
     return this.docs.searchAsStream('ddoc-docs', 'actions', params);
   }
 
-  async searchReviews(params, { user = null } = {}) {}
-  async searchRequests(params, { user = null } = {}) {}
-  async searchUsers(params, { user = null } = {}) {}
-  async searchRoles(params, { user = null } = {}) {}
+  async searchRoles(params, { user = null } = {}) {
+    const results = await this.docs.search('ddoc-docs', 'roles', params);
+
+    return results;
+  }
+
+  streamRoles(params, { user = null } = {}) {
+    return this.docs.searchAsStream('ddoc-docs', 'roles', params);
+  }
 
   async syncIndex(
     action,
@@ -546,7 +559,7 @@ export default class DB {
 
   async post(
     action = {},
-    { user = null, strict = true, now = new Date().toISOString() } = {}
+    { user = null, strict = true, now = new Date().toISOString(), isAdmin } = {}
   ) {
     if (!action['@type']) {
       throw createError(400, 'action must have a @type');
@@ -554,11 +567,11 @@ export default class DB {
 
     switch (action['@type']) {
       case 'RegisterAction':
-        return handleRegisterAction.call(this, action, { strict, now });
-
-      case 'CreateRoleAction':
-        // TODO
-        break;
+        return handleRegisterAction.call(this, action, {
+          strict,
+          now,
+          isAdmin
+        });
 
       case 'UpdateUserAction':
         return handleUpdateUserAction.call(this, action, {
@@ -569,6 +582,34 @@ export default class DB {
 
       case 'UpdateRoleAction':
         return handleUpdateRoleAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'GrantModeratorRoleAction':
+        return handleGrantModeratorRoleAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'RevokeModeratorRoleAction':
+        return handleRevokeModeratorRoleAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'ModerateRoleAction':
+        return handleModerateRoleAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'ModerateRapidPREReviewAction':
+        return handleModerateRapidPrereviewAction.call(this, action, {
           strict,
           user,
           now

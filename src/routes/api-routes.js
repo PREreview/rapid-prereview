@@ -79,13 +79,6 @@ router.get(
 );
 
 /**
- * Search for reviews
- */
-router.get('/review', parseQuery, (req, res, next) => {
-  next(createError(500, 'Not implemented yet'));
-});
-
-/**
  * Get a review
  */
 router.get(
@@ -101,13 +94,6 @@ router.get(
     }
   }
 );
-
-/**
- * Search for requests
- */
-router.get('/request', parseQuery, (req, res, next) => {
-  next(createError(500, 'Not implemented yet'));
-});
 
 /**
  * Get a request
@@ -127,13 +113,6 @@ router.get(
 );
 
 /**
- * Search for users
- */
-router.get('/user', parseQuery, (req, res, next) => {
-  next(createError(500, 'Not implemented yet'));
-});
-
-/**
  * Get a (public) user (without the anonymous roles)
  */
 router.get(
@@ -141,7 +120,7 @@ router.get(
   cache(req => `user:${req.params.userId}`),
   async (req, res, next) => {
     try {
-      const body = await req.db.get(`user:${req.params.userId}`); // Note: we don't pass the logged in user so that `body` is always safe and without the anonymout roles
+      const body = await req.db.get(`user:${req.params.userId}`);
       req.cache(body);
       res.json(body);
     } catch (err) {
@@ -149,13 +128,6 @@ router.get(
     }
   }
 );
-
-/**
- * Search for roles
- */
-router.get('/role', cors(), parseQuery, (req, res, next) => {
-  next(createError(500, 'Not implemented yet'));
-});
 
 /**
  * Get a role
@@ -172,6 +144,52 @@ router.get(
     } catch (err) {
       next(err);
     }
+  }
+);
+
+/**
+ * Search for roles
+ */
+router.get(
+  '/role',
+  cors(),
+  parseQuery,
+  cache(req => req.query.key),
+  (req, res, next) => {
+    res.setHeader('content-type', 'application/json');
+
+    let hasErrored = false;
+
+    const s = req.db.streamRoles(omit(req.query, ['key']));
+
+    let statusCode;
+
+    s.on('response', response => {
+      statusCode = response.statusCode;
+      res.status(statusCode);
+    });
+    s.on('error', err => {
+      if (!hasErrored) {
+        hasErrored = true;
+        next(err);
+      }
+
+      try {
+        s.destroy();
+      } catch (err) {
+        // noop
+      }
+    });
+
+    s.pipe(
+      concatStream(buffer => {
+        if (statusCode === 200) {
+          req.cache(JSON.parse(buffer));
+        }
+      })
+    );
+
+    s.pipe(res);
   }
 );
 
@@ -329,7 +347,7 @@ router.get(
     switch (req.query.key) {
       case 'demo:get-review': {
         try {
-          const body = await req.db.docs.view('ddoc-docs', 'actionsByType', {
+          const body = await req.db.docs.view('ddoc-docs', 'byType', {
             key: 'RapidPREreviewAction',
             include_docs: true,
             limit: 1,
@@ -351,7 +369,7 @@ router.get(
 
       case 'demo:get-request': {
         try {
-          const body = await req.db.docs.view('ddoc-docs', 'actionsByType', {
+          const body = await req.db.docs.view('ddoc-docs', 'byType', {
             key: 'RequestForRapidPREreviewAction',
             include_docs: true,
             limit: 1,
@@ -396,18 +414,19 @@ router.get(
 
       case 'demo:get-role': {
         try {
-          const body = await req.db.users.view('ddoc-users', 'usersByRoleId', {
-            include_docs: false,
+          const body = await req.db.docs.view('ddoc-docs', 'byType', {
+            key: 'PublicReviewerRole',
+            include_docs: true,
             limit: 1,
             reduce: false
           });
+
           const row = body.rows[0];
           if (!row) {
             return next(createError(404));
           }
-          const roleId = row.key;
 
-          const payload = await req.db.get(roleId);
+          const payload = row.doc;
           req.cache(payload);
           res.json(payload);
         } catch (err) {
@@ -419,6 +438,21 @@ router.get(
       case 'demo:search-action': {
         try {
           const payload = await req.db.searchActions({
+            limit: 2,
+            include_docs: true,
+            q: '*:*'
+          });
+          req.cache(payload);
+          res.json(payload);
+        } catch (err) {
+          return next(err);
+        }
+        break;
+      }
+
+      case 'demo:search-role': {
+        try {
+          const payload = await req.db.searchRoles({
             limit: 2,
             include_docs: true,
             q: '*:*'

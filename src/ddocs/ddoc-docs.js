@@ -19,9 +19,11 @@ const ddoc = {
       reduce: '_count'
     },
 
-    actionsByType: {
+    byType: {
       map: function(doc) {
         if (
+          doc['@type'] === 'AnonymousReviewerRole' ||
+          doc['@type'] === 'PublicReviewerRole' ||
           doc['@type'] === 'RapidPREreviewAction' ||
           doc['@type'] === 'RequestForRapidPREreviewAction'
         ) {
@@ -41,13 +43,13 @@ const ddoc = {
           agentId: 'keyword'
         }
       },
-      // This is used to display the activity feed of the profile page
       index: function(doc) {
         if (
           doc['@type'] === 'RapidPREreviewAction' ||
           doc['@type'] === 'RequestForRapidPREreviewAction'
         ) {
           index('@type', doc['@type'], { facet: true });
+          index('actionStatus', doc.actionStatus, { facet: true });
 
           var agentId = doc.agent['@id'] || doc.agent;
           if (typeof agentId === 'string') {
@@ -63,6 +65,40 @@ const ddoc = {
             ? new Date(doc.startTime).getTime()
             : new Date('0000').getTime();
           index('startTime', startTime, { facet: true });
+        }
+      }
+    },
+
+    roles: {
+      analyzer: {
+        name: 'perfield',
+        default: 'english',
+        fields: {
+          '@type': 'keyword',
+          '@id': 'keyword',
+          isRoleOf: 'keyword'
+        }
+      },
+      index: function(doc) {
+        if (
+          doc['@type'] === 'PublicReviewerRole' ||
+          doc['@type'] === 'AnonymousReviewerRole'
+        ) {
+          index('@id', doc['@id']);
+          index('@type', doc['@type'], { facet: true });
+
+          if (doc.name) {
+            index('name', doc.name);
+          }
+
+          if (doc.isRoleOf) {
+            index('isRoleOfId', doc.isRoleOf);
+          }
+
+          var startDate = doc.startDate
+            ? new Date(doc.startDate).getTime()
+            : new Date('0000').getTime();
+          index('startDate', startDate, { facet: true });
         }
       }
     }

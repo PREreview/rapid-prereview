@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import noop from 'lodash/noop';
 import { createError } from '../utils/errors';
 import { unprefix, getId, arrayify } from '../utils/jsonld';
@@ -36,75 +36,87 @@ export function usePostAction() {
     body: null
   });
 
-  const { preprintsWithActionsStore, roleStore } = useStores();
+  const {
+    preprintsWithActionsStore,
+    preprintsSearchResultsStore,
+    roleStore
+  } = useStores();
 
   // Note: `onSuccess` and `onError` are only called if the component is still
   // mounted
-  function post(action, onSuccess = noop, onError = noop) {
-    if (isMounted.current) {
-      setState({
-        isActive: true,
-        error: null,
-        body: action
-      });
-    }
-
-    const controller = new AbortController();
-    if (controllerRef.current) {
-      controllerRef.current.abort();
-    }
-    controllerRef.current = controller;
-
-    fetch(`${process.env.API_URL}/api/action`, {
-      signal: controller.signal,
-      method: 'POST',
-      body: JSON.stringify(action),
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
+  const post = useCallback(
+    function post(action, onSuccess = noop, onError = noop) {
+      if (isMounted.current) {
+        setState({
+          isActive: true,
+          error: null,
+          body: action
+        });
       }
-    })
-      .then(resp => {
-        if (resp.ok) {
-          return resp.json();
-        } else {
-          return resp.json().then(
-            body => {
-              throw createError(resp.status, body.description || body.name);
-            },
-            err => {
-              throw createError(resp.status, 'something went wrong');
-            }
-          );
+
+      const controller = new AbortController();
+      if (controllerRef.current) {
+        controllerRef.current.abort();
+      }
+      controllerRef.current = controller;
+
+      fetch(`${process.env.API_URL}/api/action`, {
+        signal: controller.signal,
+        method: 'POST',
+        body: JSON.stringify(action),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
         }
       })
-      .then(body => {
-        preprintsWithActionsStore.upsertAction(body);
-        roleStore.setFromAction(body);
+        .then(resp => {
+          if (resp.ok) {
+            return resp.json();
+          } else {
+            return resp.json().then(
+              body => {
+                throw createError(resp.status, body.description || body.name);
+              },
+              err => {
+                throw createError(resp.status, 'something went wrong');
+              }
+            );
+          }
+        })
+        .then(body => {
+          preprintsWithActionsStore.upsertAction(body);
+          roleStore.setFromAction(body);
 
-        if (
-          body['@type'] === 'CreateRoleAction' ||
-          body['@type'] === 'UpdateRoleAction' ||
-          body['@type'] === 'UpdateUserAction' ||
-          body['@type'] === 'DeanonymizeRoleAction'
-        ) {
-          setUser(body.result);
-        }
+          if (body['@type'] === 'UpdateUserAction') {
+            setUser(body.result);
+          } else if (body['@type'] === 'ModerateRapidPREReviewAction') {
+            preprintsSearchResultsStore.reset();
+          }
 
-        if (isMounted.current) {
-          setState({ isActive: false, error: null, body });
-          onSuccess(body);
-        }
-      })
-      .catch(error => {
-        if (error.name !== 'AbortError' && isMounted.current) {
-          setState({ isActive: false, error, body: action });
-          onError(error);
-        }
-      });
-  }
+          if (isMounted.current) {
+            setState({ isActive: false, error: null, body });
+            onSuccess(body);
+          }
+        })
+        .catch(error => {
+          if (error.name !== 'AbortError' && isMounted.current) {
+            setState({ isActive: false, error, body: action });
+            onError(error);
+          }
+        });
+    },
+    [preprintsWithActionsStore, preprintsSearchResultsStore, roleStore, setUser]
+  );
 
-  return [post, state];
+  const resetPostState = useCallback(function resetPostState() {
+    setState({
+      isActive: false,
+      error: null,
+      body: null
+    });
+  }, []);
+
+  return [post, state, resetPostState];
 }
 
 /**
@@ -491,6 +503,117 @@ export function useRole(roleId) {
   }, [roleId, roleStore]);
 
   return [role, progress];
+}
+
+/*
+ * Get user roles (all or nothing)
+ */
+export function useUserRoles(user) {
+  const [progress, setProgress] = useState({
+    isActive: false,
+    error: null
+  });
+
+  const { roleStore } = useStores();
+  const [roles, setRoles] = useState(roleStore.getUserRoles(user) || null);
+
+  useEffect(() => {
+    // keep `role` up-to-date
+    function update(role) {
+      if (roles && user.hasRole.some(roleId => roleId === getId(role))) {
+        setRoles(prevRoles => {
+          return prevRoles.map(_role => {
+            return getId(_role) === getId(role) ? role : _role;
+          });
+        });
+      }
+    }
+
+    roleStore.addListener('SET', update);
+
+    return () => {
+      roleStore.removeListener('SET', update);
+    };
+  }, [user, roleStore, roles]);
+
+  useEffect(() => {
+    const cached = roleStore.getUserRoles(user);
+    if (cached) {
+      setProgress({
+        isActive: false,
+        error: null
+      });
+      setRoles(cached);
+    } else {
+      setProgress({
+        isActive: true,
+        error: null
+      });
+      setRoles(null);
+
+      const controllers = [];
+
+      Promise.all(
+        user.hasRole.map(roleId => {
+          if (roleStore.has(roleId)) {
+            return Promise.resolve(roleStore.get(roleId));
+          }
+
+          const controller = new AbortController();
+          controllers.push(controller);
+
+          return fetch(`${process.env.API_URL}/api/role/${unprefix(roleId)}`, {
+            signal: controller.signal
+          })
+            .then(resp => {
+              if (resp.ok) {
+                return resp.json();
+              } else {
+                return resp.json().then(
+                  body => {
+                    throw createError(
+                      resp.status,
+                      body.description || body.name
+                    );
+                  },
+                  err => {
+                    throw createError(resp.status, 'something went wrong');
+                  }
+                );
+              }
+            })
+            .then(data => {
+              roleStore.set(data);
+              return data;
+            })
+            .catch(err => {
+              if (err.name !== 'AbortError') {
+                throw err;
+              }
+            });
+        })
+      )
+        .then(roles => {
+          setProgress({
+            isActive: false,
+            error: null
+          });
+          setRoles(roles);
+        })
+        .catch(err => {
+          setProgress({ isActive: false, error: err });
+          setRoles(null);
+        });
+
+      return () => {
+        controllers.forEach(controller => {
+          controller.abort();
+        });
+      };
+    }
+  }, [user, roleStore]);
+
+  return [roles, progress];
 }
 
 /**

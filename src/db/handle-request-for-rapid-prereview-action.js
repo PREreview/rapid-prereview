@@ -23,6 +23,12 @@ export default async function handleRequestForRapidPrereviewAction(
     throw createError(403, 'Forbidden');
   }
 
+  // Moderation
+  const agent = await this.get(getId(action.agent));
+  if (agent.isModerated) {
+    throw createError(403, 'Forbidden');
+  }
+
   const identifier = getId(action.object);
   const preprintId = createPreprintId(identifier);
 

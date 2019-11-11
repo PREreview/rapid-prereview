@@ -2,13 +2,12 @@ import React, { Fragment, useState } from 'react';
 import PropTypes from 'prop-types';
 import { MdInfoOutline, MdPublic, MdStar, MdStarBorder } from 'react-icons/md';
 import { getId, unprefix, arrayify } from '../utils/jsonld';
-import { getDefaultRole } from '../utils/users';
 import Button from './button';
 import Modal from './modal';
 import RoleEditor from './role-editor';
 import { RoleBadgeUI } from './role-badge';
 import Controls from './controls';
-import { usePostAction } from '../hooks/api-hooks';
+import { usePostAction, useUserRoles } from '../hooks/api-hooks';
 import { useIsFirstTimeOnSettings } from '../hooks/ui-hooks';
 import IncognitoIcon from '../svgs/incognito_icon.svg';
 import XLink from './xlink';
@@ -16,13 +15,19 @@ import XLink from './xlink';
 export default function SettingsRoles({ user }) {
   const isFirstTimeOnSettings = useIsFirstTimeOnSettings();
   const [editedRoleId, setEditedRoleId] = useState(null);
+  const [roles, fetchRolesProgress] = useUserRoles(user);
 
-  const defaultRole = getDefaultRole(user);
+  if (!roles) {
+    if (fetchRolesProgress.error) {
+      console.error(fetchRolesProgress.error);
+    }
+    return null;
+  }
 
-  const allHaveNames = user.hasRole.every(
+  const allHaveNames = roles.every(
     role => role.name && role.name !== unprefix(getId(role))
   );
-  const allHaveAvatars = user.hasRole.every(
+  const allHaveAvatars = roles.every(
     role => role.avatar && role.avatar.contentUrl
   );
 
@@ -39,6 +44,7 @@ export default function SettingsRoles({ user }) {
           </p>
         </div>
       )}
+
       <h3 className="settings__title">Personas</h3>
 
       <p>
@@ -71,6 +77,7 @@ export default function SettingsRoles({ user }) {
         </p>
       )}
 
+      {/* TODO fix markup: make a table with proper header so it's accessible */}
       <ul className="settings__persona-list">
         <li className="settings__persona-list-header">
           <div className="settings__persona-list-header__active">
@@ -85,10 +92,11 @@ export default function SettingsRoles({ user }) {
         <li className="settings__persona-list-divider">
           <hr></hr>
         </li>
-        {arrayify(user.hasRole).map(role => (
+
+        {arrayify(roles).map(role => (
           <li key={getId(role)} className="settings__persona-list-item">
             <div className="settings__persona-list-item__active-state">
-              {getId(role) === getId(defaultRole) ? (
+              {getId(role) === user.defaultRole ? (
                 <span className="settings__persona-list-item__is-active">
                   <MdStar className="settings__persona-active-icon" />
                   <span className="settings__persona-active-label">Active</span>
@@ -153,9 +161,7 @@ export default function SettingsRoles({ user }) {
           <RoleEditor
             key={editedRoleId}
             user={user}
-            role={arrayify(user.hasRole).find(
-              role => getId(role) === editedRoleId
-            )}
+            role={roles.find(role => getId(role) === editedRoleId)}
             onCancel={() => {
               setEditedRoleId(null);
             }}
@@ -190,21 +196,7 @@ SettingsRoles.propTypes = {
         );
       }
     },
-    hasRole: PropTypes.arrayOf(
-      PropTypes.shape({
-        '@id': PropTypes.string.isRequired,
-        '@type': PropTypes.oneOf([
-          'PublicReviewerRole',
-          'AnonymousReviewerRole'
-        ]),
-        name: PropTypes.string,
-        avatar: PropTypes.shape({
-          '@type': PropTypes.oneOf(['ImageObject']),
-          encodingFormat: PropTypes.oneOf(['image/jpeg', 'image/png']),
-          contentUrl: PropTypes.string // base64
-        })
-      })
-    )
+    hasRole: PropTypes.arrayOf(PropTypes.string)
   }).isRequired
 };
 

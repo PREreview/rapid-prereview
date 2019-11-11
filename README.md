@@ -157,9 +157,9 @@ These 2 apps are run on the same service plan (`rapid-prereview-service-plan`).
 
 The databases are hosted on IBM Cloudant (CouchDB) and are composed of 3
 databases:
-- `rapid-prereview-users` storing all the user and role data
-- `rapid-prereview-docs` storing the reviews and requests for reviews
-- `rapid-prereview-index` storing the preprint with reviews or request for
+- `rapid-prereview-docs` (public) storing the roles, reviews and requests for reviews
+- `rapid-prereview-users` (private) storing all the user data (and the links user <-> role)
+- `rapid-prereview-index` (private) storing the preprint with reviews or request for
   reviews search index
 
 We use [Azure Cache for
@@ -168,6 +168,22 @@ Redis](https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/) to store:
 - cached data for the payload of the public API.
 
 #### Process
+
+##### Cloudant
+
+Be aware that all the following will source the production environment variables
+(see the Azure section below for information to get them)
+
+1. Run `npm run cloudant:init` to create the databases and push the design documents
+2. Run `npm run cloudant:set-security` to secure the databases
+3. Run `npm run cloudant:get-security` to verify the [security
+object](https://cloud.ibm.com/docs/services/Cloudant/offerings?topic=cloudant-authorization)
+
+To seed the production database (for demos **only**) run: `npm run cloudant:seed`
+(!! note that this performs a hard reset and delete all data in the databases
+before seeding).
+
+##### Azure
 
 1. Install Azure CLI (see
    https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
@@ -182,11 +198,8 @@ To see the logs, run `./log-app.sh` or `./log-service.sh`. We use
 
 Apps can be restarted with `./restart-app.sh` and `./restart-service.sh`.
 
-To seed the production database run: `npm run seed:prod`. Be aware that this
+To reset the redis cache run: `npm run azure:reset-cache`. Be aware that this
 will source the production environment variables.
 
-To reset the redis cache run: `npm run reset-cache:prod`. Be aware that this
-will source the production environment variables.
-
-To reset all redis data (including sessions) run: `npm run reset-redis:prod`. Be
+To reset all redis data (including sessions) run: `npm run azure:reset-redis`. Be
 aware that this will source the production environment variables.

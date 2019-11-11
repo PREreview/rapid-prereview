@@ -172,10 +172,11 @@ export function getYesNoStats(actions = []) {
 }
 
 export function getTextAnswers(actions = []) {
-  const pairs = actions
+  const answersData = actions
     .filter(action => action['@type'] === 'RapidPREreviewAction')
     .map(action => {
       return {
+        actionId: getId(action),
         roleId: getId(action.agent),
         answerMap: getAnswerMap(action)
       };
@@ -187,8 +188,9 @@ export function getTextAnswers(actions = []) {
     return {
       questionId: `question:${identifier}`,
       question,
-      answers: pairs.map(({ roleId, answerMap }) => {
+      answers: answersData.map(({ actionId, roleId, answerMap }) => {
         return {
+          actionId,
           roleId,
           text: answerMap[identifier]
         };

@@ -5,7 +5,6 @@ import orcidUtils from 'orcid-utils';
 import DB from '../db/db';
 import { getId, cleanup } from './jsonld';
 import { createError } from './errors';
-import { createCacheKey } from '../middlewares/cache';
 
 /**
  * See https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
@@ -52,7 +51,9 @@ export function createPassport(config) {
       })
     };
 
-    db.post(action)
+    db.post(action, {
+      isAdmin: process.env.NODE_ENV !== 'production' && params.isAdmin
+    })
       .then(action => {
         done(null, action.result);
       })
@@ -72,7 +73,8 @@ export function createPassport(config) {
       const refreshToken = 'refreshToken';
       const params = {
         orcid: createRandomOrcid(),
-        name: 'Test User'
+        name: 'Test User',
+        isAdmin: true // in dev mode we create admin users
       };
       const profile = {};
 
@@ -118,7 +120,7 @@ export function createPassport(config) {
   });
 
   passport.deserializeUser(function(userId, done) {
-    db.get(userId, { user: userId })
+    db.get(userId, { user: userId, raw: true })
       .then(user => done(null, user))
       .catch(err => {
         done(

@@ -76,6 +76,10 @@ export class PreprintsWithActionsStore extends EventEmitter {
   }
 
   upsertAction(action) {
+    if (action['@type'] === 'ModerateRapidPREReviewAction') {
+      action = action.result;
+    }
+
     if (
       (action['@type'] === 'RapidPREreviewAction' ||
         action['@type'] === 'RequestForRapidPREreviewAction') &&
@@ -113,5 +117,9 @@ export class PreprintsSearchResultsStore extends EventEmitter {
   set(search, payload) {
     this.emit('SET', search, payload);
     this.cache.set(search, payload);
+  }
+
+  reset() {
+    this.cache.reset();
   }
 }

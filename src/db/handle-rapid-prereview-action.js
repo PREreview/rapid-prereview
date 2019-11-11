@@ -23,8 +23,14 @@ export default async function handleRapidPrereviewAction(
     throw createError(403, 'Forbidden');
   }
 
-  // TODO validate that all questions are answered and that there are no more
-  // questions
+  // Moderation
+  const agent = await this.get(getId(action.agent));
+  if (agent.isModerated) {
+    throw createError(403, 'Forbidden');
+  }
+
+  // TODO validate that all required questions are answered and that there are
+  // no added questions that the one expected
 
   const identifier = getId(action.object);
   const preprintId = createPreprintId(identifier);

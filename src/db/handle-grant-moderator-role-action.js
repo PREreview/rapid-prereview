@@ -1,9 +1,9 @@
 import Ajv from 'ajv';
-import schema from '../schemas/deanonymize-role-action';
-import { getId, arrayify } from '../utils/jsonld';
+import schema from '../schemas/grant-moderator-role-action';
+import { getId } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 
-export default async function deanonymizeRoleAction(
+export default async function handleGrantModeratorRoleAction(
   action,
   { strict = true, user = null, now = new Date().toISOString() } = {}
 ) {
@@ -16,19 +16,15 @@ export default async function deanonymizeRoleAction(
   const roleId = getId(action.object);
 
   // acl
-  if (
-    !user ||
-    getId(user) !== getId(action.agent) ||
-    !arrayify(user.hasRole).some(role => getId(role) === roleId)
-  ) {
+  if (!user || !user.isAdmin || getId(user) !== getId(action.agent)) {
     throw createError(403, 'Forbidden');
   }
 
   const role = await this.get(roleId);
 
-  const nextRole = Object.assign({}, role, action.payload, {
-    '@type': 'PublicReviewerRole',
-    isRoleOf: getId(user)
+  const nextRole = Object.assign({}, role, {
+    isModerator: true,
+    modifiedDate: now
   });
 
   const resp = await this.docs.insert(nextRole, getId(nextRole));

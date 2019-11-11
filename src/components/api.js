@@ -47,8 +47,7 @@ export default function API() {
         }
       >
         <p>
-          Get a (public) user by <code>id</code>. Note that anonymous roles are
-          never returned in order to preserve their anonymity.
+          Get a user by <code>id</code>.
         </p>
       </APISection>
 
@@ -76,6 +75,102 @@ export default function API() {
         <p>
           Get a question by <code>id</code>.
         </p>
+      </APISection>
+
+      <APISection
+        id="search-role"
+        title={
+          <Fragment>
+            GET <code>/api/role</code>
+          </Fragment>
+        }
+      >
+        <p>Search roles (personas).</p>
+
+        <p>
+          Queries can be issued using the{' '}
+          <a href="http://lucene.apache.org/core/4_3_0/queryparser/org/apache/lucene/queryparser/classic/package-summary.html#Overview">
+            Lucene Query Parser Syntax
+          </a>{' '}
+          using the <code>q</code> query string parameter. Results are returned
+          by batch controled by the <code>limit</code> querystring parameter.
+          Pagination is handled through a <code>bookmark</code> value that needs
+          to be passed as a query string parameter (<code>bookmark</code>) to
+          get to the next batch.
+        </p>
+
+        <table>
+          <caption>Indexed fields:</caption>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <code>@id</code>
+              </td>
+              <td>The role identifier</td>
+              <td>
+                <CURIE />
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <code>@type</code>
+              </td>
+              <td>The role type</td>
+              <td>
+                One of <code>PublicReviewerRole</code>,{' '}
+                <code>AnonymousReviewerRole</code>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <code>isRoleOfId</code>
+              </td>
+              <td>
+                The user id this role is a persona of. Note that this is only
+                present for <strong>public</strong> roles
+              </td>
+              <td>
+                <CURIE /> (user id) made of the prefix <code>user:</code>{' '}
+                followed by the user{' '}
+                <a
+                  href="https://orcid.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  ORCID
+                </a>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <code>name</code>
+              </td>
+              <td>The display name of the role</td>
+              <td>text</td>
+            </tr>
+
+            <tr>
+              <td>
+                <code>startDate</code>
+              </td>
+              <td>The date and time when the role was created</td>
+              <td>
+                Number of milliseconds since the{' '}
+                <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Epoch</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </APISection>
 
       <APISection
@@ -131,6 +226,17 @@ export default function API() {
               <td>
                 One of <code>RequestForRapidPREreviewAction</code>,{' '}
                 <code>RapidPREreviewAction</code>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <code>actionStatus</code>
+              </td>
+              <td>The action status</td>
+              <td>
+                One of <code>CompletedActionStatus</code>,{' '}
+                <code>ModeratedActionStatus</code>
               </td>
             </tr>
 

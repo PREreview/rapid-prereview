@@ -12,12 +12,23 @@ router.get('/orcid', passport.authenticate('orcid'));
 router.get(
   '/orcid/callback',
   passport.authenticate('orcid'),
-  (req, res, next) => {
+  async (req, res, next) => {
+    let roles;
+    try {
+      roles = await req.db.getRoles(req.user.hasRole);
+    } catch (err) {
+      req.log.error(
+        { err, user: req.user },
+        'ORCID callback: Error getting roles'
+      );
+    }
+
     if (
-      !req.user.hasRole.every(
+      roles &&
+      (!roles.every(
         role => role.name && role.name && role.name !== unprefix(getId(role))
       ) ||
-      !req.user.hasRole.every(role => role.avatar && role.avatar.contentUrl)
+        !roles.every(role => role.avatar && role.avatar.contentUrl))
     ) {
       res.redirect('/settings');
     } else {
