@@ -54,6 +54,7 @@
       height: 100%;
       padding: 0 6px 0 2px;
       transition: all 0.1s;
+      overflow: hidden;
     }
     &:hover {
       & .preprint-card__cta-button__contents {
@@ -302,6 +303,15 @@
     font-weight: 600;
     font-size: 14px;
     color: var(--prereview-red);
+    position: relative;
+
+    &.preprint-card__count-badge--animating {
+      animation-name: flicker;
+      animation-iteration-count: infinite;
+      animation-duration: 0.1s;
+      color: var(--ui-basic-font-color--light);
+      text-shadow: 0 6px 2px lightgrey;
+    }
   }
   & .preprint-card__count-slash,
   & .preprint-card__count-plus {
@@ -355,11 +365,11 @@
   & .preprint-card__view-more {
     display: flex;
 
-    padding: var(--sgrd) var(--sgrd) var(--sgrd) 0 ;
+    padding: var(--sgrd) var(--sgrd) var(--sgrd) 0;
 
     & div {
       margin-left: auto;
-      & .button:nth-child(n+2) {
+      & .button:nth-child(n + 2) {
         margin-left: var(--xsgrd);
       }
     }

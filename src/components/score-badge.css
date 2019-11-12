@@ -9,6 +9,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 10px;
+  overflow: hidden;
 
   font: var(--ui-score-badge-font);
   font-weight: 600;
@@ -45,5 +47,25 @@
 
   & .score-badge__score {
     position: relative;
+  }
+  &.score-badge--animating {
+    & .score-badge__score {
+      animation-name: flicker;
+      animation-iteration-count: infinite;
+      animation-duration: 0.1s;
+      text-shadow: 0 6px 2px rgba(255, 32, 7, 0.509);
+    }
+  }
+}
+
+@keyframes flicker {
+  0% {
+    top: 4px;
+  }
+  99% {
+    top: -4px;
+  }
+  100% {
+    top: 4px;
   }
 }

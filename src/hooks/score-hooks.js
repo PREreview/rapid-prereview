@@ -13,6 +13,8 @@ export function useAnimatedScore(actions, now = new Date().toISOString()) {
 
   const [index, setIndex] = useState(null);
 
+  const [isAnimating, setIsAnimating] = useState(false);
+
   const tmin = new Date(sorted[0].startTime).getTime();
   const tmax = Math.max(
     new Date(now).getTime(),
@@ -59,6 +61,8 @@ export function useAnimatedScore(actions, now = new Date().toISOString()) {
       return () => {
         clearTimeout(timeoutId);
       };
+    } else {
+      setIsAnimating(false);
     }
   }, [index, sorted, tmin, tmax, now, prettify]);
 
@@ -66,12 +70,14 @@ export function useAnimatedScore(actions, now = new Date().toISOString()) {
     function handleStartAnim() {
       if (sorted.length > 1) {
         setIndex(-1);
+        setIsAnimating(true);
       }
     },
     [sorted]
   );
   const handleStopAnim = useCallback(function handleStopAnim() {
     setIndex(null);
+    setIsAnimating(false);
   }, []);
 
   const nRequests =
@@ -112,7 +118,8 @@ export function useAnimatedScore(actions, now = new Date().toISOString()) {
     now: playedTime,
     dateFirstActivity: sorted[0] && sorted[0].startTime,
     onStartAnim: handleStartAnim,
-    onStopAnim: handleStopAnim
+    onStopAnim: handleStopAnim,
+    isAnimating: isAnimating
   };
 }
 

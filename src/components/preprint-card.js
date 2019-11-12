@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
+import classNames from 'classnames';
 import { format, formatDistanceStrict } from 'date-fns';
 import {
   MdTimeline,
@@ -62,7 +63,8 @@ export default function PreprintCard({
     now,
     onStartAnim,
     onStopAnim,
-    dateFirstActivity
+    dateFirstActivity,
+    isAnimating
   } = useAnimatedScore(completedActions);
 
   return (
@@ -184,6 +186,7 @@ export default function PreprintCard({
                   dateFirstActivity={dateFirstActivity}
                   onMouseEnter={onStartAnim}
                   onMouseLeave={onStopAnim}
+                  isAnimating={isAnimating}
                 />
               </div>
               {/*</Tooltip>*/}
@@ -204,12 +207,24 @@ export default function PreprintCard({
                   <div className="preprint-card__cta-button__icon-container">
                     <AddPrereviewIcon className="preprint-card__cta-button__icon" />
                   </div>
-                  <div className="preprint-card__count-badge">{nReviews}</div>
+                  <div
+                    className={classNames('preprint-card__count-badge', {
+                      'preprint-card__count-badge--animating': isAnimating
+                    })}
+                  >
+                    {nReviews}
+                  </div>
                   <div className="preprint-card__count-label">
                     Review{nReviews > 1 ? 's' : ''}
                   </div>
                   <div className="preprint-card__count-divider"></div>
-                  <div className="preprint-card__count-badge">{nRequests}</div>
+                  <div
+                    className={classNames('preprint-card__count-badge', {
+                      'preprint-card__count-badge--animating': isAnimating
+                    })}
+                  >
+                    {nRequests}
+                  </div>
                   <div className="preprint-card__count-label">
                     Request{nRequests > 1 ? 's' : ''}
                   </div>
