@@ -65,7 +65,7 @@ const ScoreBadge = React.forwardRef(function ScoreBadge(
           className="score-badge__clock-svg__inactive-path"
         />
         <path
-          d={svgArc(12, 12, 11, 0, timeScore * 360)}
+          d={svgArc(12, 12, 11, 0, timeScore * 359.9)}
           strokeWidth="2"
           fill="none"
           className="score-badge__clock-svg__active-path"

@@ -1,8 +1,8 @@
-import React, { Fragment, useState, useMemo } from 'react';
+import React, { Fragment, useState, useMemo, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 import classNames from 'classnames';
-import { format, formatDistanceStrict } from 'date-fns';
+import { format, formatDistanceStrict, differenceInHours } from 'date-fns';
 import {
   MdTimeline,
   MdCode,
@@ -207,27 +207,36 @@ export default function PreprintCard({
                   <div className="preprint-card__cta-button__icon-container">
                     <AddPrereviewIcon className="preprint-card__cta-button__icon" />
                   </div>
-                  <div
-                    className={classNames('preprint-card__count-badge', {
-                      'preprint-card__count-badge--animating': isAnimating
-                    })}
-                  >
-                    {nReviews}
+                  <div className="preprint-card__count-badge">
+                    <AnimatedNumber
+                      value={nReviews}
+                      isAnimating={isAnimating}
+                    />
                   </div>
+
                   <div className="preprint-card__count-label">
                     Review{nReviews > 1 ? 's' : ''}
                   </div>
                   <div className="preprint-card__count-divider"></div>
-                  <div
-                    className={classNames('preprint-card__count-badge', {
-                      'preprint-card__count-badge--animating': isAnimating
-                    })}
-                  >
-                    {nRequests}
+                  <div className="preprint-card__count-badge">
+                    <AnimatedNumber
+                      value={nRequests}
+                      isAnimating={isAnimating}
+                    />
                   </div>
                   <div className="preprint-card__count-label">
                     Request{nRequests > 1 ? 's' : ''}
                   </div>
+                  {isAnimating && (
+                    <span className="preprint-card__animation-time">
+                      (
+                      <AnimatedNumber
+                        value={differenceInHours(new Date(), new Date(now))}
+                        isAnimating={isAnimating}
+                      />{' '}
+                      hours ago)
+                    </span>
+                  )}
                 </div>
               </button>
             </div>
@@ -335,3 +344,36 @@ PreprintCard.propTypes = {
   onNewReview: PropTypes.func.isRequired,
   onNew: PropTypes.func.isRequired
 };
+
+export function AnimatedNumber({ value, isAnimating }) {
+  const previousValue = usePrevious(value);
+  return (
+    <span
+      className={classNames('preprint-card__animated-number', {
+        'preprint-card__animated-number--animating':
+          value !== previousValue && isAnimating
+      })}
+    >
+      {value}
+    </span>
+  );
+}
+
+AnimatedNumber.propTypes = {
+  value: PropTypes.number,
+  isAnimating: PropTypes.bool
+};
+
+function usePrevious(value) {
+  // The ref object is a generic container whose current property is mutable ...
+  // ... and can hold any value, similar to an instance property on a class
+  const ref = useRef();
+
+  // Store current value in ref
+  useEffect(() => {
+    ref.current = value;
+  }, [value]); // Only re-run if value changes
+
+  // Return previous value (happens before update in useEffect above)
+  return ref.current;
+}

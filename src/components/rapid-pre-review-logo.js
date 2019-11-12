@@ -18,13 +18,23 @@ export default function RapidPreReviewLogo({
     >
       <XLink to="/" href="/" className="rapid-pre-review-logo__svg-container">
         <PreReviewLogo className="rapid-pre-review-logo__icon-svg" />
-        <div className="rapid-pre-review-logo__outbreak-science">
-          <span className="rapid-pre-review-logo__outbreak-science__outbreak">
-            Outbreak
-          </span>{' '}
-          <span className="rapid-pre-review-logo__outbreak-science__science">
-            Science
-          </span>
+        <div className="rapid-pre-review-logo__type">
+          <div className="rapid-pre-review-logo__outbreak-science">
+            <span className="rapid-pre-review-logo__outbreak-science__outbreak">
+              Outbreak
+            </span>{' '}
+            <span className="rapid-pre-review-logo__outbreak-science__science">
+              Science
+            </span>
+          </div>
+          <div className="rapid-pre-review-logo__rapid-prereview">
+            <span className="rapid-pre-review-logo__outbreak-science__rapid">
+              Rapid
+            </span>{' '}
+            <span className="rapid-pre-review-logo__outbreak-science__prereview">
+              PREreview
+            </span>
+          </div>
         </div>
       </XLink>
     </div>

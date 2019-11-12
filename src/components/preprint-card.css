@@ -305,14 +305,24 @@
     color: var(--prereview-red);
     position: relative;
 
-    &.preprint-card__count-badge--animating {
+    /* &.preprint-card__count-badge--animating {
       animation-name: flicker;
       animation-iteration-count: infinite;
       animation-duration: 0.1s;
       color: var(--ui-basic-font-color--light);
       text-shadow: 0 6px 2px lightgrey;
-    }
+    } */
   }
+
+  & .preprint-card__animated-number--animating {
+    animation-name: flicker;
+    animation-iteration-count: infinite;
+    animation-duration: 0.1s;
+    color: var(--ui-basic-font-color--light);
+    text-shadow: 0 5px 1px lightgrey;
+    position: relative;
+  }
+
   & .preprint-card__count-slash,
   & .preprint-card__count-plus {
     color: var(--ui-basic-font-color--light);
@@ -322,6 +332,10 @@
   }
   & .preprint-card__count-label {
     margin-right: var(--xsgrd);
+    color: var(--ui-basic-font-color--light);
+  }
+
+  & .preprint-card__animation-time {
     color: var(--ui-basic-font-color--light);
   }
 }

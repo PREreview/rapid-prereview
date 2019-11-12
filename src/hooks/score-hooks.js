@@ -34,7 +34,7 @@ export function useAnimatedScore(actions, now = new Date().toISOString()) {
 
   useEffect(() => {
     if (index !== null && index < sorted.length) {
-      const totalAnimTime = Math.min(sorted.length * 100, 500);
+      const totalAnimTime = Math.min(sorted.length * 100, 600);
 
       let timeout;
       if (prettify) {

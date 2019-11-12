@@ -1,8 +1,9 @@
 .rapid-pre-review-logo {
   height: var(--xlgrd);
-  max-width: 150px;
+  /* max-width: 150px; */
   & :any-link {
     text-decoration: none !important;
+    color: var(--prereview-black);
   }
 
   & .rapid-pre-review-logo__svg-container {
@@ -17,7 +18,7 @@
 
   & .rapid-pre-review-logo__outbreak-science {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     font-family: 'open sans', 'sans serif';
 
     color: var(--prereview-black);
@@ -36,6 +37,10 @@
     }
   }
 
+  & .rapid-pre-review-logo__rapid-prereview {
+    color: var(--ui-basic-font-color--light);
+  }
+
   &.rapid-pre-review-logo--responsive {
     & .rapid-pre-review-logo__outbreak-science {
       @media (--mobile-portrait) {
@@ -49,6 +54,12 @@
     height: var(--mgrd);
     & .rapid-pre-review-logo__outbreak-science {
       flex-direction: row;
+      font-size: 14px;
+      line-height: 12px;
+    }
+    & .rapid-pre-review-logo__rapid-prereview {
+      font-size: 11.5px;
+      line-height: 13px;
     }
   }
 }
