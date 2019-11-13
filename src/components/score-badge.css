@@ -60,12 +60,12 @@
 
 @keyframes flicker {
   0% {
-    top: 4px;
+    top: 14px;
   }
   99% {
-    top: -4px;
+    top: -14px;
   }
   100% {
-    top: 4px;
+    top: 14px;
   }
 }

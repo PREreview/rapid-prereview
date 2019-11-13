@@ -45,7 +45,7 @@ export default function WelcomeModal(props) {
               Get Started
             </Button>
             <Link className="welcome-modal__get-app" to="/app">
-              Get App
+              Get Browser App
             </Link>
           </div>
         </div>
