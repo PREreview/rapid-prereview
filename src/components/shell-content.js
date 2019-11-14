@@ -13,7 +13,8 @@ import {
   getReviewAnswers,
   checkIfAllAnswered,
   checkIfHasReviewed,
-  checkIfHasRequested
+  checkIfHasRequested,
+  checkIfIsModerated
 } from '../utils/actions';
 import { getId, cleanup, unprefix } from '../utils/jsonld';
 import { useLocalState } from '../hooks/ui-hooks';
@@ -37,9 +38,7 @@ export default function ShellContent({
     preprint.doi || preprint.arXivId
   );
 
-  const completedActions = actions.filter(
-    action => action.actionStatus === 'CompletedActionStatus'
-  );
+  const safeActions = actions.filter(action => !checkIfIsModerated(action));
 
   const [post, postProgress] = usePostAction();
 
@@ -47,8 +46,8 @@ export default function ShellContent({
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  const hasReviewed = checkIfHasReviewed(user, actions); // `actions` (_all_ of them including moderated ones) not `completedActions`
-  const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `completedActions`
+  const hasReviewed = checkIfHasReviewed(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
+  const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
 
   return (
     <div className="shell-content">
@@ -146,7 +145,7 @@ export default function ShellContent({
           <ShellContentRead
             user={user}
             preprint={preprint}
-            actions={completedActions}
+            actions={safeActions}
             fetchActionsProgress={fetchActionsProgress}
           />
         ) : tab === 'request' ? (

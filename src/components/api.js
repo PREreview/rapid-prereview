@@ -236,7 +236,7 @@ export default function API() {
               <td>The action status</td>
               <td>
                 One of <code>CompletedActionStatus</code>,{' '}
-                <code>ModeratedActionStatus</code>
+                <code>FailedAcActionStatus</code>.
               </td>
             </tr>
 

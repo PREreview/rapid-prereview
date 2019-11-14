@@ -137,8 +137,17 @@ ReviewReader.propTypes = {
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       '@type': PropTypes.oneOf(['RapidPREreviewAction']).isRequired,
-      actionStatus: PropTypes.oneOf(['CompletedActionStatus']).isRequired, // all moderated content must be excluded upstream
-      agent: PropTypes.string.isRequired
+      actionStatus: PropTypes.oneOf(['CompletedActionStatus']).isRequired,
+      agent: PropTypes.string.isRequired,
+      moderationAction: PropTypes.arrayOf(
+        PropTypes.shape({
+          '@type': PropTypes.oneOf([
+            // !! `ModerateRapidPREreviewAction` cannot be present reviews with it must be excluded upstream
+            'ReportRapidPREreviewAction',
+            'IgnoreReportRapidPREreviewAction'
+          ]).isRequired
+        })
+      )
     })
   ).isRequired,
   nRequests: PropTypes.number,

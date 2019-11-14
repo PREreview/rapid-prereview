@@ -37,7 +37,6 @@ const schema = {
         'PotentialActionStatus',
         'ActiveActionStatus',
         'CompletedActionStatus',
-        'ModeratedActionStatus',
         'FailedActionStatus'
       ]
     },

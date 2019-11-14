@@ -28,6 +28,7 @@ export default async function handleModerateRapidPrereviewAction(
 
   const review = await this.get(getId(action.object));
 
+  // TODO add `moderator`
   const nextReview = cleanup(
     Object.assign({}, review, {
       actionStatus: 'ModeratedActionStatus',

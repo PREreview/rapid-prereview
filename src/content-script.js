@@ -11,6 +11,7 @@ import {
 import { PreprintsWithActionsStore } from './stores/preprint-stores';
 import { RoleStore } from './stores/user-stores';
 import { arrayify } from './utils/jsonld';
+import { checkIfIsModerated } from './utils/actions';
 
 import './content-script.css';
 
@@ -102,18 +103,18 @@ function start() {
 
           // Keep the popup badge up to date
           preprintsWithActionsStore.on('SET', preprintWithActions => {
-            const actions = arrayify(
+            const safeActions = arrayify(
               preprintWithActions.potentialAction
-            ).filter(action => action.actionStatus === 'CompletedActionStatus');
+            ).filter(action => !checkIfIsModerated(action));
 
-            const nRequests = actions.reduce((count, action) => {
+            const nRequests = safeActions.reduce((count, action) => {
               if (action['@type'] === 'RequestForRapidPREreviewAction') {
                 count++;
               }
               return count;
             }, 0);
 
-            const nReviews = actions.reduce((count, action) => {
+            const nReviews = safeActions.reduce((count, action) => {
               if (action['@type'] === 'RapidPREreviewAction') {
                 count++;
               }

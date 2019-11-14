@@ -73,3 +73,9 @@ export function checkIfHasRequested(
       });
     });
 }
+
+export function checkIfIsModerated(action) {
+  return arrayify(action.moderationAction).some(
+    action => action['@type'] === 'ModerateRapidPREreviewAction'
+  );
+}
