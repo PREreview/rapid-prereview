@@ -1,9 +1,12 @@
 import Ajv from 'ajv';
-import schema from '../schemas/moderate-rapid-prereview-action';
+import schema from '../schemas/ignore-report-rapid-prereview-action';
 import { getId, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 
-export default async function handleModerateRapidPrereviewAction(
+/**
+ * Moderators (and moderators only) can decide to ignore moderation reports
+ */
+export default async function handleIgnoreReportRapidPrereviewAction(
   action,
   { strict = true, user = null, now = new Date().toISOString() } = {}
 ) {

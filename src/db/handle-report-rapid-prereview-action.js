@@ -1,9 +1,12 @@
 import Ajv from 'ajv';
-import schema from '../schemas/moderate-rapid-prereview-action';
+import schema from '../schemas/report-rapid-prereview-action';
 import { getId, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 
-export default async function handleModerateRapidPrereviewAction(
+/**
+ * Any non moderated user can flag reviews as violating the Code of Conduct
+ */
+export default async function handleReportRapidPrereviewAction(
   action,
   { strict = true, user = null, now = new Date().toISOString() } = {}
 ) {
@@ -20,7 +23,7 @@ export default async function handleModerateRapidPrereviewAction(
   ) {
     throw createError(403, 'Forbidden');
   }
-  // if agent is moderated or is not moderator, he/she cannot moderate
+  // if agent is moderated, he/she cannot moderate
   const agent = await this.get(getId(action.agent));
   if (agent.isModerated || !agent.isModerator) {
     throw createError(403, 'Forbidden');

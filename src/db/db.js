@@ -10,6 +10,8 @@ import handleGrantModeratorRoleAction from './handle-grant-moderator-role-action
 import handleRevokeModeratorRoleAction from './handle-revoke-moderator-role-action';
 import handleModerateRoleAction from './handle-moderate-role-action';
 import handleModerateRapidPrereviewAction from './handle-moderate-rapid-prereview-action';
+import handleReportRapidPrereviewAction from './handle-report-rapid-prereview-action';
+import handleIgnoreReportRapidPrereviewAction from './handle-ignore-report-rapid-prereview-action';
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
 import ddocIndex from '../ddocs/ddoc-index';
@@ -519,6 +521,19 @@ export default class DB {
     return Object.assign({}, merged, { _rev: resp[0].rev });
   }
 
+  /**
+   * Add `action` to the `moderationAction` list of the review (`object` of
+   * `action`)
+   */
+  async syncModerationAction(action) {
+    // TODO
+    // dehadrate `action`
+    // append it to list of `moderationAction`
+    // resolve conflict (if any)
+
+    return action;
+  }
+
   async updateScores({ now = new Date().toISOString() } = {}) {
     // get all docs with score > 0
     const body = await this.index.view(
@@ -614,6 +629,23 @@ export default class DB {
           user,
           now
         });
+
+      case 'ReportRapidPREreviewAction':
+        return handleReportRapidPrereviewAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'IgnoreReportRapidPREreviewAction':
+        return handleIgnoreReportRapidPrereviewAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'IgnoreModerateRapidPREreviewAction':
+        throw createError(500, `Not implemented`);
 
       case 'DeanonymizeRoleAction':
         return handleDeanonimyzeRoleAction.call(this, action, {
