@@ -18,7 +18,7 @@ const schema = {
     },
     agent: {
       type: 'string',
-      pattern: '^role:'
+      pattern: '^user:'
     },
     startTime: {
       type: 'string',

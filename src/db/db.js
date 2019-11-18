@@ -72,7 +72,7 @@ export default class DB {
     this.users = cloudant.use(this.usersDbName);
   }
 
-  async init({ reset = false } = {}) {
+  async init({ reset = false, waitFor = 1000 } = {}) {
     async function setup(dbName) {
       if (reset) {
         try {
@@ -105,13 +105,13 @@ export default class DB {
     await new Promise(resolve => {
       setTimeout(() => {
         resolve();
-      }, 1000);
+      }, waitFor);
     });
 
     return res;
   }
 
-  async ddoc() {
+  async ddoc({ waitFor = 1000 } = {}) {
     function toUnnamedString(f) {
       const str = f
         .toString()
@@ -191,7 +191,7 @@ export default class DB {
     await new Promise(resolve => {
       setTimeout(() => {
         resolve();
-      }, 1000);
+      }, waitFor);
     });
 
     return resps;
