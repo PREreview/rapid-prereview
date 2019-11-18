@@ -23,13 +23,24 @@ export default async function handleIgnoreReportRapidPrereviewAction(
   ) {
     throw createError(403, 'Forbidden');
   }
-  // if agent is moderated or is not moderator, he/she cannot moderate
+  // if agent is moderated or is not moderator, he/she cannot ignore
   const agent = await this.get(getId(action.agent));
   if (agent.isModerated || !agent.isModerator) {
     throw createError(403, 'Forbidden');
   }
 
-  const nextReview = await this.syncModerationAction(action);
+  const handledAction = Object.assign(
+    {
+      startTime: now,
+      actionStatus: 'CompletedActionStatus'
+    },
+    action,
+    {
+      endTime: now
+    }
+  );
+
+  const nextReview = await this.syncModerationAction(handledAction);
 
   return Object.assign({}, action, {
     result: nextReview

@@ -555,8 +555,6 @@ export default class DB {
       );
     }
 
-    console.log(docs);
-
     // merge all leaf docs (conflicting)
     // Note that the reviewAction are all identical aside from the
     // `moderationAction` list so we take the first one and just focus on merging
