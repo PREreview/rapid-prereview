@@ -25,11 +25,22 @@ export default async function handleReportRapidPrereviewAction(
   }
   // if agent is moderated, he/she cannot moderate
   const agent = await this.get(getId(action.agent));
-  if (agent.isModerated || !agent.isModerator) {
+  if (agent.isModerated) {
     throw createError(403, 'Forbidden');
   }
 
-  const nextReview = await this.syncModerationAction(action);
+  const handledAction = Object.assign(
+    {
+      startTime: now,
+      actionStatus: 'CompletedActionStatus'
+    },
+    action,
+    {
+      endTime: now
+    }
+  );
+
+  const nextReview = await this.syncModerationAction(handledAction);
 
   return Object.assign({}, action, {
     result: nextReview

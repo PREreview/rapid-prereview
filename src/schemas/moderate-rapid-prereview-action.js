@@ -6,7 +6,7 @@ const schema = {
   properties: {
     '@type': {
       type: 'string',
-      const: 'ModerateRapidPREReviewAction'
+      const: 'ModerateRapidPREreviewAction'
     },
     actionStatus: {
       type: 'string',

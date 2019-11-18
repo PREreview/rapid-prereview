@@ -1,5 +1,8 @@
 import Cloudant from '@cloudant/cloudant';
 import uniqBy from 'lodash/uniqBy';
+import uniqWith from 'lodash/uniqWith';
+import omit from 'lodash/omit';
+import flatten from 'lodash/flatten';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
@@ -526,12 +529,68 @@ export default class DB {
    * `action`)
    */
   async syncModerationAction(action) {
-    // TODO
-    // dehadrate `action`
-    // append it to list of `moderationAction`
-    // resolve conflict (if any)
+    // we resolve conflict (if any)
+    const moderationAction = omit(action, ['object']);
 
-    return action;
+    const reviewActionId = getId(action.object);
+    let body;
+    try {
+      body = await this.docs.get(reviewActionId, { open_revs: 'all' });
+    } catch (err) {
+      if (err.statusCode === 404) {
+        body = [];
+      } else {
+        throw err;
+      }
+    }
+
+    const docs = body
+      .filter(entry => entry.ok && !entry.ok._deleted)
+      .map(entry => entry.ok);
+
+    if (!docs.length) {
+      throw createError(
+        '400',
+        `${action['@type']} could not find object ${getId(action.object)}`
+      );
+    }
+
+    console.log(docs);
+
+    // merge all leaf docs (conflicting)
+    // Note that the reviewAction are all identical aside from the
+    // `moderationAction` list so we take the first one and just focus on merging
+    // `moderationAction`
+    const merged = cleanup(
+      Object.assign({}, docs[0], {
+        moderationAction: uniqWith(
+          flatten(docs.map(doc => arrayify(doc.moderationAction))).concat(
+            moderationAction
+          ),
+          (a, b) => {
+            return (
+              a['@type'] === b['@type'] &&
+              getId(a.agent) === getId(b.agent) &&
+              a.startTime &&
+              b.startTime
+            );
+          }
+        ).sort((a, b) => {
+          return (
+            new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+          );
+        })
+      }),
+      { removeEmptyArray: true }
+    );
+
+    const payload = [merged].concat(
+      docs.slice(1).map(doc => Object.assign({}, doc, { _deleted: true }))
+    );
+
+    const resp = await this.docs.bulk({ docs: payload });
+
+    return Object.assign({}, merged, { _rev: resp[0].rev });
   }
 
   async updateScores({ now = new Date().toISOString() } = {}) {
