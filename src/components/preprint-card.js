@@ -13,7 +13,11 @@ import {
 import Tooltip from '@reach/tooltip';
 import Value from './value';
 import { getTags } from '../utils/stats';
-import { checkIfHasReviewed, checkIfHasRequested } from '../utils/actions';
+import {
+  checkIfHasReviewed,
+  checkIfHasRequested,
+  checkIfIsModerated
+} from '../utils/actions';
 import ScoreBadge from './score-badge';
 import IconButton from './icon-button';
 import TagPill from './tag-pill';
@@ -38,24 +42,24 @@ export default function PreprintCard({
   const reviews = useMemo(() => {
     return preprint.potentialAction.filter(
       action =>
-        action.actionStatus === 'CompletedActionStatus' &&
+        !checkIfIsModerated(action) &&
         action['@type'] === 'RapidPREreviewAction'
     );
   }, [preprint]);
 
-  const completedActions = useMemo(() => {
+  const safeActions = useMemo(() => {
     return preprint.potentialAction.filter(
       action =>
-        action.actionStatus === 'CompletedActionStatus' &&
+        !checkIfIsModerated(action) &&
         (action['@type'] === 'RequestForRapidPREreviewAction' ||
           action['@type'] === 'RapidPREreviewAction')
     );
   }, [preprint]);
 
-  const hasReviewed = checkIfHasReviewed(user, preprint.potentialAction); // `actions` (_all_ of them including moderated ones) not `completedActions`
-  const hasRequested = checkIfHasRequested(user, preprint.potentialAction); // `actions` (_all_ of them including moderated ones) not `completedActions`
+  const hasReviewed = checkIfHasReviewed(user, preprint.potentialAction); // `actions` (_all_ of them including moderated ones) not `safeActions`
+  const hasRequested = checkIfHasRequested(user, preprint.potentialAction); // `actions` (_all_ of them including moderated ones) not `safeActions`
 
-  const { hasData, hasCode, subjects } = getTags(completedActions);
+  const { hasData, hasCode, subjects } = getTags(safeActions);
 
   const {
     nRequests,
@@ -65,7 +69,7 @@ export default function PreprintCard({
     onStopAnim,
     dateFirstActivity,
     isAnimating
-  } = useAnimatedScore(completedActions);
+  } = useAnimatedScore(safeActions);
 
   return (
     <Fragment>
@@ -265,6 +269,7 @@ export default function PreprintCard({
       <Collapse isOpened={isOpened} className="preprint-card__collapse">
         <div className="preprint-card-expansion">
           <ReviewReader
+            user={user}
             identifier={preprint.doi || preprint.arXivId}
             actions={reviews}
             preview={true}

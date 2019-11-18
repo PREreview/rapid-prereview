@@ -1,12 +1,12 @@
 const schema = {
   $id:
-    'https://rapid.prereview.org/schemas/moderate-rapid-prereview-action.json',
+    'https://rapid.prereview.org/schemas/ignore-report-rapid-prereview-action.json',
 
   type: 'object',
   properties: {
     '@type': {
       type: 'string',
-      const: 'ModerateRapidPREreviewAction'
+      const: 'IgnoreReportRapidPREreviewAction'
     },
     actionStatus: {
       type: 'string',

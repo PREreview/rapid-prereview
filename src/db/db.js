@@ -1,5 +1,8 @@
 import Cloudant from '@cloudant/cloudant';
 import uniqBy from 'lodash/uniqBy';
+import uniqWith from 'lodash/uniqWith';
+import omit from 'lodash/omit';
+import flatten from 'lodash/flatten';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
@@ -10,6 +13,8 @@ import handleGrantModeratorRoleAction from './handle-grant-moderator-role-action
 import handleRevokeModeratorRoleAction from './handle-revoke-moderator-role-action';
 import handleModerateRoleAction from './handle-moderate-role-action';
 import handleModerateRapidPrereviewAction from './handle-moderate-rapid-prereview-action';
+import handleReportRapidPrereviewAction from './handle-report-rapid-prereview-action';
+import handleIgnoreReportRapidPrereviewAction from './handle-ignore-report-rapid-prereview-action';
 import ddocDocs from '../ddocs/ddoc-docs';
 import ddocUsers from '../ddocs/ddoc-users';
 import ddocIndex from '../ddocs/ddoc-index';
@@ -70,7 +75,7 @@ export default class DB {
     this.users = cloudant.use(this.usersDbName);
   }
 
-  async init({ reset = false } = {}) {
+  async init({ reset = false, waitFor = 1000 } = {}) {
     async function setup(dbName) {
       if (reset) {
         try {
@@ -103,13 +108,13 @@ export default class DB {
     await new Promise(resolve => {
       setTimeout(() => {
         resolve();
-      }, 1000);
+      }, waitFor);
     });
 
     return res;
   }
 
-  async ddoc() {
+  async ddoc({ waitFor = 1000 } = {}) {
     function toUnnamedString(f) {
       const str = f
         .toString()
@@ -189,7 +194,7 @@ export default class DB {
     await new Promise(resolve => {
       setTimeout(() => {
         resolve();
-      }, 1000);
+      }, waitFor);
     });
 
     return resps;
@@ -456,6 +461,7 @@ export default class DB {
         }
 
         // potential action: we merge all distincts
+        // TODO handle `moderationAction`
         merged.potentialAction = uniqBy(
           arrayify(merged.potentialAction).concat(
             arrayify(doc.potentialAction)
@@ -481,6 +487,7 @@ export default class DB {
         });
       }
 
+      // TODO handle `moderationAction`
       if (
         !merged.potentialAction.some(
           _action => getId(_action) === getId(action)
@@ -515,6 +522,73 @@ export default class DB {
     );
 
     const resp = await this.index.bulk({ docs: payload });
+
+    return Object.assign({}, merged, { _rev: resp[0].rev });
+  }
+
+  /**
+   * Add `action` to the `moderationAction` list of the review (`object` of
+   * `action`)
+   */
+  async syncModerationAction(action) {
+    // we resolve conflict (if any)
+    const moderationAction = omit(action, ['object']);
+
+    const reviewActionId = getId(action.object);
+    let body;
+    try {
+      body = await this.docs.get(reviewActionId, { open_revs: 'all' });
+    } catch (err) {
+      if (err.statusCode === 404) {
+        body = [];
+      } else {
+        throw err;
+      }
+    }
+
+    const docs = body
+      .filter(entry => entry.ok && !entry.ok._deleted)
+      .map(entry => entry.ok);
+
+    if (!docs.length) {
+      throw createError(
+        '400',
+        `${action['@type']} could not find object ${getId(action.object)}`
+      );
+    }
+
+    // merge all leaf docs (conflicting)
+    // Note that the reviewAction are all identical aside from the
+    // `moderationAction` list so we take the first one and just focus on merging
+    // `moderationAction`
+    const merged = cleanup(
+      Object.assign({}, docs[0], {
+        moderationAction: uniqWith(
+          flatten(docs.map(doc => arrayify(doc.moderationAction))).concat(
+            moderationAction
+          ),
+          (a, b) => {
+            return (
+              a['@type'] === b['@type'] &&
+              getId(a.agent) === getId(b.agent) &&
+              a.startTime &&
+              b.startTime
+            );
+          }
+        ).sort((a, b) => {
+          return (
+            new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
+          );
+        })
+      }),
+      { removeEmptyArray: true }
+    );
+
+    const payload = [merged].concat(
+      docs.slice(1).map(doc => Object.assign({}, doc, { _deleted: true }))
+    );
+
+    const resp = await this.docs.bulk({ docs: payload });
 
     return Object.assign({}, merged, { _rev: resp[0].rev });
   }
@@ -608,12 +682,29 @@ export default class DB {
           now
         });
 
-      case 'ModerateRapidPREReviewAction':
+      case 'ModerateRapidPREreviewAction':
         return handleModerateRapidPrereviewAction.call(this, action, {
           strict,
           user,
           now
         });
+
+      case 'ReportRapidPREreviewAction':
+        return handleReportRapidPrereviewAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'IgnoreReportRapidPREreviewAction':
+        return handleIgnoreReportRapidPrereviewAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+
+      case 'IgnoreModerateRapidPREreviewAction':
+        throw createError(500, `Not implemented`);
 
       case 'DeanonymizeRoleAction':
         return handleDeanonimyzeRoleAction.call(this, action, {

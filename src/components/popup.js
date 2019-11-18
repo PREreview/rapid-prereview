@@ -6,7 +6,11 @@ import Button from './button';
 import { useUser } from '../contexts/user-context';
 import { TOGGLE_SHELL_TAB } from '../constants';
 import RapidPreReviewLogo from './rapid-pre-review-logo';
-import { checkIfHasReviewed, checkIfHasRequested } from '../utils/actions';
+import {
+  checkIfHasReviewed,
+  checkIfHasRequested,
+  checkIfIsModerated
+} from '../utils/actions';
 
 export default function Popup({ preprint, dispatch }) {
   const [user] = useUser();
@@ -15,26 +19,24 @@ export default function Popup({ preprint, dispatch }) {
     preprint ? preprint.doi || preprint.arXivId : undefined
   );
 
-  const completedActions = actions.filter(
-    action => action.actionStatus === 'CompletedActionStatus'
-  );
+  const safeActions = actions.filter(action => !checkIfIsModerated(action));
 
-  const nRequests = completedActions.reduce((count, action) => {
+  const nRequests = safeActions.reduce((count, action) => {
     if (action['@type'] === 'RequestForRapidPREreviewAction') {
       count++;
     }
     return count;
   }, 0);
 
-  const nReviews = completedActions.reduce((count, action) => {
+  const nReviews = safeActions.reduce((count, action) => {
     if (action['@type'] === 'RapidPREreviewAction') {
       count++;
     }
     return count;
   }, 0);
 
-  const hasReviewed = checkIfHasReviewed(user, actions); // `actions` (_all_ of them including moderated ones) not `completedActions`
-  const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `completedActions`
+  const hasReviewed = checkIfHasReviewed(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
+  const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
 
   return (
     <div className="popup">

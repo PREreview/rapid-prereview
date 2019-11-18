@@ -13,7 +13,8 @@ import {
   getReviewAnswers,
   checkIfAllAnswered,
   checkIfHasReviewed,
-  checkIfHasRequested
+  checkIfHasRequested,
+  checkIfIsModerated
 } from '../utils/actions';
 import { getId, cleanup, unprefix } from '../utils/jsonld';
 import { useLocalState } from '../hooks/ui-hooks';
@@ -37,9 +38,7 @@ export default function ShellContent({
     preprint.doi || preprint.arXivId
   );
 
-  const completedActions = actions.filter(
-    action => action.actionStatus === 'CompletedActionStatus'
-  );
+  const safeActions = actions.filter(action => !checkIfIsModerated(action));
 
   const [post, postProgress] = usePostAction();
 
@@ -47,8 +46,8 @@ export default function ShellContent({
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  const hasReviewed = checkIfHasReviewed(user, actions); // `actions` (_all_ of them including moderated ones) not `completedActions`
-  const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `completedActions`
+  const hasReviewed = checkIfHasReviewed(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
+  const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
 
   return (
     <div className="shell-content">
@@ -146,7 +145,7 @@ export default function ShellContent({
           <ShellContentRead
             user={user}
             preprint={preprint}
-            actions={completedActions}
+            actions={safeActions}
             fetchActionsProgress={fetchActionsProgress}
           />
         ) : tab === 'request' ? (
@@ -215,7 +214,7 @@ function ShellContentRead({ user, preprint, actions, fetchActionsProgress }) {
 
   const location = useLocation();
   const history = useHistory();
-  const [moderation, setModeration] = useState(null);
+  const [moderatedReviewId, setModeratedReviewId] = useState(null);
   const [post, postProgress, resetPostState] = usePostAction();
   const [role, fetchRoleProgress] = useRole(user && user.defaultRole);
 
@@ -274,11 +273,12 @@ function ShellContentRead({ user, preprint, actions, fetchActionsProgress }) {
 
       {!fetchActionsProgress.isActive && (
         <ReviewReader
+          user={user}
+          role={role}
           isModerationInProgress={postProgress.isActive}
-          canModerate={role && role.isModerator}
-          onModerate={(type, object) => {
+          onModerate={reportedActionId => {
             resetPostState();
-            setModeration({ type, object });
+            setModeratedReviewId(reportedActionId);
           }}
           onHighlighedRoleIdsChange={roleIds => {
             if (process.env.IS_EXTENSION) {
@@ -311,29 +311,26 @@ function ShellContentRead({ user, preprint, actions, fetchActionsProgress }) {
         />
       )}
 
-      {!!moderation && (
+      {!!moderatedReviewId && (
         <ModerationModal
-          title={`Moderate ${moderation.type}`}
+          title={`Report review as violating the Code of Conduct`}
           moderationProgress={postProgress}
           onSubmit={moderationReason => {
             post(
               cleanup({
-                '@type':
-                  moderation.type === 'role'
-                    ? 'ModerateRoleAction'
-                    : 'ModerateRapidPREReviewAction',
+                '@type': 'ReportRapidPREreviewAction',
                 agent: user.defaultRole,
                 actionStatus: 'CompletedActionStatus',
-                object: moderation.object,
+                object: moderatedReviewId,
                 moderationReason
               }),
-              () => {
-                setModeration(null);
+              body => {
+                setModeratedReviewId(null);
               }
             );
           }}
           onCancel={() => {
-            setModeration(null);
+            setModeratedReviewId(null);
           }}
         />
       )}

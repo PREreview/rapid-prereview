@@ -59,11 +59,17 @@ const ddoc = {
       index: function(doc) {
         // @inject(striptags)
 
+        function checkIfIsModerated(action) {
+          return (action.moderationAction || []).some(function(action) {
+            return action['@type'] === 'ModerateRapidPREreviewAction';
+          });
+        }
+
         if (doc['@type'] === 'ScholarlyPreprint') {
           // We only index preprint with non moderated reviews or request for review
           var actions = (doc.potentialAction || []).filter(function(action) {
             return (
-              action.actionStatus === 'CompletedActionStatus' &&
+              !checkIfIsModerated(action) &&
               (action['@type'] === 'RapidPREreviewAction' ||
                 action['@type'] === 'RequestForRapidPREreviewAction')
             );

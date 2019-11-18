@@ -21,7 +21,7 @@ export default function ModerationModal({
           ref={ref}
           id="moderation-reason"
           name="moderationReason"
-          rows="2"
+          rows="4"
         />
 
         <Controls error={moderationProgress.error}>

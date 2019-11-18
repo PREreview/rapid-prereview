@@ -6,12 +6,14 @@ import { MdInfoOutline } from 'react-icons/md';
 import classNames from 'classnames';
 import Barplot from './barplot';
 import { getId } from '../utils/jsonld';
-import { getYesNoStats, getTextAnswers } from '../utils/stats';
+import { getYesNoStats } from '../utils/stats';
 import TextAnswers from './text-answers';
 import { PotentialRoles, HighlightedRoles } from './role-list';
 import ShareMenu from './share-menu';
 
 const ReviewReader = React.memo(function ReviewReader({
+  user,
+  role,
   preview,
   identifier,
   actions,
@@ -19,7 +21,6 @@ const ReviewReader = React.memo(function ReviewReader({
   defaultHighlightedRoleIds,
   onHighlighedRoleIdsChange = noop,
   isModerationInProgress,
-  canModerate,
   onModerate
 }) {
   const [highlightedRoleIds, setHighlightedRoleIds] = useState(
@@ -118,9 +119,10 @@ const ReviewReader = React.memo(function ReviewReader({
 
           {!preview && (
             <TextAnswers
-              answers={getTextAnswers(highlightedActions)}
+              user={user}
+              role={role}
+              actions={highlightedActions}
               isModerationInProgress={isModerationInProgress}
-              canModerate={canModerate}
               onModerate={onModerate}
             />
           )}
@@ -131,19 +133,29 @@ const ReviewReader = React.memo(function ReviewReader({
 });
 
 ReviewReader.propTypes = {
+  user: PropTypes.object,
+  role: PropTypes.object,
   preview: PropTypes.bool,
   identifier: PropTypes.string.isRequired, // DOI or arXivID
   onHighlighedRoleIdsChange: PropTypes.func,
   actions: PropTypes.arrayOf(
     PropTypes.shape({
       '@type': PropTypes.oneOf(['RapidPREreviewAction']).isRequired,
-      actionStatus: PropTypes.oneOf(['CompletedActionStatus']).isRequired, // all moderated content must be excluded upstream
-      agent: PropTypes.string.isRequired
+      actionStatus: PropTypes.oneOf(['CompletedActionStatus']).isRequired,
+      agent: PropTypes.string.isRequired,
+      moderationAction: PropTypes.arrayOf(
+        PropTypes.shape({
+          '@type': PropTypes.oneOf([
+            // !! `ModerateRapidPREreviewAction` cannot be present reviews with it must be excluded upstream
+            'ReportRapidPREreviewAction',
+            'IgnoreReportRapidPREreviewAction'
+          ]).isRequired
+        })
+      )
     })
   ).isRequired,
   nRequests: PropTypes.number,
   defaultHighlightedRoleIds: PropTypes.arrayOf(PropTypes.string),
-  canModerate: PropTypes.bool,
   isModerationInProgress: PropTypes.bool,
   onModerate: PropTypes.func
 };

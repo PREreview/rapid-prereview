@@ -1,24 +1,53 @@
 import React from 'react';
 import faker from 'faker';
+import sample from 'lodash/sample';
+import { BrowserRouter as Router } from 'react-router-dom';
 import TextAnswers from './text-answers';
 import { QUESTIONS } from '../constants';
+import { StoresProvider } from '../contexts/store-context';
+import { RoleStore } from '../stores/user-stores';
 
 export default { title: 'TextAnswers' };
 
+const roleStore = new RoleStore();
+
 export function Random() {
-  const roleIds = ['role:role1', 'role:role2'];
+  const actions = ['role:roleId1', 'role:roleId2', 'role:roleId3'].map(
+    roleId => {
+      return {
+        '@type': 'RapidPREreviewAction',
+        agent: roleId,
+        actionStatus: 'CompletedActionStatus',
+        object: 'doi:doi',
+        resultReview: {
+          '@type': 'RapidPREreview',
+          about: [
+            {
+              '@type': 'OutbreakScienceEntity',
+              name: sample(['Influenza', 'Dengue', 'Zika'])
+            }
+          ],
+          reviewAnswer: QUESTIONS.map(question => {
+            return {
+              '@type':
+                question.type === 'YesNoQuestion' ? 'YesNoAnswer' : 'Answer',
+              parentItem: `question:${question.identifier}`,
+              text:
+                question.type === 'YesNoQuestion'
+                  ? sample(['yes', 'no', 'n.a.', 'unsure'])
+                  : faker.lorem.paragraph()
+            };
+          })
+        }
+      };
+    }
+  );
 
-  const answers = QUESTIONS.filter(({ type }) => {
-    return type === 'Question';
-  }).map(({ question, identifier }) => {
-    return {
-      questionId: `question:${identifier}`,
-      question,
-      answers: roleIds.map(roleId => {
-        return { roleId, text: faker.lorem.paragraph() };
-      })
-    };
-  });
-
-  return <TextAnswers answers={answers} />;
+  return (
+    <Router>
+      <StoresProvider roleStore={roleStore}>
+        <TextAnswers actions={actions} />
+      </StoresProvider>
+    </Router>
+  );
 }

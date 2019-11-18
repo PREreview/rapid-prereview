@@ -1,6 +1,6 @@
 import Ajv from 'ajv';
 import schema from '../schemas/moderate-role-action';
-import { getId, arrayify, cleanup } from '../utils/jsonld';
+import { getId, cleanup } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 
 export default async function handleModerateRoleAction(
@@ -14,15 +14,7 @@ export default async function handleModerateRoleAction(
   }
 
   // acl
-  if (
-    !user ||
-    !arrayify(user.hasRole).some(role => getId(role) === getId(action.agent))
-  ) {
-    throw createError(403, 'Forbidden');
-  }
-  // if agent is moderated or is not moderator, he/she cannot moderate
-  const agent = await this.get(getId(action.agent));
-  if (agent.isModerated || !agent.isModerator) {
+  if (!user || !user.isAdmin || getId(user) !== getId(action.agent)) {
     throw createError(403, 'Forbidden');
   }
 
