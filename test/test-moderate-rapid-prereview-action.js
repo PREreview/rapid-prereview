@@ -9,16 +9,31 @@ import {
   crossrefDoi
 } from './utils/create-preprint-server';
 
-describe('ReportRapidPREreviewAction', function() {
+describe('ModerateRapidPREreviewAction', function() {
   this.timeout(40000);
 
-  let user, reviewAction;
+  let admin, user, reviewAction;
   let server;
   const port = 3333;
   const config = createConfig(port, { logLevel: 'fatal' });
   const db = new DB(config);
 
   before(async () => {
+    const adminAction = await db.post(
+      {
+        '@type': 'RegisterAction',
+        actionStatus: 'CompletedActionStatus',
+        agent: {
+          '@type': 'Person',
+          orcid: createRandomOrcid(),
+          name: 'Peter Jon Smith'
+        }
+      },
+      { isAdmin: true }
+    );
+
+    admin = adminAction.result;
+
     const action = await db.post({
       '@type': 'RegisterAction',
       actionStatus: 'CompletedActionStatus',
@@ -31,6 +46,17 @@ describe('ReportRapidPREreviewAction', function() {
 
     user = action.result;
 
+    // make the user defaultRole moderator
+    const grantAction = await db.post(
+      {
+        '@type': 'GrantModeratorRoleAction',
+        actionStatus: 'CompletedActionStatus',
+        agent: getId(admin),
+        object: user.defaultRole
+      },
+      { user: admin }
+    );
+
     server = createPreprintServer({ logLevel: 'fatal' });
     await new Promise((resolve, reject) => {
       server.listen(port, resolve);
@@ -39,7 +65,7 @@ describe('ReportRapidPREreviewAction', function() {
     reviewAction = await db.post(
       {
         '@type': 'RapidPREreviewAction',
-        agent: getId(user.hasRole[0]),
+        agent: getId(admin.defaultRole),
         actionStatus: 'CompletedActionStatus',
         object: crossrefDoi,
         resultReview: {
@@ -60,15 +86,15 @@ describe('ReportRapidPREreviewAction', function() {
           })
         }
       },
-      { user }
+      { user: admin }
     );
   });
 
-  it('should let anyone not moderated be able to report a RapidPREreviewAction', async () => {
+  it('should let moderator moderate a RapidPREreviewAction', async () => {
     const now = new Date().toISOString();
     const action = await db.post(
       {
-        '@type': 'ReportRapidPREreviewAction',
+        '@type': 'ModerateRapidPREreviewAction',
         actionStatus: 'CompletedActionStatus',
         agent: user.defaultRole,
         object: getId(reviewAction),
@@ -81,13 +107,13 @@ describe('ReportRapidPREreviewAction', function() {
 
     assert(
       action.result.moderationAction[0]['@type'] ===
-        'ReportRapidPREreviewAction'
+        'ModerateRapidPREreviewAction'
     );
 
     // check that we can't add the same action twice
     const reAction = await db.post(
       {
-        '@type': 'ReportRapidPREreviewAction',
+        '@type': 'ModerateRapidPREreviewAction',
         actionStatus: 'CompletedActionStatus',
         agent: user.defaultRole,
         object: getId(reviewAction),
@@ -96,6 +122,24 @@ describe('ReportRapidPREreviewAction', function() {
       { user, now }
     );
     assert.equal(reAction.result.moderationAction.length, 1);
+  });
+
+  it('should not let a normal role (not moderator) moderate', async () => {
+    await assert.rejects(
+      db.post(
+        {
+          '@type': 'ModerateRapidPREreviewAction',
+          actionStatus: 'CompletedActionStatus',
+          agent: getId(user.hasRole[1]),
+          object: getId(reviewAction),
+          moderationReason: 'Violation of Code of Conduct'
+        },
+        { user }
+      ),
+      {
+        statusCode: 403
+      }
+    );
   });
 
   after(done => {

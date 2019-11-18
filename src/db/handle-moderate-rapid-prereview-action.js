@@ -26,7 +26,18 @@ export default async function handleModerateRapidPrereviewAction(
     throw createError(403, 'Forbidden');
   }
 
-  const nextReview = await this.syncModerationAction(action);
+  const handledAction = Object.assign(
+    {
+      startTime: now,
+      actionStatus: 'CompletedActionStatus'
+    },
+    action,
+    {
+      endTime: now
+    }
+  );
+
+  const nextReview = await this.syncModerationAction(handledAction);
 
   return Object.assign({}, action, {
     result: nextReview

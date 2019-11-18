@@ -682,7 +682,7 @@ export default class DB {
           now
         });
 
-      case 'ModerateRapidPREReviewAction':
+      case 'ModerateRapidPREreviewAction':
         return handleModerateRapidPrereviewAction.call(this, action, {
           strict,
           user,
