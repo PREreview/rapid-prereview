@@ -89,7 +89,7 @@ export function usePostAction() {
 
           if (body['@type'] === 'UpdateUserAction') {
             setUser(body.result);
-          } else if (body['@type'] === 'ModerateRapidPREReviewAction') {
+          } else if (body['@type'] === 'ModerateRapidPREreviewAction') {
             preprintsSearchResultsStore.reset();
           }
 

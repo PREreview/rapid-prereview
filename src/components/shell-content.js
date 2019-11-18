@@ -214,7 +214,7 @@ function ShellContentRead({ user, preprint, actions, fetchActionsProgress }) {
 
   const location = useLocation();
   const history = useHistory();
-  const [moderation, setModeration] = useState(null);
+  const [moderatedReviewId, setModeratedReviewId] = useState(null);
   const [post, postProgress, resetPostState] = usePostAction();
   const [role, fetchRoleProgress] = useRole(user && user.defaultRole);
 
@@ -273,11 +273,12 @@ function ShellContentRead({ user, preprint, actions, fetchActionsProgress }) {
 
       {!fetchActionsProgress.isActive && (
         <ReviewReader
+          user={user}
+          role={role}
           isModerationInProgress={postProgress.isActive}
-          canModerate={role && role.isModerator}
-          onModerate={(type, object) => {
+          onModerate={reportedActionId => {
             resetPostState();
-            setModeration({ type, object });
+            setModeratedReviewId(reportedActionId);
           }}
           onHighlighedRoleIdsChange={roleIds => {
             if (process.env.IS_EXTENSION) {
@@ -310,29 +311,26 @@ function ShellContentRead({ user, preprint, actions, fetchActionsProgress }) {
         />
       )}
 
-      {!!moderation && (
+      {!!moderatedReviewId && (
         <ModerationModal
-          title={`Moderate ${moderation.type}`}
+          title={`Report review as violating the Code of Conduct`}
           moderationProgress={postProgress}
           onSubmit={moderationReason => {
             post(
               cleanup({
-                '@type':
-                  moderation.type === 'role'
-                    ? 'ModerateRoleAction'
-                    : 'ModerateRapidPREReviewAction',
+                '@type': 'ReportRapidPREreviewAction',
                 agent: user.defaultRole,
                 actionStatus: 'CompletedActionStatus',
-                object: moderation.object,
+                object: moderatedReviewId,
                 moderationReason
               }),
-              () => {
-                setModeration(null);
+              body => {
+                setModeratedReviewId(null);
               }
             );
           }}
           onCancel={() => {
-            setModeration(null);
+            setModeratedReviewId(null);
           }}
         />
       )}

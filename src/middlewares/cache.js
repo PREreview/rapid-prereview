@@ -191,10 +191,12 @@ export function invalidate() {
             break;
           }
 
-          case 'ModerateRapidPREReviewAction':
+          case 'ReportRapidPREreviewAction':
+          case 'IgnoreReportRapidPREreviewAction':
+          case 'ModerateRapidPREreviewAction':
           case 'RequestForRapidPREreviewAction':
           case 'RapidPREreviewAction': {
-            if (action['@type'] === 'ModerateRapidPREReviewAction') {
+            if (action['@type'] === 'ModerateRapidPREreviewAction') {
               action = action.result;
             }
 

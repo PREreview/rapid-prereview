@@ -269,6 +269,7 @@ export default function PreprintCard({
       <Collapse isOpened={isOpened} className="preprint-card__collapse">
         <div className="preprint-card-expansion">
           <ReviewReader
+            user={user}
             identifier={preprint.doi || preprint.arXivId}
             actions={reviews}
             preview={true}

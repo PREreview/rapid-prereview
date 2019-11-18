@@ -461,6 +461,7 @@ export default class DB {
         }
 
         // potential action: we merge all distincts
+        // TODO handle `moderationAction`
         merged.potentialAction = uniqBy(
           arrayify(merged.potentialAction).concat(
             arrayify(doc.potentialAction)
@@ -486,6 +487,7 @@ export default class DB {
         });
       }
 
+      // TODO handle `moderationAction`
       if (
         !merged.potentialAction.some(
           _action => getId(_action) === getId(action)
