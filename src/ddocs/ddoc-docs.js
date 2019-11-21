@@ -40,7 +40,9 @@ const ddoc = {
         default: 'english',
         fields: {
           '@type': 'keyword',
-          agentId: 'keyword'
+          agentId: 'keyword',
+          isReported: 'keyword',
+          isModerated: 'keyword'
         }
       },
       index: function(doc) {
@@ -65,6 +67,40 @@ const ddoc = {
             ? new Date(doc.startTime).getTime()
             : new Date('0000').getTime();
           index('startTime', startTime, { facet: true });
+
+          // moderation
+          var isReported = false;
+          var isModerated = false;
+          if (doc.moderationAction) {
+            // moderationAction are sorted so last of type wins
+            for (var i = doc.moderationAction.length - 1; i >= 0; i--) {
+              var moderationAction = doc.moderationAction[i];
+              if (
+                moderationAction['@type'] === 'IgnoreReportRapidPREreviewAction'
+              ) {
+                isReported = false;
+                break;
+              } else if (
+                moderationAction['@type'] === 'ModerateRapidPREreviewAction'
+              ) {
+                isReported = false;
+                isModerated = true;
+                break;
+              } else if (
+                moderationAction['@type'] === 'ReportRapidPREreviewAction'
+              ) {
+                isReported = true;
+                break;
+              }
+            }
+          }
+
+          index('isReported', isReported.toString(), {
+            facet: true
+          });
+          index('isModerated', isModerated.toString(), {
+            facet: true
+          });
         }
       }
     },

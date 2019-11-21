@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
-import { MdChevronRight } from 'react-icons/md';
+import { MdChevronRight, MdFirstPage } from 'react-icons/md';
 import { getId } from '../utils/jsonld';
 import { createActivityQs } from '../utils/search';
 import { useActionsSearchResults } from '../hooks/api-hooks';
@@ -96,6 +96,16 @@ export default function RoleActivity({ roleId }) {
 
       <div className="role-activity__pagination">
         {/* Cloudant returns the same bookmark when it hits the end of the list */}
+        {!!bookmark && (
+          <Button
+            onClick={() => {
+              setBookmark(null);
+            }}
+          >
+            <MdFirstPage /> First page
+          </Button>
+        )}
+
         {!!(
           results.rows.length < results.total_rows &&
           results.bookmark !== bookmark
@@ -105,17 +115,7 @@ export default function RoleActivity({ roleId }) {
               setBookmark(results.bookmark);
             }}
           >
-            Next page
-          </Button>
-        )}
-
-        {!!bookmark && (
-          <Button
-            onClick={() => {
-              setBookmark(null);
-            }}
-          >
-            Back to first page
+            Next Page <MdChevronRight />
           </Button>
         )}
       </div>
