@@ -118,12 +118,12 @@
   /* button fonts */
   --ui-button-font-size: var(--ui-basic-font-size);
   --ui-button-font-leading: var(--ui-basic-font-size);
-  --ui-button-font: 600 var(--ui-button-font-size) /
+  --ui-button-font: 500 var(--ui-button-font-size) /
     var(--ui-button-font-leading) var(--ui-font-family);
 
   --ui-button-font-size--primary: 16px;
   --ui-button-font-leading--primary: 16px;
-  --ui-button-font--primary: 600 var(--ui-button-font-size--primary) /
+  --ui-button-font--primary: 500 var(--ui-button-font-size--primary) /
     var(--ui-button-font-leading--primary) var(--ui-font-family);
 }
 

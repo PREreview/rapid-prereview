@@ -86,7 +86,6 @@ a.button {
     height: var(--xsgrd);
     border-radius: 50%;
     background-color: currentcolor;
-    margin-left: var(--xxsgrd);
     opacity: 0;
     transition: width 0.2s;
   }
@@ -94,6 +93,7 @@ a.button {
   &.button--waiting {
     & .button__heartbeat {
       width: var(--xsgrd);
+      margin-left: var(--xxsgrd);
       animation-name: heartbeat;
       animation-duration: 1.5s;
       animation-iteration-count: infinite;

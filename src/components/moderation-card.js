@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { MdExpandLess, MdExpandMore } from 'react-icons/md';
+import classNames from 'classnames';
+import { MdExpandLess, MdExpandMore, MdLock } from 'react-icons/md';
 import { format } from 'date-fns';
 import { getId } from '../utils/jsonld';
 import Collapse from './collapse';
@@ -22,26 +23,43 @@ export default function ModerationCard({ user, reviewAction }) {
 
   const reports = getActiveReports(reviewAction);
   const textAnswers = getTextAnswers(reviewAction);
-  console.log('agent', reviewAction);
+
+  /* !TODO: @sballesteros wire the lock state of the card here */
+  const isLocked = true;
 
   return (
-    <div className="moderation-card">
+    <div
+      className={classNames('moderation-card', {
+        'moderation-card--locked': isLocked
+      })}
+    >
       {/* The card body */}
       <div className="moderation-card__header">
-        <RoleBadge roleId={getId(reviewAction.agent)} />
-        <span className="moderation-card__header-name">
-          {role && role.name}
-        </span>
-        reviewed on{' '}
-        <span>{format(new Date(reviewAction.startTime), 'MMM. d, yyyy')}</span>
-        <dl>
+        <div className="moderation-card__header__left">
+          <RoleBadge
+            roleId={getId(reviewAction.agent)}
+            className="moderation-card__header-badge"
+          />
+          <span className="moderation-card__header-name">
+            {role && role.name}
+          </span>
+        </div>
+        <div className="moderation-card__header__right">
+          Reviewed on{' '}
+          <span>
+            {format(new Date(reviewAction.startTime), 'MMM. d, yyyy')}
+          </span>
+        </div>
+      </div>
+      <div className="moderation-card__text-answers">
+        <dl className="moderation-card__text-answers-list">
           {textAnswers.map(
             ({ questionId, question, answers: [{ text: answer }] }) => (
-              <div key={questionId}>
-                <dt>
+              <div key={questionId} className="moderation-card__text-answer">
+                <dt className="moderation-card__text-answer-question">
                   <Value>{question}</Value>
                 </dt>
-                <dd>
+                <dd className="moderation-card__text-answer-response">
                   <Value>{answer}</Value>
                 </dd>
               </div>
@@ -51,17 +69,19 @@ export default function ModerationCard({ user, reviewAction }) {
       </div>
 
       {/* Expansion panel preview row */}
-      <div>
-        <span>
-          {reports.length} report{reports.length > 1 ? 's' : ''}
-        </span>
-
-        <Value tagName="span">{reviewAction.object.name}</Value>
-
-        {/* TODO current moderator badge* /}
-        {/* @halmos TODO display role badge of the person currently moderating (and therefore locking the card)
-            that needs more backend work but we can fake it with e.g.  <RoleBadge roleId={getId(reports[0].agent)} /> for now if you need static data
-          */}
+      <div className="moderation-card__expansion-preview">
+        <div className="moderation-card__expansion-preview__left">
+          <span className="moderation-card__expansion-preview-count">
+            {reports.length} Report{reports.length > 1 ? 's' : ''}
+          </span>
+          {` `}
+          <Value
+            tagName="span"
+            className="moderation-card__expansion-preview-title"
+          >
+            {reviewAction.object.name}
+          </Value>
+        </div>
 
         <IconButton
           className="preprint-card__expansion-toggle"
@@ -74,57 +94,83 @@ export default function ModerationCard({ user, reviewAction }) {
       </div>
 
       <Collapse isOpened={isOpened}>
-        {/* The moderation reason of each reporter */}
-        <PreprintPreview preprint={reviewAction.object} />
+        <div className="moderation-card__expansion-content">
+          {/* The moderation reason of each reporter */}
+          <PreprintPreview preprint={reviewAction.object} />
 
-        <h3>Report reasons</h3>
+          <h3 className="moderation-card__sub-title">User Reports</h3>
 
-        <ul>
-          {reports.map(report => (
-            <li key={`${getId(report.agent)}-${report.startTime}`}>
-              <RoleBadge roleId={getId(report.agent)} />
-              <Value>{report.moderationReason || 'No reason specified'}</Value>
-            </li>
-          ))}
-        </ul>
+          <ul className="moderation-card__flag-reasons-list">
+            {reports.map(report => (
+              <li
+                key={`${getId(report.agent)}-${report.startTime}`}
+                className="moderation-card__flag-reasons-list-item"
+              >
+                <RoleBadge roleId={getId(report.agent)} />
+                <Value className="moderation-card__flag-reason">
+                  {report.moderationReason || 'No reason specified'}
+                </Value>
+              </li>
+            ))}
+          </ul>
 
-        <Controls>
-          <Button
-            primary={true}
-            onClick={() => {
-              setIsModalOpen(true);
-            }}
-          >
-            Block user
-          </Button>
-          <Button
-            primary={true}
-            onClick={() => {
-              setIsModalOpen(true);
-            }}
-          >
-            Retract review
-          </Button>
-          <Button
-            primary={true}
-            onClick={() => {
-              setIsModalOpen(true);
-            }}
-          >
-            Ignore report
-          </Button>
-
-          {isModalOpen && (
-            <ModerationCardModal
-              user={user}
-              reviewAction={reviewAction}
-              onClose={() => {
-                setIsModalOpen(false);
+          <Controls className="moderation-card__expansion-controls">
+            <Button
+              primary={true}
+              onClick={() => {
+                setIsModalOpen(true);
               }}
-            />
-          )}
-        </Controls>
+            >
+              Block user
+            </Button>
+            <Button
+              primary={true}
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+            >
+              Retract review
+            </Button>
+            <Button
+              primary={true}
+              onClick={() => {
+                setIsModalOpen(true);
+              }}
+            >
+              Ignore report
+            </Button>
+
+            {isModalOpen && (
+              <ModerationCardModal
+                user={user}
+                reviewAction={reviewAction}
+                onClose={() => {
+                  setIsModalOpen(false);
+                }}
+              />
+            )}
+          </Controls>
+        </div>
       </Collapse>
+      {isLocked && (
+        <div className="moderation-card__lock-overlay">
+          <div className="moderation-card__lock-overal__content">
+            <div className="moderation-card__lock-overlay__lock-icon-container">
+              <MdLock className="moderation-card__lock-overlay__lock-icon" />
+            </div>
+            <span className="moderation-card__lock-overlay__message">
+              This report is currently being reviewed by another moderator.
+            </span>
+            {/*!TODO: @sballesteros wire the badge here */}
+            <span className="moderation-card__lock-overlay__agent">
+              <RoleBadge roleId={getId(reports[0].agent)} />
+              <span className="moderation-card__lock-overlay__agent-name">
+                [Moderator Name]
+              </span>
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

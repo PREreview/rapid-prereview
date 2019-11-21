@@ -1,7 +1,172 @@
 .moderation-card {
-  outline: 1px solid green;
+  background-color: white;
+  margin-bottom: var(--lgrd);
+  position: relative;
+  border-bottom: 1px solid var(--ruling-color);
 
-  & .moderation-card__header {
+  &.moderation-card--locked {
+    opacity: 0.8;
+  }
+
+  & .moderation-card__lock-overlay {
+    position: absolute;
+    top: -4px;
+    bottom: -4px;
+    left: -4px;
+    right: -4px;
+    background-color: rgba(247, 247, 247, 0.9);
     display: flex;
+    justify-content: center;
+    align-items: center;
+
+    & .moderation-card__lock-overal__content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0 auto;
+      padding: var(--sgrd) var(--mgrd);
+      color: black;
+    }
+    & .moderation-card__lock-overlay__lock-icon-container {
+      width: var(--xlgrd);
+      height: var(--xlgrd);
+      border-radius: 50%;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    & .moderation-card__lock-overlay__lock-icon {
+      width: var(--mgrd);
+      height: var(--mgrd);
+    }
+
+    & .moderation-card__lock-overlay__message {
+      padding: var(--sgrd) 0;
+      font: var(--ui-basic-font--large);
+      font-weight: 600;
+    }
+
+    & .moderation-card__lock-overlay__agent {
+      display: flex;
+      align-items: center;
+    }
+
+    & .moderation-card__lock-overlay__agent-name {
+      margin-left: var(--xsgrd);
+    }
+  }
+  & .moderation-card__header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font: var(--ui-header-1-font);
+    & .moderation-card__header__left {
+      display: flex;
+      align-items: center;
+    }
+
+    & .moderation-card__header__right {
+      color: var(--ui-basic-font-color--light);
+      font: var(--ui-header-2-font);
+    }
+  }
+
+  & .moderation-card__sub-title {
+    font: var(--ui-header-2-font);
+    padding: 0 var(--sgrd);
+  }
+
+  & .moderation-card__header-badge {
+  }
+  & .moderation-card__header-name {
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    text-overflow: ellipsis;
+    margin-left: var(--xsgrd);
+  }
+  & .moderation-card__text-answers {
+  }
+  & .moderation-card__text-answer-question {
+    color: var(--ui-basic-font-color--light);
+  }
+
+  & .moderation-card__text-answer-response {
+    margin: var(--xsgrd) 0 var(--sgrd);
+  }
+
+  & .moderation-card__expansion-preview {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    border-top: 1px solid var(--ruling-color--light);
+    border-bottom: 1px solid var(--ruling-color);
+    height: var(--xlgrd);
+    box-sizing: border-box;
+    overflow: hidden;
+
+    & .moderation-card__expansion-preview__left {
+      display: flex;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      flex: 1 1 auto;
+    }
+  }
+
+  & .moderation-card__expansion-preview-count {
+    color: var(--ui-basic-font-color--light);
+    margin-right: var(--sgrd);
+    white-space: nowrap;
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex: 0 0 auto;
+  }
+
+  & .moderation-card__expansion-preview-title {
+    white-space: nowrap;
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    flex: 0 1 auto;
+  }
+
+  & .moderation-card__expansion-content {
+    background-color: var(--xxlight-grey);
+    box-shadow: inset 0 6px 4px -4px var(--light-grey);
+
+    & .preprint-preview {
+      background-color: transparent;
+      border-bottom: 1px solid white;
+    }
+  }
+
+  & .moderation-card__expansion-controls {
+    padding: var(--xsgrd) var(--sgrd);
+    min-height: var(--xlgrd);
+  }
+
+  & .moderation-card__flag-reasons-list {
+    list-style: none;
+    margin-bottom: var(--mgrd);
+    padding: 0;
+  }
+
+  & .moderation-card__flag-reasons-list-item {
+    display: flex;
+    margin-bottom: var(--mgrd);
+    padding: var(--sgrd);
+
+    &:nth-child(odd) {
+      background-color: var(--xlight-grey);
+    }
+  }
+
+  & .moderation-card__flag-reason {
+    margin-left: var(--sgrd);
   }
 }

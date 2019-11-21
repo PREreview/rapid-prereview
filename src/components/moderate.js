@@ -26,13 +26,17 @@ export default function Moderate() {
       <HeaderBar />
 
       <section>
+        <header className="moderate__header">
+          <span>Moderate Content</span>
+          <span>{results.total_rows} Flagged Reviews</span>
+        </header>
         {results.total_rows === 0 && !progress.isActive ? (
           <div>No activity yet.</div>
         ) : bookmark && results.bookmark === bookmark && !progress.isActive ? (
           <div>No more activity.</div>
         ) : (
           <div>
-            <ul>
+            <ul className="moderate__card-list">
               {results.rows.map(({ doc }) => (
                 <li key={getId(doc)}>
                   <ModerationCard user={user} reviewAction={doc} />
