@@ -52,7 +52,8 @@ export function createPassport(config) {
     };
 
     db.post(action, {
-      isAdmin: process.env.NODE_ENV !== 'production' && params.isAdmin
+      isAdmin: process.env.NODE_ENV !== 'production' && params.isAdmin,
+      isModerator: process.env.NODE_ENV !== 'production' && params.isModerator
     })
       .then(action => {
         done(null, action.result);
@@ -74,7 +75,8 @@ export function createPassport(config) {
       const params = {
         orcid: createRandomOrcid(),
         name: 'Test User',
-        isAdmin: true // in dev mode we create admin users
+        isAdmin: true, // in dev mode we create admin users
+        isModerator: true
       };
       const profile = {};
 

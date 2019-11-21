@@ -18,7 +18,8 @@ export default async function handleRegisterAction(
   {
     strict = true,
     now = new Date().toISOString(),
-    isAdmin // if true make the user admin
+    isAdmin, // if true make the user admin
+    isModerator // if true make the user moderator (for all his/her roles)
   } = {}
 ) {
   const ajv = new Ajv();
@@ -116,7 +117,7 @@ export default async function handleRegisterAction(
         name: unprefix(anonRoleId),
         startDate: now,
         modifiedDate: now,
-        isModerator: false
+        isModerator: !!isModerator
       },
       {
         _id: publicRoleId,
@@ -126,7 +127,7 @@ export default async function handleRegisterAction(
         startDate: now,
         modifiedDate: now,
         isRoleOf: userId,
-        isModerator: false
+        isModerator: !!isModerator
       }
     ];
 

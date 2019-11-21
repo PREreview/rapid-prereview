@@ -127,6 +127,7 @@ const N_USERS = 50;
 
   for (const identifier of identifiers) {
     console.log(`\nProcessing ${identifier}...`);
+    const reporters = sampleSize(users, Math.ceil(3 * Math.random()));
     const requesters = sampleSize(users, Math.ceil(5 * Math.random()));
     const reviewers = sampleSize(
       users.filter(
@@ -204,6 +205,32 @@ const N_USERS = 50;
       console.log(`\t- Syncing index for ${identifier}...`);
       await db.syncIndex(action);
       console.log(`\t  -> OK`);
+
+      // reporters report review as inapropriate
+      for (const reporter of reporters) {
+        if (getId(reporter) !== getId(user)) {
+          console.log(`\t\t- Starting ${reporter.name} report...`);
+          const reportAction = await db.post(
+            {
+              '@type': 'ReportRapidPREreviewAction',
+              actionStatus: 'CompletedActionStatus',
+              agent: reporter.defaultRole,
+              object: getId(action),
+              moderationReason: faker.lorem.paragraph()
+            },
+            { user: reporter }
+          );
+
+          console.log(`\t\t  -> OK`);
+          console.log(
+            `\t\t- Syncing index for ${reportAction['@type']} result (${getId(
+              reportAction.result
+            )})...`
+          );
+          await db.syncIndex(reportAction.result);
+          console.log(`\t\t  -> OK`);
+        }
+      }
     }
 
     console.log(`\t- Updating scores for ${identifier}...`);
