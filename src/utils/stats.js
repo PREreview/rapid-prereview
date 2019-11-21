@@ -1,5 +1,5 @@
 import { QUESTIONS } from '../constants';
-import { getId } from './jsonld';
+import { getId, arrayify } from './jsonld';
 import { getAnswerMap } from './actions';
 
 function isYes(textOrAnswer) {
@@ -172,7 +172,7 @@ export function getYesNoStats(actions = []) {
 }
 
 export function getTextAnswers(actions = []) {
-  const answersData = actions
+  const answersData = arrayify(actions)
     .filter(action => action['@type'] === 'RapidPREreviewAction')
     .map(action => {
       return {
@@ -197,4 +197,24 @@ export function getTextAnswers(actions = []) {
       })
     };
   });
+}
+
+export function getActiveReports(
+  action // a `RapidPREreviewAction`
+) {
+  // moderation action are sorted so we get all the report untill the previous
+  // `ModerateRapidPREreviewAction` or `IgnoreRapidPREreviewAction` action
+  const moderationActions = arrayify(action.moderationAction);
+
+  const reports = [];
+  for (let i = moderationActions.length - 1; i >= 0; i--) {
+    const moderationAction = moderationActions[i];
+    if (moderationAction['@type'] === 'ReportRapidPREreviewAction') {
+      reports.push(moderationAction);
+    } else {
+      break;
+    }
+  }
+
+  return reports;
 }

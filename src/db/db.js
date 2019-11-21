@@ -1,6 +1,4 @@
 import Cloudant from '@cloudant/cloudant';
-import uniqBy from 'lodash/uniqBy';
-import uniqWith from 'lodash/uniqWith';
 import omit from 'lodash/omit';
 import flatten from 'lodash/flatten';
 import handleRegisterAction from './handle-register-action';
@@ -24,6 +22,7 @@ import { INDEXED_PREPRINT_PROPS, QUESTIONS } from '../constants';
 import { getScore, SCORE_THRESHOLD } from '../utils/score';
 import striptags from '../utils/striptags';
 import { dehydrateAction } from '../utils/preprints';
+import { getUniqueModerationActions } from '../utils/actions';
 
 export default class DB {
   constructor(config = {}) {
@@ -409,7 +408,7 @@ export default class DB {
   }
 
   async syncIndex(
-    action,
+    action, // a `RapidPREreviewAction` or `RequestForRapidPREreviewAction`
     {
       now = new Date().toISOString(),
       triggeringSeq // passed when this is called by the changes feed so we can retry easily
@@ -460,14 +459,40 @@ export default class DB {
           });
         }
 
-        // potential action: we merge all distincts
-        // TODO handle `moderationAction`
-        merged.potentialAction = uniqBy(
-          arrayify(merged.potentialAction).concat(
-            arrayify(doc.potentialAction)
-          ),
-          getId
-        );
+        // `potentialAction`: we merge all distincts taking care to always merge
+        // the `moderationAction`
+        if (doc.potentialAction) {
+          merged.potentialAction = arrayify(merged.potentialAction)
+            .map(potentialAction => {
+              const _potentialAction = arrayify(doc.potentialAction).find(
+                _potentialAction =>
+                  getId(_potentialAction) === getId(potentialAction)
+              );
+
+              if (_potentialAction) {
+                return cleanup(
+                  Object.assign({}, potentialAction, {
+                    moderationAction: getUniqueModerationActions(
+                      arrayify(potentialAction.moderationAction).concat(
+                        arrayify(_potentialAction.moderationAction)
+                      )
+                    )
+                  }),
+                  { removeEmptyArray: true }
+                );
+              } else {
+                return potentialAction;
+              }
+            })
+            .concat(
+              arrayify(doc.potentialAction).filter(_potentialAction => {
+                return !arrayify(merged.potentialAction).some(
+                  potentialAction =>
+                    getId(potentialAction) === getId(_potentialAction)
+                );
+              })
+            );
+        }
 
         return merged;
       }, Object.assign({}, docs[0]));
@@ -487,7 +512,6 @@ export default class DB {
         });
       }
 
-      // TODO handle `moderationAction`
       if (
         !merged.potentialAction.some(
           _action => getId(_action) === getId(action)
@@ -499,6 +523,28 @@ export default class DB {
           now: merged.dateScoreLastUpdated
         });
         merged.dateScoreLastUpdated = now;
+      } else {
+        // handle `moderationAction`
+        merged.potentialAction = merged.potentialAction.map(_action => {
+          if (getId(_action) === getId(action)) {
+            return cleanup(
+              Object.assign(
+                {},
+                _action,
+                {
+                  moderationAction: getUniqueModerationActions(
+                    arrayify(_action.moderationAction).concat(
+                      arrayify(action.moderationAction)
+                    )
+                  )
+                },
+                { removeEmptyArray: true }
+              )
+            );
+          } else {
+            return _action;
+          }
+        });
       }
     } else {
       merged = Object.assign({}, nodeify(action.object), {
@@ -563,23 +609,11 @@ export default class DB {
     // `moderationAction`
     const merged = cleanup(
       Object.assign({}, docs[0], {
-        moderationAction: uniqWith(
+        moderationAction: getUniqueModerationActions(
           flatten(docs.map(doc => arrayify(doc.moderationAction))).concat(
             moderationAction
-          ),
-          (a, b) => {
-            return (
-              a['@type'] === b['@type'] &&
-              getId(a.agent) === getId(b.agent) &&
-              a.startTime &&
-              b.startTime
-            );
-          }
-        ).sort((a, b) => {
-          return (
-            new Date(a.startTime).getTime() - new Date(b.startTime).getTime()
-          );
-        })
+          )
+        )
       }),
       { removeEmptyArray: true }
     );
@@ -633,7 +667,13 @@ export default class DB {
 
   async post(
     action = {},
-    { user = null, strict = true, now = new Date().toISOString(), isAdmin } = {}
+    {
+      user = null,
+      strict = true,
+      now = new Date().toISOString(),
+      isAdmin,
+      isModerator
+    } = {}
   ) {
     if (!action['@type']) {
       throw createError(400, 'action must have a @type');
@@ -644,7 +684,8 @@ export default class DB {
         return handleRegisterAction.call(this, action, {
           strict,
           now,
-          isAdmin
+          isAdmin,
+          isModerator
         });
 
       case 'UpdateUserAction':

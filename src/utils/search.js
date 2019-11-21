@@ -209,6 +209,26 @@ export function createActivityQs({ roleId, bookmark }) {
   return sapi ? `?${sapi}` : undefined;
 }
 
+export function createModerationQs({ bookmark }) {
+  const api = new URLSearchParams();
+
+  api.set('q', `@type:"RapidPREreviewAction" AND isReported:true`);
+
+  if (bookmark) {
+    api.set('bookmark', bookmark);
+  } else {
+    api.delete('bookmark');
+  }
+
+  api.set('sort', JSON.stringify(['-startTime<number>']));
+  api.set('include_docs', true);
+  api.set('limit', 10);
+
+  const sapi = api.toString();
+
+  return sapi ? `?${sapi}` : undefined;
+}
+
 function escapeLucene(term) {
   return term.replace(/([+&|!(){}[\]^"~*?:\\\/-])/g, '\\$1');
 }

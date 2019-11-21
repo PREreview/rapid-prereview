@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { CONTACT_EMAIL_HREF, ORG } from '../constants';
 import APISection from './api-section';
+import XLink from './xlink';
 
 export default function API() {
   return (
@@ -156,7 +157,7 @@ export default function API() {
                 <code>name</code>
               </td>
               <td>The display name of the role</td>
-              <td>text</td>
+              <td>Text</td>
             </tr>
 
             <tr>
@@ -271,6 +272,38 @@ export default function API() {
               <td>
                 Number of milliseconds since the{' '}
                 <a href="https://en.wikipedia.org/wiki/Unix_time">Unix Epoch</a>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <code>isReported</code>
+              </td>
+              <td>
+                A boolean indicating that the action has been reported as
+                violating the{' '}
+                <XLink href="/code-of-conduct" to="/code-of-conduct">
+                  Code of Conduct
+                </XLink>
+              </td>
+              <td>
+                Boolean (one of <code>true</code>, <code>false</code>)
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <code>isModerated</code>
+              </td>
+              <td>
+                A boolean indicating that the action has been moderated
+                following a violation of the{' '}
+                <XLink href="/code-of-conduct" to="/code-of-conduct">
+                  Code of Conduct
+                </XLink>
+              </td>
+              <td>
+                Boolean (one of <code>true</code>, <code>false</code>)
               </td>
             </tr>
           </tbody>

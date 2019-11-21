@@ -1,3 +1,4 @@
+import uniqWith from 'lodash/uniqWith';
 import { QUESTIONS } from '../constants';
 import { getId, unprefix, arrayify } from '../utils/jsonld';
 
@@ -78,4 +79,19 @@ export function checkIfIsModerated(action) {
   return arrayify(action.moderationAction).some(
     action => action['@type'] === 'ModerateRapidPREreviewAction'
   );
+}
+
+export function getUniqueModerationActions(
+  actions // list of conflicting moderation actions (`ReportRapidPREreviewAction`, `IgnoreReportRapidPREreviewAction`, `ModerateRapidPREreviewAction`)
+) {
+  return uniqWith(arrayify(actions), (a, b) => {
+    return (
+      a['@type'] === b['@type'] &&
+      getId(a.agent) === getId(b.agent) &&
+      a.startTime &&
+      b.startTime
+    );
+  }).sort((a, b) => {
+    return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
+  });
 }
