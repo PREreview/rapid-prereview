@@ -163,10 +163,19 @@
   & .preprint-card__title {
     font: var(--ui-header-2-font);
     &:any-link {
-      color: var(--ui-basic-font-color);
+      color: var(--prereview-black);
       text-decoration: none;
       &:hover {
         text-decoration: underline;
+        color: var(--link-color);
+      }
+    }
+  }
+  &:hover {
+    & .preprint-card__title {
+      &:any-link {
+        text-decoration: underline;
+        color: var(--link-color);
       }
     }
   }
@@ -214,6 +223,14 @@
   & .preprint-card__server-id {
     color: var(--ui-basic-font-color--light);
     vertical-align: baseline;
+    & :any-link {
+      text-decoration: none;
+      color: var(--ui-basic-font-color--light);
+      &:hover {
+        color: var(--link-color);
+        text-decoration: underline;
+      }
+    }
   }
 
   & .preprint-card__tag-list {
