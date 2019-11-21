@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { MdChevronRight, MdFirstPage } from 'react-icons/md';
+import { useUser } from '../contexts/user-context';
 import { getId } from '../utils/jsonld';
 import HeaderBar from './header-bar';
 import { ORG } from '../constants';
@@ -10,6 +11,7 @@ import Button from './button';
 import ModerationCard from './moderation-card';
 
 export default function Moderate() {
+  const [user] = useUser();
   const [bookmark, setBookmark] = useState(null);
 
   const search = createModerationQs({ bookmark });
@@ -33,7 +35,7 @@ export default function Moderate() {
             <ul>
               {results.rows.map(({ doc }) => (
                 <li key={getId(doc)}>
-                  <ModerationCard reviewAction={doc} />
+                  <ModerationCard user={user} reviewAction={doc} />
                 </li>
               ))}
             </ul>

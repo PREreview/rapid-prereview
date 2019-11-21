@@ -224,11 +224,6 @@ export function createModerationQs({ bookmark }) {
   api.set('include_docs', true);
   api.set('limit', 10);
 
-  // cache key
-  if (!bookmark) {
-    api.set('key', `moderate`);
-  }
-
   const sapi = api.toString();
 
   return sapi ? `?${sapi}` : undefined;
