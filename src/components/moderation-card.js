@@ -25,7 +25,7 @@ export default function ModerationCard({ user, reviewAction }) {
   const textAnswers = getTextAnswers(reviewAction);
 
   /* !TODO: @sballesteros wire the lock state of the card here */
-  const isLocked = true;
+  const isLocked = false;
 
   return (
     <div
