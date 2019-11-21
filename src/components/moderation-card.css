@@ -1,0 +1,7 @@
+.moderation-card {
+  outline: 1px solid green;
+
+  & .moderation-card__header {
+    display: flex;
+  }
+}

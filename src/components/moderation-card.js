@@ -13,19 +13,25 @@ import { getTextAnswers, getActiveReports } from '../utils/stats';
 import RoleBadge from './role-badge';
 import Modal from './modal';
 import { usePostAction } from '../hooks/api-hooks';
+import { useRole } from '../hooks/api-hooks';
 
 export default function ModerationCard({ user, reviewAction }) {
   const [isOpened, setIsOpened] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [role, fetchRoleProgress] = useRole(reviewAction.agent);
 
   const reports = getActiveReports(reviewAction);
   const textAnswers = getTextAnswers(reviewAction);
+  console.log('agent', reviewAction);
 
   return (
-    <div>
+    <div className="moderation-card">
       {/* The card body */}
-      <div>
+      <div className="moderation-card__header">
         <RoleBadge roleId={getId(reviewAction.agent)} />
+        <span className="moderation-card__header-name">
+          {role && role.name}
+        </span>
         reviewed on{' '}
         <span>{format(new Date(reviewAction.startTime), 'MMM. d, yyyy')}</span>
         <dl>
