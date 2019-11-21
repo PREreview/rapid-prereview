@@ -95,7 +95,23 @@ export default function ModerationCard({ user, reviewAction }) {
               setIsModalOpen(true);
             }}
           >
-            Retract
+            Block user
+          </Button>
+          <Button
+            primary={true}
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+          >
+            Retract review
+          </Button>
+          <Button
+            primary={true}
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+          >
+            Ignore report
           </Button>
 
           {isModalOpen && (
