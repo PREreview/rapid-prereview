@@ -15,11 +15,13 @@ import Login from './login';
 import Settings from './settings';
 import Profile from './profile';
 import PrivateRoute from './private-route';
+import ModeratorRoute from './moderator-route';
 import ExtensionSplash from './extension-splash';
 import ToCPage from './toc-page';
 import CodeOfConduct from './code-of-conduct';
 import NotFound from './not-found';
 import API from './api';
+import Moderate from './moderate';
 
 // kick off the polyfill!
 smoothscroll.polyfill();
@@ -62,6 +64,9 @@ export default function App({ user }) {
                 <PrivateRoute exact={true} path="/settings">
                   <Settings />
                 </PrivateRoute>
+                <ModeratorRoute exact={true} path="/moderate">
+                  <Moderate />
+                </ModeratorRoute>
                 <Route exact={true} path="/:identifierPart1/:identifierPart2?">
                   <ExtensionFallback />
                 </Route>
