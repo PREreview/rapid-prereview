@@ -16,7 +16,10 @@ function getOnlyIfValue(obj = {}) {
       return obj._rev;
 
     default:
-      throw createError(500, 'getOnlyIfValue: invalid type for obj');
+      throw createError(
+        500,
+        `getOnlyIfValue: invalid type for obj (got ${obj['@type']})`
+      );
   }
 }
 
@@ -196,7 +199,11 @@ export function invalidate() {
           case 'ModerateRapidPREreviewAction':
           case 'RequestForRapidPREreviewAction':
           case 'RapidPREreviewAction': {
-            if (action['@type'] === 'ModerateRapidPREreviewAction') {
+            if (
+              action['@type'] === 'ModerateRapidPREreviewAction' ||
+              action['@type'] === 'ReportRapidPREreviewAction' ||
+              action['@type'] === 'IgnoreReportRapidPREreviewAction'
+            ) {
               action = action.result;
             }
 

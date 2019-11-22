@@ -276,7 +276,6 @@ function ModerationCardModal({
                       moderationReason: ref.current.value
                     },
                     body => {
-                      onSuccess(body);
                       setFrame('success');
                     }
                   );
@@ -324,7 +323,6 @@ function ModerationCardModal({
                       moderationReason: ref.current.value
                     },
                     body => {
-                      onSuccess(body);
                       setFrame('success');
                     }
                   );
@@ -373,7 +371,6 @@ function ModerationCardModal({
                       moderationReason: ref.current.value
                     },
                     body => {
-                      onSuccess(body);
                       setFrame('success');
                     }
                   );
@@ -396,6 +393,7 @@ function ModerationCardModal({
             <Controls>
               <Button
                 onClick={() => {
+                  onSuccess(defaultFrame, getId(reviewAction));
                   onClose();
                 }}
               >

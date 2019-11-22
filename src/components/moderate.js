@@ -12,10 +12,9 @@ import ModerationCard from './moderation-card';
 export default function Moderate() {
   const [user] = useUser();
   const [bookmark, setBookmark] = useState(null);
+  const [excluded, setExcluded] = useState(new Set());
 
   const search = createModerationQs({ bookmark });
-
-  // TODO set of exluded content
 
   const [results, progress] = useActionsSearchResults(search, !!bookmark);
 
@@ -56,36 +55,46 @@ export default function Moderate() {
         ) : (
           <div>
             <ul className="moderate__card-list">
-              {results.rows.map(({ doc }) => (
-                <li key={getId(doc)}>
-                  <ModerationCard
-                    user={user}
-                    reviewAction={doc}
-                    isOpened={isOpenedMap[getId(doc)] || false}
-                    isLockedBy={undefined /* TODO wire */}
-                    onOpen={() => {
-                      setIsOpenedMap(
-                        results.rows.reduce((map, row) => {
-                          map[getId(row.doc)] = getId(row.doc) === getId(doc);
-                          return map;
-                        }, {})
-                      );
-                    }}
-                    onSuccess={moderationAction => {
-                      // TODO add a `exclude` params to the search qs so that we refresh the results in a safe way
-                      console.log('moderationAction', moderationAction);
-                    }}
-                    onClose={() => {
-                      setIsOpenedMap(
-                        results.rows.reduce((map, row) => {
-                          map[getId(row.doc)] = false;
-                          return map;
-                        }, {})
-                      );
-                    }}
-                  />
-                </li>
-              ))}
+              {results.rows
+                .filter(row => !excluded.has(getId(row.doc)))
+                .map(({ doc }) => (
+                  <li key={getId(doc)}>
+                    <ModerationCard
+                      user={user}
+                      reviewAction={doc}
+                      isOpened={isOpenedMap[getId(doc)] || false}
+                      isLockedBy={undefined /* TODO wire */}
+                      onOpen={() => {
+                        setIsOpenedMap(
+                          results.rows.reduce((map, row) => {
+                            map[getId(row.doc)] = getId(row.doc) === getId(doc);
+                            return map;
+                          }, {})
+                        );
+                      }}
+                      onSuccess={(moderationActionType, reviewActionId) => {
+                        if (
+                          moderationActionType ===
+                            'ModerateRapidPREreviewAction' ||
+                          moderationActionType ===
+                            'IgnoreReportRapidPREreviewAction'
+                        ) {
+                          setExcluded(
+                            new Set(Array.from(excluded).concat(reviewActionId))
+                          );
+                        }
+                      }}
+                      onClose={() => {
+                        setIsOpenedMap(
+                          results.rows.reduce((map, row) => {
+                            map[getId(row.doc)] = false;
+                            return map;
+                          }, {})
+                        );
+                      }}
+                    />
+                  </li>
+                ))}
             </ul>
           </div>
         )}
