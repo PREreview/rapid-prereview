@@ -55,8 +55,24 @@ export default function HeaderBar({ onClickMenuButton }) {
                 }
                 target={process.env.IS_EXTENSION ? '_blank' : undefined}
               >
-                Settings
+                Profile Settings
               </MenuLink>
+
+              {user.isAdmin && (
+                <MenuLink
+                  as={process.env.IS_EXTENSION ? undefined : Link}
+                  to={process.env.IS_EXTENSION ? undefined : '/admin'}
+                  href={
+                    process.env.IS_EXTENSION
+                      ? `${process.env.API_URL}/admin`
+                      : undefined
+                  }
+                  target={process.env.IS_EXTENSION ? '_blank' : undefined}
+                >
+                  Admin Settings
+                </MenuLink>
+              )}
+
               {!!(role && role.isModerator && !role.isModerated) && (
                 <MenuLink
                   as={process.env.IS_EXTENSION ? undefined : Link}

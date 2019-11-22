@@ -133,6 +133,9 @@ const ddoc = {
             index('isRoleOfId', doc.isRoleOf);
           }
 
+          index('isModerated', !!doc.isModerated, { facet: true });
+          index('isModerator', !!doc.isModerator, { facet: true });
+
           var startDate = doc.startDate
             ? new Date(doc.startDate).getTime()
             : new Date('0000').getTime();

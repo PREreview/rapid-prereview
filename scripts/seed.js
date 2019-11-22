@@ -44,15 +44,18 @@ const N_USERS = 50;
   const users = [];
   console.log('Registering users...');
   for (let i = 0; i < N_USERS; i++) {
-    const action = await db.post({
-      '@type': 'RegisterAction',
-      actionStatus: 'CompletedActionStatus',
-      agent: {
-        '@type': 'Person',
-        orcid: createRandomOrcid(),
-        name: faker.name.findName()
-      }
-    });
+    const action = await db.post(
+      {
+        '@type': 'RegisterAction',
+        actionStatus: 'CompletedActionStatus',
+        agent: {
+          '@type': 'Person',
+          orcid: createRandomOrcid(),
+          name: faker.name.findName()
+        }
+      },
+      { isModerator: true }
+    );
     console.log(`\t- ${action.result.name} (${action.result.orcid})`);
 
     let user = action.result;

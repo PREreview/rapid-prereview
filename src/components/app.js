@@ -14,7 +14,7 @@ import { StoresProvider } from '../contexts/store-context';
 import Login from './login';
 import Settings from './settings';
 import Profile from './profile';
-import PrivateRoute from './private-route';
+import PrivateRoute, { AdminRoute } from './private-route';
 import ModeratorRoute from './moderator-route';
 import ExtensionSplash from './extension-splash';
 import ToCPage from './toc-page';
@@ -22,6 +22,7 @@ import CodeOfConduct from './code-of-conduct';
 import NotFound from './not-found';
 import API from './api';
 import Moderate from './moderate';
+import AdminPanel from './admin-panel';
 
 // kick off the polyfill!
 smoothscroll.polyfill();
@@ -64,6 +65,9 @@ export default function App({ user }) {
                 <PrivateRoute exact={true} path="/settings">
                   <Settings />
                 </PrivateRoute>
+                <AdminRoute exact={true} path="/admin">
+                  <AdminPanel />
+                </AdminRoute>
                 <ModeratorRoute exact={true} path="/moderate">
                   <Moderate />
                 </ModeratorRoute>

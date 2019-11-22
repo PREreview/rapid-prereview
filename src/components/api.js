@@ -133,6 +133,34 @@ export default function API() {
 
             <tr>
               <td>
+                <code>isModerated</code>
+              </td>
+              <td>
+                A boolean indicating that the role has been moderated following
+                repeated violations of the{' '}
+                <XLink href="/code-of-conduct" to="/code-of-conduct">
+                  Code of Conduct
+                </XLink>
+              </td>
+              <td>
+                Boolean (one of <code>true</code>, <code>false</code>)
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <code>isModerator</code>
+              </td>
+              <td>
+                A boolean indicating that the role has moderator permissions
+              </td>
+              <td>
+                Boolean (one of <code>true</code>, <code>false</code>)
+              </td>
+            </tr>
+
+            <tr>
+              <td>
                 <code>isRoleOfId</code>
               </td>
               <td>

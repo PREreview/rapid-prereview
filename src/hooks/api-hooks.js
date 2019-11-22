@@ -685,3 +685,73 @@ export function useActionsSearchResults(
 
   return [results, progress, append];
 }
+
+/**
+ * Search using the `roles` index
+ */
+export function useRolesSearchResults(
+  search, // the ?qs part of the url
+  append = false
+) {
+  const [progress, setProgress] = useState({
+    isActive: false,
+    error: null
+  });
+
+  const [results, setResults] = useState(DEFAULT_SEARCH_RESULTS);
+
+  useEffect(() => {
+    setProgress({
+      isActive: true,
+      error: null
+    });
+    if (!append) {
+      setResults(DEFAULT_SEARCH_RESULTS);
+    }
+
+    const controller = new AbortController();
+
+    fetch(`${process.env.API_URL}/api/role/${search}`, {
+      signal: controller.signal
+    })
+      .then(resp => {
+        if (resp.ok) {
+          return resp.json();
+        } else {
+          return resp.json().then(
+            body => {
+              throw createError(resp.status, body.description || body.name);
+            },
+            err => {
+              throw createError(resp.status, 'something went wrong');
+            }
+          );
+        }
+      })
+      .then(data => {
+        if (append) {
+          setResults(prevResults => {
+            return Object.assign(data, {
+              rows: prevResults.rows.concat(data.rows)
+            });
+          });
+        } else {
+          setResults(data);
+        }
+
+        setProgress({ isActive: false, error: null });
+      })
+      .catch(err => {
+        if (err.name !== 'AbortError') {
+          setProgress({ isActive: false, error: err });
+          setResults(DEFAULT_SEARCH_RESULTS);
+        }
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, [search, append]);
+
+  return [results, progress, append];
+}

@@ -1,0 +1,19 @@
+.admin-panel {
+  padding: calc(var(--header-bar-height) + var(--lgrd)) var(--mgrd) var(--lgrd);
+  max-width: 900px;
+  min-height: 100vh;
+  margin: 0 auto;
+
+  & .admin-panel__header {
+    font: var(--ui-header-font);
+    border-bottom: 1px solid var(--ruling-color);
+    padding-bottom: var(--sgrd);
+    margin-bottom: var(--lgrd);
+    display: flex;
+    justify-content: space-between;
+  }
+  & .admin-panel__card-list {
+    list-style: none;
+    padding: 0;
+  }
+}
