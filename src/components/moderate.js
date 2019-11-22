@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { MdChevronRight, MdFirstPage } from 'react-icons/md';
 import { useUser } from '../contexts/user-context';
 import { getId } from '../utils/jsonld';
 import HeaderBar from './header-bar';
@@ -16,7 +15,9 @@ export default function Moderate() {
 
   const search = createModerationQs({ bookmark });
 
-  const [results, progress] = useActionsSearchResults(search);
+  // TODO set of exluded content
+
+  const [results, progress] = useActionsSearchResults(search, !!bookmark);
 
   const [isOpenedMap, setIsOpenedMap] = useState(
     results.rows.reduce((map, row) => {
@@ -33,6 +34,10 @@ export default function Moderate() {
     );
   }, [results]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="moderate">
       <Helmet>
@@ -45,10 +50,9 @@ export default function Moderate() {
           <span>Moderate Content</span>
           <span>{results.total_rows} Flagged Reviews</span>
         </header>
+
         {results.total_rows === 0 && !progress.isActive ? (
-          <div>No activity yet.</div>
-        ) : bookmark && results.bookmark === bookmark && !progress.isActive ? (
-          <div>No more activity.</div>
+          <div>No reported reviews.</div>
         ) : (
           <div>
             <ul className="moderate__card-list">
@@ -58,6 +62,7 @@ export default function Moderate() {
                     user={user}
                     reviewAction={doc}
                     isOpened={isOpenedMap[getId(doc)] || false}
+                    isLockedBy={undefined /* TODO wire */}
                     onOpen={() => {
                       setIsOpenedMap(
                         results.rows.reduce((map, row) => {
@@ -65,6 +70,10 @@ export default function Moderate() {
                           return map;
                         }, {})
                       );
+                    }}
+                    onSuccess={moderationAction => {
+                      // TODO add a `exclude` params to the search qs so that we refresh the results in a safe way
+                      console.log('moderationAction', moderationAction);
                     }}
                     onClose={() => {
                       setIsOpenedMap(
@@ -83,26 +92,17 @@ export default function Moderate() {
 
         <div>
           {/* Cloudant returns the same bookmark when it hits the end of the list */}
-          {!!bookmark && (
-            <Button
-              onClick={() => {
-                setBookmark(null);
-              }}
-            >
-              <MdFirstPage /> First page
-            </Button>
-          )}
-
           {!!(
             results.rows.length < results.total_rows &&
             results.bookmark !== bookmark
           ) && (
             <Button
-              onClick={() => {
+              onClick={e => {
+                e.preventDefault();
                 setBookmark(results.bookmark);
               }}
             >
-              Next Page <MdChevronRight />
+              More
             </Button>
           )}
         </div>

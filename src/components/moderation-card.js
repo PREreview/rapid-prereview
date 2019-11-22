@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { MdExpandLess, MdExpandMore, MdLock } from 'react-icons/md';
 import { format } from 'date-fns';
-import { getId } from '../utils/jsonld';
+import { getId, unprefix } from '../utils/jsonld';
 import Collapse from './collapse';
 import IconButton from './icon-button';
 import Value from './value';
@@ -19,22 +19,24 @@ export default function ModerationCard({
   user,
   reviewAction,
   isOpened,
+  isLockedBy,
   onOpen,
-  onClose
+  onClose,
+  onSuccess
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [role, fetchRoleProgress] = useRole(reviewAction.agent);
+  const [modalFrame, setModalFrame] = useState(null);
+  const [reviewActionAgent, fetchReviewActionAgentProgress] = useRole(
+    reviewAction.agent
+  );
+  const [lockerRole, fetchLockerRole] = useRole(isLockedBy);
 
   const reports = getActiveReports(reviewAction);
   const textAnswers = getTextAnswers(reviewAction);
 
-  /* !TODO: @sballesteros wire the lock state of the card here */
-  const isLocked = false;
-
   return (
     <div
       className={classNames('moderation-card', {
-        'moderation-card--locked': isLocked
+        'moderation-card--locked': !!isLockedBy
       })}
     >
       {/* The card body */}
@@ -45,7 +47,8 @@ export default function ModerationCard({
             className="moderation-card__header-badge"
           />
           <span className="moderation-card__header-name">
-            {role && role.name}
+            {reviewActionAgent &&
+              (reviewActionAgent.name || unprefix(getId(reviewActionAgent)))}
           </span>
         </div>
         <div className="moderation-card__header__right">
@@ -123,18 +126,22 @@ export default function ModerationCard({
           </ul>
 
           <Controls className="moderation-card__expansion-controls">
+            {user.isAdmin &&
+              reviewActionAgent &&
+              !reviewActionAgent.isModerated && (
+                <Button
+                  primary={true}
+                  onClick={() => {
+                    setModalFrame('ModerateRoleAction');
+                  }}
+                >
+                  Block user
+                </Button>
+              )}
             <Button
               primary={true}
               onClick={() => {
-                setIsModalOpen(true);
-              }}
-            >
-              Block user
-            </Button>
-            <Button
-              primary={true}
-              onClick={() => {
-                setIsModalOpen(true);
+                setModalFrame('ModerateRapidPREreviewAction');
               }}
             >
               Retract review
@@ -142,25 +149,27 @@ export default function ModerationCard({
             <Button
               primary={true}
               onClick={() => {
-                setIsModalOpen(true);
+                setModalFrame('IgnoreReportRapidPREreviewAction');
               }}
             >
               Ignore report
             </Button>
 
-            {isModalOpen && (
+            {modalFrame && (
               <ModerationCardModal
+                defaultFrame={modalFrame}
                 user={user}
                 reviewAction={reviewAction}
                 onClose={() => {
-                  setIsModalOpen(false);
+                  setModalFrame(null);
                 }}
+                onSuccess={onSuccess}
               />
             )}
           </Controls>
         </div>
       </Collapse>
-      {isLocked && (
+      {!!lockerRole && (
         <div className="moderation-card__lock-overlay">
           <div className="moderation-card__lock-overal__content">
             <div className="moderation-card__lock-overlay__lock-icon-container">
@@ -169,11 +178,13 @@ export default function ModerationCard({
             <span className="moderation-card__lock-overlay__message">
               This report is currently being reviewed by another moderator.
             </span>
-            {/*!TODO: @sballesteros wire the badge here */}
+
             <span className="moderation-card__lock-overlay__agent">
-              <RoleBadge roleId={getId(reports[0].agent)} />
+              <RoleBadge roleId={getId(lockerRole)} />
               <span className="moderation-card__lock-overlay__agent-name">
-                [Moderator Name]
+                {lockerRole
+                  ? lockerRole.name || unprefix(getId(lockerRole))
+                  : null}
               </span>
             </span>
           </div>
@@ -206,85 +217,205 @@ ModerationCard.propTypes = {
       })
     ).isRequired
   }).isRequired,
+  isLockedBy: PropTypes.string, // the roleId of a moderator currently viewing the card
   isOpened: PropTypes.bool.isRequired,
   onOpen: PropTypes.func.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired
 };
 
-function ModerationCardModal({ onClose, reviewAction, user }) {
-  const [frame, setFrame] = useState('action');
+function ModerationCardModal({
+  onClose,
+  onSuccess,
+  reviewAction,
+  user,
+  defaultFrame
+}) {
+  const [frame, setFrame] = useState(defaultFrame);
   const [post, postProgress] = usePostAction();
   const ref = useRef();
 
   return (
     <Modal title="Retract review">
-      {frame === 'action' ? (
-        <Fragment>
-          <p>
-            Retracting the review will prevent reader to see its content or
-            existence.
-          </p>
+      <div className="moderation-card-modal">
+        {frame === 'ModerateRapidPREreviewAction' ? (
+          <Fragment>
+            <p>
+              Retracting the review will prevent reader to see its content or
+              existence.
+            </p>
 
-          <label htmlFor="retraction-reason">Retraction Reason</label>
+            <label htmlFor="retraction-reason">Retraction Reason</label>
 
-          <textarea
-            ref={ref}
-            id="retraction-reason"
-            name="moderationReason"
-            rows="4"
-          />
+            <textarea
+              ref={ref}
+              id="retraction-reason"
+              name="moderationReason"
+              rows="4"
+            />
 
-          <Controls error={postProgress.error}>
-            <Button
-              disabled={postProgress.isActive}
-              onClick={() => {
-                onClose();
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              disabled={postProgress.isActive}
-              isWaiting={postProgress.isActive}
-              onClick={() => {
-                post(
-                  {
-                    '@type': 'ModerateRapidPREreviewAction',
-                    actionStatus: 'CompletedActionStatus',
-                    agent: getId(user.defaultRole),
-                    object: getId(reviewAction),
-                    moderationReason: ref.current.value
-                  },
-                  body => {
-                    setFrame('success');
-                  }
-                );
-              }}
-            >
-              Confirm
-            </Button>
-          </Controls>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <p>Success: the review has now been retracted.</p>
+            <Controls error={postProgress.error}>
+              <Button
+                disabled={postProgress.isActive}
+                onClick={() => {
+                  onClose();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={postProgress.isActive}
+                isWaiting={postProgress.isActive}
+                onClick={() => {
+                  post(
+                    {
+                      '@type': 'ModerateRapidPREreviewAction',
+                      actionStatus: 'CompletedActionStatus',
+                      agent: getId(user.defaultRole),
+                      object: getId(reviewAction),
+                      moderationReason: ref.current.value
+                    },
+                    body => {
+                      onSuccess(body);
+                      setFrame('success');
+                    }
+                  );
+                }}
+              >
+                Confirm
+              </Button>
+            </Controls>
+          </Fragment>
+        ) : frame === 'ModerateRoleAction' ? (
+          <Fragment>
+            <p>
+              Blocking the user will prevent the persona used for this review to
+              post further content.
+            </p>
 
-          <Controls>
-            <Button
-              onClick={() => {
-                onClose();
-              }}
-            >
-              Close
-            </Button>
-          </Controls>
-        </Fragment>
-      )}
+            <label htmlFor="retraction-reason">Blocking Reason</label>
+
+            <textarea
+              ref={ref}
+              id="retraction-reason"
+              name="moderationReason"
+              rows="4"
+            />
+
+            <Controls error={postProgress.error}>
+              <Button
+                disabled={postProgress.isActive}
+                onClick={() => {
+                  onClose();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={postProgress.isActive}
+                isWaiting={postProgress.isActive}
+                onClick={() => {
+                  post(
+                    {
+                      '@type': 'ModerateRoleAction',
+                      actionStatus: 'CompletedActionStatus',
+                      agent: getId(user),
+                      object: getId(reviewAction.agent),
+                      moderationReason: ref.current.value
+                    },
+                    body => {
+                      onSuccess(body);
+                      setFrame('success');
+                    }
+                  );
+                }}
+              >
+                Confirm
+              </Button>
+            </Controls>
+          </Fragment>
+        ) : frame === 'IgnoreReportRapidPREreviewAction' ? (
+          <Fragment>
+            <p>
+              Ignoring the user reports will remove the review from the
+              moderation page and ensure that the review remains displayed going
+              forward.
+            </p>
+
+            <label htmlFor="retraction-reason">Reason</label>
+
+            <textarea
+              ref={ref}
+              id="retraction-reason"
+              name="moderationReason"
+              rows="4"
+            />
+
+            <Controls error={postProgress.error}>
+              <Button
+                disabled={postProgress.isActive}
+                onClick={() => {
+                  onClose();
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                disabled={postProgress.isActive}
+                isWaiting={postProgress.isActive}
+                onClick={() => {
+                  post(
+                    {
+                      '@type': 'IgnoreReportRapidPREreviewAction',
+                      actionStatus: 'CompletedActionStatus',
+                      agent: getId(user.defaultRole),
+                      object: getId(reviewAction),
+                      moderationReason: ref.current.value
+                    },
+                    body => {
+                      onSuccess(body);
+                      setFrame('success');
+                    }
+                  );
+                }}
+              >
+                Confirm
+              </Button>
+            </Controls>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p>{`Success: ${
+              frame === 'ModerateRapidPREreviewAction'
+                ? 'the review has now been retracted'
+                : frame === 'IgnoreReportRapidPREreviewAction'
+                ? 'the moderation reports have been ignored and will now longer be displayed here'
+                : 'the user personna has been blocked and won’t be able to post further reviews'
+            }.`}</p>
+
+            <Controls>
+              <Button
+                onClick={() => {
+                  onClose();
+                }}
+              >
+                Close
+              </Button>
+            </Controls>
+          </Fragment>
+        )}
+      </div>
     </Modal>
   );
 }
 ModerationCardModal.propTypes = {
+  defaultFrame: PropTypes.oneOf([
+    'ModerateRoleAction',
+    'ModerateRapidPREreviewAction',
+    'IgnoreReportRapidPREreviewAction'
+  ]).isRequired,
   user: PropTypes.object.isRequired,
   reviewAction: PropTypes.object.isRequired,
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired
 };

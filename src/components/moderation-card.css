@@ -170,3 +170,11 @@
     margin-left: var(--sgrd);
   }
 }
+
+
+.moderation-card-modal {
+  & textarea {
+    width: 100%;
+    margin: var(--xsgrd) 0 var(--mgrd) 0;
+  }
+}

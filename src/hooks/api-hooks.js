@@ -620,7 +620,8 @@ export function useUserRoles(user) {
  * Search using the `actions` index
  */
 export function useActionsSearchResults(
-  search // the ?qs part of the url
+  search, // the ?qs part of the url
+  append = false
 ) {
   const [progress, setProgress] = useState({
     isActive: false,
@@ -634,7 +635,9 @@ export function useActionsSearchResults(
       isActive: true,
       error: null
     });
-    setResults(DEFAULT_SEARCH_RESULTS);
+    if (!append) {
+      setResults(DEFAULT_SEARCH_RESULTS);
+    }
 
     const controller = new AbortController();
 
@@ -656,7 +659,16 @@ export function useActionsSearchResults(
         }
       })
       .then(data => {
-        setResults(data);
+        if (append) {
+          setResults(prevResults => {
+            return Object.assign(data, {
+              rows: prevResults.rows.concat(data.rows)
+            });
+          });
+        } else {
+          setResults(data);
+        }
+
         setProgress({ isActive: false, error: null });
       })
       .catch(err => {
@@ -669,7 +681,7 @@ export function useActionsSearchResults(
     return () => {
       controller.abort();
     };
-  }, [search]);
+  }, [search, append]);
 
-  return [results, progress];
+  return [results, progress, append];
 }

@@ -39,6 +39,7 @@ const ddoc = {
         name: 'perfield',
         default: 'english',
         fields: {
+          '@id': 'keyword',
           '@type': 'keyword',
           agentId: 'keyword',
           isReported: 'keyword',
@@ -50,6 +51,7 @@ const ddoc = {
           doc['@type'] === 'RapidPREreviewAction' ||
           doc['@type'] === 'RequestForRapidPREreviewAction'
         ) {
+          index('@id', doc['@id']);
           index('@type', doc['@type'], { facet: true });
           index('actionStatus', doc.actionStatus, { facet: true });
 
