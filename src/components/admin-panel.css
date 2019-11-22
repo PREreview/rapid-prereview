@@ -14,5 +14,45 @@
   & .admin-panel__card-list {
     list-style: none;
     padding: 0;
+    font: var(--ui-basic-font);
+  }
+  & .admin-panel__card-list-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--xsgrd);
+    padding: var(--xxsgrd);
+    &:hover {
+      background-color: var(--xlight-grey);
+    }
+
+    & .admin-panel__card-list-item__left {
+      display: flex;
+      align-items: center;
+      & .role-badge-menu {
+        margin-right: var(--xsgrd);
+      }
+    }
+    & .admin-panel__card-list-item__right {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  & .admin-panel__remove-button {
+    margin-left: var(--sgrd);
+  }
+
+  & .admin-panel__remove-button-icon {
+    width: var(--sgrd) !important;
+    height: var(--sgrd) !important;
+  }
+
+  & .admin-panel__page-nav {
+    display: flex;
+    justify-content: center;
+
+    & .button {
+      margin: var(--xsgrd);
+    }
   }
 }

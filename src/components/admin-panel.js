@@ -10,6 +10,7 @@ import { useRolesSearchResults } from '../hooks/api-hooks';
 import Button from './button';
 import IconButton from './icon-button';
 import { RoleBadgeUI } from './role-badge';
+import LabelStyle from './label-style';
 
 export default function AdminPanel() {
   const [user] = useUser();
@@ -33,35 +34,37 @@ export default function AdminPanel() {
       <section>
         <header className="admin-panel__header">
           <span>Manage moderators</span>
+          <Button primary={true}>Add moderator</Button>
         </header>
 
         {results.total_rows === 0 && !progress.isActive ? (
           <div>No moderators.</div>
         ) : (
           <div>
-            <Button primary={true}>Add moderator</Button>
-
             <ul className="admin-panel__card-list">
               {results.rows.map(({ doc: role }) => (
-                <li key={getId(role)}>
-                  <RoleBadgeUI role={role} />
-                  <span>{role.name || unprefix(getId(role))}</span>
-                  <span>
-                    {role['@type'] === 'AnonymousReviewerRole'
-                      ? 'Anonymous'
-                      : 'Public'}
-                  </span>
-
-                  <IconButton>
-                    <MdClose />
-                  </IconButton>
+                <li key={getId(role)} className="admin-panel__card-list-item">
+                  <div className="admin-panel__card-list-item__left">
+                    <RoleBadgeUI role={role} />
+                    <span>{role.name || unprefix(getId(role))}</span>
+                  </div>
+                  <div className="admin-panel__card-list-item__right">
+                    <LabelStyle>
+                      {role['@type'] === 'AnonymousReviewerRole'
+                        ? 'Anonymous'
+                        : 'Public'}
+                    </LabelStyle>
+                    <IconButton className="admin-panel__remove-button">
+                      <MdClose className="admin-panel__remove-button-icon" />
+                    </IconButton>
+                  </div>
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        <div>
+        <div className="admin-panel__page-nav">
           {/* Cloudant returns the same bookmark when it hits the end of the list */}
           {!!bookmark && (
             <Button

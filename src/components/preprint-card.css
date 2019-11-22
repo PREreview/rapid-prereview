@@ -13,10 +13,10 @@
   border-bottom: 1px solid var(--light-grey);
 
   transition: box-shadow 0.1s;
-  /* &:hover {
+  &:hover {
     z-index: 500;
-    box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.1);
-  }  */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+  }
 
   & .preprint-card__cta-button {
     background-color: transparent;
@@ -412,6 +412,7 @@
   max-width: 100%;
   position: relative;
 
+  background-color: var(--xxlight-grey);
   & .preprint-card__view-more {
     display: flex;
 
