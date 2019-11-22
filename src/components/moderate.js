@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { MdChevronRight, MdFirstPage } from 'react-icons/md';
 import { useUser } from '../contexts/user-context';
@@ -17,6 +17,21 @@ export default function Moderate() {
   const search = createModerationQs({ bookmark });
 
   const [results, progress] = useActionsSearchResults(search);
+
+  const [isOpenedMap, setIsOpenedMap] = useState(
+    results.rows.reduce((map, row) => {
+      map[getId(row.doc)] = false;
+      return map;
+    }, {})
+  );
+  useEffect(() => {
+    setIsOpenedMap(
+      results.rows.reduce((map, row) => {
+        map[getId(row.doc)] = false;
+        return map;
+      }, {})
+    );
+  }, [results]);
 
   return (
     <div className="moderate">
@@ -39,7 +54,27 @@ export default function Moderate() {
             <ul className="moderate__card-list">
               {results.rows.map(({ doc }) => (
                 <li key={getId(doc)}>
-                  <ModerationCard user={user} reviewAction={doc} />
+                  <ModerationCard
+                    user={user}
+                    reviewAction={doc}
+                    isOpened={isOpenedMap[getId(doc)] || false}
+                    onOpen={() => {
+                      setIsOpenedMap(
+                        results.rows.reduce((map, row) => {
+                          map[getId(row.doc)] = getId(row.doc) === getId(doc);
+                          return map;
+                        }, {})
+                      );
+                    }}
+                    onClose={() => {
+                      setIsOpenedMap(
+                        results.rows.reduce((map, row) => {
+                          map[getId(row.doc)] = false;
+                          return map;
+                        }, {})
+                      );
+                    }}
+                  />
                 </li>
               ))}
             </ul>

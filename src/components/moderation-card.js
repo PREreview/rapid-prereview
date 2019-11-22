@@ -13,11 +13,15 @@ import PreprintPreview from './preprint-preview';
 import { getTextAnswers, getActiveReports } from '../utils/stats';
 import RoleBadge from './role-badge';
 import Modal from './modal';
-import { usePostAction } from '../hooks/api-hooks';
-import { useRole } from '../hooks/api-hooks';
+import { usePostAction, useRole } from '../hooks/api-hooks';
 
-export default function ModerationCard({ user, reviewAction }) {
-  const [isOpened, setIsOpened] = useState(false);
+export default function ModerationCard({
+  user,
+  reviewAction,
+  isOpened,
+  onOpen,
+  onClose
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [role, fetchRoleProgress] = useRole(reviewAction.agent);
 
@@ -86,7 +90,11 @@ export default function ModerationCard({ user, reviewAction }) {
         <IconButton
           className="preprint-card__expansion-toggle"
           onClick={e => {
-            setIsOpened(!isOpened);
+            if (isOpened) {
+              onClose();
+            } else {
+              onOpen();
+            }
           }}
         >
           {isOpened ? <MdExpandLess /> : <MdExpandMore />}
@@ -197,7 +205,10 @@ ModerationCard.propTypes = {
         ])
       })
     ).isRequired
-  }).isRequired
+  }).isRequired,
+  isOpened: PropTypes.bool.isRequired,
+  onOpen: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 };
 
 function ModerationCardModal({ onClose, reviewAction, user }) {

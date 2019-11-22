@@ -17,8 +17,6 @@ export default function TextAnswers({
 
   const isLoggedIn = !!user;
 
-  console.log(actions);
-
   return (
     <div className="text-answers">
       <dl>
