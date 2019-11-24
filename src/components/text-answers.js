@@ -46,7 +46,7 @@ export default function TextAnswers({
                             onModerate(actionId);
                           }}
                         >
-                          Report Author’s Review
+                          Report Review
                         </MenuItem>
                       )}
                     </RoleBadge>

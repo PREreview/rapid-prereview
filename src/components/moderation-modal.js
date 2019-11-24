@@ -1,8 +1,9 @@
-import React, { useRef } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from './modal';
 import Controls from './controls';
 import Button from './button';
+import XLink from './xlink';
 
 export default function ModerationModal({
   title,
@@ -10,35 +11,62 @@ export default function ModerationModal({
   onSubmit,
   onCancel
 }) {
+  const [frame, setFrame] = useState('submit');
+
   const ref = useRef();
 
   return (
     <Modal title={title}>
       <div className="moderation-modal">
-        <label htmlFor="moderation-reason">Reason</label>
+        {frame === 'submit' ? (
+          <Fragment>
+            <p>
+              Reviews need to respect the{' '}
+              <XLink to="/code-of-conduct" href="/code-of-conduct">
+                code of conduct
+              </XLink>
+              .
+            </p>
 
-        <textarea
-          ref={ref}
-          id="moderation-reason"
-          name="moderationReason"
-          rows="4"
-        />
+            <label htmlFor="moderation-reason">Report reason</label>
 
-        <Controls error={moderationProgress.error}>
-          <Button onClick={onCancel} disabled={moderationProgress.isActive}>
-            Cancel
-          </Button>
-          <Button
-            disabled={moderationProgress.isActive}
-            isWaiting={moderationProgress.isActive}
-            onClick={() => {
-              const { value } = ref.current;
-              onSubmit(value || undefined);
-            }}
-          >
-            Submit
-          </Button>
-        </Controls>
+            <textarea
+              ref={ref}
+              id="moderation-reason"
+              name="moderationReason"
+              rows="4"
+            />
+
+            <Controls error={moderationProgress.error}>
+              <Button onClick={onCancel} disabled={moderationProgress.isActive}>
+                Cancel
+              </Button>
+              <Button
+                disabled={moderationProgress.isActive}
+                isWaiting={moderationProgress.isActive}
+                onClick={() => {
+                  const { value } = ref.current;
+                  onSubmit(value || undefined, () => {
+                    setFrame('success');
+                  });
+                }}
+              >
+                Submit
+              </Button>
+            </Controls>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <p>
+              Your report was successfully submitted. Thank you for your
+              contribution.
+            </p>
+
+            <Controls>
+              <Button onClick={onCancel}>Close</Button>
+            </Controls>
+          </Fragment>
+        )}
       </div>
     </Modal>
   );

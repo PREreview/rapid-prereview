@@ -315,7 +315,7 @@ function ShellContentRead({ user, preprint, actions, fetchActionsProgress }) {
         <ModerationModal
           title={`Report review as violating the Code of Conduct`}
           moderationProgress={postProgress}
-          onSubmit={moderationReason => {
+          onSubmit={(moderationReason, onSuccess) => {
             post(
               cleanup({
                 '@type': 'ReportRapidPREreviewAction',
@@ -325,7 +325,7 @@ function ShellContentRead({ user, preprint, actions, fetchActionsProgress }) {
                 moderationReason
               }),
               body => {
-                setModeratedReviewId(null);
+                onSuccess();
               }
             );
           }}
