@@ -35,11 +35,6 @@ export function dehydrateAction(action) {
         );
         break;
 
-      case 'moderationAction':
-        // TODO
-        // only keep ModerateRapidPREreviewAction ?
-        break;
-
       default:
         compacted[key] = action[key];
         break;

@@ -352,9 +352,10 @@ PreprintCard.propTypes = {
 
 export function AnimatedNumber({ value, isAnimating }) {
   const previousValue = usePrevious(value);
+
   return (
     <div className="preprint-card__animated-number-container">
-      {isAnimating && value !== previousValue && isAnimating && (
+      {isAnimating && value !== previousValue && (
         <div className="preprint-card__animated-number-bg" />
       )}
       <span

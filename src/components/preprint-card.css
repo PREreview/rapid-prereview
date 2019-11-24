@@ -339,7 +339,7 @@
   }
   & .preprint-card__animated-number--animating {
     animation-name: flicker;
-    animation-iteration-count: infinite;
+    animation-iteration-count: 1;
     animation-duration: 0.1s;
     color: var(--ui-basic-font-color--light);
     text-shadow: 0 5px 1px lightgrey;

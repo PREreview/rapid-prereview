@@ -49,6 +49,8 @@ export default function ShellContent({
   const hasReviewed = checkIfHasReviewed(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
   const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
 
+  console.log({ actions });
+
   return (
     <div className="shell-content">
       <header className="shell-content__header">
