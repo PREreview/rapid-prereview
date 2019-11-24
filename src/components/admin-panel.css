@@ -56,3 +56,9 @@
     }
   }
 }
+
+.admin-panel-add-modal, .admin-panel-remove-modal {
+  & .controls {
+    margin-top: var(--mgrd);
+  }
+}
