@@ -1,5 +1,6 @@
 .rapid-pre-review-logo {
   height: var(--xlgrd);
+  position: relative;
   /* max-width: 150px; */
   & :any-link {
     text-decoration: none !important;
@@ -42,8 +43,8 @@
   }
 
   &.rapid-pre-review-logo--responsive {
-    & .rapid-pre-review-logo__outbreak-science {
-      @media (--mobile-portrait) {
+    & .rapid-pre-review-logo__type {
+      @media (--narrow-screen) {
         display: none;
       }
     }
@@ -60,6 +61,17 @@
     & .rapid-pre-review-logo__rapid-prereview {
       font-size: 11.5px;
       line-height: 13px;
+    }
+  }
+
+  & .rapid-pre-review-logo__beta {
+    color: var(--ui-basic-font-color--light);
+    position: absolute;
+    top: -10px;
+    right: 2px;
+    font-size: 10px;
+    @media (--narrow-screen) {
+      display: none;
     }
   }
 }

@@ -36,6 +36,7 @@ export default function RapidPreReviewLogo({
             </span>
           </div>
         </div>
+        <div className="rapid-pre-review-logo__beta">beta</div>
       </XLink>
     </div>
   );
