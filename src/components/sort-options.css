@@ -4,7 +4,7 @@
   padding: var(--xsgrd) 0;
   margin-bottom: var(--mgrd);
   color: var(--ui-basic-font-color--light);
-  border-bottom: 1px solid var(--ruling-color--light);
+  border-bottom: 1px solid var(--ruling-color);
   text-transform: uppercase;
   font: var(--ui-basic-font--small);
 

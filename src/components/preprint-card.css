@@ -79,9 +79,13 @@
         height: 100%;
       }
     }
-    &:active {
+    &:active,
+    &:focus {
       & .preprint-card__cta-button__contents {
         background-color: var(--prereview-black);
+        & .preprint-card__count-label {
+          color: var(--prereview-white);
+        }
       }
     }
   }
@@ -152,16 +156,24 @@
     align-items: baseline;
     align-items: first-baseline;
 
-    padding: var(--sgrd) var(--xsgrd) var(--xsgrd) var(--xsgrd);
+    padding: var(--sgrd) var(--sgrd) var(--xsgrd) var(--sgrd);
 
     @media (--mobile-portrait) {
       padding-left: var(--xsgrd);
       flex-wrap: wrap;
     }
+
+    & .preprint-card__header__left {
+      display: flex;
+      align-items: center;
+      margin: 0 var(--sgrd) var(--xsgrd) 0;
+    }
   }
 
   & .preprint-card__title {
     font: var(--ui-header-2-font);
+
+    align-items: center;
     &:any-link {
       color: var(--prereview-black);
       text-decoration: none;
@@ -170,6 +182,16 @@
         color: var(--link-color);
       }
     }
+
+    & .preprint-card__title__shell-icon {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      position: relative;
+      top: 2px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
   }
   &:hover {
     & .preprint-card__title {
@@ -177,12 +199,17 @@
         text-decoration: underline;
         color: var(--link-color);
       }
+      & .preprint-card__title__shell-icon {
+        opacity: 0.6;
+      }
     }
   }
 
   & .preprint-card__title-text {
     font: inherit;
-    margin: 0 var(--sgrd) var(--xsgrd) 0;
+    display: inline;
+    margin: 0;
+    margin-right: var(--xxsgrd);
   }
 
   & .preprint-card__pub-date {
@@ -195,7 +222,7 @@
 
   & .preprint-card__info-row {
     box-sizing: border-box;
-    padding: 0 var(--xsgrd) var(--mgrd) var(--xsgrd);
+    padding: 0 var(--sgrd) var(--mgrd) var(--sgrd);
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
@@ -275,7 +302,7 @@
     display: flex;
     align-items: center;
     border-top: 1px solid var(--ruling-color--light);
-    padding: var(--xsgrd);
+    padding: var(--xsgrd) var(--xsgrd) var(--xsgrd) var(--sgrd);
     width: 100%;
     height: var(--xlgrd);
     justify-content: space-between;

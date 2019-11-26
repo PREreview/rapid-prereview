@@ -22,6 +22,7 @@ import ScoreBadge from './score-badge';
 import IconButton from './icon-button';
 import TagPill from './tag-pill';
 import AddPrereviewIcon from '../svgs/add_prereview_icon.svg';
+import ShellIcon from '../svgs/shell_icon.svg';
 import Collapse from './collapse';
 import ReviewReader from './review-reader';
 import XLink from './xlink';
@@ -76,22 +77,24 @@ export default function PreprintCard({
       <div className="preprint-card">
         <div className="preprint-card__contents">
           <div className="preprint-card__header">
-            <XLink
-              href={`/${doi || arXivId}`}
-              to={{
-                pathname: `/${doi || arXivId}`,
-                state: {
-                  preprint: omit(preprint, ['potentialAction']),
-                  tab: 'read'
-                }
-              }}
-              className="preprint-card__title"
-            >
-              <Value tagName="h2" className="preprint-card__title-text">
-                {name}
-              </Value>
-            </XLink>
-
+            <div className="preprint-card__header__left">
+              <XLink
+                href={`/${doi || arXivId}`}
+                to={{
+                  pathname: `/${doi || arXivId}`,
+                  state: {
+                    preprint: omit(preprint, ['potentialAction']),
+                    tab: 'read'
+                  }
+                }}
+                className="preprint-card__title"
+              >
+                <Value tagName="h2" className="preprint-card__title-text">
+                  {name}
+                </Value>
+                <ShellIcon className="preprint-card__title__shell-icon" />
+              </XLink>
+            </div>
             <span className="preprint-card__pub-date">
               {format(new Date(datePosted), 'MMM. d, yyyy')}
             </span>
