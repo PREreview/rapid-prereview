@@ -34,9 +34,9 @@ export default function RapidPreReviewLogo({
             <span className="rapid-pre-review-logo__outbreak-science__prereview">
               PREreview
             </span>
+            <span className="rapid-pre-review-logo__beta">beta</span>
           </div>
         </div>
-        <div className="rapid-pre-review-logo__beta">beta</div>
       </XLink>
     </div>
   );

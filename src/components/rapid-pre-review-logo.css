@@ -65,11 +65,19 @@
   }
 
   & .rapid-pre-review-logo__beta {
-    color: var(--ui-basic-font-color--light);
-    position: absolute;
-    top: -10px;
-    right: 2px;
-    font-size: 10px;
+    color: white;
+    position: relative;
+    display: inline-block;
+    background-color: var(--ui-basic-font-color--light);
+    top: 0px;
+    letter-spacing: 0.05em;
+    padding: 0px 2px;
+    margin-left: 4px;
+    border-radius: 2px;
+    font-size: 9px;
+    height: 11px;
+    box-sizing: border-box;
+    line-height: 12px;
     @media (--narrow-screen) {
       display: none;
     }
