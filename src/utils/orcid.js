@@ -1,10 +1,11 @@
+import orcidUtils from 'orcid-utils';
 import passport from 'passport';
 import { Strategy as OrcidStrategy } from 'passport-orcid';
 import Strategy from 'passport-strategy';
-import orcidUtils from 'orcid-utils';
 import DB from '../db/db';
 import { getId, cleanup } from './jsonld';
 import { createError } from './errors';
+import { ADMIN_ORCIDS } from '../constants';
 
 /**
  * See https://support.orcid.org/hc/en-us/articles/360006897674-Structure-of-the-ORCID-Identifier
@@ -52,8 +53,12 @@ export function createPassport(config) {
     };
 
     db.post(action, {
-      isAdmin: process.env.NODE_ENV !== 'production' && params.isAdmin,
-      isModerator: process.env.NODE_ENV !== 'production' && params.isModerator
+      isAdmin:
+        ADMIN_ORCIDS.includes(orcidUtils.toDashFormat(params.orcid)) ||
+        (process.env.NODE_ENV !== 'production' && params.isAdmin),
+      isModerator:
+        ADMIN_ORCIDS.includes(orcidUtils.toDashFormat(params.orcid)) ||
+        (process.env.NODE_ENV !== 'production' && params.isModerator)
     })
       .then(action => {
         done(null, action.result);
@@ -101,7 +106,7 @@ export function createPassport(config) {
     process.env.APP_ROOT_URL ||
     'http://127.0.0.1:3000'}/auth/orcid/callback`;
 
-  if (process.env.NODE_ENV === 'production' && !config.isBeta) {
+  if (process.env.NODE_ENV === 'production') {
     strategy = new OrcidStrategy(
       {
         sandbox: false, // remove this to use the production API

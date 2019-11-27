@@ -22,7 +22,6 @@ const logger = pino({ logLevel: 'info' });
 const config = {
   pino: logger,
   appRootUrl: PRODUCTION_DOMAIN,
-  isBeta: true,
   disableSsr: true
 };
 

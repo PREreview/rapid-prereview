@@ -12,7 +12,6 @@ const config = {
   cache: true,
   pino: logger,
   appRootUrl: PRODUCTION_DOMAIN,
-  isBeta: true,
   disableSsr: true
 };
 
