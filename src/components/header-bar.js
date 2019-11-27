@@ -98,6 +98,7 @@ export default function HeaderBar({ onClickMenuButton }) {
           )}
         </span>
       </div>
+      {/* TODO link to feedback form */}
       <div className="header-bar__give-feedback">Give Feedback</div>
     </div>
   );
