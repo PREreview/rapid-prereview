@@ -26,7 +26,10 @@ const server = http.createServer(app);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
-  logger.info({ port }, `server listenning on port ${port}`);
+  logger.info(
+    { port, NODE_ENV: process.env.NODE_ENV },
+    `server listenning on port ${port}`
+  );
 });
 
 process.once('SIGINT', function() {

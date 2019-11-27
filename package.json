@@ -1,6 +1,6 @@
 {
   "name": "rapid-prereview",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "rapid PREreview (outbreak science)",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,7 @@
     "reset-cache": "babel-node ./scripts/reset-redis.js --cache-only",
     "harvest": "babel-node ./scripts/harvest.js",
     "build:client": "rm -rf ./public/assets/* && cross-env NODE_ENV=production webpack --progress",
-    "build:server": "rm -rf dist; mkdir dist; babel src -d dist",
+    "build:server": "rm -rf dist; mkdir dist; cross-env NODE_ENV=production babel src -d dist",
     "build": "npm run build:client && npm run build:server",
     "just-test": "cross-env COUCH_DOCS_DB_NAME=test-rapid-prereview-docs COUCH_INDEX_DB_NAME=test-rapid-prereview-index COUCH_USERS_DB_NAME=test-rapid-prereview-users mocha --reporter spec --require @babel/register --exit",
     "test": "cross-env COUCH_DOCS_DB_NAME=test-rapid-prereview-docs COUCH_INDEX_DB_NAME=test-rapid-prereview-index COUCH_USERS_DB_NAME=test-rapid-prereview-users npm run just-test",

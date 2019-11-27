@@ -260,5 +260,6 @@ export const ORG = 'Outbreak Science Rapid PREreview';
 export const ADMIN_ORCIDS = [
   '0000-0002-3708-3546', // Sam
   '0000-0002-6109-0367', // Daniela
-  '0000-0002-5090-7722' // Michael
+  '0000-0002-5090-7722', // Michael
+  '0000-0002-2223-4735' // Sebastien (temporary to test the admin features)
 ];
