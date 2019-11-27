@@ -109,8 +109,8 @@ export function createPassport(config) {
   if (process.env.NODE_ENV === 'production') {
     strategy = new OrcidStrategy(
       {
-        sandbox: false, // remove this to use the production API
-        state: true, // remove this if not using sessions
+        sandbox: false,
+        state: true,
         clientID: config.orcidClientId || process.env.ORCID_CLIENT_ID,
         clientSecret:
           config.orcidClientSecret || process.env.ORCID_CLIENT_SECRET,
