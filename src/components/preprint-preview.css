@@ -10,9 +10,12 @@
     margin-bottom: var(--sgrd);
   }
   & .preprint-preview__title {
-    font: var(--ui-header-2-font);
+    font: var(
+      --ui-header-2-font
+    ); /* prevent inheritance of vertical position from extension context */
     hyphens: auto;
     margin: 0;
+    text-transform: none; /* prevent inheritance of vertical position from extension context */
   }
   & .preprint-preview__date {
     font: var(--ui-header-2-font);

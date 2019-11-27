@@ -18,6 +18,22 @@
     padding-left: var(--sgrd);
   }
 
+  & .header-bar__give-feedback {
+    position: fixed;
+    font: var(--ui-basic-font);
+    line-height: 1.25em;
+    background-color: var(--prereview-red);
+    color: white;
+    right: 0px;
+    bottom: var(--xlgrd);
+    width: 56px;
+    padding: var(--xsgrd);
+    padding-right: var(--mgrd);
+    border-top-left-radius: var(--xsgrd);
+    border-bottom-left-radius: var(--xsgrd);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
   /* the hamburder is only visible on narrow screens */
   & .header-bar__menu-button {
     display: none;

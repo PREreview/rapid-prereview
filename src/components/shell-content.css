@@ -39,6 +39,7 @@
 }
 
 .shell-content__tab-button {
+  display: block; /* prevent inheritance of vertical position from extension context */
   & .button__contents {
     padding: 0 var(--sgrd) !important;
     height: var(--xlgrd);

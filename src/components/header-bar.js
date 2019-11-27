@@ -98,6 +98,7 @@ export default function HeaderBar({ onClickMenuButton }) {
           )}
         </span>
       </div>
+      <div className="header-bar__give-feedback">Give Feedback</div>
     </div>
   );
 }
