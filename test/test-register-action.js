@@ -56,6 +56,10 @@ describe('RegisterAction', function() {
       { now: new Date(new Date(now).getTime() + 10) }
     );
 
+    //     console.log(
+    //       require('util').inspect({ registerAction, action }, { depth: null })
+    //     );
+
     assert.equal(action.result.name, 'Peter Jon Smith v2');
     assert(
       new Date(action.result.dateModified).getTime() >
@@ -63,9 +67,8 @@ describe('RegisterAction', function() {
     );
     assert.equal(getId(action.defaultRole), getId(registerAction.defaultRole));
     assert.deepEqual(action.hasRole, registerAction.hasRole);
-
-    //console.log(
-    //  require('util').inspect({ registerAction, action }, { depth: null })
-    //);
+    assert(getId(action.result));
+    assert(action.result['@type']);
+    assert(action.result._rev);
   });
 });

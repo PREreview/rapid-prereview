@@ -11,6 +11,7 @@ import LabelStyle from './label-style';
 import XLink from './xlink';
 import NotFound from './not-found';
 import { ORG } from '../constants';
+import { unprefix } from '../utils/jsonld';
 
 // TODO:
 // - other public persona + number of private persona
@@ -26,7 +27,11 @@ export default function Profile() {
     window.scrollTo(0, 0);
   }, []);
 
-  const user = role && role.isRoleOf;
+  const userId = role && role.isRoleOf;
+  let orcid;
+  if (userId) {
+    orcid = unprefix(userId);
+  }
 
   if (fetchRoleProgress.error && fetchRoleProgress.error.statusCode >= 404) {
     return <NotFound />;
@@ -99,13 +104,13 @@ export default function Profile() {
                 </Fragment>
               )}
 
-              {!!user && (
+              {!!orcid && (
                 <Fragment>
                   <dt>
                     <LabelStyle>ORCID</LabelStyle>
                   </dt>
                   <dd>
-                    <a href={`https://orcid.org/${user.orcid}`}>{user.orcid}</a>
+                    <a href={`https://orcid.org/${orcid}`}>{orcid}</a>
                   </dd>
                 </Fragment>
               )}
