@@ -6,12 +6,12 @@ import {
   CHECK_SESSION_COOKIE,
   CHECK_PREPRINT,
   PREPRINT,
+  ACTION_COUNTS,
   CSS_SCOPE_ID
 } from './constants';
 import { PreprintsWithActionsStore } from './stores/preprint-stores';
 import { RoleStore } from './stores/user-stores';
-import { arrayify } from './utils/jsonld';
-import { checkIfIsModerated } from './utils/actions';
+import { getCounts } from './utils/stats';
 
 import './content-script.css';
 
@@ -21,17 +21,41 @@ const port = chrome.runtime.connect({ name: 'stats' });
 // => popup ask the content script the data and here we respond
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   function respond() {
-    const hasGscholar = !!document.head.querySelector(
-      'meta[name^="citation_"], meta[property^="citation_"]'
-    );
-    sendResponse({
-      type: PREPRINT,
-      payload: hasGscholar
-        ? parseGoogleScholar(document.head, {
-            sourceUrl: window.location.href
-          })
-        : null
-    });
+    if (window.location.href.startsWith(process.env.API_URL)) {
+      const counts = ['nReviews', 'nRequests'].reduce(
+        (counts, p) => {
+          const $meta = document.querySelector(
+            `meta[name="rapid-prereview-extension-${p.toLowerCase()}"]`
+          );
+          if ($meta) {
+            counts[p] = parseInt($meta.getAttribute('content'), 10);
+          }
+
+          return counts;
+        },
+        {
+          nReviews: 0,
+          nRequests: 0
+        }
+      );
+
+      sendResponse({
+        type: ACTION_COUNTS,
+        payload: counts
+      });
+    } else {
+      const hasGscholar = !!document.head.querySelector(
+        'meta[name^="citation_"], meta[property^="citation_"]'
+      );
+      sendResponse({
+        type: PREPRINT,
+        payload: hasGscholar
+          ? parseGoogleScholar(document.head, {
+              sourceUrl: window.location.href
+            })
+          : null
+      });
+    }
   }
 
   if (request.type === CHECK_PREPRINT) {
@@ -119,27 +143,11 @@ function start() {
 
             // Keep the popup badge up to date
             preprintsWithActionsStore.on('SET', preprintWithActions => {
-              const safeActions = arrayify(
-                preprintWithActions.potentialAction
-              ).filter(action => !checkIfIsModerated(action));
-
-              const nRequests = safeActions.reduce((count, action) => {
-                if (action['@type'] === 'RequestForRapidPREreviewAction') {
-                  count++;
-                }
-                return count;
-              }, 0);
-
-              const nReviews = safeActions.reduce((count, action) => {
-                if (action['@type'] === 'RapidPREreviewAction') {
-                  count++;
-                }
-                return count;
-              }, 0);
+              const counts = getCounts(preprintWithActions.potentialAction);
 
               port.postMessage({
                 type: 'STATS',
-                payload: { nRequests, nReviews }
+                payload: counts
               });
             });
 

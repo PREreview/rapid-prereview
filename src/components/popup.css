@@ -143,3 +143,9 @@ body {
     }
   }
 }
+
+.local-popup {
+  & .popup__stats {
+    border-bottom: none;
+  }
+}

@@ -5,8 +5,8 @@ import { DndProvider } from 'react-dnd';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { UserProvider } from './contexts/user-context';
 import { StoresProvider } from './contexts/store-context';
-import Popup from './components/popup';
-import { CHECK_PREPRINT, CSS_SCOPE_ID } from './constants';
+import Popup, { LocalPopup } from './components/popup';
+import { CHECK_PREPRINT, CSS_SCOPE_ID, ACTION_COUNTS } from './constants';
 import './popup.css';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -36,9 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
           tabs[0].id,
           { type: CHECK_PREPRINT },
           response => {
-            let preprint;
+            let payload;
             if (!chrome.runtime.lastError && response) {
-              preprint = response.payload;
+              payload = response.payload;
             }
 
             function dispatch(action) {
@@ -52,7 +52,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <DndProvider backend={HTML5Backend}>
                   <StoresProvider>
                     <UserProvider user={user}>
-                      <Popup preprint={preprint} dispatch={dispatch} />
+                      {response.type === ACTION_COUNTS ? (
+                        <LocalPopup counts={payload} />
+                      ) : (
+                        <Popup preprint={payload} dispatch={dispatch} />
+                      )}
                     </UserProvider>
                   </StoresProvider>
                 </DndProvider>

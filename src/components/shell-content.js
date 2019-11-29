@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link, useLocation, useHistory } from 'react-router-dom';
 import uniq from 'lodash/uniq';
 import classNames from 'classnames';
+import { Helmet } from 'react-helmet-async';
 import { MenuLink } from '@reach/menu-button';
 import { useUser } from '../contexts/user-context';
 import { usePreprintActions, usePostAction, useRole } from '../hooks/api-hooks';
@@ -16,6 +17,7 @@ import {
   checkIfHasRequested,
   checkIfIsModerated
 } from '../utils/actions';
+import { getCounts } from '../utils/stats';
 import { getId, cleanup, unprefix } from '../utils/jsonld';
 import { useLocalState } from '../hooks/ui-hooks';
 import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
@@ -49,8 +51,24 @@ export default function ShellContent({
   const hasReviewed = checkIfHasReviewed(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
   const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
 
+  const counts = getCounts(actions);
+
   return (
     <div className="shell-content">
+      {!process.env.IS_EXTENSION && (
+        <Helmet>
+          {/* Data for the extension popup menu */}
+          <meta
+            name="rapid-prereview-extension-nreviews"
+            content={counts.nReviews}
+          />
+          <meta
+            name="rapid-prereview-extension-nrequests"
+            content={counts.nRequests}
+          />
+        </Helmet>
+      )}
+
       <header className="shell-content__header">
         <nav>
           <ul>
@@ -131,7 +149,6 @@ export default function ShellContent({
           </XLink>
         )}
       </header>
-
       {isLoginModalOpen && (
         <LoginRequiredModal
           onClose={() => {
@@ -139,7 +156,6 @@ export default function ShellContent({
           }}
         />
       )}
-
       <div className="shell-content__body">
         {tab === 'read' ? (
           <ShellContentRead

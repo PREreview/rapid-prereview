@@ -247,6 +247,7 @@ export const SESSION_COOKIE_CHANGED = 'SESSION_COOKIE_CHANGED';
 export const CHECK_PREPRINT = 'CHECK_PREPRINT';
 export const SESSION_COOKIE = 'SESSION_COOKIE';
 export const PREPRINT = 'PREPRINT';
+export const ACTION_COUNTS = 'ACTION_COUNTS';
 export const TOGGLE_SHELL_TAB = 'TOGGLE_SHELL_TAB';
 
 export const CONTACT_EMAIL_HREF = 'mailto:contact@outbreaksci.prereview.org';
