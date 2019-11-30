@@ -184,17 +184,21 @@ export function getTextAnswers(actions = []) {
 
   return QUESTIONS.filter(({ type }) => {
     return type === 'Question';
-  }).map(({ question, identifier }) => {
+  }).map(({ question, identifier, required }) => {
     return {
       questionId: `question:${identifier}`,
       question,
-      answers: answersData.map(({ actionId, roleId, answerMap }) => {
-        return {
-          actionId,
-          roleId,
-          text: answerMap[identifier]
-        };
-      })
+      answers: answersData
+        .map(({ actionId, roleId, answerMap }) => {
+          return {
+            actionId,
+            roleId,
+            text: answerMap[identifier]
+          };
+        })
+        .filter(({ text }) => {
+          return required || text !== undefined;
+        })
     };
   });
 }

@@ -15,6 +15,7 @@ import { createCacheKey } from './middlewares/cache';
 let lastSeq = null;
 let lastChangeErr = null;
 let lastDateScoreUpdated = null;
+let lastDateSynced = null;
 let lastScoreErr = null;
 
 const logger = pino({ logLevel: 'info' });
@@ -25,6 +26,7 @@ const config = {
   disableSsr: true
 };
 
+const redisClient = createRedisClient(config);
 const db = new DB(config);
 const feed = new Feed(db);
 feed.resume();
@@ -38,10 +40,19 @@ feed.on('start', seq => {
 });
 feed.on('sync', (seq, preprint) => {
   lastSeq = seq;
+  lastDateSynced = new Date().toISOString();
   logger.info({ seq, id: preprint._id, rev: preprint._rev }, 'Feed synced');
+  redisClient
+    .batch()
+    .del(createCacheKey('home:score'))
+    .del(createCacheKey('home:new'))
+    .del(createCacheKey('home:date'))
+    .exec(err => {
+      if (err) {
+        logger.error({ err }, 'Error invalidating cache on sync');
+      }
+    });
 });
-
-const redisClient = createRedisClient(config);
 
 const intervalId = setIntervalAsync(
   () => {
@@ -71,7 +82,13 @@ const intervalId = setIntervalAsync(
 const app = express();
 app.use(helmet());
 app.get('/', (req, res, next) => {
-  res.json({ lastSeq, lastChangeErr, lastScoreErr, lastDateScoreUpdated });
+  res.json({
+    lastSeq,
+    lastChangeErr,
+    lastScoreErr,
+    lastDateScoreUpdated,
+    lastDateSynced
+  });
 });
 
 const server = http.createServer(app);

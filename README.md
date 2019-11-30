@@ -1,12 +1,12 @@
 # Welcome to Outbreak Science Rapid PREreview!
 
-## What is it? 
+## What is it?
 Outbreak Science Rapid PREreview is an **open source platform and a web extension to facilitate the rapid assessment of preprints during public health crises**. The platform allows any researcher with an ORCID iD to provide a quick high-level evaluation of preprints via a series of questions to assess the originality and soundness of the research findings. Aggregated data from these reviews is visualized to allow readers to identify the most relevant information. This tool has the capacity to be transformative for on-the-ground health workers, researchers, public health agencies, and the public, as it can quickly unlock key scientific information during an outbreak of infectious diseases.
 
 ## Our team
-Outbreak Science Rapid PREreview is a project born from the collaboration of PREreview and Outbreak Science. 
+Outbreak Science Rapid PREreview is a project born from the collaboration of PREreview and Outbreak Science.
 
-[PREreview](https://v2.prereview.org) is an open project fiscally sponsored by the non-profit organization Code for Science & Society. PREreview's mission is to increase diversity in the scholarly peer review process by empowering all researchers to engage with preprint reviews. 
+[PREreview](https://v2.prereview.org) is an open project fiscally sponsored by the non-profit organization Code for Science & Society. PREreview's mission is to increase diversity in the scholarly peer review process by empowering all researchers to engage with preprint reviews.
 
 [Outbreak Science](https://outbreasci.org) is a non-profit organization aimed at advancing the science of outbreak response, in particular by supporting early and open dissemination of data, code, and analytical results.
 
@@ -220,3 +220,5 @@ will source the production environment variables.
 
 To reset all redis data (including sessions) run: `npm run azure:reset-redis`. Be
 aware that this will source the production environment variables.
+
+Some basic info about the service health can be found at https://rapid-prereview-service.azurewebsites.net/
