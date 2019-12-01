@@ -18,6 +18,7 @@
     "extension:watch-firefox": "cross-env EXTENSION_BROwSER_ENV=firefox webpack --config webpack-extension.config.js --watch --mode development",
     "extension:build": "cross-env NODE_ENV=production webpack --config webpack-extension.config.js --mode production",
     "extension:build-firefox": "cross-env NODE_ENV=production cross-env EXTENSION_BROwSER_ENV=firefox webpack --config webpack-extension.config.js --mode production",
+    "extension:pack-firefox": "(cd extension && zip -r -FS ../extension.zip * --exclude .DS_Store)",
     "start": "babel-node ./src/dev-server.js | pino-pretty",
     "start:app-prod": "node ./dist/server.js",
     "start:service-prod": "node ./dist/service.js",

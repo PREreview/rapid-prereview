@@ -163,7 +163,7 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
 ##### Firefox
 
 1. Run `npm run extension:build-firefox`
-
+2. Run `npm run extension:pack-firefox`
 
 ### Tests
 
