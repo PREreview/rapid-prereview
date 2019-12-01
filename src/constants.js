@@ -250,7 +250,7 @@ export const PREPRINT = 'PREPRINT';
 export const ACTION_COUNTS = 'ACTION_COUNTS';
 export const TOGGLE_SHELL_TAB = 'TOGGLE_SHELL_TAB';
 
-export const CONTACT_EMAIL_HREF = 'mailto:contact@outbreaksci.prereview.org';
+export const CONTACT_EMAIL_HREF = 'mailto:outbreaksci@prereview.org';
 export const PRODUCTION_DOMAIN = 'https://outbreaksci.prereview.org'; // 'https://rapid-prereview.azurewebsites.net';
 
 export const CSS_HEADER_HEIGHT = 72;
