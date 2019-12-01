@@ -1,11 +1,16 @@
+/*
+ * Note: {{ EXTENSION_ROOT }} is replaced by `moz-extension` or
+ * `chrome-extension` by the postcss-replace plugin (see webpack config)
+ */
+
 /* open-sans-300 - latin */
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 300;
   src: local('Open Sans Light'), local('OpenSans-Light'),
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-300.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-300.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-300.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-300.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 /* open-sans-300italic - latin */
 @font-face {
@@ -13,8 +18,8 @@
   font-style: italic;
   font-weight: 300;
   src: local('Open Sans Light Italic'), local('OpenSans-LightItalic'),
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-300italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-300italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-300italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-300italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 /* open-sans-regular - latin */
 @font-face {
@@ -22,8 +27,8 @@
   font-style: normal;
   font-weight: 400;
   src: local('Open Sans Regular'), local('OpenSans-Regular'),
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 /* open-sans-italic - latin */
 @font-face {
@@ -31,8 +36,8 @@
   font-style: italic;
   font-weight: 400;
   src: local('Open Sans Italic'), local('OpenSans-Italic'),
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 /* open-sans-600 - latin */
 @font-face {
@@ -40,8 +45,8 @@
   font-style: normal;
   font-weight: 600;
   src: local('Open Sans SemiBold'), local('OpenSans-SemiBold'),
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-600.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-600.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-600.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-600.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 /* open-sans-600italic - latin */
 @font-face {
@@ -49,8 +54,8 @@
   font-style: italic;
   font-weight: 600;
   src: local('Open Sans SemiBold Italic'), local('OpenSans-SemiBoldItalic'),
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-600italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-600italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-600italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-600italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 /* open-sans-700 - latin */
 @font-face {
@@ -58,8 +63,8 @@
   font-style: normal;
   font-weight: 700;
   src: local('Open Sans Bold'), local('OpenSans-Bold'),
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 /* open-sans-700italic - latin */
 @font-face {
@@ -67,8 +72,8 @@
   font-style: italic;
   font-weight: 700;
   src: local('Open Sans Bold Italic'), local('OpenSans-BoldItalic'),
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-700italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-700italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-700italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-700italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 /* open-sans-800 - latin */
 @font-face {
@@ -76,8 +81,8 @@
   font-style: normal;
   font-weight: 800;
   src: local('Open Sans ExtraBold'), local('OpenSans-ExtraBold'),
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-800.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-800.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-800.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-800.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 /* open-sans-800italic - latin */
 @font-face {
@@ -85,6 +90,6 @@
   font-style: italic;
   font-weight: 800;
   src: local('Open Sans ExtraBold Italic'), local('OpenSans-ExtraBoldItalic'),
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-800italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-       url('chrome-extension://__MSG_@@extension_id__/fonts/open-sans-v17-latin-800italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-800italic.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('{{ EXTENSION_ROOT }}://__MSG_@@extension_id__/fonts/open-sans-v17-latin-800italic.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }

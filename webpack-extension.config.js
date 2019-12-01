@@ -76,6 +76,14 @@ module.exports = {
                       );
                     }
                   }),
+                  require('postcss-replace')({
+                    data: {
+                      EXTENSION_ROOT:
+                        process.env.EXTENSION_BROwSER_ENV === 'firefox'
+                          ? 'moz-extension'
+                          : 'chrome-extension'
+                    }
+                  }),
                   require('postcss-preset-env')({
                     /* see: https://github.com/csstools/postcss-preset-env/issues/32 */
                     browsers: 'last 2 versions',
