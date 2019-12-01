@@ -138,7 +138,8 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
 
 1. Run `npm run extension:watch` that will build and watch the extension in the
    `extension` directory. ! DO NOT EDIT THE FILES THERE or do not tack them on
-   git, with the exception of manifest.json, fonts, and popup.html.
+   git, with the exception of `manifest.json`, `fonts/`, `icons/` and
+   `popup.html`.
 2. Navigate to `chrome://extensions/`, be sure to toggle the "developer mode",
    click on "load unpacked" and select the content of the `extension` directory.
 
@@ -147,7 +148,8 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
 
 1. Run `npm run extension:watch-firefox` that will build and watch the extension in the
    `extension` directory. ! DO NOT EDIT THE FILES THERE or do not tack them on
-   git, with the exception of manifest.json, fonts, and popup.html.
+   git, with the exception of `manifest.json`, `fonts/`, `icons/` and
+   `popup.html`.
 2. Navigate to `about:debugging`, and click on "Load Temporary Add-on" and
    select the `manifest.json` file.
 
