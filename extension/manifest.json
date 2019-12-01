@@ -11,14 +11,6 @@
     "http://127.0.0.1/*",
     "http://localhost/*"
   ],
-  "externally_connectable": {
-    "matches": [
-      "*://rapid-prereview.azurewebsites.net/*",
-      "*://outbreaksci.prereview.org/*",
-      "http://127.0.0.1/*",
-      "http://localhost/*"
-    ]
-  },
   "background": {
     "scripts": ["background.js"],
     "persistent": false

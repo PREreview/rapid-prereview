@@ -40,7 +40,7 @@ chrome.cookies.onChanged.addListener(changeInfo => {
   }
 });
 
-// Keep icon badge text (counter) up-to-date: external website case
+// Keep icon badge text (counter) up-to-date
 // Those data are provided by the content script
 chrome.runtime.onConnect.addListener(port => {
   if (port.name === 'stats') {
@@ -73,36 +73,5 @@ chrome.runtime.onConnect.addListener(port => {
           break;
       }
     });
-  }
-});
-
-// Keep icon badge text (counter) up-to-date: rapid prereview website case
-// Those data are provided by the rapid prereview website
-chrome.runtime.onMessageExternal.addListener((msg, sender) => {
-  if (!sender.url.startsWith(process.env.API_URL)) return;
-
-  switch (msg.type) {
-    case 'STATS':
-      chrome.browserAction.setBadgeText({
-        text: (msg.payload.nReviews + msg.payload.nRequests).toString(),
-        tabId: sender.tab.id
-      });
-      break;
-
-    case 'HAS_GSCHOLAR':
-      chrome.browserAction.setIcon({
-        path: {
-          '16': './icons/app-icon--active@16px.png',
-          '24': './icons/app-icon--active@1x.png',
-          '32': './icons/app-icon--active@1.5x.png',
-          '48': './icons/app-icon--active@2x.png'
-        },
-        tabId: sender.tab.id
-      });
-      chrome.browserAction.setBadgeBackgroundColor({
-        color: msg.payload.hasGscholar ? '#ff3333' : 'grey',
-        tabId: sender.tab.id
-      });
-      break;
   }
 });

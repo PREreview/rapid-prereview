@@ -89,20 +89,14 @@ function start() {
 
   function detect() {
     if (window.location.href.startsWith(process.env.API_URL)) {
-      // if we are on one of the rapid preview page we inject the extension id
-      // to the head so we can easiliy send message to the extension from the
-      // webpage.
-      // This is hacky but avoids to hard code the extension id in the webpack
-      // config...
-      const $meta = document.head.querySelector(
-        'meta[name="rapid-prereview-extension-id"]'
-      );
-      if (!$meta) {
-        const meta = document.createElement('meta');
-        meta.setAttribute('name', 'rapid-prereview-extension-id');
-        meta.setAttribute('content', chrome.runtime.id);
-        document.head.appendChild(meta);
-      }
+      // We are on one of the rapid preview page => we relay the message sent by
+      // the window postMessage API
+
+      window.addEventListener('message', event => {
+        if (event.source == window && event.data) {
+          port.postMessage(event.data);
+        }
+      });
     } else {
       const hasGscholar = !!document.head.querySelector(
         'meta[name^="citation_"], meta[property^="citation_"]'
