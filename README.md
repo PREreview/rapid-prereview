@@ -156,14 +156,20 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
 
 ##### Chrome
 
-1. Run `npm run extension:build`
-2. Navigate to `chrome://extensions/`, be sure to toggle the "developer mode",
-   click on "load unpacked" and select the content of the `extension` directory.
+1. Run `npm install`
+2. Set the `version` property of the `extension/manifest.json` file
+3. Run `npm run extension:build`
+4. Run `npm run extension:pack`
+5. Upload the created `extension.zip` file to the Chrome web store
 
 ##### Firefox
 
-1. Run `npm run extension:build-firefox`
-2. Run `npm run extension:pack-firefox`
+1. Run `npm install`
+2. Set the `version` property of the `extension/manifest.json` file
+3. Run `npm run extension:build-firefox`
+4. Run `npm run extension:pack-firefox`
+5. Upload the created `extension-firefox.zip` file to the Firefox web store
+
 
 ### Tests
 
