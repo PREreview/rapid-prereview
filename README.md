@@ -151,7 +151,7 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
    git, with the exception of `manifest.json`, `fonts/`, `icons/` and
    `popup.html`.
 2. Navigate to `about:debugging`, and click on "Load Temporary Add-on" and
-   select the `manifest.json` file.
+   select the `extension/manifest.json` file.
 
 
 #### Production
