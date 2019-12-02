@@ -26,11 +26,14 @@ const schema = {
         name: {
           type: 'string'
         },
+        description: {
+          type: 'string'
+        },
         orcid: {
           type: 'string'
         }
       },
-      additionalProperties: true,
+      additionalProperties: false,
       required: ['@type', 'orcid']
     },
     startTime: {

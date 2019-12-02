@@ -26,6 +26,7 @@ const config = {
   disableSsr: true
 };
 
+const redisClient = createRedisClient(config);
 const db = new DB(config);
 const feed = new Feed(db);
 feed.resume();
@@ -34,12 +35,21 @@ feed.on('start', seq => {
 });
 feed.on('sync', (seq, preprint) => {
   logger.info({ seq, id: preprint._id, rev: preprint._rev }, 'Feed synced');
+
+  redisClient
+    .batch()
+    .del(createCacheKey('home:score'))
+    .del(createCacheKey('home:new'))
+    .del(createCacheKey('home:date'))
+    .exec(err => {
+      if (err) {
+        logger.error({ err }, 'Error invalidating cache on sync');
+      }
+    });
 });
 feed.on('error', err => {
   logger.error({ err }, 'Feed error');
 });
-
-const redisClient = createRedisClient(config);
 
 const intervalId = setIntervalAsync(
   () => {

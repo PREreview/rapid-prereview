@@ -1,6 +1,6 @@
 import { QUESTIONS } from '../constants';
 import { getId, arrayify } from './jsonld';
-import { getAnswerMap } from './actions';
+import { getAnswerMap, checkIfIsModerated } from './actions';
 
 function isYes(textOrAnswer) {
   const text =
@@ -184,17 +184,21 @@ export function getTextAnswers(actions = []) {
 
   return QUESTIONS.filter(({ type }) => {
     return type === 'Question';
-  }).map(({ question, identifier }) => {
+  }).map(({ question, identifier, required }) => {
     return {
       questionId: `question:${identifier}`,
       question,
-      answers: answersData.map(({ actionId, roleId, answerMap }) => {
-        return {
-          actionId,
-          roleId,
-          text: answerMap[identifier]
-        };
-      })
+      answers: answersData
+        .map(({ actionId, roleId, answerMap }) => {
+          return {
+            actionId,
+            roleId,
+            text: answerMap[identifier]
+          };
+        })
+        .filter(({ text }) => {
+          return required || text !== undefined;
+        })
     };
   });
 }
@@ -217,4 +221,26 @@ export function getActiveReports(
   }
 
   return reports;
+}
+
+export function getCounts(actions) {
+  const safeActions = arrayify(actions).filter(
+    action => !checkIfIsModerated(action)
+  );
+
+  const nRequests = safeActions.reduce((count, action) => {
+    if (action['@type'] === 'RequestForRapidPREreviewAction') {
+      count++;
+    }
+    return count;
+  }, 0);
+
+  const nReviews = safeActions.reduce((count, action) => {
+    if (action['@type'] === 'RapidPREreviewAction') {
+      count++;
+    }
+    return count;
+  }, 0);
+
+  return { nRequests, nReviews };
 }

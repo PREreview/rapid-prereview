@@ -176,7 +176,7 @@ export function invalidate() {
           case 'GrantModeratorRoleAction':
           case 'RevokeModeratorRoleAction':
           case 'ModerateRoleAction': {
-            // invalidate cacheKey for result
+            // Invalidate cacheKey for result
             const doc = action.result;
             const batch = redis.batch();
             batch.set(
@@ -207,9 +207,11 @@ export function invalidate() {
               action = action.result;
             }
 
-            // invalidate cache key for actionId, activity:<roleId> (for profile activity log), home:score,
+            // Invalidate cache key for actionId, activity:<roleId> (for profile activity log), home:score,
             // home:new, home:date (for home page with the various sort option)
             // and preprintId (`action.object`) containing `action`
+            // Note: `home:*` keys are also invalidated in `service.js` in response to the
+            // score update async interval and the changes feed sync
 
             const batch = redis.batch();
             batch.del(createCacheKey(action));

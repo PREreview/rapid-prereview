@@ -136,7 +136,7 @@ module.exports = {
       'process.env.IS_EXTENSION': false,
       'process.env.API_URL': JSON.stringify(
         process.env.NODE_ENV === 'production'
-          ? 'https://rapid-prereview.azurewebsites.net' // 'https://oubreaksci.prereview.org' !! KEEP IN SYNC WITH src/constants
+          ? 'https://outbreaksci.prereview.org' // 'https://rapid-prereview.azurewebsites.net' !! KEEP IN SYNC WITH src/constants
           : 'http://127.0.0.1:3000'
       )
     }),

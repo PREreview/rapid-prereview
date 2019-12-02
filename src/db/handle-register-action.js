@@ -95,7 +95,8 @@ export default async function handleRegisterAction(
 
     // update profile props
     merged = Object.assign(
-      pick(merged, specialProps),
+      {},
+      merged,
       pick(
         action.agent,
         Object.keys(action.agent).filter(p => !specialProps.includes(p))

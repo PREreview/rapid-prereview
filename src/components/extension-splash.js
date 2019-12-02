@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import HeaderBar from './header-bar';
 import Button from './button';
-import LabelStyle from './label-style';
+// import LabelStyle from './label-style';
 import { CONTACT_EMAIL_HREF, ORG } from '../constants';
 import Org from './org';
 
@@ -48,6 +48,18 @@ export default function ExtensionSplash() {
             </li>
             <li className="extension-splash__browser-list-item">
               <Button
+                element={'a'}
+                href="https://github.com/prereview/rapid-prereview/#web-extension"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="extension-splash__install-button"
+                primary={true}
+              >
+                Install for firefox
+              </Button>
+
+              {/*
+              <Button
                 className="extension-splash__install-button"
                 primary={true}
                 disabled={true}
@@ -57,7 +69,7 @@ export default function ExtensionSplash() {
               <br />
               <div className="extension-splash__comming-soon">
                 <LabelStyle>(comming soon)</LabelStyle>
-              </div>
+              </div>*/}
             </li>
           </ul>
 

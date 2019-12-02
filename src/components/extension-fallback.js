@@ -3,12 +3,14 @@ import { useLocation, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import mobile from 'is-mobile';
 import { usePreprint } from '../hooks/api-hooks';
+import { useExtension } from '../hooks/extension-hooks';
 import { getPdfUrl, getCanonicalUrl } from '../utils/preprints';
 import Shell from './shell';
 import ShellContent from './shell-content';
 import NotFound from './not-found';
 import SuspenseLoading from './suspense-loading';
 import { ORG } from '../constants';
+import { createPreprintId } from '../utils/ids';
 
 const PdfViewer = React.lazy(() =>
   import(/* webpackChunkName: "pdf-viewer" */ './pdf-viewer')
@@ -34,6 +36,7 @@ export default function ExtensionFallback() {
     identifier,
     location.state && location.state.preprint
   );
+  useExtension(preprint && createPreprintId(preprint));
 
   if (
     fetchPreprintProgress.error &&

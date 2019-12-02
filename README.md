@@ -1,12 +1,12 @@
 # Welcome to Outbreak Science Rapid PREreview!
 
-## What is it? 
+## What is it?
 Outbreak Science Rapid PREreview is an **open source platform and a web extension to facilitate the rapid assessment of preprints during public health crises**. The platform allows any researcher with an ORCID iD to provide a quick high-level evaluation of preprints via a series of questions to assess the originality and soundness of the research findings. Aggregated data from these reviews is visualized to allow readers to identify the most relevant information. This tool has the capacity to be transformative for on-the-ground health workers, researchers, public health agencies, and the public, as it can quickly unlock key scientific information during an outbreak of infectious diseases.
 
 ## Our team
-Outbreak Science Rapid PREreview is a project born from the collaboration of PREreview and Outbreak Science. 
+Outbreak Science Rapid PREreview is a project born from the collaboration of PREreview and Outbreak Science.
 
-[PREreview](https://v2.prereview.org) is an open project fiscally sponsored by the non-profit organization Code for Science & Society. PREreview's mission is to increase diversity in the scholarly peer review process by empowering all researchers to engage with preprint reviews. 
+[PREreview](https://v2.prereview.org) is an open project fiscally sponsored by the non-profit organization Code for Science & Society. PREreview's mission is to increase diversity in the scholarly peer review process by empowering all researchers to engage with preprint reviews.
 
 [Outbreak Science](https://outbreasci.org) is a non-profit organization aimed at advancing the science of outbreak response, in particular by supporting early and open dissemination of data, code, and analytical results.
 
@@ -134,20 +134,44 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
 
 #### Development
 
-For chrome:
+##### Chrome
+
 1. Run `npm run extension:watch` that will build and watch the extension in the
    `extension` directory. ! DO NOT EDIT THE FILES THERE or do not tack them on
-   git, with the exception of manifest.json, fonts, and popup.html.
+   git, with the exception of `manifest.json`, `fonts/`, `icons/` and
+   `popup.html`.
 2. Navigate to `chrome://extensions/`, be sure to toggle the "developer mode",
    click on "load unpacked" and select the content of the `extension` directory.
+
+
+##### Firefox
+
+1. Run `npm run extension:watch-firefox` that will build and watch the extension in the
+   `extension` directory. ! DO NOT EDIT THE FILES THERE or do not tack them on
+   git, with the exception of `manifest.json`, `fonts/`, `icons/` and
+   `popup.html`.
+2. Navigate to `about:debugging`, and click on "Load Temporary Add-on" and
+   select the `extension/manifest.json` file.
 
 
 #### Production
 
-For chrome:
-1. Run `npm run extension:build`
-2. Navigate to `chrome://extensions/`, be sure to toggle the "developer mode",
-   click on "load unpacked" and select the content of the `extension` directory.
+##### Chrome
+
+1. Run `npm install`
+2. Set the `version` property of the `extension/manifest.json` file
+3. Run `npm run extension:build`
+4. Run `npm run extension:pack`
+5. Upload the created `extension.zip` file to the Chrome web store
+
+##### Firefox
+
+1. Run `npm install`
+2. Set the `version` property of the `extension/manifest.json` file
+3. Run `npm run extension:build-firefox`
+4. Run `npm run extension:pack-firefox`
+5. Upload the created `extension-firefox.zip` file to the Firefox web store
+
 
 ### Tests
 
@@ -220,3 +244,5 @@ will source the production environment variables.
 
 To reset all redis data (including sessions) run: `npm run azure:reset-redis`. Be
 aware that this will source the production environment variables.
+
+Some basic info about the service health can be found at https://rapid-prereview-service.azurewebsites.net/

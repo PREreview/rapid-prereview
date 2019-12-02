@@ -1,13 +1,13 @@
 {
   "manifest_version": 2,
-  "name": "Rapid PREreview for Outbreak Science",
+  "name": "Outbreak Science Rapid PREreview",
   "version": "1.0",
-  "description": "Rapid PREreview allows to request and provide feedback (in the form of structured review rapid to complete) on existing preprints relevant to the outbreak science community",
+  "description": "Outbreak Science Rapid PREreview facilitates rapid, open review of preprint related to outbreaks",
   "permissions": [
     "tabs",
     "cookies",
     "*://rapid-prereview.azurewebsites.net/*",
-    "*://*.prereview.org/*",
+    "*://outbreaksci.prereview.org/*",
     "http://127.0.0.1/*",
     "http://localhost/*"
   ],
@@ -38,7 +38,10 @@
         "*://*.www.medrxiv.org/*",
         "*://*.peerj.com/preprints/*",
         "*://*.osf.io/preprints/*",
-        "*://*.preprints.org/*"
+        "*://*.preprints.org/*",
+        "*://outbreaksci.prereview.org/*",
+        "*://127.0.0.1/*",
+        "*://localhost/*"
       ],
       "js": ["content-script.js"],
       "css": ["content-script.css"],

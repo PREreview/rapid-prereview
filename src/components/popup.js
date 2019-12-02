@@ -185,3 +185,36 @@ Popup.propTypes = {
   preprint: PropTypes.object, // if defined we are on a page that is actionable
   dispatch: PropTypes.func.isRequired
 };
+
+export function LocalPopup({ counts }) {
+  return (
+    <div className="local-popup popup">
+      <div className="popup__logo-row">
+        <RapidPreReviewLogo
+          className="popup__logo"
+          short={true}
+          responsive={false}
+        />
+      </div>
+      <section className="popup__stats-section">
+        <dl className="popup__stats">
+          <div className="popup__stats__row">
+            <dt className="popup__stats__label">Reviews</dt>
+            <dd className="popup__stats__value">{counts.nReviews}</dd>
+          </div>
+          <div className="popup__stats__row">
+            <dt className="popup__stats__label">Requests for review</dt>
+            <dd className="popup__stats__value">{counts.nRequests}</dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+  );
+}
+
+LocalPopup.propTypes = {
+  counts: PropTypes.shape({
+    nReviews: PropTypes.number.isRequired,
+    nRequests: PropTypes.number.isRequired
+  }).isRequired
+};

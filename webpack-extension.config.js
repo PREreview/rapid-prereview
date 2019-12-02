@@ -76,6 +76,14 @@ module.exports = {
                       );
                     }
                   }),
+                  require('postcss-replace')({
+                    data: {
+                      EXTENSION_ROOT:
+                        process.env.EXTENSION_BROwSER_ENV === 'firefox'
+                          ? 'moz-extension'
+                          : 'chrome-extension'
+                    }
+                  }),
                   require('postcss-preset-env')({
                     /* see: https://github.com/csstools/postcss-preset-env/issues/32 */
                     browsers: 'last 2 versions',
@@ -129,12 +137,12 @@ module.exports = {
       'process.env.IS_EXTENSION': true,
       'process.env.COOKIE_URL': JSON.stringify(
         process.env.NODE_ENV === 'production'
-          ? 'https://rapid-prereview.azurewebsites.net' // 'https://oubreaksci.prereview.org' !! KEEP IN SYNC WITH src/constants
+          ? 'https://outbreaksci.prereview.org' // 'https://rapid-prereview.azurewebsites.net' !! KEEP IN SYNC WITH src/constants
           : 'http://127.0.0.1'
       ),
       'process.env.API_URL': JSON.stringify(
         process.env.NODE_ENV === 'production'
-          ? 'https://rapid-prereview.azurewebsites.net' // 'https://oubreaksci.prereview.org' !! KEEP IN SYNC WITH src/constants
+          ? 'https://outbreaksci.prereview.org' // 'https://rapid-prereview.azurewebsites.net' !! KEEP IN SYNC WITH src/constants
           : 'http://127.0.0.1:3000'
       )
     }),

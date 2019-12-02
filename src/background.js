@@ -41,6 +41,7 @@ chrome.cookies.onChanged.addListener(changeInfo => {
 });
 
 // Keep icon badge text (counter) up-to-date
+// Those data are provided by the content script
 chrome.runtime.onConnect.addListener(port => {
   if (port.name === 'stats') {
     port.onMessage.addListener((msg, port) => {

@@ -247,10 +247,11 @@ export const SESSION_COOKIE_CHANGED = 'SESSION_COOKIE_CHANGED';
 export const CHECK_PREPRINT = 'CHECK_PREPRINT';
 export const SESSION_COOKIE = 'SESSION_COOKIE';
 export const PREPRINT = 'PREPRINT';
+export const ACTION_COUNTS = 'ACTION_COUNTS';
 export const TOGGLE_SHELL_TAB = 'TOGGLE_SHELL_TAB';
 
-export const CONTACT_EMAIL_HREF = 'mailto:contact@outbreaksci.prereview.org';
-export const PRODUCTION_DOMAIN = 'https://rapid-prereview.azurewebsites.net'; // 'https://oubreaksci.prereview.org'
+export const CONTACT_EMAIL_HREF = 'mailto:outbreaksci@prereview.org';
+export const PRODUCTION_DOMAIN = 'https://outbreaksci.prereview.org'; // 'https://rapid-prereview.azurewebsites.net';
 
 export const CSS_HEADER_HEIGHT = 72;
 export const CSS_SCOPE_ID = 'rpos-ext'; // keep in sync with webpack-extension.config.js
