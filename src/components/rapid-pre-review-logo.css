@@ -77,7 +77,7 @@
     font-size: 9px;
     height: 11px;
     box-sizing: border-box;
-    line-height: 12px;
+    line-height: 1em;
     @media (--narrow-screen) {
       display: none;
     }

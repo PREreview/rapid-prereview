@@ -6,6 +6,7 @@ import Value from './value';
 import RadioButton from './radio-button';
 import IconButton from './icon-button';
 import Collapse from './collapse';
+import NoticeBox from './notice-box';
 
 export default function RapidFormFragment({ answerMap = {}, onChange }) {
   function handleChange(key, value) {
@@ -154,6 +155,10 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
           );
         })}
       </fieldset>
+      <NoticeBox type="warning">
+        Beta Notice: Please note that any reviews submitted during the beta
+        stage of Outbreak Science Rapid PREreview may be lost in future updates.
+      </NoticeBox>
     </div>
   );
 }

@@ -28,6 +28,7 @@ import Controls from './controls';
 import Button from './button';
 import TextInput from './text-input';
 import PreprintPreview from './preprint-preview';
+import NoticeBox from './notice-box';
 
 export default function NewPreprint({
   user,
