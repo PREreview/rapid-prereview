@@ -15,6 +15,7 @@ import Controls from './controls';
 import Button from './button';
 import TextInput from './text-input';
 import PreprintPreview from './preprint-preview';
+import NoticeBox from './notice-box';
 
 export default function NewPreprint({ onCancel, onSuccess, onViewInContext }) {
   const location = useLocation(); // location.state can be {preprint, tab, isSingleStep} with tab being `request` or `review` (so that we know on which tab the shell should be activated with

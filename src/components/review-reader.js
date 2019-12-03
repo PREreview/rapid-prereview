@@ -10,6 +10,7 @@ import { getYesNoStats } from '../utils/stats';
 import TextAnswers from './text-answers';
 import { PotentialRoles, HighlightedRoles } from './role-list';
 import ShareMenu from './share-menu';
+import NoticeBox from './notice-box';
 
 const ReviewReader = React.memo(function ReviewReader({
   user,
@@ -75,11 +76,11 @@ const ReviewReader = React.memo(function ReviewReader({
         <Fragment>
           {!preview && (
             <Fragment>
-              <p className="review-reader__help-text">
-                <MdInfoOutline className="review-reader__help-text-icon" />
+              <NoticeBox>
                 View only the reviews you are interested in by
                 dragging-and-dropping user badges to the filter bubble below.
-              </p>
+              </NoticeBox>
+
               <h4 className="review-reader__sub-header">Reviewers</h4>
               <div className="review-reader__persona-selector">
                 <PotentialRoles
