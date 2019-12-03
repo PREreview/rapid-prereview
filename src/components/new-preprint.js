@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import identifiersArxiv from 'identifiers-arxiv';
 import doiRegex from 'doi-regex';
-import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
+import {
+  createPreprintIdentifierCurie,
+  createPreprintId,
+  unversionDoi
+} from '../utils/ids';
 import { unprefix, cleanup } from '../utils/jsonld';
 import { usePostAction, usePreprint } from '../hooks/api-hooks';
 import { useLocalState } from '../hooks/ui-hooks';
@@ -119,6 +123,14 @@ function StepPreprint({
 }) {
   const [value, setValue] = useState(unprefix(identifier));
 
+  // Note: biorXiv use versioned DOI in URL but do not register those DOIs with
+  // doi.org => they 404 when we dereference them
+  // => here if the doi is a versioned one, we offer the user to try with the
+  // unversionned DOI
+  const doiMatch = value && value.match(doiRegex());
+  const doi = doiMatch && doiMatch[0];
+  const unversionedDoi = unversionDoi(value);
+
   return (
     <div className="new-preprint__step-preprint">
       <div className="new-preprint__input-row">
@@ -163,16 +175,30 @@ function StepPreprint({
         <PreprintPreview preprint={preprint} />
       ) : resolvePreprintStatus.isActive ? (
         <p>{`resolving ${identifier}`}</p>
-      ) : resolvePreprintStatus.error ? (
+      ) : resolvePreprintStatus.error &&
+        resolvePreprintStatus.error.statusCode === 404 &&
+        unversionedDoi &&
+        unversionedDoi !== doi ? (
         <p>
-          Error:{' '}
-          {resolvePreprintStatus.error.message ||
-            resolvePreprintStatus.error.name ||
-            resolvePreprintStatus.error.statusCode}
+          Could not find an entry corresponding to <code>{doi}</code>. Try with{' '}
+          <a
+            href="#"
+            onClick={e => {
+              e.preventDefault();
+              onIdentifier(unversionedDoi);
+              setValue(unversionedDoi);
+            }}
+          >
+            {unversionedDoi}
+          </a>{' '}
+          ?
         </p>
       ) : null}
 
-      <Controls className="new-preprint__button-bar">
+      <Controls
+        className="new-preprint__button-bar"
+        error={resolvePreprintStatus.error}
+      >
         <Button
           onClick={e => {
             setValue('');
