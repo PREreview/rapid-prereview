@@ -69,3 +69,17 @@ export function createPreprintIdentifierCurie(
     }
   }
 }
+
+/**
+ * biorXiv adds some vX suffix to doi but do not register them with doi.org
+ * => here we remove the vX part
+ */
+export function unversionDoi(doi = '') {
+  const doiMatch = doi.match(doiRegex());
+  if (doiMatch) {
+    const doi = doiMatch[0];
+    return doi.replace(/v\d+$/, '');
+  }
+
+  return null;
+}

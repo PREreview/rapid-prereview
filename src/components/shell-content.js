@@ -268,7 +268,7 @@ function ShellContentRead({ user, preprint, actions, fetchActionsProgress }) {
   }, [history, location, actions, fetchActionsProgress]);
 
   let appRoleIds;
-  if (process.env.IS_EXTENSION) {
+  if (!process.env.IS_EXTENSION) {
     const qs = new URLSearchParams(location.search);
     const roleIdsQs = qs.get('role');
 
