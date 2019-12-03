@@ -7,6 +7,7 @@ import Checkbox from './checkbox';
 import XLink from './xlink';
 import Org from './org';
 import { ORG } from '../constants';
+import { useHasAgreedCoC } from '../hooks/ui-hooks';
 
 // TODO make clear that by logging in user accepts the code of conduct
 
@@ -14,6 +15,8 @@ export default function Login() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const [hasAgreed, setHasAgreed] = useHasAgreedCoC();
 
   return (
     <div className="login">
@@ -39,6 +42,8 @@ export default function Login() {
         <div className="login__coc">
           <span className="login__checkbox">
             <Checkbox
+              checked={hasAgreed}
+              onChange={() => setHasAgreed(!hasAgreed)}
               label={
                 <span>
                   I have read and agree to the <Org />{' '}
@@ -53,7 +58,8 @@ export default function Login() {
         </div>
 
         <Button
-          element="a"
+          disabled={!hasAgreed}
+          element={hasAgreed ? 'a' : 'button'}
           href={`${process.env.API_URL}/auth/orcid`}
           primary={true}
           className="login__login-button"

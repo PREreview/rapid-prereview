@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 /**
  * This is used for the Rapid PREreview form:
@@ -67,6 +67,19 @@ export function useIsFirstTimeOnSettings() {
   }, []);
 
   return isFirstTimeOnSettings;
+}
+
+export function useHasAgreedCoC() {
+  const [hasAgreed, setHasAgreed] = useState(
+    localStorage.getItem('hasAgreedCoC') === 'true'
+  );
+
+  const localSet = useCallback(bool => {
+    localStorage.setItem('hasAgreedCoC', bool.toString());
+    setHasAgreed(bool);
+  }, []);
+
+  return [hasAgreed, localSet];
 }
 
 export function useIsMobile() {
