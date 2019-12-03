@@ -111,6 +111,7 @@ export default function Home() {
                 <title>Rapid PREreview • Add entry</title>
               </Helmet>
               <NewPreprint
+                user={user}
                 onCancel={() => {
                   history.push('/');
                 }}

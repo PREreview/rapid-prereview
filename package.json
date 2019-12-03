@@ -8,6 +8,7 @@
     "redis": "redis-server /usr/local/etc/redis.conf",
     "cloudant": "docker restart cloudant-developer",
     "cloudant:init": "source env.private.sh && babel-node ./scripts/ddocs.js",
+    "cloudant:reset": "source env.private.sh && babel-node ./scripts/init.js",
     "cloudant:set-security": "source env.private.sh && babel-node ./scripts/set-security.js",
     "cloudant:get-security": "source env.private.sh && babel-node ./scripts/get-security.js",
     "cloudant:seed": "source env.private.sh && babel-node ./scripts/seed.js",

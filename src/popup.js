@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <DndProvider backend={HTML5Backend}>
                   <StoresProvider>
                     <UserProvider user={user}>
-                      {response.type === ACTION_COUNTS ? (
+                      {response && response.type === ACTION_COUNTS ? (
                         <LocalPopup counts={payload} />
                       ) : (
                         <Popup preprint={payload} dispatch={dispatch} />
