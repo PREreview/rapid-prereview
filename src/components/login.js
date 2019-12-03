@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import HeaderBar from './header-bar';
 import AnimatedLogo from '../svgs/rapid-prereview-logo-animation.svg';
 import Button from './button';
+import Checkbox from './checkbox';
 import XLink from './xlink';
 import Org from './org';
 import { ORG } from '../constants';
@@ -35,15 +36,21 @@ export default function Login() {
           don’t have one.
         </p>
 
-        <p className="login__text">
-          <strong>
-            By signing in, you agree to <Org />{' '}
-            <XLink href="/code-of-conduct" to="/code-of-conduct">
-              Code of Conduct
-            </XLink>
-            .
-          </strong>
-        </p>
+        <div className="login__coc">
+          <span className="login__checkbox">
+            <Checkbox
+              label={
+                <span>
+                  I have read and agree to the <Org />{' '}
+                  <XLink href="/code-of-conduct" to="/code-of-conduct">
+                    Code of Conduct
+                  </XLink>
+                  .
+                </span>
+              }
+            />
+          </span>
+        </div>
 
         <Button
           element="a"

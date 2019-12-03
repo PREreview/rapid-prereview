@@ -32,6 +32,21 @@
     text-align: center;
     text-decoration: none;
   }
+
+  & .login__coc {
+    font: var(--ui-basic-font--large);
+    justify-content: center;
+    margin: var(--lgrd);
+    align-items: center;
+    text-align: center;
+    vertical-align: middle;
+    & > * {
+      vertical-align: middle;
+    }
+    & .checkbox {
+      display: inline-block;
+    }
+  }
   & .login__logo-container {
     margin: 0 auto;
     width: 200px;
