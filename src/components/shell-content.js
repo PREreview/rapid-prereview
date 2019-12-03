@@ -35,6 +35,7 @@ export default function ShellContent({
   onRequireScreen
 }) {
   const [user] = useUser();
+  const [role] = useRole(user && user.defaultRole);
 
   const [actions, fetchActionsProgress] = usePreprintActions(
     preprint.doi || preprint.arXivId
@@ -137,8 +138,39 @@ export default function ShellContent({
               }
               target={process.env.IS_EXTENSION ? '_blank' : undefined}
             >
-              Settings
+              Profile Settings
             </MenuLink>
+
+            {user.isAdmin && (
+              <MenuLink
+                as={process.env.IS_EXTENSION ? undefined : Link}
+                to={process.env.IS_EXTENSION ? undefined : '/admin'}
+                href={
+                  process.env.IS_EXTENSION
+                    ? `${process.env.API_URL}/admin`
+                    : undefined
+                }
+                target={process.env.IS_EXTENSION ? '_blank' : undefined}
+              >
+                Admin Settings
+              </MenuLink>
+            )}
+
+            {!!(role && role.isModerator && !role.isModerated) && (
+              <MenuLink
+                as={process.env.IS_EXTENSION ? undefined : Link}
+                to={process.env.IS_EXTENSION ? undefined : '/moderate'}
+                href={
+                  process.env.IS_EXTENSION
+                    ? `${process.env.API_URL}/moderate`
+                    : undefined
+                }
+                target={process.env.IS_EXTENSION ? '_blank' : undefined}
+              >
+                Moderate
+              </MenuLink>
+            )}
+
             <MenuLink href={`${process.env.API_URL}/auth/logout`}>
               Logout
             </MenuLink>

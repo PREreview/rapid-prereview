@@ -6,7 +6,7 @@ import { DISEASES } from '../constants';
 import Checkbox from './checkbox';
 import { createPreprintQs } from '../utils/search';
 
-export default function Facets({ counts, isFetching }) {
+export default function Facets({ counts = {}, isFetching }) {
   const history = useHistory();
   const location = useLocation();
 
@@ -300,7 +300,7 @@ Facets.propTypes = {
       PropTypes.number, // 0
       PropTypes.object
     ])
-  }).isRequired
+  })
 };
 
 function Count({ value, isFetching }) {

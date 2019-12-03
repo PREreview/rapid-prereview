@@ -159,7 +159,7 @@ export default function Home() {
           {results.total_rows === 0 && !fetchResultsProgress.isActive ? (
             <div>
               No results found.{' '}
-              {!!apiQs && (
+              {!!location.search && (
                 <XLink to={location.pathname} href={location.pathname}>
                   Clear search terms.
                 </XLink>
