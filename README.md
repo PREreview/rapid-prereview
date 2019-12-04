@@ -220,6 +220,8 @@ Redis](https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/) to store:
 3. Run `npm run cloudant:get-security` to verify the [security
 object](https://cloud.ibm.com/docs/services/Cloudant/offerings?topic=cloudant-authorization)
 
+To update the design documents run: `npm run cloudant:ddocs`.
+
 To seed the production database (for demos **only**) run: `npm run cloudant:seed`
 **(!! note that this performs a hard reset and delete all data in the databases
 before seeding)**.

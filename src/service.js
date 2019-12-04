@@ -45,10 +45,7 @@ feed.on('start', seq => {
 feed.on('sync', (seq, preprint) => {
   lastSeq = seq;
   lastDateSynced = new Date().toISOString();
-  logger.info(
-    { seq, dateSynced: lastDateSynced, id: preprint._id, rev: preprint._rev },
-    'Feed synced'
-  );
+  logger.info({ seq, id: preprint._id, rev: preprint._rev }, 'Feed synced');
   redisClient
     .batch()
     .del(createCacheKey('home:score'))
@@ -61,33 +58,57 @@ feed.on('sync', (seq, preprint) => {
     });
 });
 
-const intervalId = setIntervalAsync(
-  () => {
-    lastDateScoreUpdated = new Date().toISOString();
-    return db.updateScores().then(updatedDocs => {
-      logger.info(
-        { dateScoreUpdated: lastDateScoreUpdated, nDocs: updatedDocs.length },
-        'Updated scores'
-      );
+const intervalId = setIntervalAsync(async () => {
+  lastDateScoreUpdated = new Date().toISOString();
 
-      redisClient
-        .batch()
-        .del(createCacheKey('home:score'))
-        .del(createCacheKey('home:new'))
-        .del(createCacheKey('home:date'))
-        .exec(err => {
-          if (err) {
-            logger.error({ err }, 'Error invalidating cache on score update');
-          }
-        });
-    });
-  },
-  config.updateScoreInterval || 5 * 60 * 1000,
-  err => {
-    lastScoreErr = err;
+  // resolve conflicts
+  try {
+    const resolved = await db.resolveIndexConflicts();
+    if (resolved.length) {
+      logger.info({ nDocs: resolved.length }, 'resolved index conflicts');
+    }
+  } catch (err) {
+    logger.error({ err }, 'Error resolving index conflicts');
+  }
+  try {
+    const resolved = await db.resolveDocsConflicts();
+    if (resolved.length) {
+      logger.info({ nDocs: resolved.length }, 'resolved docs conflicts');
+    }
+  } catch (err) {
+    logger.error({ err }, 'Error resolving docs conflicts');
+  }
+  try {
+    const resolved = await db.resolveUsersConflicts();
+    if (resolved.length) {
+      logger.info({ nDocs: resolved.length }, 'resolved docs conflicts');
+    }
+  } catch (err) {
+    logger.error({ err }, 'Error resolving users conflicts');
+  }
+
+  // update scores
+  try {
+    const updatedDocs = await db.updateScores();
+    if (updatedDocs.length) {
+      logger.info({ nDocs: updatedDocs.length }, 'Updated scores');
+    }
+  } catch (err) {
     logger.error({ err }, 'Error updating score');
   }
-);
+
+  // update cache
+  redisClient
+    .batch()
+    .del(createCacheKey('home:score'))
+    .del(createCacheKey('home:new'))
+    .del(createCacheKey('home:date'))
+    .exec(err => {
+      if (err) {
+        logger.error({ err }, 'Error invalidating cache on score update');
+      }
+    });
+}, config.updateScoreInterval || 5 * 60 * 1000);
 
 const app = express();
 app.use(helmet());
