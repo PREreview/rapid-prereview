@@ -23,6 +23,11 @@ import { getScore, SCORE_THRESHOLD } from '../utils/score';
 import striptags from '../utils/striptags';
 import { dehydrateAction } from '../utils/preprints';
 import { getUniqueModerationActions } from '../utils/actions';
+import {
+  mergePreprintConflicts,
+  mergeReviewActionConflicts,
+  mergeUserConflicts
+} from '../utils/conflicts';
 
 export default class DB {
   constructor(config = {}) {
@@ -436,66 +441,7 @@ export default class DB {
     let merged;
     if (docs.length) {
       // merge all leaf docs (conflicting)
-      merged = docs.reduce((merged, doc) => {
-        // score: latest wins
-        if (
-          new Date(merged.dateScoreLastUpdated).getTime() <
-          new Date(doc.dateScoreLastUpdated).getTime()
-        ) {
-          merged.dateScoreLastUpdated = doc.dateScoreLastUpdated;
-          merged.score = doc.score;
-        }
-
-        // indexed preprint props: higher number of `sdRetrievedFields` wins and
-        // if equal, latest `sdDateRetrieved` wins
-        if (
-          merged.sdRetrievedFields.length < doc.sdRetrievedFields.length ||
-          (merged.sdRetrievedFields.length === doc.sdRetrievedFields.length &&
-            new Date(merged.sdDateRetrieved).getTime() <
-              new Date(doc.sdDateRetrieved).getTime())
-        ) {
-          INDEXED_PREPRINT_PROPS.forEach(p => {
-            merged[p] = doc[p];
-          });
-        }
-
-        // `potentialAction`: we merge all distincts taking care to always merge
-        // the `moderationAction`
-        if (doc.potentialAction) {
-          merged.potentialAction = arrayify(merged.potentialAction)
-            .map(potentialAction => {
-              const _potentialAction = arrayify(doc.potentialAction).find(
-                _potentialAction =>
-                  getId(_potentialAction) === getId(potentialAction)
-              );
-
-              if (_potentialAction) {
-                return cleanup(
-                  Object.assign({}, potentialAction, {
-                    moderationAction: getUniqueModerationActions(
-                      arrayify(potentialAction.moderationAction).concat(
-                        arrayify(_potentialAction.moderationAction)
-                      )
-                    )
-                  }),
-                  { removeEmptyArray: true }
-                );
-              } else {
-                return potentialAction;
-              }
-            })
-            .concat(
-              arrayify(doc.potentialAction).filter(_potentialAction => {
-                return !arrayify(merged.potentialAction).some(
-                  potentialAction =>
-                    getId(potentialAction) === getId(_potentialAction)
-                );
-              })
-            );
-        }
-
-        return merged;
-      }, Object.assign({}, docs[0]));
+      merged = mergePreprintConflicts(docs);
 
       // add action to the merged document (and update score, just the numerator
       // as all the denominators are updated jointly)
@@ -665,6 +611,161 @@ export default class DB {
     });
   }
 
+  async resolveIndexConflicts() {
+    const resolved = [];
+    const body = await this.index.view('ddoc-index', 'conflictingByType', {
+      reduce: false,
+      key: 'ScholarlyPreprint'
+    });
+
+    for (const row of body.rows) {
+      let body;
+      try {
+        body = await this.index.get(row.id, { open_revs: 'all' });
+      } catch (err) {
+        if (err.statusCode === 404) {
+          body = [];
+        } else {
+          throw err;
+        }
+      }
+      if (body) {
+        const docs = body
+          .filter(entry => entry.ok && !entry.ok._deleted)
+          .map(entry => entry.ok);
+
+        if (docs.length > 1) {
+          let merged;
+
+          switch (docs[0]['@type']) {
+            case 'ScholarlyPreprint':
+              merged = mergePreprintConflicts(docs);
+              break;
+            default:
+              break;
+          }
+          if (merged) {
+            const payload = [merged].concat(
+              docs
+                .slice(1)
+                .map(doc => Object.assign({}, doc, { _deleted: true }))
+            );
+
+            const resp = await this.index.bulk({ docs: payload });
+
+            resolved.push(Object.assign({}, merged, { _rev: resp[0].rev }));
+          }
+        }
+      }
+    }
+
+    return resolved;
+  }
+
+  async resolveDocsConflicts() {
+    const resolved = [];
+
+    const body = await this.docs.view('ddoc-docs', 'conflictingByType', {
+      reduce: false,
+      key: 'RapidPREreviewAction'
+    });
+
+    for (const row of body.rows) {
+      let body;
+      try {
+        body = await this.docs.get(row.id, { open_revs: 'all' });
+      } catch (err) {
+        if (err.statusCode === 404) {
+          body = [];
+        } else {
+          throw err;
+        }
+      }
+      if (body) {
+        const docs = body
+          .filter(entry => entry.ok && !entry.ok._deleted)
+          .map(entry => entry.ok);
+
+        if (docs.length > 1) {
+          let merged;
+
+          switch (docs[0]['@type']) {
+            case 'RapidPREreviewAction':
+              merged = mergeReviewActionConflicts(docs);
+              break;
+            default:
+              break;
+          }
+          if (merged) {
+            const payload = [merged].concat(
+              docs
+                .slice(1)
+                .map(doc => Object.assign({}, doc, { _deleted: true }))
+            );
+
+            const resp = await this.docs.bulk({ docs: payload });
+
+            resolved.push(Object.assign({}, merged, { _rev: resp[0].rev }));
+          }
+        }
+      }
+    }
+
+    return resolved;
+  }
+
+  async resolveUsersConflicts() {
+    const resolved = [];
+
+    const body = await this.users.view('ddoc-users', 'conflictingByType', {
+      reduce: false,
+      key: 'Person'
+    });
+
+    for (const row of body.rows) {
+      let body;
+      try {
+        body = await this.users.get(row.id, { open_revs: 'all' });
+      } catch (err) {
+        if (err.statusCode === 404) {
+          body = [];
+        } else {
+          throw err;
+        }
+      }
+      if (body) {
+        const docs = body
+          .filter(entry => entry.ok && !entry.ok._deleted)
+          .map(entry => entry.ok);
+
+        if (docs.length > 1) {
+          let merged;
+
+          switch (docs[0]['@type']) {
+            case 'Person':
+              merged = mergeUserConflicts(docs);
+              break;
+            default:
+              break;
+          }
+          if (merged) {
+            const payload = [merged].concat(
+              docs
+                .slice(1)
+                .map(doc => Object.assign({}, doc, { _deleted: true }))
+            );
+
+            const resp = await this.users.bulk({ docs: payload });
+
+            resolved.push(Object.assign({}, merged, { _rev: resp[0].rev }));
+          }
+        }
+      }
+    }
+
+    return resolved;
+  }
+
   async post(
     action = {},
     {
@@ -679,97 +780,122 @@ export default class DB {
       throw createError(400, 'action must have a @type');
     }
 
+    let handledAction;
     switch (action['@type']) {
       case 'RegisterAction':
-        return handleRegisterAction.call(this, action, {
+        handledAction = handleRegisterAction.call(this, action, {
           strict,
           now,
           isAdmin,
           isModerator
         });
+        break;
 
       case 'UpdateUserAction':
-        return handleUpdateUserAction.call(this, action, {
+        handledAction = handleUpdateUserAction.call(this, action, {
           strict,
           user,
           now
         });
+        break;
 
       case 'UpdateRoleAction':
-        return handleUpdateRoleAction.call(this, action, {
+        handledAction = handleUpdateRoleAction.call(this, action, {
           strict,
           user,
           now
         });
+        break;
 
       case 'GrantModeratorRoleAction':
-        return handleGrantModeratorRoleAction.call(this, action, {
+        handledAction = handleGrantModeratorRoleAction.call(this, action, {
           strict,
           user,
           now
         });
+        break;
 
       case 'RevokeModeratorRoleAction':
-        return handleRevokeModeratorRoleAction.call(this, action, {
+        handledAction = handleRevokeModeratorRoleAction.call(this, action, {
           strict,
           user,
           now
         });
+        break;
 
       case 'ModerateRoleAction':
-        return handleModerateRoleAction.call(this, action, {
+        handledAction = handleModerateRoleAction.call(this, action, {
           strict,
           user,
           now
         });
+        break;
 
       case 'ModerateRapidPREreviewAction':
-        return handleModerateRapidPrereviewAction.call(this, action, {
+        handledAction = handleModerateRapidPrereviewAction.call(this, action, {
           strict,
           user,
           now
         });
+        break;
 
       case 'ReportRapidPREreviewAction':
-        return handleReportRapidPrereviewAction.call(this, action, {
+        handledAction = handleReportRapidPrereviewAction.call(this, action, {
           strict,
           user,
           now
         });
+        break;
 
       case 'IgnoreReportRapidPREreviewAction':
-        return handleIgnoreReportRapidPrereviewAction.call(this, action, {
-          strict,
-          user,
-          now
-        });
+        handledAction = handleIgnoreReportRapidPrereviewAction.call(
+          this,
+          action,
+          {
+            strict,
+            user,
+            now
+          }
+        );
+        break;
 
       case 'IgnoreModerateRapidPREreviewAction':
         throw createError(500, `Not implemented`);
 
       case 'DeanonymizeRoleAction':
-        return handleDeanonimyzeRoleAction.call(this, action, {
+        handledAction = handleDeanonimyzeRoleAction.call(this, action, {
           strict,
           user,
           now
         });
+        break;
 
       case 'RapidPREreviewAction':
-        return handleRapidPrereviewAction.call(this, action, {
+        handledAction = handleRapidPrereviewAction.call(this, action, {
           strict,
           user,
           now
         });
+        break;
 
       case 'RequestForRapidPREreviewAction':
-        return handleRequestForRapidPrereviewAction.call(this, action, {
-          strict,
-          user,
-          now
-        });
+        handledAction = handleRequestForRapidPrereviewAction.call(
+          this,
+          action,
+          {
+            strict,
+            user,
+            now
+          }
+        );
+        break;
 
       default:
         throw createError(400, `invalid action @type ${action['@type']}`);
     }
+
+    // TODO post processing (redundancy with changes feed)
+
+    return handledAction;
   }
 }

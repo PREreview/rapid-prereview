@@ -2,10 +2,10 @@ import orcidUtils from 'orcid-utils';
 import Ajv from 'ajv';
 import uuid from 'uuid';
 import pick from 'lodash/pick';
-import uniq from 'lodash/uniq';
 import schema from '../schemas/register-action';
-import { arrayify, getId, unprefix, cleanup } from '../utils/jsonld';
+import { getId, unprefix, cleanup } from '../utils/jsonld';
 import { createError } from '../utils/errors';
+import { mergeUserConflicts } from '../utils/conflicts';
 
 /**
  * Create (or update) an user
@@ -57,41 +57,7 @@ export default async function handleRegisterAction(
     const specialProps = ['token', 'hasRole', '_rev']; // those need special logic to be merged
 
     // merge all leaf docs (conflicting)
-    merged = docs.reduce((merged, doc) => {
-      // all props but `specialProps` (latest wins)
-      if (
-        new Date(merged.dateModified).getTime() <
-        new Date(doc.dateModified).getTime()
-      ) {
-        merged = Object.assign(
-          pick(merged, specialProps),
-          pick(
-            doc,
-            Object.keys(doc).filter(p => !specialProps.includes(p))
-          )
-        );
-      }
-
-      // `token`: latest wins
-      if (
-        (!merged.token && doc.token) ||
-        (merged.token &&
-          doc.token &&
-          new Date(merged.token.dateCreated).getTime() <
-            new Date(doc.token.dateCreated).getTime())
-      ) {
-        merged.token = doc.token;
-      }
-
-      // `hasRole`
-      // We can NOT lose role @ids => we ALWAYS merge
-      // Later we can sameAs in case the user reconciles
-      merged.hasRole = uniq(
-        arrayify(merged.hasRole).concat(arrayify(doc.hasRole))
-      );
-
-      return merged;
-    }, Object.assign({}, docs[0]));
+    merged = mergeUserConflicts(docs);
 
     // update profile props
     merged = Object.assign(

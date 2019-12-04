@@ -15,6 +15,7 @@ const ddoc = {
       },
       reduce: '_count'
     },
+
     preprintsByIdentifier: {
       map: function(doc) {
         if (doc['@type'] === 'ScholarlyPreprint') {
@@ -28,10 +29,22 @@ const ddoc = {
       },
       reduce: '_count'
     },
+
     preprintsByScoreAndDatePosted: {
       map: function(doc) {
         if (doc['@type'] === 'ScholarlyPreprint') {
           emit([doc.score, new Date(doc.datePosted).getTime()], null);
+        }
+      },
+      reduce: '_count'
+    },
+
+    conflictingByType: {
+      map: function(doc) {
+        if (doc._conflicts) {
+          if (typeof doc['@type'] === 'string') {
+            emit(doc['@type'], [doc._rev].concat(doc._conflicts));
+          }
         }
       },
       reduce: '_count'

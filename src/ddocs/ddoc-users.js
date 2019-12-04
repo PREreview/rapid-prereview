@@ -15,6 +15,17 @@ const ddoc = {
         }
       },
       reduce: '_count'
+    },
+
+    conflictingByType: {
+      map: function(doc) {
+        if (doc._conflicts) {
+          if (typeof doc['@type'] === 'string') {
+            emit(doc['@type'], [doc._rev].concat(doc._conflicts));
+          }
+        }
+      },
+      reduce: '_count'
     }
   }
 };

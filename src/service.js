@@ -29,7 +29,11 @@ const config = {
 const redisClient = createRedisClient(config);
 const db = new DB(config);
 const feed = new Feed(db);
-feed.resume();
+if (process.env.FEED_START_SEQ) {
+  feed.start({ since: process.env.FEED_START_SEQ });
+} else {
+  feed.resume();
+}
 feed.on('error', err => {
   lastChangeErr = err;
   logger.error({ err }, 'Feed error');

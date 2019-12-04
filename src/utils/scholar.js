@@ -63,6 +63,7 @@ export function parseGoogleScholar(head, { id, sourceUrl } = {}) {
     head.querySelector('meta[property="DC.date"][content]') ||
     head.querySelector('meta[name="citation_online_date"][content]') ||
     head.querySelector('meta[property="citation_online_date"][content]');
+
   if ($datePosted) {
     const content = $datePosted.getAttribute('content');
     if (content) {
