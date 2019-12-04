@@ -15,49 +15,63 @@ export default function TextAnswers({
 }) {
   const answers = getTextAnswers(actions);
 
+  const hasAnswers = answers.some(({ answers }) => {
+    return answers.length > 0;
+  });
+
+  if (!hasAnswers) {
+    return null;
+  }
+
   const isLoggedIn = !!user;
 
   return (
     <div className="text-answers">
       <dl>
-        {answers.map(({ questionId, question, answers }) => (
-          <div key={questionId}>
-            <dt className="text-answers__question">
-              <Value tagName="span">{question}</Value>
-            </dt>
-            {answers.map(({ actionId, roleId, text }) => {
-              const action = actions.find(action => getId(action) === actionId);
-              return (
-                <dd className="text-answers__response-row" key={roleId}>
-                  <div className="text-answers__user-badge-container">
-                    <RoleBadge roleId={roleId}>
-                      {isLoggedIn && (
-                        <MenuItem
-                          disabled={
-                            isModerationInProgress ||
-                            arrayify(action.moderationAction).some(
-                              action =>
-                                action['@type'] ===
-                                  'ReportRapidPREreviewAction' &&
-                                getId(action.agent) === getId(role)
-                            )
-                          }
-                          onSelect={() => {
-                            onModerate(actionId);
-                          }}
-                        >
-                          Report Review
-                        </MenuItem>
-                      )}
-                    </RoleBadge>
-                  </div>
+        {answers
+          .filter(({ answers }) => {
+            return answers.length > 0;
+          })
+          .map(({ questionId, question, answers }) => (
+            <div key={questionId}>
+              <dt className="text-answers__question">
+                <Value tagName="span">{question}</Value>
+              </dt>
+              {answers.map(({ actionId, roleId, text }) => {
+                const action = actions.find(
+                  action => getId(action) === actionId
+                );
+                return (
+                  <dd className="text-answers__response-row" key={roleId}>
+                    <div className="text-answers__user-badge-container">
+                      <RoleBadge roleId={roleId}>
+                        {isLoggedIn && (
+                          <MenuItem
+                            disabled={
+                              isModerationInProgress ||
+                              arrayify(action.moderationAction).some(
+                                action =>
+                                  action['@type'] ===
+                                    'ReportRapidPREreviewAction' &&
+                                  getId(action.agent) === getId(role)
+                              )
+                            }
+                            onSelect={() => {
+                              onModerate(actionId);
+                            }}
+                          >
+                            Report Review
+                          </MenuItem>
+                        )}
+                      </RoleBadge>
+                    </div>
 
-                  <Value className="text-answers__response">{text}</Value>
-                </dd>
-              );
-            })}
-          </div>
-        ))}
+                    <Value className="text-answers__response">{text}</Value>
+                  </dd>
+                );
+              })}
+            </div>
+          ))}
       </dl>
     </div>
   );

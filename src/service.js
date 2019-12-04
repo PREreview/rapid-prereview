@@ -41,7 +41,10 @@ feed.on('start', seq => {
 feed.on('sync', (seq, preprint) => {
   lastSeq = seq;
   lastDateSynced = new Date().toISOString();
-  logger.info({ seq, id: preprint._id, rev: preprint._rev }, 'Feed synced');
+  logger.info(
+    { seq, dateSynced: lastDateSynced, id: preprint._id, rev: preprint._rev },
+    'Feed synced'
+  );
   redisClient
     .batch()
     .del(createCacheKey('home:score'))
@@ -58,7 +61,10 @@ const intervalId = setIntervalAsync(
   () => {
     lastDateScoreUpdated = new Date().toISOString();
     return db.updateScores().then(updatedDocs => {
-      logger.info({ nDocs: updatedDocs.length }, 'Updated scores');
+      logger.info(
+        { dateScoreUpdated: lastDateScoreUpdated, nDocs: updatedDocs.length },
+        'Updated scores'
+      );
 
       redisClient
         .batch()
