@@ -264,4 +264,5 @@ Backups are stored in a blob storage container on azure.
   (on a mac you can put the binary in `/usr/local/bin` so it's available in the
   PATH.
 - run `azcopy login` to authenticate
-- run `npm run backup`
+- run `npm run backup` **Be aware that this will source the production
+  environment variables.**

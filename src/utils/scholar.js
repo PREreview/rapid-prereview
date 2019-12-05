@@ -42,49 +42,11 @@ export function parseGoogleScholar(head, { id, sourceUrl } = {}) {
     head.querySelector('meta[name="DC.title"][content]') ||
     head.querySelector('meta[property="DC.title"][content]') ||
     head.querySelector('meta[name="og:title"][content]') ||
-    head.querySelector('meta[property="og:title"][content]');
+    head.querySelector('meta[property="og:title"][content]') ||
+    head.querySelector('meta[name="DC.Title"][content]') ||
+    head.querySelector('meta[property="DC.Title"][content]');
   if ($title) {
     data.name = $title.getAttribute('content');
-  }
-
-  // `datePosted` (date posted and made avaiable on the preprint server)
-  // citation_publication_date or DC.issued,
-  // citation_date citation_online_date
-  // format is supposedely "2019/12/31" but it can have '-' and the month and
-  // day can be 1 or 01 so we take a flexible approach
-
-  const $datePosted =
-    head.querySelector('meta[name="citation_publication_date"][content]') ||
-    head.querySelector('meta[property="citation_publication_date"][content]') ||
-    head.querySelector('meta[name="DC.issued"][content]') ||
-    head.querySelector('meta[property="DC.issued"][content]') ||
-    head.querySelector('meta[name="citation_date"][content]') ||
-    head.querySelector('meta[property="citation_date"][content]') ||
-    head.querySelector('meta[name="DC.date"][content]') ||
-    head.querySelector('meta[property="DC.date"][content]') ||
-    head.querySelector('meta[name="citation_online_date"][content]') ||
-    head.querySelector('meta[property="citation_online_date"][content]');
-
-  if ($datePosted) {
-    const content = $datePosted.getAttribute('content');
-    if (content) {
-      let [y, m, d] = content.split(/\/|-/);
-      if (y != null && m != null && d != null) {
-        y = parseInt(y, 10);
-        m = parseInt(m, 10);
-        d = parseInt(d, 10);
-
-        let stamp;
-        try {
-          stamp = Date.UTC(y, m - 1, d);
-        } catch (err) {
-          // noop
-        }
-        if (stamp != null) {
-          data.datePosted = new Date(stamp).toISOString();
-        }
-      }
-    }
   }
 
   // `preprintServer.name`
@@ -122,6 +84,67 @@ export function parseGoogleScholar(head, { id, sourceUrl } = {}) {
       const name = $preprintServerName.getAttribute('content');
       if (name) {
         data.preprintServer = { '@type': 'PreprintServer', name };
+      }
+    }
+  }
+
+  // `datePosted` (date posted and made avaiable on the preprint server)
+  // citation_publication_date or DC.issued,
+  // citation_date citation_online_date
+  // format is supposedely "2019/12/31" but it can have '-' and the month and
+  // day can be 1 or 01 so we take a flexible approach...
+
+  let $datePosted;
+  if (
+    data.preprintServer &&
+    data.preprintServer.name &&
+    data.preprintServer.name.toLowerCase().includes('biorxiv')
+  ) {
+    // handle biorXiv (as of Dec. 2019 `citation_publication_date` is off in bioRxiv)
+    $datePosted =
+      head.querySelector('meta[name="DC.Date"][content]') ||
+      head.querySelector('meta[property="DC.Date"][content]') ||
+      head.querySelector('meta[name="article:published_time"][content]') ||
+      head.querySelector('meta[property="article:published_time"][content]');
+  }
+
+  if (!$datePosted) {
+    // "nornal" cases
+    $datePosted =
+      head.querySelector('meta[name="citation_publication_date"][content]') ||
+      head.querySelector(
+        'meta[property="citation_publication_date"][content]'
+      ) ||
+      head.querySelector('meta[name="DC.issued"][content]') ||
+      head.querySelector('meta[property="DC.issued"][content]') ||
+      head.querySelector('meta[name="citation_date"][content]') ||
+      head.querySelector('meta[property="citation_date"][content]') ||
+      head.querySelector('meta[name="DC.date"][content]') ||
+      head.querySelector('meta[property="DC.date"][content]') ||
+      head.querySelector('meta[name="citation_online_date"][content]') ||
+      head.querySelector('meta[property="citation_online_date"][content]') ||
+      head.querySelector('meta[name="DC.Date"][content]') ||
+      head.querySelector('meta[property="DC.Date"][content]');
+  }
+
+  if ($datePosted) {
+    const content = $datePosted.getAttribute('content');
+    if (content) {
+      let [y, m, d] = content.split(/\/|-/);
+      if (y != null && m != null && d != null) {
+        y = parseInt(y, 10);
+        m = parseInt(m, 10);
+        d = parseInt(d, 10);
+
+        let stamp;
+        try {
+          stamp = Date.UTC(y, m - 1, d);
+        } catch (err) {
+          // noop
+        }
+        if (stamp != null) {
+          data.datePosted = new Date(stamp).toISOString();
+        }
       }
     }
   }

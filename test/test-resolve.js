@@ -55,7 +55,7 @@ describe('resolve', function() {
         doi: unprefix(crossrefDoi),
         name:
           'Temporal and spatial limitations in global surveillance for bat filoviruses and henipaviruses',
-        datePosted: '2019-01-01T00:00:00.000Z',
+        datePosted: '2019-09-30T00:00:00.000Z',
         preprintServer: { '@type': 'PreprintServer', name: 'bioRxiv' },
         url: 'https://www.biorxiv.org/content/10.1101/674655v2',
         encoding: [
