@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
 import { MdChevronRight } from 'react-icons/md';
 import Value from './value';
+import { getFormattedDatePosted } from '../utils/preprints';
 
 export default function PreprintPreview({ preprint }) {
   return (
@@ -16,7 +16,7 @@ export default function PreprintPreview({ preprint }) {
 
         {!!preprint.datePosted && (
           <span className="preprint-preview__date">
-            {format(new Date(preprint.datePosted), 'MMM. d, yyyy')}
+            {getFormattedDatePosted(preprint.datePosted)}
           </span>
         )}
       </div>

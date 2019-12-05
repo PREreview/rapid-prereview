@@ -28,6 +28,7 @@ import ReviewReader from './review-reader';
 import XLink from './xlink';
 import Button from './button';
 import { useAnimatedScore } from '../hooks/score-hooks';
+import { getFormattedDatePosted } from '../utils/preprints';
 
 export default function PreprintCard({
   user,
@@ -95,9 +96,11 @@ export default function PreprintCard({
                 <ShellIcon className="preprint-card__title__shell-icon" />
               </XLink>
             </div>
-            <span className="preprint-card__pub-date">
-              {format(new Date(datePosted), 'MMM. d, yyyy')}
-            </span>
+            {!!datePosted && (
+              <span className="preprint-card__pub-date">
+                {getFormattedDatePosted(datePosted)}
+              </span>
+            )}
           </div>
           <div className="preprint-card__info-row">
             <div className="preprint-card__info-row__left">
