@@ -13,6 +13,8 @@
   border-bottom: 1px solid var(--light-grey);
 
   transition: box-shadow 0.1s;
+
+  &.preprint-card--new,
   &:hover {
     z-index: 500;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
@@ -316,6 +318,23 @@
     }
     & .preprint-card__score-badge-container {
       margin-right: var(--xxsgrd);
+    }
+
+    & .preprint-card__new-badge {
+      width: var(--mgrd);
+      height: var(--mgrd);
+      background-color: var(--prereview-red);
+      border-radius: 50%;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-transform: uppercase;
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 0.025em;
+      line-height: 0;
     }
 
     & .preprint-card__add-button {

@@ -35,7 +35,8 @@ export default function PreprintCard({
   preprint,
   onNewRequest,
   onNewReview,
-  onNew
+  onNew,
+  isNew = false
 }) {
   const [isOpened, setIsOpened] = useState(false);
 
@@ -75,7 +76,9 @@ export default function PreprintCard({
 
   return (
     <Fragment>
-      <div className="preprint-card">
+      <div
+        className={classNames('preprint-card', { 'preprint-card--new': isNew })}
+      >
         <div className="preprint-card__contents">
           <div className="preprint-card__header">
             <div className="preprint-card__header__left">
@@ -189,15 +192,19 @@ export default function PreprintCard({
               {/*<Tooltip label="Number of reviews and requests for reviews for this preprint">*/}
               {/* ScoreBadge uses forwardRef but Tooltip doesn't work without extra div :( */}
               <div className="preprint-card__score-badge-container">
-                <ScoreBadge
-                  now={now}
-                  nRequests={nRequests}
-                  nReviews={nReviews}
-                  dateFirstActivity={dateFirstActivity}
-                  onMouseEnter={onStartAnim}
-                  onMouseLeave={onStopAnim}
-                  isAnimating={isAnimating}
-                />
+                {isNew ? (
+                  <div className="preprint-card__new-badge">new</div>
+                ) : (
+                  <ScoreBadge
+                    now={now}
+                    nRequests={nRequests}
+                    nReviews={nReviews}
+                    dateFirstActivity={dateFirstActivity}
+                    onMouseEnter={onStartAnim}
+                    onMouseLeave={onStopAnim}
+                    isAnimating={isAnimating}
+                  />
+                )}
               </div>
               {/*</Tooltip>*/}
               <button
@@ -353,7 +360,8 @@ PreprintCard.propTypes = {
   }).isRequired,
   onNewRequest: PropTypes.func.isRequired,
   onNewReview: PropTypes.func.isRequired,
-  onNew: PropTypes.func.isRequired
+  onNew: PropTypes.func.isRequired,
+  isNew: PropTypes.bool
 };
 
 export function AnimatedNumber({ value, isAnimating }) {
