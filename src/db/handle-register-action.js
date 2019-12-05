@@ -136,6 +136,13 @@ export default async function handleRegisterAction(
 
   const resp = await this.users.bulk({ docs: payload });
 
+  if (!resp[0].ok) {
+    throw createError(
+      resp[0].error === 'conflict' ? 409 : 500,
+      resp[0].reason || 'something went wrong'
+    );
+  }
+
   const user = Object.assign({}, merged, {
     _rev: resp[0].rev
   });

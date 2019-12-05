@@ -45,7 +45,9 @@ feed.on('start', seq => {
 feed.on('sync', (seq, preprint) => {
   lastSeq = seq;
   lastDateSynced = new Date().toISOString();
+
   logger.info({ seq, id: preprint._id, rev: preprint._rev }, 'Feed synced');
+
   redisClient
     .batch()
     .del(createCacheKey('home:score'))

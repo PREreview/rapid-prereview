@@ -34,18 +34,20 @@ export default class Feed extends EventEmitter {
         doc['@type'] === 'RapidPREreviewAction'
       ) {
         this.feed.pause();
+
         let preprint;
         try {
           preprint = await this.db.syncIndex(doc, {
             triggeringSeq: change.seq
           });
+          this.seq = change.seq;
+          this.emit('sync', this.seq, preprint);
         } catch (err) {
           err.seq = change.seq;
           err.source = 'syncIndex';
           this.emit('error', err);
         }
-        this.seq = change.seq;
-        this.emit('sync', this.seq, preprint);
+
         if (this.feed) {
           // user may have called `stop`
           this.feed.resume();

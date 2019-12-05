@@ -1,6 +1,7 @@
 import Cloudant from '@cloudant/cloudant';
 import omit from 'lodash/omit';
 import flatten from 'lodash/flatten';
+import isEqual from 'lodash/isEqual';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
@@ -474,18 +475,14 @@ export default class DB {
         merged.potentialAction = merged.potentialAction.map(_action => {
           if (getId(_action) === getId(action)) {
             return cleanup(
-              Object.assign(
-                {},
-                _action,
-                {
-                  moderationAction: getUniqueModerationActions(
-                    arrayify(_action.moderationAction).concat(
-                      arrayify(action.moderationAction)
-                    )
+              Object.assign({}, _action, {
+                moderationAction: getUniqueModerationActions(
+                  arrayify(_action.moderationAction).concat(
+                    arrayify(action.moderationAction)
                   )
-                },
-                { removeEmptyArray: true }
-              )
+                )
+              }),
+              { removeEmptyArray: true }
             );
           } else {
             return _action;
@@ -514,6 +511,23 @@ export default class DB {
     );
 
     const resp = await this.index.bulk({ docs: payload });
+
+    if (!resp[0].ok) {
+      const err = createError(
+        resp[0].error === 'conflict' ? 409 : 500,
+        resp[0].reason || 'something went wrong'
+      );
+
+      if (err.statusCode === 409) {
+        // retry untill all conflicts are gone
+        return await this.syncIndex(action, {
+          now,
+          triggeringSeq // passed when this is called by the changes feed so we can retry easily
+        });
+      }
+
+      throw err;
+    }
 
     return Object.assign({}, merged, { _rev: resp[0].rev });
   }
@@ -569,6 +583,12 @@ export default class DB {
     );
 
     const resp = await this.docs.bulk({ docs: payload });
+    if (!resp[0].ok) {
+      throw createError(
+        resp[0].error === 'conflict' ? 409 : 500,
+        resp[0].reason || 'something went wrong'
+      );
+    }
 
     return Object.assign({}, merged, { _rev: resp[0].rev });
   }
@@ -652,8 +672,9 @@ export default class DB {
             );
 
             const resp = await this.index.bulk({ docs: payload });
-
-            resolved.push(Object.assign({}, merged, { _rev: resp[0].rev }));
+            if (resp[0].ok) {
+              resolved.push(Object.assign({}, merged, { _rev: resp[0].rev }));
+            }
           }
         }
       }
@@ -704,8 +725,9 @@ export default class DB {
             );
 
             const resp = await this.docs.bulk({ docs: payload });
-
-            resolved.push(Object.assign({}, merged, { _rev: resp[0].rev }));
+            if (resp[0].ok) {
+              resolved.push(Object.assign({}, merged, { _rev: resp[0].rev }));
+            }
           }
         }
       }
@@ -756,8 +778,9 @@ export default class DB {
             );
 
             const resp = await this.users.bulk({ docs: payload });
-
-            resolved.push(Object.assign({}, merged, { _rev: resp[0].rev }));
+            if (resp[0].ok) {
+              resolved.push(Object.assign({}, merged, { _rev: resp[0].rev }));
+            }
           }
         }
       }
@@ -769,6 +792,7 @@ export default class DB {
   async post(
     action = {},
     {
+      sync = false,
       user = null,
       strict = true,
       now = new Date().toISOString(),
@@ -783,7 +807,7 @@ export default class DB {
     let handledAction;
     switch (action['@type']) {
       case 'RegisterAction':
-        handledAction = handleRegisterAction.call(this, action, {
+        handledAction = await handleRegisterAction.call(this, action, {
           strict,
           now,
           isAdmin,
@@ -792,7 +816,7 @@ export default class DB {
         break;
 
       case 'UpdateUserAction':
-        handledAction = handleUpdateUserAction.call(this, action, {
+        handledAction = await handleUpdateUserAction.call(this, action, {
           strict,
           user,
           now
@@ -800,7 +824,7 @@ export default class DB {
         break;
 
       case 'UpdateRoleAction':
-        handledAction = handleUpdateRoleAction.call(this, action, {
+        handledAction = await handleUpdateRoleAction.call(this, action, {
           strict,
           user,
           now
@@ -808,23 +832,31 @@ export default class DB {
         break;
 
       case 'GrantModeratorRoleAction':
-        handledAction = handleGrantModeratorRoleAction.call(this, action, {
-          strict,
-          user,
-          now
-        });
+        handledAction = await handleGrantModeratorRoleAction.call(
+          this,
+          action,
+          {
+            strict,
+            user,
+            now
+          }
+        );
         break;
 
       case 'RevokeModeratorRoleAction':
-        handledAction = handleRevokeModeratorRoleAction.call(this, action, {
-          strict,
-          user,
-          now
-        });
+        handledAction = await handleRevokeModeratorRoleAction.call(
+          this,
+          action,
+          {
+            strict,
+            user,
+            now
+          }
+        );
         break;
 
       case 'ModerateRoleAction':
-        handledAction = handleModerateRoleAction.call(this, action, {
+        handledAction = await handleModerateRoleAction.call(this, action, {
           strict,
           user,
           now
@@ -832,23 +864,31 @@ export default class DB {
         break;
 
       case 'ModerateRapidPREreviewAction':
-        handledAction = handleModerateRapidPrereviewAction.call(this, action, {
-          strict,
-          user,
-          now
-        });
+        handledAction = await handleModerateRapidPrereviewAction.call(
+          this,
+          action,
+          {
+            strict,
+            user,
+            now
+          }
+        );
         break;
 
       case 'ReportRapidPREreviewAction':
-        handledAction = handleReportRapidPrereviewAction.call(this, action, {
-          strict,
-          user,
-          now
-        });
+        handledAction = await handleReportRapidPrereviewAction.call(
+          this,
+          action,
+          {
+            strict,
+            user,
+            now
+          }
+        );
         break;
 
       case 'IgnoreReportRapidPREreviewAction':
-        handledAction = handleIgnoreReportRapidPrereviewAction.call(
+        handledAction = await handleIgnoreReportRapidPrereviewAction.call(
           this,
           action,
           {
@@ -863,7 +903,7 @@ export default class DB {
         throw createError(500, `Not implemented`);
 
       case 'DeanonymizeRoleAction':
-        handledAction = handleDeanonimyzeRoleAction.call(this, action, {
+        handledAction = await handleDeanonimyzeRoleAction.call(this, action, {
           strict,
           user,
           now
@@ -871,7 +911,7 @@ export default class DB {
         break;
 
       case 'RapidPREreviewAction':
-        handledAction = handleRapidPrereviewAction.call(this, action, {
+        handledAction = await handleRapidPrereviewAction.call(this, action, {
           strict,
           user,
           now
@@ -879,7 +919,7 @@ export default class DB {
         break;
 
       case 'RequestForRapidPREreviewAction':
-        handledAction = handleRequestForRapidPrereviewAction.call(
+        handledAction = await handleRequestForRapidPrereviewAction.call(
           this,
           action,
           {
@@ -894,7 +934,30 @@ export default class DB {
         throw createError(400, `invalid action @type ${action['@type']}`);
     }
 
-    // TODO post processing (redundancy with changes feed)
+    // post processing (redundancy with changes feed)
+    if (sync) {
+      let actionToSync;
+      if (
+        handledAction['@type'] === 'RapidPREreviewAction' ||
+        handledAction['@type'] === 'RequestForRapidPREreviewAction'
+      ) {
+        actionToSync = handledAction;
+      } else if (
+        handledAction.result &&
+        (handledAction.result['@type'] === 'RapidPREreviewAction' ||
+          handledAction.result['@type'] === 'RequestForRapidPREreviewAction')
+      ) {
+        actionToSync = handledAction.result;
+      }
+
+      if (actionToSync) {
+        try {
+          await this.syncIndex(actionToSync, { now });
+        } catch (err) {
+          // noop
+        }
+      }
+    }
 
     return handledAction;
   }

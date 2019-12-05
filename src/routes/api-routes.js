@@ -212,7 +212,7 @@ router.post(
     let body;
 
     try {
-      body = await req.db.post(req.body, { user: req.user });
+      body = await req.db.post(req.body, { user: req.user, sync: true });
     } catch (err) {
       return next(err);
     }
