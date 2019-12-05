@@ -98,9 +98,10 @@ export function parseGoogleScholar(head, { id, sourceUrl } = {}) {
   if (
     data.preprintServer &&
     data.preprintServer.name &&
-    data.preprintServer.name.toLowerCase().includes('biorxiv')
+    (data.preprintServer.name.toLowerCase().includes('biorxiv') ||
+      data.preprintServer.name.toLowerCase().includes('medrxiv'))
   ) {
-    // handle biorXiv (as of Dec. 2019 `citation_publication_date` is off in bioRxiv)
+    // handle biorXiv and medrXiv (as of Dec. 2019 `citation_publication_date` is off in bioRxiv)
     $datePosted =
       head.querySelector('meta[name="DC.Date"][content]') ||
       head.querySelector('meta[property="DC.Date"][content]') ||
