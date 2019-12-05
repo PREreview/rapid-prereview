@@ -68,7 +68,7 @@ public/assets/.bundle-manifest.json
 public/assets/bundle.*
 public/assets/bundle-manifest.json
 public/assets/hot
-public/assets/*.worker.*js
+public/assets/*.worker.js
 
 extension/background.js
 extension/background.js.map
