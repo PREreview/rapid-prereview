@@ -253,3 +253,15 @@ azure:reset-redis`. **Be aware that this will source the production environment
 variables.**
 
 Some basic info about the service health can be found at https://rapid-prereview-service.azurewebsites.net/
+
+
+#### Backups
+
+Backups are stored in a blob storage container on azure.
+
+- Install AzCopy see
+  https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10
+  (on a mac you can put the binary in `/usr/local/bin` so it's available in the
+  PATH.
+- run `azcopy login` to authenticate
+- run `npm run backup`

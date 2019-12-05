@@ -5,6 +5,7 @@ import { cleanup } from './jsonld';
 
 /**
  * Note: this is also used from the web extension code
+ * See https://www.google.com/intl/en/scholar/inclusion.html#indexing
  */
 export function parseGoogleScholar(head, { id, sourceUrl } = {}) {
   if (id == null) {
