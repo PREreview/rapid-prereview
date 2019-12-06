@@ -45,11 +45,19 @@ chrome.cookies.onChanged.addListener(changeInfo => {
 // - Keep icon badge text (counter) up-to-date
 // - Broadcast HistoryStateUpdated
 chrome.runtime.onConnect.addListener(port => {
+  function handleHistoryStateUpdated(data) {
+    port.postMessage({ type: HISTORY_STATE_UPDATED, payload: data });
+  }
+
   if (port.name === 'stats') {
+    port.onDisconnect.addListener(data => {
+      chrome.webNavigation.onHistoryStateUpdated.removeListener(
+        handleHistoryStateUpdated
+      );
+    });
+
     chrome.webNavigation.onHistoryStateUpdated.addListener(
-      data => {
-        port.postMessage({ type: HISTORY_STATE_UPDATED, payload: data });
-      },
+      handleHistoryStateUpdated,
       {
         url: [{ urlContains: process.env.API_URL }]
       }
