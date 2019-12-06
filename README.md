@@ -131,7 +131,8 @@ npm start
 and visit [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
 
 
-If you want to start from an empty set (or reset the DB to an empty state) you can run:
+If you want to start from an empty state (or reset the DB to an empty state) you can run:
+
 ```sh
 npm run reset
 ```
@@ -154,7 +155,7 @@ everything:
 
 #### Development
 
-To work on the extension you can:
+To work (or test / demo) the extension you can:
 1. start a dev server (run `npm start`)
 2. follow the instruction below depending on whether you want to work with
    Chrome or Firefox.
