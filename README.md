@@ -34,14 +34,8 @@ Rapid PREreview does _not_ focus on:
   emergency situations
 - becoming / being a preprint server
 
-**NOTE: this project is under active development and is currently not accepting
-contributions.** Thanks for taking an interest. Feel free to star/watch the
-repository and we will remove this notice once we have processes and
-documentation in place to allow people to collaborate productively.
-
 **[Join PREreview Slack
 Channel](https://join.slack.com/t/prereview/shared_invite/enQtMzYwMjQzMTk3ODMxLTZhOWQ5M2FmMTY5OTYzZDNhNDg2ZDdhODE2Y2Y4MTVjY2U0OWRiZTA5ZjM3MWM1ZTY0N2E1ODYyNWM1NTc2NDg)**
-
 
 ## Development
 
