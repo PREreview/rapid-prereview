@@ -18,6 +18,7 @@
     justify-content: space-between;
     border-top: 1px solid var(--ruling-color);
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
     & nav {
       height: 100%;
       display: block;

@@ -105,6 +105,7 @@
     display: flex;
     align-items: center;
     z-index: 10;
+    border: none;
   }
 
   & .barplot__question {
@@ -211,7 +212,7 @@
   & .barplot__question-list__item:focus {
     outline: none;
     & .barplot__segment-titles {
-      top: -18px;
+      top: -16px;
       opacity: 0.95;
     }
 
@@ -224,7 +225,10 @@
     padding: var(--xxsgrd) var(--xsgrd);
     box-sizing: border-box;
     flex: 0 0 auto;
+    border: none;
     border-right: 1px solid var(--ruling-color--light);
+
+    background-color: transparent;
     font: var(--ui-basic-font-size);
     &:last-child {
       border-right: none;
