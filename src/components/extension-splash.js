@@ -49,7 +49,7 @@ export default function ExtensionSplash() {
             <li className="extension-splash__browser-list-item">
               <Button
                 element={'a'}
-                href="https://github.com/prereview/rapid-prereview/#web-extension"
+                href="https://addons.mozilla.org/en-US/firefox/addon/outbreaksci-rapid-prereview/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="extension-splash__install-button"
@@ -59,17 +59,17 @@ export default function ExtensionSplash() {
               </Button>
 
               {/*
-              <Button
-                className="extension-splash__install-button"
-                primary={true}
-                disabled={true}
-              >
-                Install for Firefox
-              </Button>
-              <br />
-              <div className="extension-splash__comming-soon">
-                <LabelStyle>(comming soon)</LabelStyle>
-              </div>*/}
+                  <Button
+                  className="extension-splash__install-button"
+                  primary={true}
+                  disabled={true}
+                  >
+                  Install for Firefox
+                  </Button>
+                  <br />
+                  <div className="extension-splash__comming-soon">
+                  <LabelStyle>(comming soon)</LabelStyle>
+                  </div>*/}
             </li>
           </ul>
 
