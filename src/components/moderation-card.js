@@ -60,8 +60,9 @@ export default function ModerationCard({
       </div>
       <div className="moderation-card__text-answers">
         <dl className="moderation-card__text-answers-list">
-          {textAnswers.map(
-            ({ questionId, question, answers: [{ text: answer }] }) => (
+          {textAnswers
+            .filter(data => data.answers.length)
+            .map(({ questionId, question, answers: [{ text: answer }] }) => (
               <div key={questionId} className="moderation-card__text-answer">
                 <dt className="moderation-card__text-answer-question">
                   <Value>{question}</Value>
@@ -70,8 +71,7 @@ export default function ModerationCard({
                   <Value>{answer}</Value>
                 </dd>
               </div>
-            )
-          )}
+            ))}
         </dl>
       </div>
 
