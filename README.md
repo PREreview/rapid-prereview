@@ -154,9 +154,10 @@ everything:
 
 #### Development
 
-To work on the extension you can start a dev server (`npm start` and then follow
-the instruction below depending on whether you want to work with Chrome or
-Firefox).
+To work on the extension you can:
+1. start a dev server (run `npm start`)
+2. follow the instruction below depending on whether you want to work with
+   Chrome or Firefox.
 
 ##### Chrome
 
