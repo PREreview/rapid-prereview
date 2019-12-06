@@ -131,6 +131,11 @@ npm start
 and visit [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
 
 
+If you want to start from an empty set (or reset the DB to an empty state) you can run:
+```sh
+npm run reset
+```
+
 #### Troubleshooting
 
 If your computer gets slow or you see error messages you can try to reboot
