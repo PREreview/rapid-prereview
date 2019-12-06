@@ -66,6 +66,12 @@ At the root of this repository run:
 npm install
 ```
 
+#### Troubleshooting
+
+If you are having permission issues with `npm` checkout
+https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally
+
+
 ### Redis
 
 Be sure that redis is running on the default port (6379).
