@@ -191,7 +191,8 @@ const ddoc = {
               return false;
             });
 
-            var hasData = reviewsWithData.length >= threshold;
+            var hasData =
+              reviewsWithData.length && reviewsWithData.length >= threshold;
             index('hasData', hasData ? 'true' : 'false', {
               facet: true
             });
@@ -215,7 +216,8 @@ const ddoc = {
               return false;
             });
 
-            var hasCode = reviewsWithCode.length >= threshold;
+            var hasCode =
+              reviewsWithCode.length && reviewsWithCode.length >= threshold;
             index('hasCode', hasCode ? 'true' : 'false', {
               facet: true
             });
