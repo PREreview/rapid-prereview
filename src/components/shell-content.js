@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import { MenuLink } from '@reach/menu-button';
 import { useUser } from '../contexts/user-context';
 import { usePreprintActions, usePostAction, useRole } from '../hooks/api-hooks';
+import { useLocalState, useNewPreprints } from '../hooks/ui-hooks';
 import Controls from './controls';
 import Button from './button';
 import RapidFormFragment from './rapid-form-fragment';
@@ -19,7 +20,6 @@ import {
 } from '../utils/actions';
 import { getCounts } from '../utils/stats';
 import { getId, cleanup, unprefix } from '../utils/jsonld';
-import { useLocalState } from '../hooks/ui-hooks';
 import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
 import UserBadge from './user-badge';
@@ -28,6 +28,10 @@ import ReviewReader from './review-reader';
 import PreprintPreview from './preprint-preview';
 import XLink from './xlink';
 import ModerationModal from './moderation-modal';
+import { preprintify } from '../utils/preprints';
+
+// !! this needs to work both in web and extension use
+// `process.env.IS_EXTENSION` to assess the environment we are in.
 
 export default function ShellContent({
   preprint,
@@ -36,6 +40,7 @@ export default function ShellContent({
 }) {
   const [user] = useUser();
   const [role] = useRole(user && user.defaultRole);
+  const [newPreprints, setNewPreprints] = useNewPreprints();
 
   const [actions, fetchActionsProgress] = usePreprintActions(
     preprint.doi || preprint.arXivId
@@ -201,8 +206,25 @@ export default function ShellContent({
             user={user}
             preprint={preprint}
             onSubmit={action => {
-              post(action, () => {
+              post(action, body => {
                 setTab('request#success');
+
+                const isNew =
+                  !fetchActionsProgress.isActive &&
+                  actions.filter(_action => getId(_action) !== getId(body))
+                    .length === 0;
+
+                if (
+                  !process.env.IS_EXTENSION &&
+                  isNew &&
+                  !newPreprints.some(
+                    _preprint => getId(_preprint) === getId(preprint)
+                  )
+                ) {
+                  setNewPreprints(
+                    newPreprints.concat(preprintify(preprint, body))
+                  );
+                }
               });
             }}
             isPosting={postProgress.isActive}
@@ -218,8 +240,25 @@ export default function ShellContent({
             user={user}
             preprint={preprint}
             onSubmit={action => {
-              post(action, () => {
+              post(action, body => {
                 setTab('review#success');
+
+                const isNew =
+                  !fetchActionsProgress.isActive &&
+                  actions.filter(_action => getId(_action) !== getId(body))
+                    .length === 0;
+
+                if (
+                  !process.env.IS_EXTENSION &&
+                  isNew &&
+                  !newPreprints.some(
+                    _preprint => getId(_preprint) === getId(preprint)
+                  )
+                ) {
+                  setNewPreprints(
+                    newPreprints.concat(preprintify(preprint, body))
+                  );
+                }
               });
             }}
             isPosting={postProgress.isActive}

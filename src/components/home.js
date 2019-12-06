@@ -163,10 +163,10 @@ export default function Home() {
                 onCancel={() => {
                   history.push('/');
                 }}
-                onSuccess={(preprint, isForGivenPreprint) => {
+                onSuccess={(preprint, isNew) => {
                   history.push('/');
                   if (
-                    !isForGivenPreprint &&
+                    isNew &&
                     !newPreprints.some(
                       _preprint => getId(_preprint) === getId(preprint)
                     )
@@ -174,7 +174,7 @@ export default function Home() {
                     setNewPreprints(newPreprints.concat(preprint));
                   }
                 }}
-                onViewInContext={({ preprint, tab }) => {
+                onViewInContext={({ preprint, tab }, isNew) => {
                   history.push(
                     `/${unprefix(preprint.doi || preprint.arXivId)}`,
                     {

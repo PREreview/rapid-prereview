@@ -2,6 +2,7 @@ import omit from 'lodash/omit';
 import pick from 'lodash/pick';
 import { format } from 'date-fns';
 import { getId, cleanup, arrayify, unprefix } from '../utils/jsonld';
+import { createPreprintId } from '../utils/ids';
 
 /**
  * Make embedded action (`RapidPREreviewAction` or
@@ -74,4 +75,19 @@ export function getCanonicalUrl(preprint = {}) {
 export function getFormattedDatePosted(isoString) {
   const [year, month, day] = isoString.substr(0, 10).split('-');
   return format(new Date(year, month - 1, day), 'MMM. d, yyyy');
+}
+
+/**
+ * Used to convert a `preprint` obtained with the resolve API endpoint
+ * into one that is stored in the index DB once the first `action` is
+ * POSTed
+ */
+export function preprintify(preprint, action) {
+  return Object.assign(
+    {
+      '@id': createPreprintId(preprint),
+      potentialAction: [action]
+    },
+    preprint
+  );
 }

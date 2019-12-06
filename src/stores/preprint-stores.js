@@ -160,6 +160,7 @@ export class PreprintsSearchResultsStore extends EventEmitter {
   constructor() {
     super();
     // only cache the last result
+    this.search = null;
     this.cache = new LRU({ max: 1 });
   }
 
@@ -173,10 +174,55 @@ export class PreprintsSearchResultsStore extends EventEmitter {
 
   set(search, payload) {
     this.emit('SET', search, payload);
+    this.search = search;
     this.cache.set(search, payload);
   }
 
   reset() {
+    this.search = null;
     this.cache.reset();
+  }
+
+  upsertAction(action) {
+    if (
+      action['@type'] === 'ModerateRapidPREreviewAction' ||
+      action['@type'] === 'ReportRapidPREreviewAction' ||
+      action['@type'] === 'IgnoreReportRapidPREreviewAction'
+    ) {
+      action = action.result;
+    }
+
+    if (
+      (action['@type'] === 'RapidPREreviewAction' ||
+        action['@type'] === 'RequestForRapidPREreviewAction') &&
+      getId(action.object)
+    ) {
+      const cache = this.get(this.search);
+      if (cache && cache.rows) {
+        const nextRow = cache.rows.find(
+          row => getId(row.doc) === createPreprintId(action.object)
+        );
+
+        if (nextRow) {
+          const nextCache = Object.assign({}, cache, {
+            rows: cache.rows.map(row => {
+              if (row.doc && getId(nextRow.doc) === getId(row.doc)) {
+                return Object.assign({}, row, {
+                  doc: Object.assign({}, row.doc, {
+                    potentialAction: arrayify(row.doc.potentialAction)
+                      .filter(_action => getId(_action) !== getId(action))
+                      .concat(action)
+                  })
+                });
+              }
+
+              return row;
+            })
+          });
+
+          this.set(this.search, nextCache);
+        }
+      }
+    }
   }
 }

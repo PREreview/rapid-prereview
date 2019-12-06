@@ -16,7 +16,7 @@ const PdfViewer = React.lazy(() =>
   import(/* webpackChunkName: "pdf-viewer" */ './pdf-viewer')
 );
 
-// TODO if no PDF is available display shell in full screen ?
+// TODO? if no PDF is available display shell in full screen ?
 
 export default function ExtensionFallback() {
   const location = useLocation(); // location.state can be {preprint, tab} with tab being `request` or `review` (so that we know on which tab the shell should be activated with

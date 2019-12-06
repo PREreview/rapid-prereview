@@ -86,6 +86,7 @@ export function usePostAction() {
         })
         .then(body => {
           preprintsWithActionsStore.upsertAction(body);
+          preprintsSearchResultsStore.upsertAction(body);
           newPreprintsStore.upsertAction(body);
           roleStore.setFromAction(body);
 

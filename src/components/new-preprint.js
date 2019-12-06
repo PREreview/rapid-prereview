@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import identifiersArxiv from 'identifiers-arxiv';
@@ -8,7 +8,7 @@ import {
   createPreprintId,
   unversionDoi
 } from '../utils/ids';
-import { unprefix, cleanup } from '../utils/jsonld';
+import { unprefix, cleanup, getId } from '../utils/jsonld';
 import {
   usePostAction,
   usePreprint,
@@ -28,6 +28,7 @@ import Controls from './controls';
 import Button from './button';
 import TextInput from './text-input';
 import PreprintPreview from './preprint-preview';
+import { preprintify } from '../utils/preprints';
 
 export default function NewPreprint({
   user,
@@ -39,8 +40,6 @@ export default function NewPreprint({
 
   const isSingleStep = location.state && location.state.isSingleStep;
 
-  const isForGivenPreprint = !!(location.state && location.state.preprint);
-
   const [identifier, setIdentifier] = useState(
     (location.state &&
       location.state.preprint &&
@@ -50,6 +49,8 @@ export default function NewPreprint({
         location.state.preprint.arXivId) ||
       ''
   );
+
+  const [actions, fetchActionsProgress] = usePreprintActions(identifier);
 
   const [preprint, resolvePreprintStatus] = usePreprint(
     identifier,
@@ -66,10 +67,23 @@ export default function NewPreprint({
       : 'NEW_PREPRINT'
   );
 
+  const isNew =
+    !fetchActionsProgress.isActive &&
+    actions.filter(_action => getId(_action) !== getId(action)).length === 0;
+
+  const handleViewInContext = useCallback(
+    data => {
+      onViewInContext(data, isNew);
+    },
+    [isNew, onViewInContext]
+  );
+
   return (
     <div className="new-preprint">
       {step === 'NEW_PREPRINT' ? (
         <StepPreprint
+          actions={actions}
+          fetchActionsProgress={fetchActionsProgress}
           user={user}
           onCancel={onCancel}
           onStep={setStep}
@@ -93,7 +107,7 @@ export default function NewPreprint({
             setStep('REVIEW_SUCCESS');
             setAction(action);
           }}
-          onViewInContext={onViewInContext}
+          onViewInContext={handleViewInContext}
         />
       ) : preprint && step === 'NEW_REQUEST' ? (
         <StepRequest
@@ -110,23 +124,23 @@ export default function NewPreprint({
             setStep('REQUEST_SUCCESS');
             setAction(action);
           }}
-          onViewInContext={onViewInContext}
+          onViewInContext={handleViewInContext}
         />
       ) : preprint && step === 'REVIEW_SUCCESS' ? (
         <StepReviewSuccess
           preprint={preprint}
           onClose={() => {
-            onSuccess(successify(preprint, action), isForGivenPreprint);
+            onSuccess(preprintify(preprint, action), isNew);
           }}
-          onViewInContext={onViewInContext}
+          onViewInContext={handleViewInContext}
         />
       ) : preprint && step === 'REQUEST_SUCCESS' ? (
         <StepRequestSuccess
           preprint={preprint}
           onClose={() => {
-            onSuccess(successify(preprint, action), isForGivenPreprint);
+            onSuccess(preprintify(preprint, action), isNew);
           }}
-          onViewInContext={onViewInContext}
+          onViewInContext={handleViewInContext}
         />
       ) : null}
     </div>
@@ -139,16 +153,6 @@ NewPreprint.propTypes = {
   onViewInContext: PropTypes.func.isRequired
 };
 
-function successify(preprint, action) {
-  return Object.assign(
-    {
-      '@id': createPreprintId(preprint),
-      potentialAction: [action]
-    },
-    preprint
-  );
-}
-
 function StepPreprint({
   user,
   onCancel,
@@ -156,11 +160,12 @@ function StepPreprint({
   onIdentifier,
   identifier,
   preprint,
+  actions,
+  fetchActionsProgress,
   resolvePreprintStatus
 }) {
   const [value, setValue] = useState(unprefix(identifier));
 
-  const [actions, fetchActionsProgress] = usePreprintActions(identifier);
   const hasReviewed = checkIfHasReviewed(user, actions);
   const hasRequested = checkIfHasRequested(user, actions);
 
@@ -290,7 +295,9 @@ StepPreprint.propTypes = {
   onIdentifier: PropTypes.func.isRequired,
   identifier: PropTypes.string,
   preprint: PropTypes.object,
-  resolvePreprintStatus: PropTypes.object.isRequired
+  resolvePreprintStatus: PropTypes.object.isRequired,
+  actions: PropTypes.array.isRequired,
+  fetchActionsProgress: PropTypes.object.isRequired
 };
 
 function StepReview({
