@@ -190,19 +190,6 @@ the same time as they will overwrite each other.** If you did:
    extension:watch` **OR** `npm run extension:watch-firefox`
 
 
-### Storybook (components playground)
-
-If you want to work on component in isolation run:
-
-```sh
-npm run storybook
-```
-
-and visit [http://127.0.0.1:3030/](http://127.0.0.1:3030/).
-
-To add stories, add a file that ends with `.stories.js` in the `./src/components` directory.
-
-
 #### Production
 
 ##### Chrome
@@ -230,6 +217,20 @@ upload the generated `extension-src.zip`:
 > webpack-extension.config.js). See more details on the README.md file. The
 > source code is also available on GitHub:
 > https://github.com/prereview/rapid-prereview/
+
+
+
+### Storybook (components playground)
+
+If you want to work on component in isolation run:
+
+```sh
+npm run storybook
+```
+
+and visit [http://127.0.0.1:3030/](http://127.0.0.1:3030/).
+
+To add stories, add a file that ends with `.stories.js` in the `./src/components` directory.
 
 
 ### Tests
