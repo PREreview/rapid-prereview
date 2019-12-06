@@ -23,6 +23,7 @@
     "extension:build-firefox": "cross-env NODE_ENV=production cross-env EXTENSION_BROwSER_ENV=firefox webpack --config webpack-extension.config.js --mode production",
     "extension:pack": "zip -r -FS extension.zip extension/* --exclude extension/.DS_Store",
     "extension:pack-firefox": "(cd extension && zip -r -FS ../extension-firefox.zip * --exclude .DS_Store)",
+    "extension:pack-src": "zip -r -FS extension-src.zip src/ views/ public/ test/ extension/ webpack-extension.config.js webpack.config.js README.md LICENSE --exclude **/*.DS_Store ",
     "start": "babel-node ./src/dev-server.js | pino-pretty",
     "start:app-prod": "node ./dist/server.js",
     "start:service-prod": "node ./dist/service.js",

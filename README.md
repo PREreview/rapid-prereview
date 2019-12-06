@@ -167,6 +167,16 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
 5. Upload the created `extension-firefox.zip` file to the Firefox web store
 
 
+Note: to include the unbundled source code of the extension (asked by Mozilla
+add on) run `npm run extension:pack-src` and include the following text when you
+upload the generated `extension-src.zip`:
+
+> The extension is built with webpack (config is
+> webpack-extension.config.js). See more details on the README.md file. The
+> source code is also available on GitHub:
+> https://github.com/prereview/rapid-prereview/
+
+
 ### Tests
 
 Once cloudant and redis are running run:
