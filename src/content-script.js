@@ -42,7 +42,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
       sendResponse({
         type: ACTION_COUNTS,
-        payload: counts
+        payload: {
+          counts,
+          hasGscholar: !!(
+            document.querySelector(
+              `meta[name="rapid-prereview-extension-nrequests"]`
+            ) ||
+            document.querySelector(
+              `meta[name="rapid-prereview-extension-nreviews"]`
+            )
+          )
+        }
       });
     } else {
       const hasGscholar = !!document.head.querySelector(

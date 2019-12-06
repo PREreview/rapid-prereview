@@ -53,7 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
                   <StoresProvider>
                     <UserProvider user={user}>
                       {response && response.type === ACTION_COUNTS ? (
-                        <LocalPopup counts={payload} />
+                        <LocalPopup
+                          counts={payload.counts}
+                          hasGscholar={payload.hasGscholar}
+                        />
                       ) : (
                         <Popup preprint={payload} dispatch={dispatch} />
                       )}

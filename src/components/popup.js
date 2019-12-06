@@ -186,7 +186,7 @@ Popup.propTypes = {
   dispatch: PropTypes.func.isRequired
 };
 
-export function LocalPopup({ counts }) {
+export function LocalPopup({ counts, hasGscholar }) {
   return (
     <div className="local-popup popup">
       <div className="popup__logo-row">
@@ -196,23 +196,31 @@ export function LocalPopup({ counts }) {
           responsive={false}
         />
       </div>
-      <section className="popup__stats-section">
-        <dl className="popup__stats">
-          <div className="popup__stats__row">
-            <dt className="popup__stats__label">Reviews</dt>
-            <dd className="popup__stats__value">{counts.nReviews}</dd>
-          </div>
-          <div className="popup__stats__row">
-            <dt className="popup__stats__label">Requests for review</dt>
-            <dd className="popup__stats__value">{counts.nRequests}</dd>
-          </div>
-        </dl>
-      </section>
+
+      {hasGscholar ? (
+        <section className="popup__stats-section">
+          <dl className="popup__stats">
+            <div className="popup__stats__row">
+              <dt className="popup__stats__label">Reviews</dt>
+              <dd className="popup__stats__value">{counts.nReviews}</dd>
+            </div>
+            <div className="popup__stats__row">
+              <dt className="popup__stats__label">Requests for review</dt>
+              <dd className="popup__stats__value">{counts.nRequests}</dd>
+            </div>
+          </dl>
+        </section>
+      ) : (
+        <section className="popup__inactive-notice">
+          <p>This extension is only active on preprint pages.</p>
+        </section>
+      )}
     </div>
   );
 }
 
 LocalPopup.propTypes = {
+  hasGscholar: PropTypes.bool.isRequired,
   counts: PropTypes.shape({
     nReviews: PropTypes.number.isRequired,
     nRequests: PropTypes.number.isRequired
