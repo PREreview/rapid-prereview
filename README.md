@@ -108,6 +108,11 @@ docker logs cloudant-developer
 
 ### App (web server)
 
+Be sure that Cloudant and Redis are running.
+
+You can for instance open 2 terminal tabs and run `npm run redis` in one and
+`npm run cloudant` on the other.
+
 Once cloudant and redis are running run:
 
 ```sh
