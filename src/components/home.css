@@ -87,6 +87,10 @@
     }
   }
 
+  & .home__preprint-list--new {
+    margin-bottom: var(--sgrd);
+  }
+
   & .home__pagination {
     margin-top: var(--sgrd);
     display: flex;

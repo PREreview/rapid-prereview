@@ -39,6 +39,7 @@ export function usePostAction() {
   const {
     preprintsWithActionsStore,
     preprintsSearchResultsStore,
+    newPreprintsStore,
     roleStore
   } = useStores();
 
@@ -85,6 +86,7 @@ export function usePostAction() {
         })
         .then(body => {
           preprintsWithActionsStore.upsertAction(body);
+          newPreprintsStore.upsertAction(body);
           roleStore.setFromAction(body);
 
           if (body['@type'] === 'UpdateUserAction') {
@@ -105,7 +107,13 @@ export function usePostAction() {
           }
         });
     },
-    [preprintsWithActionsStore, preprintsSearchResultsStore, roleStore, setUser]
+    [
+      preprintsWithActionsStore,
+      preprintsSearchResultsStore,
+      newPreprintsStore,
+      roleStore,
+      setUser
+    ]
   );
 
   const resetPostState = useCallback(function resetPostState() {

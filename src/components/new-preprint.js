@@ -39,6 +39,8 @@ export default function NewPreprint({
 
   const isSingleStep = location.state && location.state.isSingleStep;
 
+  const isForGivenPreprint = !!(location.state && location.state.preprint);
+
   const [identifier, setIdentifier] = useState(
     (location.state &&
       location.state.preprint &&
@@ -53,6 +55,8 @@ export default function NewPreprint({
     identifier,
     location.state && location.state.preprint
   );
+
+  const [action, setAction] = useState(null);
 
   const [step, setStep] = useState(
     location.state && location.state.tab === 'review'
@@ -85,8 +89,9 @@ export default function NewPreprint({
             }
           }}
           preprint={preprint}
-          onSuccess={() => {
+          onSuccess={action => {
             setStep('REVIEW_SUCCESS');
+            setAction(action);
           }}
           onViewInContext={onViewInContext}
         />
@@ -101,21 +106,26 @@ export default function NewPreprint({
             }
           }}
           preprint={preprint}
-          onSuccess={() => {
+          onSuccess={action => {
             setStep('REQUEST_SUCCESS');
+            setAction(action);
           }}
           onViewInContext={onViewInContext}
         />
       ) : preprint && step === 'REVIEW_SUCCESS' ? (
         <StepReviewSuccess
           preprint={preprint}
-          onClose={onSuccess}
+          onClose={() => {
+            onSuccess(successify(preprint, action), isForGivenPreprint);
+          }}
           onViewInContext={onViewInContext}
         />
       ) : preprint && step === 'REQUEST_SUCCESS' ? (
         <StepRequestSuccess
           preprint={preprint}
-          onClose={onSuccess}
+          onClose={() => {
+            onSuccess(successify(preprint, action), isForGivenPreprint);
+          }}
           onViewInContext={onViewInContext}
         />
       ) : null}
@@ -128,6 +138,16 @@ NewPreprint.propTypes = {
   onSuccess: PropTypes.func.isRequired,
   onViewInContext: PropTypes.func.isRequired
 };
+
+function successify(preprint, action) {
+  return Object.assign(
+    {
+      '@id': createPreprintId(preprint),
+      potentialAction: [action]
+    },
+    preprint
+  );
+}
 
 function StepPreprint({
   user,

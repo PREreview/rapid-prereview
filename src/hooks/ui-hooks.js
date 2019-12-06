@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useStores } from '../contexts/store-context';
 
 /**
  * This is used for the Rapid PREreview form:
@@ -102,4 +103,42 @@ export function useIsMobile() {
   }, []);
 
   return isMobile;
+}
+
+export function useNewPreprints() {
+  const { preprintsSearchResultsStore, newPreprintsStore } = useStores();
+
+  const [newPreprints, _setNewPreprints] = useState(newPreprintsStore.get());
+
+  useEffect(() => {
+    // keep `newPreprints` up-to-date
+    function update(newPreprints) {
+      _setNewPreprints(newPreprints);
+    }
+
+    newPreprintsStore.addListener('SET', update);
+
+    return () => {
+      newPreprintsStore.removeListener('SET', update);
+    };
+  }, [newPreprintsStore]);
+
+  useEffect(() => {
+    // reset newPreprint on search changes
+    function reset() {
+      _setNewPreprints([]);
+    }
+
+    preprintsSearchResultsStore.addListener('SET', reset);
+
+    return () => {
+      preprintsSearchResultsStore.removeListener('SET', reset);
+    };
+  }, [preprintsSearchResultsStore]);
+
+  function setNewPreprints(newPreprints) {
+    newPreprintsStore.set(newPreprints);
+  }
+
+  return [newPreprints, setNewPreprints];
 }

@@ -103,6 +103,59 @@ export class PreprintsWithActionsStore extends EventEmitter {
   }
 }
 
+export class NewPreprintsStore extends EventEmitter {
+  constructor() {
+    super();
+    this.preprints = [];
+  }
+
+  get() {
+    return this.preprints;
+  }
+
+  set(preprints, { emit = true } = {}) {
+    this.preprints = preprints;
+    if (emit) {
+      this.emit('SET', this.preprints);
+    }
+  }
+
+  upsertAction(action) {
+    if (
+      action['@type'] === 'ModerateRapidPREreviewAction' ||
+      action['@type'] === 'ReportRapidPREreviewAction' ||
+      action['@type'] === 'IgnoreReportRapidPREreviewAction'
+    ) {
+      action = action.result;
+    }
+
+    if (
+      (action['@type'] === 'RapidPREreviewAction' ||
+        action['@type'] === 'RequestForRapidPREreviewAction') &&
+      getId(action.object)
+    ) {
+      const nextPreprint = this.preprints.find(
+        preprint => getId(preprint) === createPreprintId(action.object)
+      );
+
+      if (nextPreprint) {
+        const nextPreprints = this.preprints.map(preprint => {
+          if (getId(nextPreprint) === getId(preprint)) {
+            return Object.assign({}, preprint, {
+              potentialAction: arrayify(preprint.potentialAction)
+                .filter(_action => getId(_action) !== getId(action))
+                .concat(action)
+            });
+          }
+
+          return preprint;
+        });
+        this.set(nextPreprints);
+      }
+    }
+  }
+}
+
 export class PreprintsSearchResultsStore extends EventEmitter {
   constructor() {
     super();

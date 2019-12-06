@@ -1,13 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import omit from 'lodash/omit';
 import { MdChevronRight, MdFirstPage } from 'react-icons/md';
 import PrivateRoute from './private-route';
 import { usePreprintSearchResults } from '../hooks/api-hooks';
-import { useIsNewVisitor, useIsMobile } from '../hooks/ui-hooks';
+import {
+  useIsNewVisitor,
+  useIsMobile,
+  useNewPreprints
+} from '../hooks/ui-hooks';
 import { useUser } from '../contexts/user-context';
-import { unprefix } from '../utils/jsonld';
+import { unprefix, getId } from '../utils/jsonld';
 import HeaderBar from './header-bar';
 import SearchBar from './search-bar';
 import LeftSidePanel from './left-side-panel';
@@ -34,6 +38,7 @@ export default function Home() {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const isNewVisitor = useIsNewVisitor();
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true);
+  const [newPreprints, setNewPreprints] = useNewPreprints();
 
   const apiQs = apifyPreprintQs(
     location.search,
@@ -44,6 +49,49 @@ export default function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [apiQs]);
+
+  const handleNewReview = useCallback(
+    preprint => {
+      if (user) {
+        history.push('/new', {
+          preprint: omit(preprint, ['potentialAction']),
+          tab: 'review',
+          isSingleStep: true
+        });
+      } else {
+        setIsLoginModalOpen(true);
+      }
+    },
+    [user, history]
+  );
+
+  const handleNewRequest = useCallback(
+    preprint => {
+      if (user) {
+        history.push('/new', {
+          preprint: omit(preprint, ['potentialAction']),
+          tab: 'request',
+          isSingleStep: true
+        });
+      } else {
+        setIsLoginModalOpen(true);
+      }
+    },
+    [user, history]
+  );
+
+  const handleNew = useCallback(
+    preprint => {
+      if (user) {
+        history.push('/new', {
+          preprint: omit(preprint, ['potentialAction'])
+        });
+      } else {
+        setIsLoginModalOpen(true);
+      }
+    },
+    [user, history]
+  );
 
   return (
     <div className="home">
@@ -115,8 +163,16 @@ export default function Home() {
                 onCancel={() => {
                   history.push('/');
                 }}
-                onSuccess={() => {
+                onSuccess={(preprint, isForGivenPreprint) => {
                   history.push('/');
+                  if (
+                    !isForGivenPreprint &&
+                    !newPreprints.some(
+                      _preprint => getId(_preprint) === getId(preprint)
+                    )
+                  ) {
+                    setNewPreprints(newPreprints.concat(preprint));
+                  }
                 }}
                 onViewInContext={({ preprint, tab }) => {
                   history.push(
@@ -155,7 +211,23 @@ export default function Home() {
             }}
           />
 
-          {/* TODO 0 result case + loading  */}
+          {newPreprints.length > 0 && (
+            <ul className="home__preprint-list home__preprint-list--new">
+              {newPreprints.map(preprint => (
+                <li key={getId(preprint)} className="home__preprint-list__item">
+                  <PreprintCard
+                    isNew={true}
+                    user={user}
+                    preprint={preprint}
+                    onNewRequest={handleNewRequest}
+                    onNew={handleNew}
+                    onNewReview={handleNewReview}
+                  />
+                </li>
+              ))}
+            </ul>
+          )}
+
           {results.total_rows === 0 && !fetchResultsProgress.isActive ? (
             <div>
               No results found.{' '}
@@ -173,39 +245,12 @@ export default function Home() {
               {results.rows.map(row => (
                 <li key={row.id} className="home__preprint-list__item">
                   <PreprintCard
+                    isNew={false}
                     user={user}
                     preprint={row.doc}
-                    onNewRequest={preprint => {
-                      if (user) {
-                        history.push('/new', {
-                          preprint: omit(preprint, ['potentialAction']),
-                          tab: 'request',
-                          isSingleStep: true
-                        });
-                      } else {
-                        setIsLoginModalOpen(true);
-                      }
-                    }}
-                    onNew={preprint => {
-                      if (user) {
-                        history.push('/new', {
-                          preprint: omit(preprint, ['potentialAction'])
-                        });
-                      } else {
-                        setIsLoginModalOpen(true);
-                      }
-                    }}
-                    onNewReview={preprint => {
-                      if (user) {
-                        history.push('/new', {
-                          preprint: omit(preprint, ['potentialAction']),
-                          tab: 'review',
-                          isSingleStep: true
-                        });
-                      } else {
-                        setIsLoginModalOpen(true);
-                      }
-                    }}
+                    onNewRequest={handleNewRequest}
+                    onNew={handleNew}
+                    onNewReview={handleNewReview}
                   />
                 </li>
               ))}
