@@ -1,9 +1,11 @@
 # Welcome to Outbreak Science Rapid PREreview!
 
 ## What is it?
+
 Outbreak Science Rapid PREreview is an **open source platform and a web extension to facilitate the rapid assessment of preprints during public health crises**. The platform allows any researcher with an ORCID iD to provide a quick high-level evaluation of preprints via a series of questions to assess the originality and soundness of the research findings. Aggregated data from these reviews is visualized to allow readers to identify the most relevant information. This tool has the capacity to be transformative for on-the-ground health workers, researchers, public health agencies, and the public, as it can quickly unlock key scientific information during an outbreak of infectious diseases.
 
 ## Our team
+
 Outbreak Science Rapid PREreview is a project born from the collaboration of PREreview and Outbreak Science.
 
 [PREreview](https://v2.prereview.org) is an open project fiscally sponsored by the non-profit organization Code for Science & Society. PREreview's mission is to increase diversity in the scholarly peer review process by empowering all researchers to engage with preprint reviews.
@@ -12,6 +14,7 @@ Outbreak Science Rapid PREreview is a project born from the collaboration of PRE
 
 
 ## Funding
+
 This collaborative project is mainly funded by the [Wellcome Trust Open Research Fund](https://wellcome.ac.uk/funding/schemes/open-research-fund), but has also received support from the Mozilla Foundation.
 
 
@@ -39,9 +42,25 @@ Channel](https://join.slack.com/t/prereview/shared_invite/enQtMzYwMjQzMTk3ODMxLT
 
 ## Development
 
+### Getting started
+
+#### On a Mac (OS X)
+
+1. install and setup `git`. See
+   https://help.github.com/en/github/getting-started-with-github/set-up-git to
+   help you get started.
+2. install Node.js LTS. See https://nodejs.org/en/
+3. install homebrew https://brew.sh/
+4. install redis by running `brew install redis`
+5. install docker. See https://docs.docker.com/docker-for-mac/install/
+6. install cloudant docker container by running: `docker pull
+   ibmcom/cloudant-developer`
+
+You should have everything needed to follow the rest of this README.
+
 ### Dependencies
 
-run:
+At the root of this repository run:
 
 ```sh
 npm install
@@ -50,7 +69,7 @@ npm install
 ### Redis
 
 Be sure that redis is running on the default port (6379).
-For convenience you can run: `npm run redis`.
+For convenience you can run: `npm run redis` to start redis
 
 ### Database (CouchDB 2.x + Clouseau + Dreyfus)
 
@@ -87,7 +106,7 @@ To view the logs run:
 docker logs cloudant-developer
 ```
 
-### App
+### App (web server)
 
 Once cloudant and redis are running run:
 
@@ -111,22 +130,28 @@ npm start
 
 and visit [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
 
-### Storybook (components playground)
 
-run:
+#### Troubleshooting
 
-```sh
-npm run storybook
-```
+If your computer gets slow or you see error messages you can try to reboot
+everything:
 
-and visit [http://127.0.0.1:3030/](http://127.0.0.1:3030/).
-
-To add stories, add a file that ends with `.stories.js` in the `./src/components` directory.
+1. kill all the node processes (`ctr+c` in each shell)
+2. run `killal node` to be sure you no longer have node processes running
+3. kill redis (`ctrl + c` in the shell running redis) and restart it with `npm
+   run redis`
+4. restart cloudant `npm run cloudant`)
+5. either run `npm run reset` or `npm run seed` to reseed the database
+6. re-run `npm start`
 
 
 ### Web extension
 
 #### Development
+
+To work on the extension you can start a dev server (`npm start` and then follow
+the instruction below depending on whether you want to work with Chrome or
+Firefox).
 
 ##### Chrome
 
@@ -146,6 +171,30 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
    `popup.html`.
 2. Navigate to `about:debugging`, and click on "Load Temporary Add-on" and
    select the `extension/manifest.json` file.
+
+
+##### Troubleshooting
+
+**Never run `npm run extension:watch` and `npm run extension:watch-firefox` at
+the same time as they will overwrite each other.** If you did:
+
+1. kill all the node processes (`ctr+c` in each shell)
+2. run `killal node` to be sure you no longer have node processes running
+3. restart the web server `npm start` and one of the extension watcher `npm run
+   extension:watch` **OR** `npm run extension:watch-firefox`
+
+
+### Storybook (components playground)
+
+If you want to work on component in isolation run:
+
+```sh
+npm run storybook
+```
+
+and visit [http://127.0.0.1:3030/](http://127.0.0.1:3030/).
+
+To add stories, add a file that ends with `.stories.js` in the `./src/components` directory.
 
 
 #### Production

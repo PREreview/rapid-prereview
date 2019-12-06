@@ -254,6 +254,7 @@
     "redis": "^2.8.0",
     "serve-favicon": "^2.5.0",
     "smoothscroll-polyfill": "^0.4.4",
+    "socket.io": "^2.3.0",
     "uuid": "^3.3.3",
     "xmldom": "^0.1.27"
   }

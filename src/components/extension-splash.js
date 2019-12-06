@@ -55,7 +55,7 @@ export default function ExtensionSplash() {
                 className="extension-splash__install-button"
                 primary={true}
               >
-                Install for firefox
+                Install for Firefox
               </Button>
 
               {/*
