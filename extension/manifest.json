@@ -6,6 +6,7 @@
   "permissions": [
     "tabs",
     "cookies",
+    "webNavigation",
     "*://rapid-prereview.azurewebsites.net/*",
     "*://outbreaksci.prereview.org/*",
     "http://127.0.0.1/*",

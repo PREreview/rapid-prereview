@@ -1,7 +1,8 @@
 import {
   CHECK_SESSION_COOKIE,
   SESSION_COOKIE,
-  SESSION_COOKIE_CHANGED
+  SESSION_COOKIE_CHANGED,
+  HISTORY_STATE_UPDATED
 } from './constants';
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -40,31 +41,52 @@ chrome.cookies.onChanged.addListener(changeInfo => {
   }
 });
 
-// Keep icon badge text (counter) up-to-date
-// Those data are provided by the content script
+// communicate with content-script:
+// - Keep icon badge text (counter) up-to-date
+// - Broadcast HistoryStateUpdated
 chrome.runtime.onConnect.addListener(port => {
   if (port.name === 'stats') {
+    chrome.webNavigation.onHistoryStateUpdated.addListener(
+      data => {
+        port.postMessage({ type: HISTORY_STATE_UPDATED, payload: data });
+      },
+      {
+        url: [{ urlContains: process.env.API_URL }]
+      }
+    );
+
     port.onMessage.addListener((msg, port) => {
       switch (msg.type) {
         case 'STATS':
           chrome.browserAction.setBadgeText({
-            text: (msg.payload.nReviews + msg.payload.nRequests).toString(),
+            text:
+              msg.payload === null
+                ? ''
+                : (msg.payload.nReviews + msg.payload.nRequests).toString(),
             tabId: port.sender.tab.id
           });
           break;
 
         case 'HAS_GSCHOLAR':
           chrome.browserAction.setIcon({
-            path: {
-              '16': './icons/app-icon--active@16px.png',
-              '24': './icons/app-icon--active@1x.png',
-              '32': './icons/app-icon--active@1.5x.png',
-              '48': './icons/app-icon--active@2x.png'
-            },
+            path: msg.payload.hasGsholar
+              ? {
+                  '16': './icons/app-icon--active@16px.png',
+                  '24': './icons/app-icon--active@1x.png',
+                  '32': './icons/app-icon--active@1.5x.png',
+                  '48': './icons/app-icon--active@2x.png'
+                }
+              : {
+                  '16': './icons/app-icon--inactive@16px.png',
+                  '24': './icons/app-icon--inactive@1x.png',
+                  '32': './icons/app-icon--inactive@1.5x.png',
+                  '48': './icons/app-icon--inactive@2x.png'
+                },
             tabId: port.sender.tab.id
           });
+
           chrome.browserAction.setBadgeBackgroundColor({
-            color: msg.payload.hasGscholar ? '#ff3333' : 'grey',
+            color: msg.payload.hasGscholar ? '#ff3333' : 'gray',
             tabId: port.sender.tab.id
           });
           break;

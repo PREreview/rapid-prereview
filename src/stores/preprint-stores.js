@@ -29,6 +29,11 @@ export class PreprintsWithActionsStore extends EventEmitter {
   }
 
   getActions(preprintId) {
+    try {
+      preprintId = createPreprintId(preprintId);
+    } catch (err) {
+      return;
+    }
     const preprint = this.get(preprintId);
     if (!preprint) return [];
     return arrayify(preprint.potentialAction);

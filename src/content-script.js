@@ -7,7 +7,8 @@ import {
   CHECK_PREPRINT,
   PREPRINT,
   ACTION_COUNTS,
-  CSS_SCOPE_ID
+  CSS_SCOPE_ID,
+  HISTORY_STATE_UPDATED
 } from './constants';
 import { PreprintsWithActionsStore } from './stores/preprint-stores';
 import { RoleStore } from './stores/user-stores';
@@ -92,6 +93,16 @@ function start() {
       // We are on one of the rapid preview page => we relay the message sent by
       // the window postMessage API
 
+      port.postMessage({
+        type: 'HAS_GSCHOLAR',
+        payload: { hasGscholar: false }
+      });
+
+      port.postMessage({
+        type: 'STATS',
+        payload: null
+      });
+
       window.addEventListener('message', event => {
         if (event.source == window && event.data) {
           port.postMessage(event.data);
@@ -135,6 +146,11 @@ function start() {
             const preprintsWithActionsStore = new PreprintsWithActionsStore();
             const roleStore = new RoleStore();
 
+            port.postMessage({
+              type: 'STATS',
+              payload: getCounts(preprintsWithActionsStore.getActions(preprint))
+            });
+
             // Keep the popup badge up to date
             preprintsWithActionsStore.on('SET', preprintWithActions => {
               const counts = getCounts(preprintWithActions.potentialAction);
@@ -160,9 +176,15 @@ function start() {
     }
   }
 
-  window.onpopstate = function(event) {
+  window.onpopstate = event => {
     detect();
   };
+
+  port.onMessage.addListener(msg => {
+    if (msg.type === HISTORY_STATE_UPDATED) {
+      detect();
+    }
+  });
 
   detect();
 }
