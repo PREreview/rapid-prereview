@@ -145,7 +145,7 @@ everything:
 2. run `killal node` to be sure you no longer have node processes running
 3. kill redis (`ctrl + c` in the shell running redis) and restart it with `npm
    run redis`
-4. restart cloudant `npm run cloudant`)
+4. restart cloudant `npm run cloudant`
 5. either run `npm run reset` or `npm run seed` to reseed the database
 6. re-run `npm start`
 
