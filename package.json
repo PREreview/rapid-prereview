@@ -228,6 +228,7 @@
     "identifiers-arxiv": "^0.1.1",
     "identifiers-orcid": "^0.1.1",
     "is-mobile": "^2.1.0",
+    "is-url": "^1.2.4",
     "jsdom": "^15.2.1",
     "lodash": "^4.17.15",
     "lru-cache": "^5.1.1",

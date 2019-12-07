@@ -5,13 +5,13 @@ import { DOMParser } from 'xmldom';
 import { JSDOM } from 'jsdom';
 import { unprefix, cleanup, arrayify } from './jsonld';
 import { createError } from './errors';
-import { parseGoogleScholar } from './scholar';
+import { parseGoogleScholar, getIdentifierFromPdfUrl } from './scholar';
 
 /**
  * Get metadata for `identifier`
  */
 export default async function resolve(
-  id, // DOI or arXiv id
+  id, // DOI, arXiv id or URL (typically URL of a PDF)
   {
     baseUrlArxiv = 'http://export.arxiv.org/oai2?verb=GetRecord&metadataPrefix=oai_dc&identifier=oai:arXiv.org:',
     baseUrlCrossref = 'https://api.crossref.org/works/',
@@ -23,6 +23,8 @@ export default async function resolve(
     strategy = 'all' // `htmlOnly`, `apiOnly`
   } = {}
 ) {
+  id = getIdentifierFromPdfUrl(id) || id;
+
   const doiMatch = id.match(doiRegex());
   let doi;
   if (doiMatch) {

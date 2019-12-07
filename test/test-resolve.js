@@ -7,7 +7,9 @@ import {
   arXivId,
   errorDoesNotExistArXivId,
   crossrefDoi,
-  openAireDoi
+  openAireDoi,
+  arXivPdfUrl,
+  bioRxivPdfUrl
 } from './utils/create-preprint-server';
 
 describe('resolve', function() {
@@ -133,6 +135,48 @@ describe('resolve', function() {
           'Trumping the agenda? The continuity and discontinuity in foreign affairs between the U.S. and Colombia',
         datePosted: '2019-12-31T00:00:00.000Z',
         preprintServer: { '@type': 'PreprintServer', name: 'ZENODO' }
+      });
+    });
+  });
+
+  describe('PDF urls', () => {
+    it('should resolve an arXiv PDF URL', async () => {
+      const data = await resolve(arXivPdfUrl, config);
+      assert.deepEqual(data, {
+        '@type': 'ScholarlyPreprint',
+        arXivId: unprefix(arXivId),
+        name: 'Non-algorithmic theory of randomness',
+        datePosted: '2019-10-01T00:00:00.000Z',
+        preprintServer: { '@type': 'PreprintServer', name: 'arXiv' },
+        url: 'https://arxiv.org/abs/1910.00585v1',
+        encoding: [
+          {
+            '@type': 'MediaObject',
+            encodingFormat: 'application/pdf',
+            contentUrl: 'https://arxiv.org/pdf/1910.00585'
+          }
+        ]
+      });
+    });
+
+    it('should resolve a bioRxiv or medRxiv PDF URL', async () => {
+      const data = await resolve(bioRxivPdfUrl, config);
+      assert.deepEqual(data, {
+        '@type': 'ScholarlyPreprint',
+        doi: unprefix(crossrefDoi),
+        name:
+          'Temporal and spatial limitations in global surveillance for bat filoviruses and henipaviruses',
+        datePosted: '2019-09-30T00:00:00.000Z',
+        preprintServer: { '@type': 'PreprintServer', name: 'bioRxiv' },
+        url: 'https://www.biorxiv.org/content/10.1101/674655v2',
+        encoding: [
+          {
+            '@type': 'MediaObject',
+            encodingFormat: 'application/pdf',
+            contentUrl:
+              'https://www.biorxiv.org/content/biorxiv/early/2019/09/30/674655.full.pdf'
+          }
+        ]
       });
     });
   });

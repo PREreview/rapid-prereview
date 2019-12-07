@@ -42,8 +42,11 @@ export const id2paths = filenames.reduce((map, filename) => {
 
 // convenience exports
 export const arXivId = 'arXiv:1910.00585';
+export const arXivPdfUrl = 'https://arxiv.org/pdf/1910.00585.pdf';
 export const errorDoesNotExistArXivId = 'arXiv:1910.06444';
 export const crossrefDoi = 'doi:10.1101/674655';
+export const bioRxivPdfUrl =
+  'https://www.biorxiv.org/content/biorxiv/early/2019/09/30/674655.full.pdf';
 export const openAireDoi = 'doi:10.5281/zenodo.3356153';
 
 export function createPreprintServer(config) {
