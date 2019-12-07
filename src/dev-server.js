@@ -18,7 +18,7 @@ import { createCacheKey } from './middlewares/cache';
 
 const compiler = webpack(webpackConfig);
 
-const logger = pino({ logLevel: 'info' });
+const logger = pino({ level: 'fatal' });
 
 const config = {
   pino: logger,

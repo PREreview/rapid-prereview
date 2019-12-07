@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useLocation } from 'react-router-dom';
 import HeaderBar from './header-bar';
 import AnimatedLogo from '../svgs/rapid-prereview-logo-animation.svg';
 import Button from './button';
@@ -17,6 +18,10 @@ export default function Login() {
   }, []);
 
   const [hasAgreed, setHasAgreed] = useHasAgreedCoC();
+
+  const location = useLocation();
+
+  const next = new URLSearchParams(location.search).get('next');
 
   return (
     <div className="login">
@@ -60,7 +65,9 @@ export default function Login() {
         <Button
           disabled={!hasAgreed}
           element={hasAgreed ? 'a' : 'button'}
-          href={`${process.env.API_URL}/auth/orcid`}
+          href={`${process.env.API_URL}/auth/orcid${
+            next ? `?next=${encodeURIComponent(next)}` : ''
+          }`}
           primary={true}
           className="login__login-button"
         >

@@ -38,6 +38,7 @@ export default function ShellContent({
   defaultTab = 'read',
   onRequireScreen
 }) {
+  const location = useLocation();
   const [user] = useUser();
   const [role] = useRole(user && user.defaultRole);
   const [newPreprints, setNewPreprints] = useNewPreprints();
@@ -58,6 +59,10 @@ export default function ShellContent({
   const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
 
   const counts = getCounts(actions);
+
+  const loginUrl = process.env.IS_EXTENSION
+    ? '/login'
+    : `/login?next=${encodeURIComponent(location.pathname)}`;
 
   return (
     <div className="shell-content">
@@ -181,13 +186,14 @@ export default function ShellContent({
             </MenuLink>
           </UserBadge>
         ) : (
-          <XLink href="/login" to="/login">
+          <XLink href={loginUrl} to={loginUrl}>
             Login
           </XLink>
         )}
       </header>
       {isLoginModalOpen && (
         <LoginRequiredModal
+          next={process.env.IS_EXTENSION ? undefined : location.pathname}
           onClose={() => {
             setIsLoginModalOpen(false);
           }}
