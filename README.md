@@ -24,7 +24,7 @@ This collaborative project is mainly funded by the [Wellcome Trust Open Research
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-Rapid PREreview focuses on providing the best infrastructure to request /
+Outbreak Science Rapid PREreview focuses on providing the best infrastructure to request /
 provide / analyze feedback (structured reviews) on _existing_ preprints relevant
 to the outbreak community.
 
@@ -32,7 +32,7 @@ The feedback should be of use to:
 1. the outbreak community (academics)
 2. workers, editors, journalists (visualization etc.)
 
-Rapid PREreview does _not_ focus on:
+Outbreak Science Rapid PREreview does _not_ focus on:
 - coordinating research effort / data analysis / calling for research during
   emergency situations
 - becoming / being a preprint server
