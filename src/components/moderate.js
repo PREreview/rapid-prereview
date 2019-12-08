@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
 import socketIoClient from 'socket.io-client';
 import { useUser } from '../contexts/user-context';
@@ -18,6 +18,21 @@ export default function Moderate() {
   const [user] = useUser();
   const [bookmark, setBookmark] = useState(null);
   const [excluded, setExcluded] = useState(new Set());
+  const [lockersByReviewActionId, setLockersByReviewActionId] = useState({});
+
+  const handleLocked = useCallback(
+    data => {
+      const nextLockersByReviewActionId = data.reduce((map, item) => {
+        if (!user.hasRole.some(roleId => roleId === item.roleId)) {
+          map[item.reviewActionId] = item.roleId;
+        }
+        return map;
+      }, {});
+
+      setLockersByReviewActionId(nextLockersByReviewActionId);
+    },
+    [user]
+  );
 
   const search = createModerationQs({ bookmark });
 
@@ -50,15 +65,12 @@ export default function Moderate() {
   }, []);
 
   useEffect(() => {
-    function handleLocked(data) {
-      console.log('locked', data);
-    }
     socket.on('locked', handleLocked);
 
     return () => {
       socket.off('locked', handleLocked);
     };
-  }, []);
+  }, [handleLocked]);
 
   return (
     <div className="moderate">
@@ -86,30 +98,29 @@ export default function Moderate() {
                       user={user}
                       reviewAction={doc}
                       isOpened={isOpenedMap[getId(doc)] || false}
-                      isLockedBy={undefined /* TODO wire */}
+                      isLockedBy={lockersByReviewActionId[getId(doc)]}
                       onOpen={() => {
-                        // TODO socket.emit + wait for response to actually open (otherwise set isLockedBy)
-                        socket.emit('isLockedRequest', {
-                          reviewActionId: getId(doc),
-                          roleId: user.defaultRole
-                        });
-
-                        function handleResponse(data) {
-                          console.log('handle response', data);
-                          socket.off('isLockedResponse', handleResponse);
-                        }
-
-                        socket.on('isLockedResponse', handleResponse);
-
-                        setIsOpenedMap(
-                          results.rows.reduce((map, row) => {
-                            map[getId(row.doc)] = getId(row.doc) === getId(doc);
-                            return map;
-                          }, {})
+                        socket.emit(
+                          'lock',
+                          {
+                            reviewActionId: getId(doc),
+                            roleId: user.defaultRole
+                          },
+                          isLocked => {
+                            if (!isLocked) {
+                              setIsOpenedMap(
+                                results.rows.reduce((map, row) => {
+                                  map[getId(row.doc)] =
+                                    getId(row.doc) === getId(doc);
+                                  return map;
+                                }, {})
+                              );
+                            }
+                          }
                         );
                       }}
                       onClose={() => {
-                        socket.emit('unlocked', {
+                        socket.emit('unlock', {
                           reviewActionId: getId(doc),
                           roleId: user.defaultRole
                         });

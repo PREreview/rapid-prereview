@@ -1,4 +1,5 @@
 import path from 'path';
+import LRU from 'lru-cache';
 import { STATUS_CODES } from 'http';
 import socketIo from 'socket.io';
 import express from 'express';
@@ -84,25 +85,54 @@ export function assets(config = {}) {
 
 export function ws(config, server) {
   const io = socketIo(server);
-  io.on('connection', socket => {
-    console.log('a user connected');
+  const cache = new LRU({ max: 100 });
 
-    socket.on('isLockedRequest', data => {
-      console.log('isLockedRequest', data);
-      socket.emit('isLockedResponse', 'TODO isLockedResponse');
-      socket.broadcast.emit(
-        'locked',
-        'TODO locked updated due to isLockedRequest'
-      );
+  io.on('connection', socket => {
+    socket.emit('locked', cache.values());
+    const roleIds = new Set();
+
+    socket.on('lock', ({ reviewActionId, roleId }, respond) => {
+      roleIds.add(roleId);
+
+      // unlock preview value owned by `roleId`
+      cache.forEach((value, key, cache) => {
+        if (
+          value.reviewActionId !== reviewActionId &&
+          value.roleId === roleId
+        ) {
+          cache.del(key);
+        }
+      });
+
+      // lock new value
+      const value = cache.get(reviewActionId);
+      const isLocked = !!(value && value.roleId !== roleId);
+      if (!isLocked) {
+        cache.set(reviewActionId, { reviewActionId, roleId });
+      }
+      respond(isLocked);
+
+      io.emit('locked', cache.values());
     });
 
-    socket.on('unlocked', data => {
-      console.log('unlocked', data);
-      socket.broadcast.emit('locked', 'TODO locked updated due to unlocked');
+    socket.on('unlock', ({ reviewActionId, roleId }) => {
+      roleIds.add(roleId);
+      const value = cache.get(reviewActionId);
+      if (value && value.roleId === roleId) {
+        cache.del(reviewActionId);
+      }
+
+      io.emit('locked', cache.values());
     });
 
     socket.on('disconnect', function() {
-      console.log('user disconnected');
+      cache.forEach((value, key, cache) => {
+        if (roleIds.has(value.roleId)) {
+          cache.del(key);
+        }
+      });
+
+      io.emit('locked', cache.values());
     });
   });
 }
