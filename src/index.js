@@ -125,6 +125,10 @@ export function ws(config, server) {
       io.emit('locked', cache.values());
     });
 
+    socket.on('exclude', ({ reviewActionId, roleId }) => {
+      socket.broadcast.emit('excluded', reviewActionId);
+    });
+
     socket.on('disconnect', function() {
       cache.forEach((value, key, cache) => {
         if (roleIds.has(value.roleId)) {

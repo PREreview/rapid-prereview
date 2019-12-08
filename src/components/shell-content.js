@@ -166,6 +166,21 @@ export default function ShellContent({
               </MenuLink>
             )}
 
+            {user.isAdmin && (
+              <MenuLink
+                as={process.env.IS_EXTENSION ? undefined : Link}
+                to={process.env.IS_EXTENSION ? undefined : '/block'}
+                href={
+                  process.env.IS_EXTENSION
+                    ? `${process.env.API_URL}/block`
+                    : undefined
+                }
+                target={process.env.IS_EXTENSION ? '_blank' : undefined}
+              >
+                Moderate Users
+              </MenuLink>
+            )}
+
             {!!(role && role.isModerator && !role.isModerated) && (
               <MenuLink
                 as={process.env.IS_EXTENSION ? undefined : Link}
@@ -177,7 +192,7 @@ export default function ShellContent({
                 }
                 target={process.env.IS_EXTENSION ? '_blank' : undefined}
               >
-                Moderate
+                Moderate Reviews
               </MenuLink>
             )}
 

@@ -110,7 +110,7 @@ const intervalId = setIntervalAsync(async () => {
         logger.error({ err }, 'Error invalidating cache on score update');
       }
     });
-}, config.updateScoreInterval || 5 * 60 * 1000);
+}, config.updateScoreInterval || 60 * 60 * 1000);
 
 const app = express();
 app.use(helmet());

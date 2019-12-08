@@ -65,10 +65,18 @@ export default function Moderate() {
   }, []);
 
   useEffect(() => {
+    const handleExcluded = reviewActionId => {
+      setExcluded(prevSet => {
+        return new Set(Array.from(prevSet).concat(reviewActionId));
+      });
+    };
+
     socket.on('locked', handleLocked);
+    socket.on('excluded', handleExcluded);
 
     return () => {
       socket.off('locked', handleLocked);
+      socket.ff('excluded', handleExcluded);
     };
   }, [handleLocked]);
 
@@ -139,6 +147,15 @@ export default function Moderate() {
                           moderationActionType ===
                             'IgnoreReportRapidPREreviewAction'
                         ) {
+                          socket.emit('unlock', {
+                            reviewActionId: getId(doc),
+                            roleId: user.defaultRole
+                          });
+                          socket.emit('exclude', {
+                            reviewActionId: getId(doc),
+                            roleId: user.defaultRole
+                          });
+
                           setExcluded(
                             new Set(Array.from(excluded).concat(reviewActionId))
                           );
