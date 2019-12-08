@@ -175,7 +175,8 @@ export function invalidate() {
           case 'DeanonymizeRoleAction':
           case 'GrantModeratorRoleAction':
           case 'RevokeModeratorRoleAction':
-          case 'ModerateRoleAction': {
+          case 'ModerateRoleAction':
+          case 'UnmoderateRoleAction': {
             // Invalidate cacheKey for result
             const doc = action.result;
             const batch = redis.batch();
