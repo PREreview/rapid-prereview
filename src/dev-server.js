@@ -9,7 +9,7 @@ import webpackConfig from '../webpack.config';
 import DB from './db/db';
 import Feed from './db/feed';
 import { createRedisClient } from './utils/redis';
-import { rapid, assets } from './index';
+import { rapid, assets, ws } from './index';
 import {
   setIntervalAsync,
   clearIntervalAsync
@@ -18,7 +18,7 @@ import { createCacheKey } from './middlewares/cache';
 
 const compiler = webpack(webpackConfig);
 
-const logger = pino({ level: 'info' });
+const logger = pino({ level: 'fatal' });
 
 const config = {
   pino: logger,
@@ -113,6 +113,8 @@ app.use(assets(config));
 app.use(rapid(config, redisClient));
 
 const server = http.createServer(app);
+
+ws(config, server);
 
 const port = 3000;
 server.listen(port, () => {

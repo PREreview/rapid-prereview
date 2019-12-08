@@ -1,5 +1,6 @@
 import path from 'path';
 import { STATUS_CODES } from 'http';
+import socketIo from 'socket.io';
 import express from 'express';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
@@ -79,4 +80,29 @@ export function assets(config = {}) {
   app.use(express.static(path.join(path.dirname(__dirname), 'public')));
 
   return app;
+}
+
+export function ws(config, server) {
+  const io = socketIo(server);
+  io.on('connection', socket => {
+    console.log('a user connected');
+
+    socket.on('isLockedRequest', data => {
+      console.log('isLockedRequest', data);
+      socket.emit('isLockedResponse', 'TODO isLockedResponse');
+      socket.broadcast.emit(
+        'locked',
+        'TODO locked updated due to isLockedRequest'
+      );
+    });
+
+    socket.on('unlocked', data => {
+      console.log('unlocked', data);
+      socket.broadcast.emit('locked', 'TODO locked updated due to unlocked');
+    });
+
+    socket.on('disconnect', function() {
+      console.log('user disconnected');
+    });
+  });
 }

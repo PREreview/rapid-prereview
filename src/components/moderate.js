@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import socketIoClient from 'socket.io-client';
 import { useUser } from '../contexts/user-context';
 import { getId } from '../utils/jsonld';
 import HeaderBar from './header-bar';
@@ -8,6 +9,10 @@ import { createModerationQs } from '../utils/search';
 import { useActionsSearchResults } from '../hooks/api-hooks';
 import Button from './button';
 import ModerationCard from './moderation-card';
+
+const socket = socketIoClient(window.location.origin, {
+  autoConnect: false
+});
 
 export default function Moderate() {
   const [user] = useUser();
@@ -35,6 +40,24 @@ export default function Moderate() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    socket.connect();
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    function handleLocked(data) {
+      console.log('locked', data);
+    }
+    socket.on('locked', handleLocked);
+
+    return () => {
+      socket.off('locked', handleLocked);
+    };
   }, []);
 
   return (
@@ -65,9 +88,35 @@ export default function Moderate() {
                       isOpened={isOpenedMap[getId(doc)] || false}
                       isLockedBy={undefined /* TODO wire */}
                       onOpen={() => {
+                        // TODO socket.emit + wait for response to actually open (otherwise set isLockedBy)
+                        socket.emit('isLockedRequest', {
+                          reviewActionId: getId(doc),
+                          roleId: user.defaultRole
+                        });
+
+                        function handleResponse(data) {
+                          console.log('handle response', data);
+                          socket.off('isLockedResponse', handleResponse);
+                        }
+
+                        socket.on('isLockedResponse', handleResponse);
+
                         setIsOpenedMap(
                           results.rows.reduce((map, row) => {
                             map[getId(row.doc)] = getId(row.doc) === getId(doc);
+                            return map;
+                          }, {})
+                        );
+                      }}
+                      onClose={() => {
+                        socket.emit('unlocked', {
+                          reviewActionId: getId(doc),
+                          roleId: user.defaultRole
+                        });
+
+                        setIsOpenedMap(
+                          results.rows.reduce((map, row) => {
+                            map[getId(row.doc)] = false;
                             return map;
                           }, {})
                         );
@@ -83,14 +132,6 @@ export default function Moderate() {
                             new Set(Array.from(excluded).concat(reviewActionId))
                           );
                         }
-                      }}
-                      onClose={() => {
-                        setIsOpenedMap(
-                          results.rows.reduce((map, row) => {
-                            map[getId(row.doc)] = false;
-                            return map;
-                          }, {})
-                        );
                       }}
                     />
                   </li>
