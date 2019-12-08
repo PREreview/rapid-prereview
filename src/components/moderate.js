@@ -76,7 +76,7 @@ export default function Moderate() {
 
     return () => {
       socket.off('locked', handleLocked);
-      socket.ff('excluded', handleExcluded);
+      socket.off('excluded', handleExcluded);
     };
   }, [handleLocked]);
 
