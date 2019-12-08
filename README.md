@@ -2,7 +2,7 @@
 
 ## What is it?
 
-Outbreak Science Rapid PREreview is an **open source platform and a web extension to facilitate the rapid assessment of preprints during public health crises**. The platform allows any researcher with an ORCID iD to provide a quick high-level evaluation of preprints via a series of questions to assess the originality and soundness of the research findings. Aggregated data from these reviews is visualized to allow readers to identify the most relevant information. This tool has the capacity to be transformative for on-the-ground health workers, researchers, public health agencies, and the public, as it can quickly unlock key scientific information during an outbreak of infectious diseases.
+Outbreak Science Rapid PREreview is an **application for rapid, structured reviews of outbreak-related preprints**. The platform allows any researcher with an ORCID iD to provide a quick high-level evaluation of preprints via a series of questions to assess the originality and soundness of the research findings. Aggregated data from these reviews is visualized to allow readers to identify the most relevant information. This tool has the capacity to be transformative for on-the-ground health workers, researchers, public health agencies, and the public, as it can quickly unlock key scientific information during an outbreak of infectious diseases.
 
 ## Our team
 
@@ -24,7 +24,7 @@ This collaborative project is mainly funded by the [Wellcome Trust Open Research
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-Rapid PREreview focuses on providing the best infrastructure to request /
+Outbreak Science Rapid PREreview focuses on providing the best infrastructure to request /
 provide / analyze feedback (structured reviews) on _existing_ preprints relevant
 to the outbreak community.
 
@@ -32,7 +32,7 @@ The feedback should be of use to:
 1. the outbreak community (academics)
 2. workers, editors, journalists (visualization etc.)
 
-Rapid PREreview does _not_ focus on:
+Outbreak Science Rapid PREreview does _not_ focus on:
 - coordinating research effort / data analysis / calling for research during
   emergency situations
 - becoming / being a preprint server
