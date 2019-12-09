@@ -23,6 +23,7 @@ import NotFound from './not-found';
 import API from './api';
 import Moderate from './moderate';
 import AdminPanel from './admin-panel';
+import BlockPanel from './block-panel';
 
 // kick off the polyfill!
 smoothscroll.polyfill();
@@ -67,6 +68,9 @@ export default function App({ user }) {
                 </PrivateRoute>
                 <AdminRoute exact={true} path="/admin">
                   <AdminPanel />
+                </AdminRoute>
+                <AdminRoute exact={true} path="/block">
+                  <BlockPanel />
                 </AdminRoute>
                 <ModeratorRoute exact={true} path="/moderate">
                   <Moderate />

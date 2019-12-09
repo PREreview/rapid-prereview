@@ -249,6 +249,26 @@ export function createModeratorQs({ bookmark }) {
   return sapi ? `?${sapi}` : undefined;
 }
 
+export function createBlockedRolesQs({ bookmark }) {
+  const api = new URLSearchParams();
+
+  api.set('q', `isModerated:true`);
+
+  if (bookmark) {
+    api.set('bookmark', bookmark);
+  } else {
+    api.delete('bookmark');
+  }
+
+  api.set('sort', JSON.stringify(['-moderationDate<number>']));
+  api.set('include_docs', true);
+  api.set('limit', 10);
+
+  const sapi = api.toString();
+
+  return sapi ? `?${sapi}` : undefined;
+}
+
 function escapeLucene(term) {
   return term.replace(/([+&|!(){}[\]^"~*?:\\\/-])/g, '\\$1');
 }

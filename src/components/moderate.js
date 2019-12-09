@@ -83,7 +83,7 @@ export default function Moderate() {
   return (
     <div className="moderate">
       <Helmet>
-        <title>{ORG} • Moderate</title>
+        <title>{ORG} • Moderate Reviews</title>
       </Helmet>
       <HeaderBar />
 

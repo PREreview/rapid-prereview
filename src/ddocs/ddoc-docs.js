@@ -151,6 +151,11 @@ const ddoc = {
             ? new Date(doc.startDate).getTime()
             : new Date('0000').getTime();
           index('startDate', startDate, { facet: true });
+
+          var moderationDate = doc.moderationDate
+            ? new Date(doc.moderationDate).getTime()
+            : new Date('0000').getTime();
+          index('moderationDate', moderationDate, { facet: true });
         }
       }
     }
