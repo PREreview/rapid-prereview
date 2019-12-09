@@ -369,14 +369,14 @@ export function AnimatedNumber({ value, isAnimating }) {
 
   return (
     <div className="preprint-card__animated-number-container">
-      {isAnimating && value !== previousValue && (
+      {!!(isAnimating && value !== previousValue && value !== 0) && (
         <div className="preprint-card__animated-number-bg" />
       )}
       <span
         className={classNames('preprint-card__animated-number', {
           'preprint-card__animated-number--animating':
             (value !== previousValue && isAnimating) ||
-            (isAnimating && value === 0)
+            (isAnimating && value !== 0)
         })}
       >
         {value}
