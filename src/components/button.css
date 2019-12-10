@@ -25,6 +25,9 @@ a.button {
 
   &:focus {
     outline: none;
+    & .button__contents {
+      box-shadow: 0px 0px 0px 3px rgba(0, 0, 0, 0.9);
+    }
   }
 
   &:hover {
@@ -36,7 +39,6 @@ a.button {
     }
   }
 
-  &:focus,
   &:active {
     & .button__contents {
       background-color: var(--button-background-focus-color);
@@ -46,9 +48,6 @@ a.button {
       background-color: var(--button-background-focus-color--primary);
       color: var(--button-foreground-focus-color--primary);
     }
-  }
-
-  &:active {
   }
 
   & .button__contents {
