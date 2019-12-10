@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import PropTypes from 'prop-types';
 import mobile from 'is-mobile';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -21,9 +21,13 @@ import ToCPage from './toc-page';
 import CodeOfConduct from './code-of-conduct';
 import NotFound from './not-found';
 import API from './api';
-import Moderate from './moderate';
 import AdminPanel from './admin-panel';
 import BlockPanel from './block-panel';
+import SuspenseLoading from './suspense-loading';
+
+const Moderate = React.lazy(() =>
+  import(/* webpackChunkName: "moderate" */ './moderate')
+);
 
 // kick off the polyfill!
 smoothscroll.polyfill();
@@ -73,7 +77,11 @@ export default function App({ user }) {
                   <BlockPanel />
                 </AdminRoute>
                 <ModeratorRoute exact={true} path="/moderate">
-                  <Moderate />
+                  <Suspense
+                    fallback={<SuspenseLoading>Loading</SuspenseLoading>}
+                  >
+                    <Moderate />
+                  </Suspense>
                 </ModeratorRoute>
                 <Route exact={true} path="/:identifierPart1/:identifierPart2?">
                   <ExtensionFallback />
