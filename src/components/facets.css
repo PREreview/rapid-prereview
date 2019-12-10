@@ -25,6 +25,12 @@
     margin-bottom: var(--xsgrd);
   }
 
+  & .checkbox__label {
+    /* MS Edge does not support display: contents used in the checkbox
+    this will get the desired effect with a justified count */
+    display: flex !important;
+    flex: 1 0 auto;
+  }
   & .facets__facet-label {
     display: flex;
     justify-content: space-between;

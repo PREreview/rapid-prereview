@@ -1,7 +1,7 @@
 .home {
   color: var(--ui-basic-font-color);
   font: var(--ui-basic-font);
-  width: 100vw;
+  width: 100%; /* 100VW will cause horizontal scrolling on Edge */
   box-sizing: border-box;
   overflow-x: hidden;
 
