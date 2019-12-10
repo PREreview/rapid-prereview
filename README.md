@@ -269,6 +269,13 @@ Everything should now be shut down.
 3. In the second tab run `npm run cloudant`
 4. In the third tab run `npm start`
 
+##### Updating your local install
+
+1. `cd` into this repository
+2. run `git fetch` followed by `git merge origin/master`
+3. run `npm install`
+4. Follow the First time instructions (see above)
+
 
 ### Storybook (components playground)
 
