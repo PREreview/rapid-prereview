@@ -231,6 +231,34 @@ upload the generated `extension-src.zip`:
 > https://github.com/prereview/rapid-prereview/
 
 
+### Demoing the platform
+
+#### OSX (mac)
+
+This supposes that you have followed the instruction from the rest of this README.
+
+##### First time
+
+Suggested steps:
+1. Open 4 tabs in a terminal and `cd` into this repository for each tab
+2. In the first tab run `npm run redis`
+3. In the second tab run `npm run cloudant`
+4. In the third tab:
+   - run `npm run seed` or `npm run reset` to either seed the database with
+     sample data (or start from a clean state)
+   - run `npm start` to start the web server
+5. In the fourth tab run `npm run extension:watch` and update the extension in
+   your browser (see section above for instructions)
+6. You can now visit [http://127.0.0.1:3030/](http://127.0.0.1:3030/) and give a demo
+
+
+##### Subsequent times
+
+1. Open 3 tabs in a terminal and `cd` into this repository for each tab
+2. In the first tab run `npm run redis`
+3. In the second tab run `npm run cloudant`
+4. In the third tab run `npm start`
+
 
 ### Storybook (components playground)
 
