@@ -241,7 +241,7 @@ This supposes that you have followed the instruction from the rest of this READM
 
 Suggested steps:
 1. Open 4 tabs in a terminal and `cd` into this repository for each tab
-2. In the first tab run `npm run redis`
+2. In the first tab run `npm run redis`.
 3. In the second tab run `npm run cloudant`
 4. In the third tab:
    - run `npm run seed` or `npm run reset` to either seed the database with
@@ -251,6 +251,16 @@ Suggested steps:
    your browser (see section above for instructions)
 6. You can now visit [http://127.0.0.1:3030/](http://127.0.0.1:3030/) and give a demo
 
+When you are done with the demo do:
+
+1. in the fourth tab (extension watcher) run `ctrl + c` to kill the node process.
+2. in the third tab (web server) run `ctrl + c` to kill the node process. To be
+   sure you can also run `killall node` to be sure that no zombie node processes
+   remain.
+3. in the second tab (cloudant) nothing to do (you can quit docker if you are done using it)
+4 in the first tab (redis) run `ctrl + c`
+
+Everything should now be shut down.
 
 ##### Subsequent times
 
