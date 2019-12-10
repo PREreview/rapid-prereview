@@ -258,7 +258,7 @@ When you are done with the demo do:
    sure you can also run `killall node` to be sure that no zombie node processes
    remain.
 3. in the second tab (cloudant) nothing to do (you can quit docker if you are done using it)
-4 in the first tab (redis) run `ctrl + c`
+4. in the first tab (redis) run `ctrl + c`
 
 Everything should now be shut down.
 
