@@ -9,6 +9,7 @@
 @import './components/variables.css';
 @import './components/app.css';
 
+@import './components/animated-number.css';
 @import './components/admin-panel.css';
 @import './components/block-panel.css';
 @import './components/add-button.css';
@@ -50,6 +51,7 @@
 @import './components/role-editor.css';
 @import './components/role-badge.css';
 @import './components/role-activity.css';
+@import './components/activity-card.css';
 @import './components/role-list.css';
 @import './components/score-badge.css';
 @import './components/search-bar.css';

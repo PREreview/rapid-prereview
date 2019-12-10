@@ -1,0 +1,46 @@
+.activity-card {
+  & .activity-card__summary__label {
+    margin-top: var(--sgrd);
+  }
+
+  & .activity-card__summary__stat {
+    margin: 0;
+    font: var(--ui-basic-font--large);
+  }
+
+  & .activity-card__server-info {
+    display: flex;
+    align-items: center;
+  }
+
+  & .activity-card__server-arrow-icon {
+    position: relative;
+    top: 0.05em;
+    fill: var(--ui-basic-font-color--light);
+  }
+
+  & .activity-card__stats {
+    margin-top: var(--xsgrd);
+    display: flex;
+    align-items: center;
+  }
+
+  & .activity-card__count {
+    margin-left: var(--xsgrd);
+    display: flex;
+    align-items: center;
+  }
+
+
+  & .activity-card__count-badge {
+    margin-right: 4px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--prereview-red);
+    position: relative;
+    overflow: hidden;
+  }
+
+
+
+}
