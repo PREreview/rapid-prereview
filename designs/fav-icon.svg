@@ -6,7 +6,7 @@
     <defs></defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="fav-icon">
-            <rect id="Rectangle" x="2" y="0" width="20" height="23" rx="2"></rect>
+            <rect id="Rectangle" fill="#FFFFFF" x="2" y="0" width="20" height="23" rx="2"></rect>
             <g id="Group" transform="translate(3.500000, 1.500000)">
                 <path d="M7.14273917,20 L0.602083333,20 C0.283333333,20 0,19.7222222 0,19.4097222 L0,0.590277778 C0,0.277777778 0.283333333,0 0.602083333,0 L16.3979167,0 C16.7166667,0 17,0.277777778 17,0.590277778 L17,19.4097222" id="Shape" stroke="#000000"></path>
                 <polygon id="Shape" fill="#FF3333" fill-rule="nonzero" points="10 22 13.3448882 20 10 18"></polygon>
