@@ -98,7 +98,8 @@ module.exports = {
                     stage: 3,
                     features: {
                       'nesting-rules': false /* disable css nesting which does not allow nesting of selectors without white spaces between them */,
-                      'custom-media-queries': true
+                      'custom-media-queries': true,
+                      'any-link-pseudo-class': true
                     }
                   }),
                   require('postcss-nested') /*replace cssnext nesting with this one which allows for sass style nesting*/
