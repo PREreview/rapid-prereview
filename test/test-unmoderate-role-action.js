@@ -3,7 +3,7 @@ import DB from '../src/db/db';
 import { getId } from '../src/utils/jsonld';
 import { createRandomOrcid } from '../src/utils/orcid';
 
-describe('ModerateRoleAction', function() {
+describe('UnmoderateRoleAction', function() {
   this.timeout(40000);
 
   let admin, user;
@@ -39,10 +39,8 @@ describe('ModerateRoleAction', function() {
     );
 
     user = action.result;
-  });
 
-  it('admin should be able to block the role of a user', async () => {
-    const action = await db.post(
+    const moderateAction = await db.post(
       {
         '@type': 'ModerateRoleAction',
         actionStatus: 'CompletedActionStatus',
@@ -52,8 +50,20 @@ describe('ModerateRoleAction', function() {
       },
       { user: admin }
     );
+  });
+
+  it('admin should be able to unblock the role of a user', async () => {
+    const action = await db.post(
+      {
+        '@type': 'UnmoderateRoleAction',
+        actionStatus: 'CompletedActionStatus',
+        agent: getId(admin.defaultRole),
+        object: user.defaultRole
+      },
+      { user: admin }
+    );
 
     // console.log(require('util').inspect(action, { depth: null }));
-    assert(action.result.isModerated);
+    assert(!action.result.isModerated);
   });
 });

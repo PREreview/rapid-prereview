@@ -6,7 +6,7 @@ import { useUser } from '../contexts/user-context';
 import { getId, unprefix } from '../utils/jsonld';
 import HeaderBar from './header-bar';
 import { ORG } from '../constants';
-import { createModeratorQs } from '../utils/search';
+import { createBlockedRolesQs } from '../utils/search';
 import { useRolesSearchResults, usePostAction } from '../hooks/api-hooks';
 import Button from './button';
 import IconButton from './icon-button';
@@ -16,16 +16,16 @@ import Modal from './modal';
 import TextInput from './text-input';
 import Controls from './controls';
 
-export default function AdminPanel() {
+export default function BlockPanel() {
   const [user] = useUser();
   const [bookmark, setBookmark] = useState(null);
 
-  const search = createModeratorQs({ bookmark });
+  const search = createBlockedRolesQs({ bookmark });
 
   const [results, progress] = useRolesSearchResults(search, !!bookmark);
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [revokeRole, setRevokeRole] = useState(null);
+  const [unmoderatedRole, setUnmoderatedRole] = useState(null);
 
   const [excluded, setExcluded] = useState(new Set());
   const [added, setAdded] = useState([]);
@@ -35,30 +35,30 @@ export default function AdminPanel() {
   }, []);
 
   return (
-    <div className="admin-panel">
+    <div className="block-panel">
       <Helmet>
-        <title>{ORG} • Admin panel</title>
+        <title>{ORG} • Moderate Users</title>
       </Helmet>
       <HeaderBar />
 
       <section>
-        <header className="admin-panel__header">
-          <span>Manage moderators</span>
+        <header className="block-panel__header">
+          <span>Blocked Personas</span>
           <Button
             primary={true}
             onClick={() => {
               setIsAddModalOpen(true);
             }}
           >
-            Add moderator
+            Block persona
           </Button>
         </header>
 
         {results.total_rows === 0 && !progress.isActive && !added.length ? (
-          <div>No moderators.</div>
+          <div>No blocked persona.</div>
         ) : (
           <div>
-            <ul className="admin-panel__card-list">
+            <ul className="block-panel__card-list">
               {added
                 .concat(
                   results.rows
@@ -70,24 +70,24 @@ export default function AdminPanel() {
                     )
                 )
                 .map(role => (
-                  <li key={getId(role)} className="admin-panel__card-list-item">
-                    <div className="admin-panel__card-list-item__left">
+                  <li key={getId(role)} className="block-panel__card-list-item">
+                    <div className="block-panel__card-list-item__left">
                       <RoleBadgeUI role={role} />
                       <span>{role.name || unprefix(getId(role))}</span>
                     </div>
-                    <div className="admin-panel__card-list-item__right">
+                    <div className="block-panel__card-list-item__right">
                       <LabelStyle>
                         {role['@type'] === 'AnonymousReviewerRole'
                           ? 'Anonymous'
                           : 'Public'}
                       </LabelStyle>
                       <IconButton
-                        className="admin-panel__remove-button"
+                        className="block-panel__remove-button"
                         onClick={() => {
-                          setRevokeRole(role);
+                          setUnmoderatedRole(role);
                         }}
                       >
-                        <MdClose className="admin-panel__remove-button-icon" />
+                        <MdClose className="block-panel__remove-button-icon" />
                       </IconButton>
                     </div>
                   </li>
@@ -96,7 +96,7 @@ export default function AdminPanel() {
           </div>
         )}
 
-        <div className="admin-panel__page-nav">
+        <div className="block-panel__page-nav">
           {/* Cloudant returns the same bookmark when it hits the end of the list */}
           {!!(
             results.rows.length < results.total_rows &&
@@ -115,7 +115,7 @@ export default function AdminPanel() {
       </section>
 
       {isAddModalOpen && (
-        <AdminPanelAddModal
+        <BlockPanelAddModal
           user={user}
           onClose={() => {
             setIsAddModalOpen(false);
@@ -126,12 +126,12 @@ export default function AdminPanel() {
         />
       )}
 
-      {!!revokeRole && (
-        <AdminPanelRemoveModal
+      {!!unmoderatedRole && (
+        <BlockPanelRemoveModal
           user={user}
-          role={revokeRole}
+          role={unmoderatedRole}
           onClose={() => {
-            setRevokeRole(null);
+            setUnmoderatedRole(null);
           }}
           onSuccess={action => {
             setExcluded(
@@ -144,7 +144,7 @@ export default function AdminPanel() {
   );
 }
 
-function AdminPanelAddModal({ user, onClose, onSuccess }) {
+function BlockPanelAddModal({ user, onClose, onSuccess }) {
   const [value, setValue] = useState('');
   const [post, postProgress] = usePostAction();
   const [frame, setFrame] = useState('input');
@@ -155,7 +155,7 @@ function AdminPanelAddModal({ user, onClose, onSuccess }) {
 
   return (
     <Modal title="Add Moderator">
-      <div className="admin-panel-add-modal">
+      <div className="block-panel-add-modal">
         {frame === 'input' ? (
           <Fragment>
             <TextInput
@@ -188,9 +188,9 @@ function AdminPanelAddModal({ user, onClose, onSuccess }) {
                 onClick={() => {
                   post(
                     {
-                      '@type': 'GrantModeratorRoleAction',
+                      '@type': 'ModerateRoleAction',
                       actionStatus: 'CompletedActionStatus',
-                      agent: getId(user),
+                      agent: user.defaultRole,
                       object: `role:${value}`
                     },
                     body => {
@@ -200,15 +200,13 @@ function AdminPanelAddModal({ user, onClose, onSuccess }) {
                   );
                 }}
               >
-                Add
+                Block
               </Button>
             </Controls>
           </Fragment>
         ) : (
           <Fragment>
-            <p>
-              The role (persona) was successfully granted moderator permission.
-            </p>
+            <p>The role (persona) has been successfully blocked.</p>
 
             <Controls error={postProgress.error}>
               <Button
@@ -227,24 +225,24 @@ function AdminPanelAddModal({ user, onClose, onSuccess }) {
   );
 }
 
-AdminPanelAddModal.propTypes = {
+BlockPanelAddModal.propTypes = {
   user: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,
   onSuccess: PropTypes.func.isRequired
 };
 
-function AdminPanelRemoveModal({ user, role, onClose, onSuccess }) {
+function BlockPanelRemoveModal({ user, role, onClose, onSuccess }) {
   const [post, postProgress] = usePostAction();
   const [frame, setFrame] = useState('submit');
 
   return (
     <Modal title="Revoke Moderator Permission">
-      <div className="admin-panel-remove-modal">
+      <div className="block-panel-remove-modal">
         {frame === 'submit' ? (
           <Fragment>
             <p>
-              Are you sure to want to revoke moderator permission for role
-              (persona) <em>{role.name || unprefix(getId(role))}</em>?
+              Are you sure to want to unblock{' '}
+              <em>{role.name || unprefix(getId(role))}</em>?
             </p>
 
             <Controls error={postProgress.error}>
@@ -262,9 +260,9 @@ function AdminPanelRemoveModal({ user, role, onClose, onSuccess }) {
                 onClick={() => {
                   post(
                     {
-                      '@type': 'RevokeModeratorRoleAction',
+                      '@type': 'UnmoderateRoleAction',
                       actionStatus: 'CompletedActionStatus',
-                      agent: getId(user),
+                      agent: user.defaultRole,
                       object: getId(role)
                     },
                     body => {
@@ -274,15 +272,15 @@ function AdminPanelRemoveModal({ user, role, onClose, onSuccess }) {
                   );
                 }}
               >
-                Revoke
+                Unblock
               </Button>
             </Controls>
           </Fragment>
         ) : (
           <Fragment>
             <p>
-              The moderator permission was successfuly revoked for role
-              (persona) <em>{role.name || unprefix(getId(role))}</em>.
+              <em>{role.name || unprefix(getId(role))}</em> was successfully
+              unblocked.
             </p>
 
             <Controls error={postProgress.error}>
@@ -302,7 +300,7 @@ function AdminPanelRemoveModal({ user, role, onClose, onSuccess }) {
   );
 }
 
-AdminPanelRemoveModal.propTypes = {
+BlockPanelRemoveModal.propTypes = {
   user: PropTypes.object.isRequired,
   role: PropTypes.object.isRequired,
   onClose: PropTypes.func.isRequired,

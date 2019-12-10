@@ -318,7 +318,7 @@ function ModerationCardModal({
                     {
                       '@type': 'ModerateRoleAction',
                       actionStatus: 'CompletedActionStatus',
-                      agent: getId(user),
+                      agent: getId(user.defaultRole),
                       object: getId(reviewAction.agent),
                       moderationReason: ref.current.value
                     },

@@ -1,11 +1,11 @@
 const schema = {
-  $id: 'https://rapid.prereview.org/schemas/moderate-role-action.json',
+  $id: 'https://rapid.prereview.org/schemas/unmoderate-role-action.json',
 
   type: 'object',
   properties: {
     '@type': {
       type: 'string',
-      const: 'ModerateRoleAction'
+      const: 'UnmoderateRoleAction'
     },
     actionStatus: {
       type: 'string',
@@ -31,9 +31,6 @@ const schema = {
     object: {
       type: 'string',
       pattern: '^role:'
-    },
-    moderationReason: {
-      type: 'string'
     }
   },
   additionalProperties: false,

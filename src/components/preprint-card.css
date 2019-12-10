@@ -368,40 +368,6 @@
     color: var(--prereview-red);
     position: relative;
     overflow: hidden;
-
-    /* &.preprint-card__count-badge--animating {
-      animation-name: flicker;
-      animation-iteration-count: infinite;
-      animation-duration: 0.1s;
-      color: var(--ui-basic-font-color--light);
-      text-shadow: 0 6px 2px lightgrey;
-    } */
-  }
-
-  & .preprint-card__animated-number-container {
-    display: inline-block;
-    position: relative;
-    padding: 0 2px;
-  }
-  & .preprint-card__animated-number--animating {
-    animation-name: flicker;
-    animation-iteration-count: 1;
-    animation-duration: 0.1s;
-    color: var(--ui-basic-font-color--light);
-    text-shadow: 0 5px 1px lightgrey;
-    position: relative;
-    z-index: 10;
-  }
-
-  & .preprint-card__animated-number-bg {
-    background: linear-gradient(rgb(230, 230, 230), white, rgb(240, 240, 240));
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 5;
-    border-radius: 1px;
   }
 
   & .preprint-card__count-slash,

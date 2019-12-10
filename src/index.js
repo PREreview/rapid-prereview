@@ -1,5 +1,7 @@
 import path from 'path';
+import LRU from 'lru-cache';
 import { STATUS_CODES } from 'http';
+import socketIo from 'socket.io';
 import express from 'express';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
@@ -79,4 +81,62 @@ export function assets(config = {}) {
   app.use(express.static(path.join(path.dirname(__dirname), 'public')));
 
   return app;
+}
+
+export function ws(config, server) {
+  const io = socketIo(server);
+  const cache = new LRU({ max: 100 });
+
+  io.on('connection', socket => {
+    socket.emit('locked', cache.values());
+    const roleIds = new Set();
+
+    socket.on('lock', ({ reviewActionId, roleId }, respond) => {
+      roleIds.add(roleId);
+
+      // unlock preview value owned by `roleId`
+      cache.forEach((value, key, cache) => {
+        if (
+          value.reviewActionId !== reviewActionId &&
+          value.roleId === roleId
+        ) {
+          cache.del(key);
+        }
+      });
+
+      // lock new value
+      const value = cache.get(reviewActionId);
+      const isLocked = !!(value && value.roleId !== roleId);
+      if (!isLocked) {
+        cache.set(reviewActionId, { reviewActionId, roleId });
+      }
+      respond(isLocked);
+
+      io.emit('locked', cache.values());
+    });
+
+    socket.on('unlock', ({ reviewActionId, roleId }) => {
+      roleIds.add(roleId);
+      const value = cache.get(reviewActionId);
+      if (value && value.roleId === roleId) {
+        cache.del(reviewActionId);
+      }
+
+      io.emit('locked', cache.values());
+    });
+
+    socket.on('exclude', ({ reviewActionId, roleId }) => {
+      socket.broadcast.emit('excluded', reviewActionId);
+    });
+
+    socket.on('disconnect', function() {
+      cache.forEach((value, key, cache) => {
+        if (roleIds.has(value.roleId)) {
+          cache.del(key);
+        }
+      });
+
+      io.emit('locked', cache.values());
+    });
+  });
 }

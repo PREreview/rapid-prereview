@@ -2,6 +2,8 @@ import doiRegex from 'doi-regex';
 import url from 'url';
 import identifiersArxiv from 'identifiers-arxiv';
 import { cleanup } from './jsonld';
+import isUrl from 'is-url';
+import { unversionDoi } from './ids';
 
 /**
  * Note: this is also used from the web extension code
@@ -234,4 +236,38 @@ export function parseGoogleScholar(head, { id, sourceUrl } = {}) {
   }
 
   return cleanup(data);
+}
+
+/**
+ * This is brittle but is used to get an identifer from a PDF URL
+ * This is also used in the web extension code so needs to run in the browser
+ */
+export function getIdentifierFromPdfUrl(value) {
+  if (!isUrl(value)) {
+    return null;
+  }
+
+  let identifier = null;
+
+  const url = new URL(value);
+
+  if (url.pathname.endsWith('.pdf')) {
+    if (url.hostname.endsWith('arxiv.org')) {
+      // arxiv.org: https://arxiv.org/abs/1912.02180 -> https://arxiv.org/pdf/1912.02180.pdf
+      [identifier] = identifiersArxiv.extract(
+        identifiersArxiv.extract(url.pathname.replace(/\.pdf$/, ''))
+      );
+    } else if (
+      url.hostname.endsWith('biorxiv.org') ||
+      url.hostname.endsWith('medrxiv.org')
+    ) {
+      // biorxiv.org: https://www.biorxiv.org/content/10.1101/867085v1 -> https://www.biorxiv.org/content/biorxiv/early/2019/12/06/867085.full.pdf
+      // medrxiv.org: https://www.medrxiv.org/content/10.1101/19003087v1 -> https://www.medrxiv.org/content/medrxiv/early/2019/08/09/19003087.full.pdf
+      const splt = url.pathname.replace(/\.full\.pdf$/, '').split('/');
+      const suffix = splt[splt.length - 1];
+      identifier = unversionDoi(`${10.1101}/${suffix}`);
+    }
+  }
+
+  return identifier;
 }

@@ -1,0 +1,26 @@
+.animated-number {
+  display: inline-block;
+  position: relative;
+  padding: 0 2px;
+
+  & .animated-number__value--animating {
+    animation-name: flicker;
+    animation-iteration-count: 1;
+    animation-duration: 0.1s;
+    color: var(--ui-basic-font-color--light);
+    text-shadow: 0 5px 1px lightgrey;
+    position: relative;
+    z-index: 10;
+  }
+
+  & .animated-number__bg {
+    background: linear-gradient(rgb(230, 230, 230), white, rgb(240, 240, 240));
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 5;
+    border-radius: 1px;
+  }
+}

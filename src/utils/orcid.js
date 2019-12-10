@@ -85,7 +85,7 @@ export function createPassport(config) {
       };
       const profile = {};
 
-      if (req.url === '/orcid') {
+      if (req.url.split('?')[0] === '/orcid') {
         this.redirect(this._callbackURL);
       } else {
         this._verifyCallback(

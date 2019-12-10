@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
+import socketIoClient from 'socket.io-client';
 import { useUser } from '../contexts/user-context';
 import { getId } from '../utils/jsonld';
 import HeaderBar from './header-bar';
@@ -9,10 +10,29 @@ import { useActionsSearchResults } from '../hooks/api-hooks';
 import Button from './button';
 import ModerationCard from './moderation-card';
 
+const socket = socketIoClient(window.location.origin, {
+  autoConnect: false
+});
+
 export default function Moderate() {
   const [user] = useUser();
   const [bookmark, setBookmark] = useState(null);
   const [excluded, setExcluded] = useState(new Set());
+  const [lockersByReviewActionId, setLockersByReviewActionId] = useState({});
+
+  const handleLocked = useCallback(
+    data => {
+      const nextLockersByReviewActionId = data.reduce((map, item) => {
+        if (!user.hasRole.some(roleId => roleId === item.roleId)) {
+          map[item.reviewActionId] = item.roleId;
+        }
+        return map;
+      }, {});
+
+      setLockersByReviewActionId(nextLockersByReviewActionId);
+    },
+    [user]
+  );
 
   const search = createModerationQs({ bookmark });
 
@@ -37,10 +57,33 @@ export default function Moderate() {
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    socket.connect();
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleExcluded = reviewActionId => {
+      setExcluded(prevSet => {
+        return new Set(Array.from(prevSet).concat(reviewActionId));
+      });
+    };
+
+    socket.on('locked', handleLocked);
+    socket.on('excluded', handleExcluded);
+
+    return () => {
+      socket.off('locked', handleLocked);
+      socket.off('excluded', handleExcluded);
+    };
+  }, [handleLocked]);
+
   return (
     <div className="moderate">
       <Helmet>
-        <title>{ORG} • Moderate</title>
+        <title>{ORG} • Moderate Reviews</title>
       </Helmet>
       <HeaderBar />
 
@@ -63,11 +106,36 @@ export default function Moderate() {
                       user={user}
                       reviewAction={doc}
                       isOpened={isOpenedMap[getId(doc)] || false}
-                      isLockedBy={undefined /* TODO wire */}
+                      isLockedBy={lockersByReviewActionId[getId(doc)]}
                       onOpen={() => {
+                        socket.emit(
+                          'lock',
+                          {
+                            reviewActionId: getId(doc),
+                            roleId: user.defaultRole
+                          },
+                          isLocked => {
+                            if (!isLocked) {
+                              setIsOpenedMap(
+                                results.rows.reduce((map, row) => {
+                                  map[getId(row.doc)] =
+                                    getId(row.doc) === getId(doc);
+                                  return map;
+                                }, {})
+                              );
+                            }
+                          }
+                        );
+                      }}
+                      onClose={() => {
+                        socket.emit('unlock', {
+                          reviewActionId: getId(doc),
+                          roleId: user.defaultRole
+                        });
+
                         setIsOpenedMap(
                           results.rows.reduce((map, row) => {
-                            map[getId(row.doc)] = getId(row.doc) === getId(doc);
+                            map[getId(row.doc)] = false;
                             return map;
                           }, {})
                         );
@@ -79,18 +147,19 @@ export default function Moderate() {
                           moderationActionType ===
                             'IgnoreReportRapidPREreviewAction'
                         ) {
+                          socket.emit('unlock', {
+                            reviewActionId: getId(doc),
+                            roleId: user.defaultRole
+                          });
+                          socket.emit('exclude', {
+                            reviewActionId: getId(doc),
+                            roleId: user.defaultRole
+                          });
+
                           setExcluded(
                             new Set(Array.from(excluded).concat(reviewActionId))
                           );
                         }
-                      }}
-                      onClose={() => {
-                        setIsOpenedMap(
-                          results.rows.reduce((map, row) => {
-                            map[getId(row.doc)] = false;
-                            return map;
-                          }, {})
-                        );
                       }}
                     />
                   </li>

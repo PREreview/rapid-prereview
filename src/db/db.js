@@ -1,7 +1,6 @@
 import Cloudant from '@cloudant/cloudant';
 import omit from 'lodash/omit';
 import flatten from 'lodash/flatten';
-import isEqual from 'lodash/isEqual';
 import handleRegisterAction from './handle-register-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
@@ -11,6 +10,7 @@ import handleRequestForRapidPrereviewAction from './handle-request-for-rapid-pre
 import handleGrantModeratorRoleAction from './handle-grant-moderator-role-action';
 import handleRevokeModeratorRoleAction from './handle-revoke-moderator-role-action';
 import handleModerateRoleAction from './handle-moderate-role-action';
+import handleUnmoderateRoleAction from './handle-unmoderate-role-action';
 import handleModerateRapidPrereviewAction from './handle-moderate-rapid-prereview-action';
 import handleReportRapidPrereviewAction from './handle-report-rapid-prereview-action';
 import handleIgnoreReportRapidPrereviewAction from './handle-ignore-report-rapid-prereview-action';
@@ -857,6 +857,14 @@ export default class DB {
 
       case 'ModerateRoleAction':
         handledAction = await handleModerateRoleAction.call(this, action, {
+          strict,
+          user,
+          now
+        });
+        break;
+
+      case 'UnmoderateRoleAction':
+        handledAction = await handleUnmoderateRoleAction.call(this, action, {
           strict,
           user,
           now

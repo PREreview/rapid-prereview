@@ -23,6 +23,7 @@
     "extension:build-firefox": "cross-env NODE_ENV=production cross-env EXTENSION_BROwSER_ENV=firefox webpack --config webpack-extension.config.js --mode production",
     "extension:pack": "zip -r -FS extension.zip extension/* --exclude extension/.DS_Store",
     "extension:pack-firefox": "(cd extension && zip -r -FS ../extension-firefox.zip * --exclude .DS_Store)",
+    "extension:pack-src": "zip -r -FS extension-src.zip src/ views/ public/ test/ extension/ webpack-extension.config.js webpack.config.js README.md LICENSE --exclude **/*.DS_Store ",
     "start": "babel-node ./src/dev-server.js | pino-pretty",
     "start:app-prod": "node ./dist/server.js",
     "start:service-prod": "node ./dist/service.js",
@@ -227,6 +228,7 @@
     "identifiers-arxiv": "^0.1.1",
     "identifiers-orcid": "^0.1.1",
     "is-mobile": "^2.1.0",
+    "is-url": "^1.2.4",
     "jsdom": "^15.2.1",
     "lodash": "^4.17.15",
     "lru-cache": "^5.1.1",
@@ -253,6 +255,8 @@
     "redis": "^2.8.0",
     "serve-favicon": "^2.5.0",
     "smoothscroll-polyfill": "^0.4.4",
+    "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
     "uuid": "^3.3.3",
     "xmldom": "^0.1.27"
   }

@@ -197,7 +197,7 @@ export default function CodeOfConduct() {
           <strong>
             If you find that you have a potential conflict with the authors, or
             the organization to which the author(s) is affiliated, please do
-            disclose it in your <Org />. A failure in disclosing a competing
+            disclose it in your review. A failure in disclosing a competing
             interest is considered a violation of the <Org /> Code of Conduct
             and will be treated accordingly.
           </strong>

@@ -1,9 +1,11 @@
 # Welcome to Outbreak Science Rapid PREreview!
 
 ## What is it?
-Outbreak Science Rapid PREreview is an **open source platform and a web extension to facilitate the rapid assessment of preprints during public health crises**. The platform allows any researcher with an ORCID iD to provide a quick high-level evaluation of preprints via a series of questions to assess the originality and soundness of the research findings. Aggregated data from these reviews is visualized to allow readers to identify the most relevant information. This tool has the capacity to be transformative for on-the-ground health workers, researchers, public health agencies, and the public, as it can quickly unlock key scientific information during an outbreak of infectious diseases.
+
+Outbreak Science Rapid PREreview is an **application for rapid, structured reviews of outbreak-related preprints**. The platform allows any researcher with an ORCID iD to provide a quick high-level evaluation of preprints via a series of questions to assess the originality and soundness of the research findings. Aggregated data from these reviews is visualized to allow readers to identify the most relevant information. This tool has the capacity to be transformative for on-the-ground health workers, researchers, public health agencies, and the public, as it can quickly unlock key scientific information during an outbreak of infectious diseases.
 
 ## Our team
+
 Outbreak Science Rapid PREreview is a project born from the collaboration of PREreview and Outbreak Science.
 
 [PREreview](https://v2.prereview.org) is an open project fiscally sponsored by the non-profit organization Code for Science & Society. PREreview's mission is to increase diversity in the scholarly peer review process by empowering all researchers to engage with preprint reviews.
@@ -12,6 +14,7 @@ Outbreak Science Rapid PREreview is a project born from the collaboration of PRE
 
 
 ## Funding
+
 This collaborative project is mainly funded by the [Wellcome Trust Open Research Fund](https://wellcome.ac.uk/funding/schemes/open-research-fund), but has also received support from the Mozilla Foundation.
 
 
@@ -21,7 +24,7 @@ This collaborative project is mainly funded by the [Wellcome Trust Open Research
 
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
-Rapid PREreview focuses on providing the best infrastructure to request /
+Outbreak Science Rapid PREreview focuses on providing the best infrastructure to request /
 provide / analyze feedback (structured reviews) on _existing_ preprints relevant
 to the outbreak community.
 
@@ -29,7 +32,7 @@ The feedback should be of use to:
 1. the outbreak community (academics)
 2. workers, editors, journalists (visualization etc.)
 
-Rapid PREreview does _not_ focus on:
+Outbreak Science Rapid PREreview does _not_ focus on:
 - coordinating research effort / data analysis / calling for research during
   emergency situations
 - becoming / being a preprint server
@@ -39,18 +42,40 @@ Channel](https://join.slack.com/t/prereview/shared_invite/enQtMzYwMjQzMTk3ODMxLT
 
 ## Development
 
+### Getting started
+
+#### On a Mac (OS X)
+
+1. install and setup `git`. See
+   https://help.github.com/en/github/getting-started-with-github/set-up-git to
+   help you get started.
+2. install Node.js LTS. See https://nodejs.org/en/
+3. install homebrew https://brew.sh/
+4. install redis by running `brew install redis`
+5. install docker. See https://docs.docker.com/docker-for-mac/install/
+6. install cloudant docker container by running: `docker pull
+   ibmcom/cloudant-developer`
+
+You should have everything needed to follow the rest of this README.
+
 ### Dependencies
 
-run:
+At the root of this repository run:
 
 ```sh
 npm install
 ```
 
+#### Troubleshooting
+
+If you are having permission issues with `npm` checkout
+https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally
+
+
 ### Redis
 
 Be sure that redis is running on the default port (6379).
-For convenience you can run: `npm run redis`.
+For convenience you can run: `npm run redis` to start redis
 
 ### Database (CouchDB 2.x + Clouseau + Dreyfus)
 
@@ -87,7 +112,12 @@ To view the logs run:
 docker logs cloudant-developer
 ```
 
-### App
+### App (web server)
+
+Be sure that Cloudant and Redis are running.
+
+You can for instance open 2 terminal tabs and run `npm run redis` in one and
+`npm run cloudant` on the other.
 
 Once cloudant and redis are running run:
 
@@ -111,22 +141,35 @@ npm start
 
 and visit [http://127.0.0.1:3000/](http://127.0.0.1:3000/)
 
-### Storybook (components playground)
 
-run:
+If you want to start from an empty state (or reset the DB to an empty state) you can run:
 
 ```sh
-npm run storybook
+npm run reset
 ```
 
-and visit [http://127.0.0.1:3030/](http://127.0.0.1:3030/).
+#### Troubleshooting
 
-To add stories, add a file that ends with `.stories.js` in the `./src/components` directory.
+If your computer gets slow or you see error messages you can try to reboot
+everything:
+
+1. kill all the node processes (`ctr+c` in each shell)
+2. run `killal node` to be sure you no longer have node processes running
+3. kill redis (`ctrl + c` in the shell running redis) and restart it with `npm
+   run redis`
+4. restart cloudant `npm run cloudant`
+5. either run `npm run reset` or `npm run seed` to reseed the database
+6. re-run `npm start`
 
 
 ### Web extension
 
 #### Development
+
+To work (or test / demo) the extension you can:
+1. start a dev server (run `npm start`)
+2. follow the instruction below depending on whether you want to work with
+   Chrome or Firefox.
 
 ##### Chrome
 
@@ -148,6 +191,17 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
    select the `extension/manifest.json` file.
 
 
+##### Troubleshooting
+
+**Never run `npm run extension:watch` and `npm run extension:watch-firefox` at
+the same time as they will overwrite each other.** If you did:
+
+1. kill all the node processes (`ctr+c` in each shell)
+2. run `killal node` to be sure you no longer have node processes running
+3. restart the web server `npm start` and one of the extension watcher `npm run
+   extension:watch` **OR** `npm run extension:watch-firefox`
+
+
 #### Production
 
 ##### Chrome
@@ -165,6 +219,75 @@ To add stories, add a file that ends with `.stories.js` in the `./src/components
 3. Run `npm run extension:build-firefox`
 4. Run `npm run extension:pack-firefox`
 5. Upload the created `extension-firefox.zip` file to the Firefox web store
+
+
+Note: to include the unbundled source code of the extension (asked by Mozilla
+add on) run `npm run extension:pack-src` and include the following text when you
+upload the generated `extension-src.zip`:
+
+> The extension is built with webpack (config is
+> webpack-extension.config.js). See more details on the README.md file. The
+> source code is also available on GitHub:
+> https://github.com/prereview/rapid-prereview/
+
+
+### Demoing the platform
+
+#### OSX (mac)
+
+This supposes that you have followed the instruction from the rest of this README.
+
+##### First time
+
+Suggested steps:
+1. Open 4 tabs in a terminal and `cd` into this repository for each tab
+2. In the first tab run `npm run redis`.
+3. In the second tab run `npm run cloudant`
+4. In the third tab:
+   - run `npm run seed` or `npm run reset` to either seed the database with
+     sample data (or start from a clean state)
+   - run `npm start` to start the web server
+5. In the fourth tab run `npm run extension:watch` and update the extension in
+   your browser (see section above for instructions)
+6. You can now visit [http://127.0.0.1:3030/](http://127.0.0.1:3030/) and give a demo
+
+When you are done with the demo do:
+
+1. in the fourth tab (extension watcher) run `ctrl + c` to kill the node process.
+2. in the third tab (web server) run `ctrl + c` to kill the node process. To be
+   sure you can also run `killall node` to be sure that no zombie node processes
+   remain.
+3. in the second tab (cloudant) nothing to do (you can quit docker if you are done using it)
+4. in the first tab (redis) run `ctrl + c`
+
+Everything should now be shut down.
+
+##### Subsequent times
+
+1. Open 3 tabs in a terminal and `cd` into this repository for each tab
+2. In the first tab run `npm run redis`
+3. In the second tab run `npm run cloudant`
+4. In the third tab run `npm start`
+
+##### Updating your local install
+
+1. `cd` into this repository
+2. run `git fetch` followed by `git merge origin/master`
+3. run `npm install`
+4. Follow the First time instructions (see above)
+
+
+### Storybook (components playground)
+
+If you want to work on component in isolation run:
+
+```sh
+npm run storybook
+```
+
+and visit [http://127.0.0.1:3030/](http://127.0.0.1:3030/).
+
+To add stories, add a file that ends with `.stories.js` in the `./src/components` directory.
 
 
 ### Tests

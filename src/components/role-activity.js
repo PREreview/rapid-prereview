@@ -9,6 +9,7 @@ import Value from './value';
 import Button from './button';
 import LabelStyle from './label-style';
 import XLink from './xlink';
+import ActivityCard from './activity-card';
 
 export default function RoleActivity({ roleId }) {
   const [bookmark, setBookmark] = useState(null);
@@ -46,48 +47,7 @@ export default function RoleActivity({ roleId }) {
           <ul className="role-activity__list">
             {results.rows.map(({ doc }) => (
               <li key={getId(doc)} className="role-activity__list-item">
-                <LabelStyle>
-                  {format(new Date(doc.startTime), 'MMM. d, yyyy')}{' '}
-                  {doc['@type'] === 'RequestForRapidPREreviewAction'
-                    ? 'requested feedback on'
-                    : 'reviewed'}
-                </LabelStyle>
-                <div className="role-activity__list-item-details">
-                  <XLink
-                    to={`/${doc.object.doi || doc.object.arXivId}`}
-                    href={`/${doc.object.doi || doc.object.arXivId}`}
-                  >
-                    <Value tagName="span">{doc.object.name}</Value>
-                  </XLink>
-                  <div className="role-activity__server-info">
-                    <Value
-                      tagName="span"
-                      className="role-activity__server-name"
-                    >
-                      {(doc.object.preprintServer || {}).name}
-                    </Value>
-                    <MdChevronRight className="role-activity__server-arrow-icon" />
-                    <Value tagName="span">
-                      {doc.object.doi ? (
-                        <a
-                          href={`https://doi.org/${doc.object.doi}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {doc.object.doi}
-                        </a>
-                      ) : (
-                        <a
-                          href={`https://arxiv.org/abs/${doc.object.arXivId}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {doc.object.arXivId}
-                        </a>
-                      )}
-                    </Value>
-                  </div>
-                </div>
+                <ActivityCard action={doc} />
               </li>
             ))}
           </ul>

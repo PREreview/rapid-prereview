@@ -29,6 +29,7 @@ import XLink from './xlink';
 import Button from './button';
 import { useAnimatedScore } from '../hooks/score-hooks';
 import { getFormattedDatePosted } from '../utils/preprints';
+import AnimatedNumber from './animated-number';
 
 export default function PreprintCard({
   user,
@@ -363,43 +364,3 @@ PreprintCard.propTypes = {
   onNew: PropTypes.func.isRequired,
   isNew: PropTypes.bool
 };
-
-export function AnimatedNumber({ value, isAnimating }) {
-  const previousValue = usePrevious(value);
-
-  return (
-    <div className="preprint-card__animated-number-container">
-      {isAnimating && value !== previousValue && (
-        <div className="preprint-card__animated-number-bg" />
-      )}
-      <span
-        className={classNames('preprint-card__animated-number', {
-          'preprint-card__animated-number--animating':
-            (value !== previousValue && isAnimating) ||
-            (isAnimating && value === 0)
-        })}
-      >
-        {value}
-      </span>
-    </div>
-  );
-}
-
-AnimatedNumber.propTypes = {
-  value: PropTypes.number,
-  isAnimating: PropTypes.bool
-};
-
-function usePrevious(value) {
-  // The ref object is a generic container whose current property is mutable ...
-  // ... and can hold any value, similar to an instance property on a class
-  const ref = useRef();
-
-  // Store current value in ref
-  useEffect(() => {
-    ref.current = value;
-  }, [value]); // Only re-run if value changes
-
-  // Return previous value (happens before update in useEffect above)
-  return ref.current;
-}

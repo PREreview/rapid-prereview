@@ -38,6 +38,7 @@ export default function ShellContent({
   defaultTab = 'read',
   onRequireScreen
 }) {
+  const location = useLocation();
   const [user] = useUser();
   const [role] = useRole(user && user.defaultRole);
   const [newPreprints, setNewPreprints] = useNewPreprints();
@@ -58,6 +59,10 @@ export default function ShellContent({
   const hasRequested = checkIfHasRequested(user, actions); // `actions` (_all_ of them including moderated ones) not `safeActions`
 
   const counts = getCounts(actions);
+
+  const loginUrl = process.env.IS_EXTENSION
+    ? '/login'
+    : `/login?next=${encodeURIComponent(location.pathname)}`;
 
   return (
     <div className="shell-content">
@@ -161,6 +166,21 @@ export default function ShellContent({
               </MenuLink>
             )}
 
+            {user.isAdmin && (
+              <MenuLink
+                as={process.env.IS_EXTENSION ? undefined : Link}
+                to={process.env.IS_EXTENSION ? undefined : '/block'}
+                href={
+                  process.env.IS_EXTENSION
+                    ? `${process.env.API_URL}/block`
+                    : undefined
+                }
+                target={process.env.IS_EXTENSION ? '_blank' : undefined}
+              >
+                Moderate Users
+              </MenuLink>
+            )}
+
             {!!(role && role.isModerator && !role.isModerated) && (
               <MenuLink
                 as={process.env.IS_EXTENSION ? undefined : Link}
@@ -172,7 +192,7 @@ export default function ShellContent({
                 }
                 target={process.env.IS_EXTENSION ? '_blank' : undefined}
               >
-                Moderate
+                Moderate Reviews
               </MenuLink>
             )}
 
@@ -181,13 +201,14 @@ export default function ShellContent({
             </MenuLink>
           </UserBadge>
         ) : (
-          <XLink href="/login" to="/login">
+          <XLink href={loginUrl} to={loginUrl}>
             Login
           </XLink>
         )}
       </header>
       {isLoginModalOpen && (
         <LoginRequiredModal
+          next={process.env.IS_EXTENSION ? undefined : location.pathname}
           onClose={() => {
             setIsLoginModalOpen(false);
           }}

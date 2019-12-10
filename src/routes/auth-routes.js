@@ -6,13 +6,31 @@ import { getId, unprefix } from '../utils/jsonld';
 const router = new Router({ caseSensitive: true });
 
 // start authenticating with ORCID
-router.get('/orcid', passport.authenticate('orcid'));
+router.get(
+  '/orcid',
+  (req, res, next) => {
+    if (req.query.next) {
+      req.session.next = req.query.next;
+    } else {
+      delete req.session.next;
+    }
+
+    next();
+  },
+  passport.authenticate('orcid')
+);
 
 // finish authenticating with ORCID
 router.get(
   '/orcid/callback',
   passport.authenticate('orcid'),
   async (req, res, next) => {
+    if (req.session.next) {
+      res.redirect(req.session.next);
+      delete req.session.next;
+      return;
+    }
+
     let roles;
     try {
       roles = await req.db.getRoles(req.user.hasRole);

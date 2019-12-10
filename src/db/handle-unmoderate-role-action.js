@@ -1,9 +1,10 @@
 import Ajv from 'ajv';
-import schema from '../schemas/moderate-role-action';
+import omit from 'lodash/omit';
+import schema from '../schemas/unmoderate-role-action';
 import { getId, arrayify, cleanup } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 
-export default async function handleModerateRoleAction(
+export default async function handleUnmoderateRoleAction(
   action,
   { strict = true, user = null, now = new Date().toISOString() } = {}
 ) {
@@ -25,10 +26,8 @@ export default async function handleModerateRoleAction(
   const role = await this.get(getId(action.object));
 
   const nextRole = cleanup(
-    Object.assign({}, role, {
-      isModerated: true,
-      moderationReason: action.moderationReason,
-      moderationDate: now,
+    Object.assign(omit(role, ['moderationReason', 'moderationDate']), {
+      isModerated: false,
       modifiedDate: now
     })
   );
