@@ -2,6 +2,7 @@ import Cloudant from '@cloudant/cloudant';
 import omit from 'lodash/omit';
 import flatten from 'lodash/flatten';
 import handleRegisterAction from './handle-register-action';
+import handleCreateApiKeyAction from './handle-create-api-key-action';
 import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
 import handleUpdateRoleAction from './handle-update-role-action';
@@ -247,6 +248,7 @@ export default class DB {
         const doc = await this.users.get(id);
         if (!raw) {
           delete doc.token;
+          delete doc.apiKey;
           // To be sure not to leak identity we do not return the roles
           delete doc.defaultRole;
           delete doc.hasRole;
@@ -812,6 +814,14 @@ export default class DB {
           now,
           isAdmin,
           isModerator
+        });
+        break;
+
+      case 'CreateApiKeyAction':
+        handledAction = await handleCreateApiKeyAction.call(this, action, {
+          strict,
+          user,
+          now
         });
         break;
 

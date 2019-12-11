@@ -31,7 +31,6 @@
     align-items: center;
   }
 
-
   & .activity-card__count-badge {
     margin-right: 4px;
     font-weight: 600;
@@ -40,7 +39,4 @@
     position: relative;
     overflow: hidden;
   }
-
-
-
 }

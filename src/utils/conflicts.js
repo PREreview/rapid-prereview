@@ -83,7 +83,7 @@ export function mergeReviewActionConflicts(docs) {
 }
 
 export function mergeUserConflicts(docs) {
-  const specialProps = ['token', 'hasRole', '_rev']; // those need special logic to be merged
+  const specialProps = ['token', 'apiKey', 'hasRole', '_rev']; // those need special logic to be merged
 
   return docs.reduce((merged, doc) => {
     // all props but `specialProps` (latest wins)
@@ -109,6 +109,17 @@ export function mergeUserConflicts(docs) {
           new Date(doc.token.dateCreated).getTime())
     ) {
       merged.token = doc.token;
+    }
+
+    // `apiKey`: latest wins
+    if (
+      (!merged.apiKey && doc.apiKey) ||
+      (merged.apiKey &&
+        doc.apiKey &&
+        new Date(merged.apiKey.dateCreated).getTime() <
+          new Date(doc.apiKey.dateCreated).getTime())
+    ) {
+      merged.apiKey = doc.apiKey;
     }
 
     // `hasRole`
