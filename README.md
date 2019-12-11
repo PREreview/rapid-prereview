@@ -249,7 +249,7 @@ Suggested steps:
    - run `npm start` to start the web server
 5. In the fourth tab run `npm run extension:watch` and update the extension in
    your browser (see section above for instructions)
-6. You can now visit [http://127.0.0.1:3030/](http://127.0.0.1:3030/) and give a demo
+6. You can now visit [http://127.0.0.1:3000/](http://127.0.0.1:3000/) and give a demo
 
 When you are done with the demo do:
 
