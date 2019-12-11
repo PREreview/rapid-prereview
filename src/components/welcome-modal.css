@@ -77,11 +77,17 @@
     white-space: pre;
 
     margin-left: var(--lgrd);
+
     &:any-link {
       text-decoration: none;
       color: var(--button-foreground-color--primary);
     }
-    &:focus,
+
+    &:focus {
+      outline: none;
+      box-shadow: 0px 0px 0px 3px rgba(0, 0, 0, 0.9);
+    }
+
     &:active {
       outline: none;
       background-color: var(--button-background-focus-color--primary);

@@ -11,8 +11,7 @@
   &:focus {
     outline: none;
     & .icon-button__contents {
-      background-color: var(--ui-basic-font-color);
-      color: white;
+      box-shadow: 0px 0px 0px 3px rgba(0, 0, 0, 0.9);
     }
   }
 

@@ -13,6 +13,7 @@
     height: calc(100vh - var(--header-bar-height) - var(--search-bar-height));
     background-color: white;
     overflow-y: auto;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
   }
 
   @media (--short-screen) {

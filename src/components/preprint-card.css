@@ -58,6 +58,7 @@
       transition: all 0.1s;
       overflow: hidden;
     }
+    &:focus,
     &:hover {
       & .preprint-card__cta-button__contents {
         background-color: var(--prereview-red);
@@ -81,13 +82,18 @@
         height: 100%;
       }
     }
-    &:active,
-    &:focus {
+    &:active {
       & .preprint-card__cta-button__contents {
         background-color: var(--prereview-black);
         & .preprint-card__count-label {
           color: var(--prereview-white);
         }
+      }
+    }
+    &:focus {
+      & .preprint-card__cta-button__contents {
+        background-color: var(--prereview-red);
+        box-shadow: 0px 0px 0px 3px rgba(0, 0, 0, 0.9);
       }
     }
   }
