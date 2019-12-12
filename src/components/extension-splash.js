@@ -14,7 +14,7 @@ export default function ExtensionSplash() {
   return (
     <div className="extension-splash">
       <Helmet>
-        <title>{ORG} • Get the app</title>
+        <title>{ORG} • Get the extension</title>
       </Helmet>
 
       <HeaderBar />
@@ -25,7 +25,7 @@ export default function ExtensionSplash() {
 
         <div className="extension-splash__body">
           <p>
-            The <Org /> app lets you read and add reviews (or requests for
+            The <Org /> extension lets you read and add reviews (or requests for
             feedback) directly from the preprint sites you visit without having
             to navigate to the Rapid PREreview homepage.
           </p>
@@ -37,7 +37,7 @@ export default function ExtensionSplash() {
             <li className="extension-splash__browser-list-item">
               <Button
                 element={'a'}
-                href="https://github.com/prereview/rapid-prereview/#web-extension"
+                href="https://chrome.google.com/webstore/detail/outbreak-science-rapid-pr/llglocdbioijhhfloamebnagdchmmabd"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="extension-splash__install-button"
@@ -64,7 +64,7 @@ export default function ExtensionSplash() {
                   primary={true}
                   disabled={true}
                   >
-                  Install for Firefox
+                  Install for Safari
                   </Button>
                   <br />
                   <div className="extension-splash__comming-soon">

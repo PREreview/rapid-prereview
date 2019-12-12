@@ -38,7 +38,7 @@ export default async function handleCreateApiKeyAction(
     dateModified: now
   });
 
-  const resp = await this.docs.insert(nextRecipient, getId(nextRecipient));
+  const resp = await this.users.insert(nextRecipient, getId(nextRecipient));
 
   return Object.assign({}, action, {
     result: Object.assign({}, nextRecipient, {

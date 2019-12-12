@@ -17,6 +17,18 @@ const ddoc = {
       reduce: '_count'
     },
 
+    usersByApiKeyValue: {
+      map: function(doc) {
+        if (doc['@type'] === 'Person' && doc.apiKey) {
+          var apiKey = doc.apiKey;
+          if (typeof apiKey.value === 'string') {
+            emit(apiKey.value, null);
+          }
+        }
+      },
+      reduce: '_count'
+    },
+
     conflictingByType: {
       map: function(doc) {
         if (doc._conflicts) {

@@ -9,6 +9,7 @@ import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
 import resolve from '../utils/resolve';
 import { cache, invalidate } from '../middlewares/cache';
+import parseApiKey from '../middlewares/parse-api-key';
 
 const jsonParser = bodyParser.json({ limit: '2mb' });
 
@@ -193,7 +194,7 @@ router.get(
   }
 );
 
-// TODO /avatar/:roleId
+// TODO? /avatar/:roleId
 // Get the avatar associated with the `roleId`
 
 /**
@@ -203,10 +204,24 @@ router.post(
   '/action',
   cors(),
   jsonParser,
+  parseApiKey,
   invalidate(),
   async (req, res, next) => {
     if (!req.isAuthenticated()) {
       return next(createError(401, 'Login required'));
+    }
+
+    if (
+      req.authType === 'ApiKey' &&
+      req.body &&
+      req.body['@type'] !== 'RequestForRapidPREreviewAction'
+    ) {
+      return next(
+        createError(
+          403,
+          'Only RequestForRapidPREreviewAction can be POSTed using an API key'
+        )
+      );
     }
 
     let body;

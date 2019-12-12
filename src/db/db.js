@@ -329,6 +329,21 @@ export default class DB {
     return row.doc;
   }
 
+  async getUserByApiKeyValue(value) {
+    const body = await this.users.view('ddoc-users', 'usersByApiKeyValue', {
+      key: value,
+      include_docs: true,
+      reduce: false
+    });
+
+    const row = body.rows[0];
+    if (!row) {
+      throw createError(404, `Not found`);
+    }
+
+    return row.doc;
+  }
+
   async getActionsByPreprintId(preprintId) {
     preprintId = getId(preprintId);
     const body = await this.docs.view('ddoc-docs', 'actionsByPreprintId', {

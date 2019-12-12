@@ -16,7 +16,7 @@ import {
 describe('API', function() {
   this.timeout(40000);
 
-  let user, server;
+  let user, apiUser, server;
   const requests = [];
   const reviews = [];
   const port = 3333;
@@ -44,6 +44,31 @@ describe('API', function() {
     });
 
     user = action.result;
+
+    const apiUserRegisterAction = await db.post({
+      '@type': 'RegisterAction',
+      actionStatus: 'CompletedActionStatus',
+      agent: {
+        '@type': 'Person',
+        orcid: createRandomOrcid(),
+        name: 'Fierceful Dreadful'
+      }
+    });
+
+    apiUser = apiUserRegisterAction.result;
+
+    // create an API key for the user
+    const createApiKeyAction = await db.post(
+      {
+        '@type': 'CreateApiKeyAction',
+        actionStatus: 'CompletedActionStatus',
+        agent: getId(apiUser),
+        object: getId(apiUser)
+      },
+      { user: apiUser }
+    );
+
+    apiUser = createApiKeyAction.result;
 
     for (const id of [crossrefDoi, arXivId, openAireDoi]) {
       const request = await db.post(
@@ -204,7 +229,7 @@ describe('API', function() {
     // console.log(require('util').inspect(body, { depth: null }));
 
     assert.deepEqual(body.counts, {
-      '@type': { AnonymousReviewerRole: 1, PublicReviewerRole: 1 }
+      '@type': { AnonymousReviewerRole: 2, PublicReviewerRole: 2 }
     });
   });
 
@@ -231,6 +256,70 @@ describe('API', function() {
     const body = await resp.json();
     assert.equal(body['@type'], 'Error');
     assert.equal(body.statusCode, 401);
+  });
+
+  it('should 403 for role mismatching an API key', async () => {
+    const resp = await fetch(`${baseUrl}/action`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `invalidrole:${apiUser.apiKey.value}`
+        ).toString('base64')}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        '@type': 'RequestForRapidPREreviewAction',
+        agent: getId(apiUser.defaultRole),
+        actionStatus: 'CompletedActionStatus',
+        object: crossrefDoi
+      })
+    });
+
+    assert.equal(resp.status, 403);
+  });
+
+  it('should 403 for invalid API key', async () => {
+    const resp = await fetch(`${baseUrl}/action`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${unprefix(apiUser.defaultRole)}:invalid`
+        ).toString('base64')}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        '@type': 'RequestForRapidPREreviewAction',
+        agent: getId(apiUser.defaultRole),
+        actionStatus: 'CompletedActionStatus',
+        object: crossrefDoi
+      })
+    });
+
+    assert.equal(resp.status, 403);
+  });
+
+  it('should post an action using the API key for auth', async () => {
+    const resp = await fetch(`${baseUrl}/action`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${unprefix(apiUser.defaultRole)}:${apiUser.apiKey.value}`
+        ).toString('base64')}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        '@type': 'RequestForRapidPREreviewAction',
+        agent: getId(apiUser.defaultRole),
+        actionStatus: 'CompletedActionStatus',
+        object: crossrefDoi
+      })
+    });
+    assert.equal(resp.status, 200);
+    const body = await resp.json();
+    assert.equal(body['@type'], 'RequestForRapidPREreviewAction');
   });
 
   after(done => {
