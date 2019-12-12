@@ -60,6 +60,7 @@
 @import './components/sort-options.css';
 @import './components/shell-content.css';
 @import './components/settings.css';
+@import './components/settings-api.css';
 @import './components/settings-roles.css';
 @import './components/subject-editor.css';
 @import './components/suspense-loading.css';

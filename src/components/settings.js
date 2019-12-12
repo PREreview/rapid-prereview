@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useUser } from '../contexts/user-context';
 import SettingsRoles from './settings-roles';
+import SettingsApi from './settings-api';
 import HeaderBar from './header-bar';
 import { ORG } from '../constants';
 
@@ -31,6 +32,7 @@ export default function Settings() {
         </section>
 
         <SettingsRoles user={user} />
+        <SettingsApi user={user} />
       </div>
     </div>
   );

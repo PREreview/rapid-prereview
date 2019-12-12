@@ -1,0 +1,5 @@
+.settings-api__secret {
+  & .button {
+    margin-left: var(--xsgrd);
+  }
+}

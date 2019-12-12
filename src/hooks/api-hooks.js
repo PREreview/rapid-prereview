@@ -90,7 +90,10 @@ export function usePostAction() {
           newPreprintsStore.upsertAction(body);
           roleStore.setFromAction(body);
 
-          if (body['@type'] === 'UpdateUserAction') {
+          if (
+            body['@type'] === 'UpdateUserAction' ||
+            body['@type'] === 'CreateApiKeyAction'
+          ) {
             setUser(body.result);
           } else if (body['@type'] === 'ModerateRapidPREreviewAction') {
             preprintsSearchResultsStore.reset();
