@@ -2,7 +2,7 @@ import http from 'http';
 import express from 'express';
 import helmet from 'helmet';
 import pino from 'pino';
-import { rapid, assets } from './index';
+import { rapid, assets, ws } from './index';
 import { PRODUCTION_DOMAIN } from './constants';
 import { createRedisClient } from './utils/redis';
 
@@ -23,6 +23,8 @@ app.use(assets(config));
 app.use(rapid(config, redisClient));
 
 const server = http.createServer(app);
+
+ws(config, server);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
