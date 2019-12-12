@@ -344,6 +344,36 @@ export default function API() {
           POST <code>/action</code>
         </h2>
 
+        <p>
+          POSTing to the <code>/action</code> endpoint must be made using the{' '}
+          <a
+            href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication#Basic_authentication_scheme"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Basic HTTP Authentication scheme
+          </a>{' '}
+          over HTTPS .
+        </p>
+
+        <p>Credentials are composed of:</p>
+
+        <dl>
+          <dt>username</dt>
+          <dd>
+            the identifier of the persona (role) <em>without</em> the{' '}
+            <code>role:</code> prefix
+          </dd>
+          <dt>password</dt>
+          <dd>the value of the API key obtained from your profile settings</dd>
+        </dl>
+
+        <p>
+          As of now, only <code>RequestForRapidPREreviewAction</code> can be
+          POSTed through the API. <a href={CONTACT_EMAIL_HREF}>Contact us</a>{' '}
+          with your use case if you need support for more actions.
+        </p>
+
         <APISection
           id="post-request"
           level={3}
@@ -354,7 +384,24 @@ export default function API() {
             </Fragment>
           }
         >
-          <p>Submit a request for review for a given preprint.</p>
+          <p>
+            <code>RequestForRapidPREreviewAction</code> are used to submit a
+            request for review for a given preprint (the <code>object</code> of
+            the action).
+          </p>
+
+          <p>Typical use cases include:</p>
+
+          <ul>
+            <li>
+              Allowing preprint servers to offer authors the option to submit
+              their preprint to <Org />.
+            </li>
+            <li>
+              Allowing content aggregators to automatically post content needing
+              feedback to <Org />.
+            </li>
+          </ul>
 
           <table>
             <caption>Request body (JSON):</caption>
@@ -388,7 +435,8 @@ export default function API() {
                   <code>agent</code>
                 </td>
                 <td>
-                  The <CURIE /> of a persona (role)
+                  The <CURIE /> of a persona (e.g.,{' '}
+                  <code>role:d4938673-9730-4dee-a47a-f3c077425edc</code>)
                 </td>
               </tr>
 
@@ -397,8 +445,10 @@ export default function API() {
                   <code>object</code>
                 </td>
                 <td>
-                  A <CURIE /> of a DOI or arXivID. DOI must be prefixed with{' '}
-                  <code>doi:</code> and arXiv ID with <code>arXiv:</code>
+                  A <CURIE /> of a DOI or arXiv ID. DOI must be prefixed with{' '}
+                  <code>doi:</code> (e.g., <code>doi:10.1101/674655</code>) and
+                  arXiv ID with <code>arXiv:</code> (e.g.,{' '}
+                  <code>arXiv:1910.00585</code>)
                 </td>
               </tr>
             </tbody>
