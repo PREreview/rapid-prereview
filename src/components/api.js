@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { CONTACT_EMAIL_HREF, ORG } from '../constants';
 import APISection from './api-section';
 import XLink from './xlink';
+import Org from './org';
 
 export default function API() {
   return (
@@ -337,6 +338,90 @@ export default function API() {
           </tbody>
         </table>
       </APISection>
+
+      <section>
+        <h2 id="post-action">
+          POST <code>/action</code>
+        </h2>
+
+        <APISection
+          id="post-request"
+          level={3}
+          type="response"
+          title={
+            <Fragment>
+              <code>RequestForRapidPREreviewAction</code>
+            </Fragment>
+          }
+        >
+          <p>Submit a request for review for a given preprint.</p>
+
+          <table>
+            <caption>Request body (JSON):</caption>
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Value (required)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <code>@type</code>
+                </td>
+                <td>
+                  <code>RequestForRapidPREreviewAction</code>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>actionStatus</code>
+                </td>
+                <td>
+                  <code>CompletedActionStatus</code>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>agent</code>
+                </td>
+                <td>
+                  The <CURIE /> of a persona (role)
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  <code>object</code>
+                </td>
+                <td>
+                  A <CURIE /> of a DOI or arXivID. DOI must be prefixed with{' '}
+                  <code>doi:</code> and arXiv ID with <code>arXiv:</code>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </APISection>
+      </section>
+
+      <section>
+        <h2 id="feed">Changes feed</h2>
+
+        <p>
+          Access to <Org />{' '}
+          <a href="https://docs.couchdb.org/en/stable/api/database/changes.html">
+            CouchDB changes feed
+          </a>{' '}
+          can be provided upon request.
+        </p>
+
+        <p>
+          <a href={CONTACT_EMAIL_HREF}>Contact us</a> with your use case if you
+          are interested.
+        </p>
+      </section>
 
       <section>
         <h2 id="replication">Replication</h2>

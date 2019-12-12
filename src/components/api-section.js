@@ -7,7 +7,13 @@ import { createError } from '../utils/errors';
 import Controls from './controls';
 import { CSS_HEADER_HEIGHT } from '../constants';
 
-export default function APISection({ id, title, children }) {
+export default function APISection({
+  id,
+  title,
+  children,
+  level = 2,
+  type = 'payload'
+}) {
   const ref = useRef();
   const [run, setRun] = useState(false);
   const [data, setData] = useState({
@@ -15,6 +21,8 @@ export default function APISection({ id, title, children }) {
     isActive: false,
     error: null
   });
+
+  const Hx = level == 2 ? 'h2' : 'h3';
 
   useEffect(() => {
     if (run) {
@@ -83,7 +91,7 @@ export default function APISection({ id, title, children }) {
   return (
     <section className="api-section">
       <header>
-        <h2 id={id}>{title}</h2>
+        <Hx id={id}>{title}</Hx>
 
         <Button
           isWaiting={data.isActive}
@@ -101,6 +109,8 @@ export default function APISection({ id, title, children }) {
 
       {!!data.body && run && !data.isActive && (
         <div className="api-section__payload-viewer" ref={ref}>
+          {type === 'response' && <span>Response payload:</span>}
+
           <pre>
             <code>{JSON.stringify(data.body, null, 2)}</code>
           </pre>
@@ -124,12 +134,15 @@ APISection.propTypes = {
   id: PropTypes.oneOf([
     'get-review',
     'get-request',
+    'post-request',
     'get-user',
     'get-role',
     'get-question',
     'search-role',
     'search-action'
   ]).isRequired,
+  level: PropTypes.oneOf([2, 3]),
+  type: PropTypes.oneOf(['payload', 'response']),
   title: PropTypes.any.isRequired,
   children: PropTypes.any.isRequired
 };

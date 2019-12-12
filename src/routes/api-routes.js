@@ -382,6 +382,7 @@ router.get(
         break;
       }
 
+      case 'demo:post-request':
       case 'demo:get-request': {
         try {
           const body = await req.db.docs.view('ddoc-docs', 'byType', {

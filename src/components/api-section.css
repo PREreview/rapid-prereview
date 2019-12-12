@@ -11,7 +11,7 @@
 
   & .api-section__payload-viewer {
     position: relative;
-
+    margin-top: var(--sgrd);
 
     & pre {
       border-left: 2px solid var(--prereview-red);
