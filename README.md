@@ -298,6 +298,13 @@ Once cloudant and redis are running run:
 npm test
 ```
 
+### Usage stats
+
+Several CouchDB views can give access to usage statistics. For instance, logging
+in to Cloudant and visiting
+`/rapid-prereview-docs/_design/ddoc-docs/_view/byType?group_level=1` will report
+a breakdown of the counts per types.
+
 ### Deployments
 
 We use Azure and IBM Cloudant.
