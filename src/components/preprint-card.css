@@ -151,6 +151,7 @@
   }
   & .preprint-card__contents {
     flex: 1 1 100%;
+    max-width: 100%;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -316,8 +317,11 @@
     border-top: 1px solid var(--ruling-color--light);
     padding: var(--xsgrd) var(--xsgrd) var(--xsgrd) var(--sgrd);
     width: 100%;
+    max-width: 100%;
+    overflow: hidden;
     height: var(--xlgrd);
     justify-content: space-between;
+
     & .preprint-card__expansion-header__left {
       display: flex;
       align-items: center;
@@ -325,6 +329,8 @@
     & .preprint-card__expansion-header__right {
       display: flex;
       align-items: center;
+      flex: 0 1 auto;
+      overflow: hidden;
     }
     & .preprint-card__score-badge-container {
       margin-right: var(--xxsgrd);
@@ -368,12 +374,22 @@
     & .preprint-card__days-ago {
       color: var(--ui-basic-font-color--light);
       padding-right: var(--xxsgrd);
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 0 1 auto;
+
+      & .preprint-card__days-ago__prefix {
+        @media (--mobile) {
+          display: none;
+        }
+      }
     }
 
     & .preprint-card__days-ago.preprint-card__days-ago--highlighted {
       color: var(--ui-basic-font-color);
     }
-
   }
 
   & .preprint-card__count-badge {

@@ -128,6 +128,7 @@
 }
 
 /* Media Queries */
+@custom-media --mobile screen and (0px <= width <= 420px);
 @custom-media --mobile-portrait screen and (0px <= width <= 420px) and (0px <= height <= 850px);
 @custom-media --mobile-landscape screen and (0px <= height <= 420px) and (0px <= width <= 850px);
 

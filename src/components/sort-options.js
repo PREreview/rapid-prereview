@@ -16,7 +16,12 @@ export default function SortOptions({
   return (
     <div className="sort-options">
       {['score', 'new', 'date'].map(name => (
-        <div key={name} className="sort-options__item">
+        <div
+          key={name}
+          className={classNames('sort-options__item', {
+            'sort-options__item--active': name === value
+          })}
+        >
           <input
             type="radio"
             id={`sort-options-${name}`}
@@ -41,6 +46,7 @@ export default function SortOptions({
             }`}
           >
             <label
+              className="sort-options__item-text"
               htmlFor={`sort-options-${name}`}
               onMouseEnter={() => {
                 if (!isMobile) {

@@ -275,7 +275,9 @@ export default function PreprintCard({
                     hoveredSortOption === 'new'
                 })}
               >
-                Last active{' '}
+                <span className="preprint-card__days-ago__prefix">
+                  Last active{' '}
+                </span>
                 {formatDistanceStrict(new Date(dateLastActivity), new Date())}{' '}
                 ago
               </span>

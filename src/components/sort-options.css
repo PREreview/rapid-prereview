@@ -28,6 +28,19 @@
   &:last-of-type {
     margin-left: auto;
   }
+
+  &:hover {
+    & .sort-options__item-text {
+      color: black;
+    }
+  }
+
+  &.sort-options__item--active {
+    & .sort-options__item-text {
+      color: black;
+      font-weight: 600;
+    }
+  }
 }
 
 .sort-options__icon {
