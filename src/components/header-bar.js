@@ -9,10 +9,13 @@ import { useUser } from '../contexts/user-context';
 import { useRole } from '../hooks/api-hooks';
 import UserBadge from './user-badge';
 import XLink from './xlink';
+import NoticeBadge from './notice-badge';
 
 export default function HeaderBar({ onClickMenuButton }) {
   const [user] = useUser();
   const [role] = useRole(user && user.defaultRole);
+
+  const showProfileNotice = true; // TODO @sballesteros - wire this
 
   return (
     <div className="header-bar">
@@ -44,7 +47,7 @@ export default function HeaderBar({ onClickMenuButton }) {
         </Link>
         <span className="header-bar__nav-item header-bar__nav-item--user-badge">
           {user ? (
-            <UserBadge user={user}>
+            <UserBadge user={user} showNotice={showProfileNotice}>
               <MenuLink
                 as={process.env.IS_EXTENSION ? undefined : Link}
                 to={process.env.IS_EXTENSION ? undefined : '/settings'}
@@ -55,7 +58,12 @@ export default function HeaderBar({ onClickMenuButton }) {
                 }
                 target={process.env.IS_EXTENSION ? '_blank' : undefined}
               >
-                Profile Settings
+                {showProfileNotice ? 'Complete Profile' : 'Profile Settings'}
+                {showProfileNotice && (
+                  <div className="menu__link-item__icon">
+                    <NoticeBadge />
+                  </div>
+                )}
               </MenuLink>
 
               {user.isAdmin && (

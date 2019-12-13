@@ -140,6 +140,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    padding-left: var(--xsgrd);
   }
 
   & .settings__persona-list-item__active-state {

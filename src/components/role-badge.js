@@ -7,9 +7,10 @@ import classNames from 'classnames';
 import Tooltip from '@reach/tooltip';
 import { unprefix, getId } from '../utils/jsonld';
 import { useRole } from '../hooks/api-hooks';
+import NoticeBadge from './notice-badge';
 
 const RoleBadge = React.forwardRef(function RoleBadge(
-  { roleId, children, className, tooltip },
+  { roleId, children, className, tooltip, showNotice },
   ref
 ) {
   const [role, fetchRoleProgress] = useRole(roleId);
@@ -22,6 +23,7 @@ const RoleBadge = React.forwardRef(function RoleBadge(
       role={role}
       fetchRoleProgress={fetchRoleProgress}
       className={className}
+      showNotice={showNotice}
     >
       {children}
     </RoleBadgeUI>
@@ -32,7 +34,8 @@ RoleBadge.propTypes = {
   tooltip: PropTypes.bool,
   roleId: PropTypes.string.isRequired,
   children: PropTypes.any,
-  className: PropTypes.string
+  className: PropTypes.string,
+  showNotice: PropTypes.bool
 };
 
 export default RoleBadge;
@@ -41,7 +44,15 @@ export default RoleBadge;
  * Non hooked version (handy for story book and `UserBadge`)
  */
 const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
-  { roleId, role, fetchRoleProgress, className, children, tooltip },
+  {
+    roleId,
+    role,
+    fetchRoleProgress,
+    className,
+    children,
+    tooltip,
+    showNotice = false
+  },
   ref
 ) {
   if (roleId == null && fetchRoleProgress == null && !!role) {
@@ -54,94 +65,100 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
 
   return (
     <Menu>
-      <MenuButton
-        className={classNames('role-badge-menu', className, {
-          'role-badge-menu--loading':
-            fetchRoleProgress && fetchRoleProgress.isActive
-        })}
-      >
-        {/*NOTE: the `ref` is typically used for Drag and Drop: we need 1 DOM element that will be used as the drag preview */}
-        <Tooltipify tooltip={tooltip} role={role} roleId={roleId}>
-          <div ref={ref}>
-            <div
-              className={classNames('role-badge-menu__generic-icon-container')}
-            >
-              <MdPerson className="role-badge-menu__generic-icon" />
-            </div>
+      <div className="role-badge-menu-container">
+        {showNotice && <NoticeBadge />}
+        <MenuButton
+          className={classNames('role-badge-menu', className, {
+            'role-badge-menu--loading':
+              fetchRoleProgress && fetchRoleProgress.isActive
+          })}
+        >
+          {/*NOTE: the `ref` is typically used for Drag and Drop: we need 1 DOM element that will be used as the drag preview */}
+          <Tooltipify tooltip={tooltip} role={role} roleId={roleId}>
+            <div ref={ref}>
+              <div
+                className={classNames(
+                  'role-badge-menu__generic-icon-container'
+                )}
+              >
+                <MdPerson className="role-badge-menu__generic-icon" />
+              </div>
 
-            <div
-              className={classNames('role-badge-menu__avatar', {
-                'role-badge-menu__avatar--loaded':
-                  !!role &&
-                  role.avatar &&
-                  role.avatar.contentUrl &&
-                  (fetchRoleProgress && !fetchRoleProgress.isActive)
-              })}
-              style={
-                role && role.avatar && role.avatar.contentUrl
-                  ? {
-                      backgroundImage: `url(${role.avatar.contentUrl})`,
-                      backgroundSize: 'contain'
-                    }
+              <div
+                className={classNames('role-badge-menu__avatar', {
+                  'role-badge-menu__avatar--loaded':
+                    !!role &&
+                    role.avatar &&
+                    role.avatar.contentUrl &&
+                    (fetchRoleProgress && !fetchRoleProgress.isActive)
+                })}
+                style={
+                  role && role.avatar && role.avatar.contentUrl
+                    ? {
+                        backgroundImage: `url(${role.avatar.contentUrl})`,
+                        backgroundSize: 'contain'
+                      }
+                    : undefined
+                }
+              ></div>
+            </div>
+          </Tooltipify>
+        </MenuButton>
+
+        {/* Note: MenuList is currently bugged if children is undefined hence the ternary */}
+        {children ? (
+          <MenuList className="menu__list">
+            <MenuLink
+              as={process.env.IS_EXTENSION ? undefined : Link}
+              className="menu__list__link-item"
+              href={
+                process.env.IS_EXTENSION
+                  ? `${process.env.API_URL}/about/${unprefix(roleId)}`
                   : undefined
               }
-            ></div>
-          </div>
-        </Tooltipify>
-      </MenuButton>
-
-      {/* Note: MenuList is currently bugged if children is undefined hence the ternary */}
-      {children ? (
-        <MenuList className="menu__list">
-          <MenuLink
-            as={process.env.IS_EXTENSION ? undefined : Link}
-            className="menu__list__link-item"
-            href={
-              process.env.IS_EXTENSION
-                ? `${process.env.API_URL}/about/${unprefix(roleId)}`
-                : undefined
-            }
-            target={process.env.IS_EXTENSION ? '_blank' : undefined}
-            to={
-              process.env.IS_EXTENSION
-                ? undefined
-                : `/about/${unprefix(roleId)}`
-            }
-          >
-            {role && role.name && role.name !== unprefix(roleId)
-              ? `${role.name} (${unprefix(roleId).substring(0, 5)}…)`
-              : `View Profile (${unprefix(roleId).substring(0, 5)}…)`}
-          </MenuLink>
-          {children}
-        </MenuList>
-      ) : (
-        <MenuList className="menu__list">
-          <MenuLink
-            as={process.env.IS_EXTENSION ? undefined : Link}
-            className="menu__list__link-item"
-            href={
-              process.env.IS_EXTENSION
-                ? `${process.env.API_URL}/about/${unprefix(roleId)}`
-                : undefined
-            }
-            target={process.env.IS_EXTENSION ? '_blank' : undefined}
-            to={
-              process.env.IS_EXTENSION
-                ? undefined
-                : `/about/${unprefix(roleId)}`
-            }
-          >
-            {role && role.name && role.name !== unprefix(roleId)
-              ? `${role.name} (${unprefix(roleId).substring(0, 5)}…)`
-              : `View Profile (${unprefix(roleId).substring(0, 5)}…)`}
-          </MenuLink>
-        </MenuList>
-      )}
+              target={process.env.IS_EXTENSION ? '_blank' : undefined}
+              to={
+                process.env.IS_EXTENSION
+                  ? undefined
+                  : `/about/${unprefix(roleId)}`
+              }
+            >
+              {role && role.name && role.name !== unprefix(roleId)
+                ? `${role.name} (${unprefix(roleId).substring(0, 5)}…)`
+                : `View Profile (${unprefix(roleId).substring(0, 5)}…)`}
+            </MenuLink>
+            {children}
+          </MenuList>
+        ) : (
+          <MenuList className="menu__list">
+            <MenuLink
+              as={process.env.IS_EXTENSION ? undefined : Link}
+              className="menu__list__link-item"
+              href={
+                process.env.IS_EXTENSION
+                  ? `${process.env.API_URL}/about/${unprefix(roleId)}`
+                  : undefined
+              }
+              target={process.env.IS_EXTENSION ? '_blank' : undefined}
+              to={
+                process.env.IS_EXTENSION
+                  ? undefined
+                  : `/about/${unprefix(roleId)}`
+              }
+            >
+              {role && role.name && role.name !== unprefix(roleId)
+                ? `${role.name} (${unprefix(roleId).substring(0, 5)}…)`
+                : `View Profile (${unprefix(roleId).substring(0, 5)}…)`}
+            </MenuLink>
+          </MenuList>
+        )}
+      </div>
     </Menu>
   );
 });
 
 RoleBadgeUI.propTypes = {
+  showNotice: PropTypes.bool,
   tooltip: PropTypes.bool,
   roleId: PropTypes.string,
   role: PropTypes.shape({
