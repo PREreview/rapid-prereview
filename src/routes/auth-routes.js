@@ -1,7 +1,6 @@
 import { Router } from 'express';
 import passport from 'passport';
 import cors from 'cors';
-import { getId, unprefix } from '../utils/jsonld';
 
 const router = new Router({ caseSensitive: true });
 

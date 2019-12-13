@@ -35,7 +35,7 @@ export default function Home() {
   const [user] = useUser();
   const isMobile = useIsMobile();
   const [showLeftPanel, setShowLeftPanel] = useState(!isMobile);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [loginModalOpenNext, setLoginModalOpenNext] = useState(null);
   const isNewVisitor = useIsNewVisitor();
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true);
   const [newPreprints, setNewPreprints] = useNewPreprints();
@@ -61,7 +61,9 @@ export default function Home() {
           isSingleStep: true
         });
       } else {
-        setIsLoginModalOpen(true);
+        setLoginModalOpenNext(
+          `/new?identifier=${preprint.doi || preprint.arXivId}&tab=review`
+        );
       }
     },
     [user, history]
@@ -76,7 +78,9 @@ export default function Home() {
           isSingleStep: true
         });
       } else {
-        setIsLoginModalOpen(true);
+        setLoginModalOpenNext(
+          `/new?identifier=${preprint.doi || preprint.arXivId}&tab=request`
+        );
       }
     },
     [user, history]
@@ -89,7 +93,9 @@ export default function Home() {
           preprint: omit(preprint, ['potentialAction'])
         });
       } else {
-        setIsLoginModalOpen(true);
+        setLoginModalOpenNext(
+          `/new?identifier=${preprint.doi || preprint.arXivId}`
+        );
       }
     },
     [user, history]
@@ -142,7 +148,7 @@ export default function Home() {
                 if (user) {
                   history.push('/new');
                 } else {
-                  setIsLoginModalOpen(true);
+                  setLoginModalOpenNext('/new');
                 }
               }}
               disabled={location.pathname === '/new'}
@@ -189,10 +195,11 @@ export default function Home() {
             </Modal>
           </PrivateRoute>
 
-          {isLoginModalOpen && (
+          {loginModalOpenNext && (
             <LoginRequiredModal
+              next={loginModalOpenNext}
               onClose={() => {
-                setIsLoginModalOpen(false);
+                setLoginModalOpenNext(null);
               }}
             />
           )}
