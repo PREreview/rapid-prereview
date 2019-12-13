@@ -109,6 +109,8 @@
   }
 
   & .barplot__question {
+    font: var(--ui-basic-font);
+    color: var(--ui-basic-font-color);
     width: 50%;
     text-align: left;
     padding: var(--xxsgrd) var(--xsgrd) var(--xxsgrd) var(--xsgrd);

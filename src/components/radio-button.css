@@ -84,6 +84,7 @@
   }
 
   & .radio-button__label {
+    font: var(--ui-basic-font);
     display: contents;
   }
 }

@@ -1,6 +1,7 @@
 .rapid-form-fragment {
   margin-top: var(--mgrd);
   & .rapid-form-fragment__divider {
+    width: 100%;
     border: none;
     border-top: 2px solid var(--ruling-color);
     margin: var(--mgrd) 0 var(--sgrd);
@@ -26,6 +27,7 @@
   }
 
   & .radid-form-fragment__question {
+    font: var(--ui-basic-font);
     width: 50%;
     margin: 0;
     padding-right: var(--sgrd);
@@ -41,6 +43,7 @@
   }
 
   & .radid-form-fragment__help {
+    font: var(--ui-basic-font);
     width: var(--mgrd) !important;
     height: var(--mgrd) !important;
     flex: 0 0 var(--mgrd);
@@ -83,6 +86,7 @@
     }
   }
   & .radid-form-fragment__text-question {
+    font: var(--ui-basic-font);
     display: block;
     margin-bottom: var(--xsgrd);
   }
