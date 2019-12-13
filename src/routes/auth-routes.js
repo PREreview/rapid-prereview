@@ -31,27 +31,7 @@ router.get(
       return;
     }
 
-    let roles;
-    try {
-      roles = await req.db.getRoles(req.user.hasRole);
-    } catch (err) {
-      req.log.error(
-        { err, user: req.user },
-        'ORCID callback: Error getting roles'
-      );
-    }
-
-    if (
-      roles &&
-      (!roles.every(
-        role => role.name && role.name && role.name !== unprefix(getId(role))
-      ) ||
-        !roles.every(role => role.avatar && role.avatar.contentUrl))
-    ) {
-      res.redirect('/settings');
-    } else {
-      res.redirect('/');
-    }
+    res.redirect('/');
   }
 );
 

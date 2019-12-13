@@ -26,7 +26,7 @@ describe('auth', function() {
 
     assert.equal(res.status, 302);
     const location = res.headers.get('location');
-    assert.equal(location, `${baseUrl}/settings`);
+    assert.equal(location, `${baseUrl}/`);
     const cookie = res.headers.raw()['set-cookie'][0];
     assert(cookie);
 
