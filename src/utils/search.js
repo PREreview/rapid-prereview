@@ -126,11 +126,11 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
 
   if (ui.has('sort')) {
     if (ui.get('sort') === 'new') {
-      // dateFirstActivity
+      // dateLastActivity
       api.set(
         'sort',
         JSON.stringify([
-          '-dateFirstActivity<number>',
+          '-dateLastActivity<number>',
           '-score<number>',
           '-datePosted<number>'
         ])
@@ -142,7 +142,7 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
         JSON.stringify([
           '-datePosted<number>',
           '-score<number>',
-          '-dateFirstActivity<number>'
+          '-dateLastActivity<number>'
         ])
       );
     }
@@ -153,7 +153,7 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
       JSON.stringify([
         '-score<number>',
         '-datePosted<number>',
-        '-dateFirstActivity<number>'
+        '-dateLastActivity<number>'
       ])
     );
   }

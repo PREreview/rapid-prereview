@@ -228,6 +228,10 @@
     color: var(--ui-basic-font-color--light);
   }
 
+  & .preprint-card__pub-date.preprint-card__pub-date--highlighted {
+    color: var(--ui-basic-font-color);
+  }
+
   & .preprint-card__info-row {
     box-sizing: border-box;
     padding: 0 var(--sgrd) var(--mgrd) var(--sgrd);
@@ -365,6 +369,11 @@
       color: var(--ui-basic-font-color--light);
       padding-right: var(--xxsgrd);
     }
+
+    & .preprint-card__days-ago.preprint-card__days-ago--highlighted {
+      color: var(--ui-basic-font-color);
+    }
+
   }
 
   & .preprint-card__count-badge {

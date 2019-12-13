@@ -46,6 +46,8 @@ export default function Home() {
   );
   const [results, fetchResultsProgress] = usePreprintSearchResults(apiQs);
 
+  const [hoveredSortOption, setHoveredSortOption] = useState(null);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [apiQs]);
@@ -197,11 +199,17 @@ export default function Home() {
 
           <SortOptions
             value={new URLSearchParams(location.search).get('sort') || 'score'}
+            onMouseEnterSortOption={sortOption => {
+              setHoveredSortOption(sortOption);
+            }}
+            onMouseLeaveSortOption={sortOption => {
+              setHoveredSortOption(null);
+            }}
             onChange={(
-              nextValue // `score` | `new` | `date`
+              nextSortOption // `score` | `new` | `date`
             ) => {
               const search = createPreprintQs(
-                { sort: nextValue },
+                { sort: nextSortOption },
                 location.search
               );
               history.push({
@@ -251,6 +259,7 @@ export default function Home() {
                     onNewRequest={handleNewRequest}
                     onNew={handleNew}
                     onNewReview={handleNewReview}
+                    hoveredSortOption={hoveredSortOption}
                   />
                 </li>
               ))}

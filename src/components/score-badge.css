@@ -58,6 +58,13 @@
   }
 }
 
+.score-badge.score-badge--highlighted {
+  color: var(--ui-basic-font-color);
+  & .score-badge__clock-svg__active-path {
+    stroke: var(--ui-basic-font-color)
+  }
+}
+
 @keyframes flicker {
   0% {
     top: 14px;

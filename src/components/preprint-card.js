@@ -37,6 +37,7 @@ export default function PreprintCard({
   onNewRequest,
   onNewReview,
   onNew,
+  hoveredSortOption,
   isNew = false
 }) {
   const [isOpened, setIsOpened] = useState(false);
@@ -72,6 +73,7 @@ export default function PreprintCard({
     onStartAnim,
     onStopAnim,
     dateFirstActivity,
+    dateLastActivity,
     isAnimating
   } = useAnimatedScore(safeActions);
 
@@ -100,8 +102,14 @@ export default function PreprintCard({
                 <ShellIcon className="preprint-card__title__shell-icon" />
               </XLink>
             </div>
+
             {!!datePosted && (
-              <span className="preprint-card__pub-date">
+              <span
+                className={classNames('preprint-card__pub-date', {
+                  'preprint-card__pub-date--highlighted':
+                    hoveredSortOption === 'date'
+                })}
+              >
                 {getFormattedDatePosted(datePosted)}
               </span>
             )}
@@ -197,6 +205,7 @@ export default function PreprintCard({
                   <div className="preprint-card__new-badge">new</div>
                 ) : (
                   <ScoreBadge
+                    isHighlighted={hoveredSortOption === 'score'}
                     now={now}
                     nRequests={nRequests}
                     nReviews={nReviews}
@@ -245,6 +254,7 @@ export default function PreprintCard({
                   <div className="preprint-card__count-label">
                     Request{nRequests > 1 ? 's' : ''}
                   </div>
+
                   {isAnimating && (
                     <span className="preprint-card__animation-time">
                       (
@@ -259,11 +269,17 @@ export default function PreprintCard({
               </button>
             </div>
             <div className="preprint-card__expansion-header__right">
-              <span className="preprint-card__days-ago">
-                Started{' '}
-                {formatDistanceStrict(new Date(dateFirstActivity), new Date())}{' '}
+              <span
+                className={classNames('preprint-card__days-ago', {
+                  'preprint-card__days-ago--highlighted':
+                    hoveredSortOption === 'new'
+                })}
+              >
+                Last active{' '}
+                {formatDistanceStrict(new Date(dateLastActivity), new Date())}{' '}
                 ago
               </span>
+
               <IconButton
                 className="preprint-card__expansion-toggle"
                 onClick={e => {
@@ -362,5 +378,6 @@ PreprintCard.propTypes = {
   onNewRequest: PropTypes.func.isRequired,
   onNewReview: PropTypes.func.isRequired,
   onNew: PropTypes.func.isRequired,
-  isNew: PropTypes.bool
+  isNew: PropTypes.bool,
+  hoveredSortOption: PropTypes.oneOf(['score', 'new', 'date'])
 };

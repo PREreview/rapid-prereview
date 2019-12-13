@@ -4,7 +4,15 @@ import classNames from 'classnames';
 import { getTimeScore } from '../utils/score';
 
 const ScoreBadge = React.forwardRef(function ScoreBadge(
-  { nRequests, nReviews, dateFirstActivity, now, isAnimating, ...others },
+  {
+    isHighlighted,
+    nRequests,
+    nReviews,
+    dateFirstActivity,
+    now,
+    isAnimating,
+    ...others
+  },
   ref
 ) {
   const timeScore = getTimeScore(dateFirstActivity, now);
@@ -53,7 +61,8 @@ const ScoreBadge = React.forwardRef(function ScoreBadge(
     <div
       ref={ref}
       className={classNames('score-badge', `score-badge--${statusClass}`, {
-        'score-badge--animating': isAnimating
+        'score-badge--animating': isAnimating,
+        'score-badge--highlighted': isHighlighted
       })}
       {...others}
     >
@@ -77,6 +86,8 @@ const ScoreBadge = React.forwardRef(function ScoreBadge(
 });
 
 ScoreBadge.propTypes = {
+  isHighlighted: PropTypes.bool,
+  isAnimating: PropTypes.bool,
   now: PropTypes.string,
   nRequests: PropTypes.number.isRequired,
   nReviews: PropTypes.number.isRequired,

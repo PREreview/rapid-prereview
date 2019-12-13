@@ -117,6 +117,8 @@ export function useAnimatedScore(actions, now = new Date().toISOString()) {
     nReviews,
     now: playedTime,
     dateFirstActivity: sorted[0] && sorted[0].startTime,
+    dateLastActivity:
+      sorted[sorted.length - 1] && sorted[sorted.length - 1].startTime,
     onStartAnim: handleStartAnim,
     onStopAnim: handleStopAnim,
     isAnimating: isAnimating
