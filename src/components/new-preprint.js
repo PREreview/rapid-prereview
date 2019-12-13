@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import identifiersArxiv from 'identifiers-arxiv';
 import doiRegex from 'doi-regex';
 import {
@@ -37,13 +37,15 @@ export default function NewPreprint({
   onViewInContext
 }) {
   const location = useLocation(); // location.state can be {preprint, tab, isSingleStep} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
+  const qs = new URLSearchParams(location.search);
 
   const isSingleStep = location.state && location.state.isSingleStep;
 
   const [identifier, setIdentifier] = useState(
-    (location.state &&
-      location.state.preprint &&
-      location.state.preprint.doi) ||
+    qs.get('identifier') ||
+      (location.state &&
+        location.state.preprint &&
+        location.state.preprint.doi) ||
       (location.state &&
         location.state.preprint &&
         location.state.preprint.arXivId) ||
@@ -164,6 +166,9 @@ function StepPreprint({
   fetchActionsProgress,
   resolvePreprintStatus
 }) {
+  const history = useHistory();
+  const location = useLocation();
+
   const [value, setValue] = useState(unprefix(identifier));
 
   const hasReviewed = checkIfHasReviewed(user, actions);
@@ -192,6 +197,13 @@ function StepPreprint({
           autoComplete="off"
           placeholder=""
           onChange={e => {
+            if (location.search) {
+              const qs = new URLSearchParams(location.search);
+              if (qs.get('identifier')) {
+                history.replace('/new');
+              }
+            }
+
             const value = e.target.value;
             const [arxivId] = identifiersArxiv.extract(value);
             let nextIdentifier;
