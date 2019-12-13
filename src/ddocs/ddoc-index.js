@@ -50,6 +50,7 @@ const ddoc = {
       reduce: '_count'
     }
   },
+
   indexes: {
     preprints: {
       analyzer: {
@@ -120,8 +121,8 @@ const ddoc = {
               : new Date('0000').getTime();
             index('datePosted', datePosted, { facet: true });
 
-            // date of first activity (`dateFirstActivity`)
-            var firstAction = actions
+            // dates used for sorting
+            var sortedActions = actions
               .filter(function(action) {
                 return action && action.startTime;
               })
@@ -130,11 +131,57 @@ const ddoc = {
                   new Date(a.startTime).getTime() -
                   new Date(b.startTime).getTime()
                 );
-              })[0];
+              });
+
+            var sortedReviewActions = sortedActions.filter(function(action) {
+              return action && action['@type'] === 'RapidPREreviewAction';
+            });
+
+            var sortedRequestActions = sortedActions.filter(function(action) {
+              return (
+                action && action['@type'] === 'RequestForRapidPREreviewAction'
+              );
+            });
+
+            var firstAction = sortedActions[0];
+            var lastAction = sortedActions[sortedActions.length - 1];
+            var firstReviewAction = sortedReviewActions[0];
+            var firstRequestAction = sortedRequestActions[0];
+
+            var lastReviewAction =
+              sortedReviewActions[sortedReviewActions.length - 1];
+            var lastRequestAction =
+              sortedRequestActions[sortedRequestActions.length - 1];
+
             var dateFirstActivity = firstAction
               ? new Date(firstAction.startTime).getTime()
               : new Date('0000').getTime();
             index('dateFirstActivity', dateFirstActivity);
+
+            var dateLastActivity = lastAction
+              ? new Date(lastAction.startTime).getTime()
+              : new Date('0000').getTime();
+            index('dateLastActivity', dateLastActivity);
+
+            var dateFirstReview = firstReviewAction
+              ? new Date(firstReviewAction.startTime).getTime()
+              : new Date('0000').getTime();
+            index('dateFirstReview', dateFirstReview);
+
+            var dateFirstRequest = firstRequestAction
+              ? new Date(firstRequestAction.startTime).getTime()
+              : new Date('0000').getTime();
+            index('dateFirstRequest', dateFirstRequest);
+
+            var dateLastReview = lastReviewAction
+              ? new Date(lastReviewAction.startTime).getTime()
+              : new Date('0000').getTime();
+            index('dateLastReview', dateLastReview);
+
+            var dateLastRequest = lastRequestAction
+              ? new Date(lastRequestAction.startTime).getTime()
+              : new Date('0000').getTime();
+            index('dateLastRequest', dateLastRequest);
 
             // reviewer and requester
             actions.forEach(function(action) {
