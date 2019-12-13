@@ -58,6 +58,7 @@ export default function ModerationCard({
           </span>
         </div>
       </div>
+
       <div className="moderation-card__text-answers">
         <dl className="moderation-card__text-answers-list">
           {textAnswers
@@ -107,7 +108,10 @@ export default function ModerationCard({
       <Collapse isOpened={isOpened}>
         <div className="moderation-card__expansion-content">
           {/* The moderation reason of each reporter */}
-          <PreprintPreview preprint={reviewAction.object} />
+          <PreprintPreview
+            preprint={reviewAction.object}
+            hyperlinkTitle={true}
+          />
 
           <h3 className="moderation-card__sub-title">User Reports</h3>
 

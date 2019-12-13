@@ -84,6 +84,7 @@ const ddoc = {
           // moderation
           var isReported = false;
           var isModerated = false;
+          var lastReportAction = null;
           if (doc.moderationAction) {
             // moderationAction are sorted so last of type wins
             for (var i = doc.moderationAction.length - 1; i >= 0; i--) {
@@ -103,10 +104,17 @@ const ddoc = {
                 moderationAction['@type'] === 'ReportRapidPREreviewAction'
               ) {
                 isReported = true;
+                lastReportAction = moderationAction;
                 break;
               }
             }
           }
+
+          var dateLastReport =
+            lastReportAction && lastReportAction.startTime
+              ? new Date(lastReportAction.startTime).getTime()
+              : new Date('0000').getTime();
+          index('dateLastReport', dateLastReport, { facet: true });
 
           index('isReported', isReported.toString(), {
             facet: true

@@ -220,7 +220,10 @@ export function createModerationQs({ bookmark }) {
     api.delete('bookmark');
   }
 
-  api.set('sort', JSON.stringify(['-startTime<number>']));
+  api.set(
+    'sort',
+    JSON.stringify(['-dateLastReport<number>', '-startTime<number>'])
+  );
   api.set('include_docs', true);
   api.set('limit', 10);
 

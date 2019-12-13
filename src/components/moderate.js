@@ -174,14 +174,16 @@ export default function Moderate() {
             results.rows.length < results.total_rows &&
             results.bookmark !== bookmark
           ) && (
-            <Button
-              onClick={e => {
-                e.preventDefault();
-                setBookmark(results.bookmark);
-              }}
-            >
-              More
-            </Button>
+            <div className="moderate__more">
+              <Button
+                onClick={e => {
+                  e.preventDefault();
+                  setBookmark(results.bookmark);
+                }}
+              >
+                More
+              </Button>
+            </div>
           )}
         </div>
       </section>

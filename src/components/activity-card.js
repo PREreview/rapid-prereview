@@ -49,6 +49,7 @@ export default function ActivityCard({ action }) {
         >
           <Value tagName="span">{action.object.name}</Value>
         </XLink>
+
         <div className="activity-card__server-info">
           <Value tagName="span" className="activity-card__server-name">
             {(action.object.preprintServer || {}).name}

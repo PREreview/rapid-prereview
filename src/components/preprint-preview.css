@@ -9,6 +9,7 @@
     align-items: baseline;
     margin-bottom: var(--sgrd);
   }
+
   & .preprint-preview__title {
     font: var(
       --ui-header-2-font
@@ -17,6 +18,7 @@
     margin: 0;
     text-transform: none; /* prevent inheritance of vertical position from extension context */
   }
+
   & .preprint-preview__date {
     font: var(--ui-header-2-font);
     color: var(--ui-basic-font-color--light);
@@ -42,4 +44,31 @@
     color: var(--ui-basic-font-color--light);
     white-space: nowrap;
   }
+
+  & .preprint-preview__hyperlink {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--ui-basic-font-color);
+
+    & .preprint-preview__shell-icon {
+      margin-left: var(--xxsgrd);
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      position: relative;
+      top: 2px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--link-color);
+      & .preprint-preview__shell-icon {
+        opacity: 0.6;
+      }
+    }
+  }
+
 }

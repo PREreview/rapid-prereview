@@ -16,4 +16,10 @@
     list-style: none;
     padding: 0;
   }
+
+
+  & .moderate__more {
+    display: flex;
+    justify-content: center;
+  }
 }

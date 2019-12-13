@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useMemo, useRef, useEffect } from 'react';
+import React, { Fragment, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 import classNames from 'classnames';
