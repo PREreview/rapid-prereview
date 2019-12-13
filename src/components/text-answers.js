@@ -96,8 +96,6 @@ TextAnswers.propTypes = {
       )
     })
   ).isRequired,
-  canBan: PropTypes.bool,
-  canModerate: PropTypes.bool,
   isModerationInProgress: PropTypes.bool,
   onModerate: PropTypes.func
 };

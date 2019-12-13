@@ -4,7 +4,7 @@ import { useDrag, useDrop } from 'react-dnd';
 import classNames from 'classnames';
 import { MdClear } from 'react-icons/md';
 import { MenuItem } from '@reach/menu-button';
-
+import { getId, arrayify } from '../utils/jsonld';
 import RoleBadge from './role-badge';
 import IconButton from './icon-button';
 
@@ -19,7 +19,15 @@ const HIGHLIGHTED_ROLE_TYPE = Symbol('dnd:highlighted-role-type');
  * Note: this is also a drop zone for the `HighlightedRoles`
  * so that dragged role can be dragged back
  */
-export function PotentialRoles({ roleIds = [], onRemoved }) {
+export function PotentialRoles({
+  role,
+  actions,
+  roleIds = [],
+  onRemoved,
+  onModerate,
+  canModerate,
+  isModerationInProgress
+}) {
   const [{ canDrop, isOver }, dropRef] = useDrop({
     accept: HIGHLIGHTED_ROLE_TYPE,
     collect: monitor => ({
@@ -39,31 +47,74 @@ export function PotentialRoles({ roleIds = [], onRemoved }) {
       {!roleIds.length && <p className="role-list__tip-text">No Reviewers</p>}
 
       <ul className="role-list__list">
-        {roleIds.map(roleId => (
-          <li key={roleId}>
-            <DraggableRoleBadge
-              type={POTENTIAL_ROLE_TYPE}
-              roleId={roleId}
-              onDropped={roleId => {
-                onRemoved(roleId);
-              }}
-            >
-              <MenuItem
-                onSelect={() => {
+        {roleIds.map(roleId => {
+          const action = actions.find(action => getId(action.agent) === roleId);
+
+          return (
+            <li key={roleId}>
+              <DraggableRoleBadge
+                type={POTENTIAL_ROLE_TYPE}
+                roleId={roleId}
+                onDropped={roleId => {
                   onRemoved(roleId);
                 }}
               >
-                Add to selection
-              </MenuItem>
-            </DraggableRoleBadge>
-          </li>
-        ))}
+                <MenuItem
+                  onSelect={() => {
+                    onRemoved(roleId);
+                  }}
+                >
+                  Add to selection
+                </MenuItem>
+
+                {!!canModerate && !!action && (
+                  <MenuItem
+                    disabled={
+                      isModerationInProgress ||
+                      arrayify(action.moderationAction).some(
+                        action =>
+                          action['@type'] === 'ReportRapidPREreviewAction' &&
+                          getId(action.agent) === getId(role)
+                      )
+                    }
+                    onSelect={() => {
+                      onModerate(getId(action));
+                    }}
+                  >
+                    Report Review
+                  </MenuItem>
+                )}
+              </DraggableRoleBadge>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
 }
 
 PotentialRoles.propTypes = {
+  role: PropTypes.object,
+  actions: PropTypes.arrayOf(
+    PropTypes.shape({
+      '@type': PropTypes.oneOf(['RapidPREreviewAction']).isRequired,
+      actionStatus: PropTypes.oneOf(['CompletedActionStatus']).isRequired,
+      agent: PropTypes.string.isRequired,
+      moderationAction: PropTypes.arrayOf(
+        PropTypes.shape({
+          '@type': PropTypes.oneOf([
+            // !! `ModerateRapidPREreviewAction` cannot be present reviews with it must be excluded upstream
+            'ReportRapidPREreviewAction',
+            'IgnoreReportRapidPREreviewAction'
+          ]).isRequired
+        })
+      )
+    })
+  ).isRequired,
+
+  canModerate: PropTypes.bool,
+  onModerate: PropTypes.func.isRequired,
+  isModerationInProgress: PropTypes.bool,
   onRemoved: PropTypes.func.isRequired,
   roleIds: PropTypes.arrayOf(PropTypes.string)
 };
@@ -110,7 +161,15 @@ DraggableRoleBadge.propTypes = {
  * Note: this is also a draggable so that dragged role can be dragged back to
  *`PotentialRoles`
  */
-export function HighlightedRoles({ roleIds = [], onRemoved }) {
+export function HighlightedRoles({
+  role,
+  actions,
+  roleIds = [],
+  onRemoved,
+  onModerate,
+  canModerate,
+  isModerationInProgress
+}) {
   const [{ canDrop, isOver }, dropRef] = useDrop({
     accept: POTENTIAL_ROLE_TYPE,
     collect: monitor => ({
@@ -135,25 +194,47 @@ export function HighlightedRoles({ roleIds = [], onRemoved }) {
         )}
       </p>
       <ul className="role-list__list">
-        {roleIds.map(roleId => (
-          <li key={roleId}>
-            <DraggableRoleBadge
-              type={HIGHLIGHTED_ROLE_TYPE}
-              roleId={roleId}
-              onDropped={roleId => {
-                onRemoved([roleId]);
-              }}
-            >
-              <MenuItem
-                onSelect={() => {
+        {roleIds.map(roleId => {
+          const action = actions.find(action => getId(action.agent) === roleId);
+
+          return (
+            <li key={roleId}>
+              <DraggableRoleBadge
+                type={HIGHLIGHTED_ROLE_TYPE}
+                roleId={roleId}
+                onDropped={roleId => {
                   onRemoved([roleId]);
                 }}
               >
-                Remove
-              </MenuItem>
-            </DraggableRoleBadge>
-          </li>
-        ))}
+                <MenuItem
+                  onSelect={() => {
+                    onRemoved([roleId]);
+                  }}
+                >
+                  Remove
+                </MenuItem>
+
+                {!!canModerate && !!action && (
+                  <MenuItem
+                    disabled={
+                      isModerationInProgress ||
+                      arrayify(action.moderationAction).some(
+                        action =>
+                          action['@type'] === 'ReportRapidPREreviewAction' &&
+                          getId(action.agent) === getId(role)
+                      )
+                    }
+                    onSelect={() => {
+                      onModerate(getId(action));
+                    }}
+                  >
+                    Report Review
+                  </MenuItem>
+                )}
+              </DraggableRoleBadge>
+            </li>
+          );
+        })}
       </ul>
       {roleIds.length ? (
         <IconButton
@@ -172,6 +253,26 @@ export function HighlightedRoles({ roleIds = [], onRemoved }) {
 }
 
 HighlightedRoles.propTypes = {
+  role: PropTypes.object,
+  actions: PropTypes.arrayOf(
+    PropTypes.shape({
+      '@type': PropTypes.oneOf(['RapidPREreviewAction']).isRequired,
+      actionStatus: PropTypes.oneOf(['CompletedActionStatus']).isRequired,
+      agent: PropTypes.string.isRequired,
+      moderationAction: PropTypes.arrayOf(
+        PropTypes.shape({
+          '@type': PropTypes.oneOf([
+            // !! `ModerateRapidPREreviewAction` cannot be present reviews with it must be excluded upstream
+            'ReportRapidPREreviewAction',
+            'IgnoreReportRapidPREreviewAction'
+          ]).isRequired
+        })
+      )
+    })
+  ).isRequired,
+  canModerate: PropTypes.bool,
+  onModerate: PropTypes.func.isRequired,
+  isModerationInProgress: PropTypes.bool,
   roleIds: PropTypes.arrayOf(PropTypes.string),
   onRemoved: PropTypes.func.isRequired
 };

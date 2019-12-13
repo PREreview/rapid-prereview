@@ -12,6 +12,7 @@ export default function ModerationModal({
   onCancel
 }) {
   const [frame, setFrame] = useState('submit');
+  const [moderationReason, setModerationReason] = useState('');
 
   const ref = useRef();
 
@@ -35,6 +36,10 @@ export default function ModerationModal({
               id="moderation-reason"
               name="moderationReason"
               rows="4"
+              value={moderationReason}
+              onChange={e => {
+                setModerationReason(e.target.value);
+              }}
             />
 
             <Controls error={moderationProgress.error}>
@@ -42,13 +47,23 @@ export default function ModerationModal({
                 Cancel
               </Button>
               <Button
-                disabled={moderationProgress.isActive}
+                disabled={
+                  moderationProgress.isActive ||
+                  !moderationReason ||
+                  !moderationReason.trim()
+                }
                 isWaiting={moderationProgress.isActive}
                 onClick={() => {
-                  const { value } = ref.current;
-                  onSubmit(value || undefined, () => {
-                    setFrame('success');
-                  });
+                  const sanitized = moderationReason
+                    ? moderationReason.trim()
+                    : moderationReason;
+
+                  onSubmit(
+                    sanitized || undefined /* convert '' to undefined*/,
+                    () => {
+                      setFrame('success');
+                    }
+                  );
                 }}
               >
                 Submit

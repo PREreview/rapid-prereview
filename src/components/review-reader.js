@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
 import isEqual from 'lodash/isEqual';
-import { MdInfoOutline } from 'react-icons/md';
 import classNames from 'classnames';
 import Barplot from './barplot';
 import { getId } from '../utils/jsonld';
@@ -84,6 +83,11 @@ const ReviewReader = React.memo(function ReviewReader({
               <h4 className="review-reader__sub-header">Reviewers</h4>
               <div className="review-reader__persona-selector">
                 <PotentialRoles
+                  role={role}
+                  actions={actions}
+                  canModerate={!!user}
+                  isModerationInProgress={isModerationInProgress}
+                  onModerate={onModerate}
                   roleIds={roleIds}
                   onRemoved={roleId => {
                     const nextHighlightedRoleIds = highlightedRoleIds.concat(
@@ -93,9 +97,15 @@ const ReviewReader = React.memo(function ReviewReader({
                     setHighlightedRoleIds(nextHighlightedRoleIds);
                   }}
                 />
+
                 <h4 className="review-reader__sub-header">Reviewers Filter</h4>
 
                 <HighlightedRoles
+                  role={role}
+                  actions={actions}
+                  canModerate={!!user}
+                  isModerationInProgress={isModerationInProgress}
+                  onModerate={onModerate}
                   roleIds={highlightedRoleIds}
                   onRemoved={ids => {
                     const nextHighlightedRoleIds = highlightedRoleIds.filter(
