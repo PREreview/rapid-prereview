@@ -58,8 +58,8 @@ export default function SortOptions({
                 : name === 'new'
                 ? 'Recently Active'
                 : isMobile
-                ? 'Date Published'
-                : 'Posted on Preprint Server'}
+                ? 'Date Posted'
+                : 'Preprint Server Post Date'}
             </label>
           </Tooltip>
 
