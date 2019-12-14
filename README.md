@@ -360,6 +360,9 @@ the databases)**.
 
 ##### Azure
 
+Visit https://portal.azure.com/ All the resources we used are defined in a
+`rapid-prereview` resource group.
+
 1. Install Azure CLI (see
    https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
 2. Run `az login` to login to the CLI
@@ -386,10 +389,8 @@ Some basic info about the service health can be found at https://rapid-prereview
 
 Backups are stored in a blob storage container on azure.
 
-- Install AzCopy see
-  https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10
-  (on a mac you can put the binary in `/usr/local/bin` so it's available in the
-  PATH.
-- run `azcopy login` to authenticate
-- run `npm run backup` **Be aware that this will source the production
+1. Install Azure CLI (see
+   https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
+2. Run `az login` to login to the CLI
+3. Run `npm run backup` **Be aware that this will source the production
   environment variables.**
