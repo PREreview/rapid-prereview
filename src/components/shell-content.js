@@ -29,6 +29,8 @@ import PreprintPreview from './preprint-preview';
 import XLink from './xlink';
 import ModerationModal from './moderation-modal';
 import { preprintify } from '../utils/preprints';
+import { checkIfRoleLacksMininmalData } from '../utils/roles';
+import NoticeBadge from './notice-badge';
 
 // !! this needs to work both in web and extension use
 // `process.env.IS_EXTENSION` to assess the environment we are in.
@@ -63,6 +65,8 @@ export default function ShellContent({
   const loginUrl = process.env.IS_EXTENSION
     ? '/login'
     : `/login?next=${encodeURIComponent(location.pathname)}`;
+
+  const showProfileNotice = checkIfRoleLacksMininmalData(role);
 
   return (
     <div className="shell-content">
@@ -137,7 +141,11 @@ export default function ShellContent({
         </nav>
 
         {user ? (
-          <UserBadge user={user} className="shell-content__user">
+          <UserBadge
+            className="shell-content__user"
+            user={user}
+            showNotice={showProfileNotice}
+          >
             <MenuLink
               as={process.env.IS_EXTENSION ? undefined : Link}
               to={process.env.IS_EXTENSION ? undefined : '/settings'}
@@ -148,7 +156,12 @@ export default function ShellContent({
               }
               target={process.env.IS_EXTENSION ? '_blank' : undefined}
             >
-              Profile Settings
+              {showProfileNotice ? 'Complete Profile' : 'Profile Settings'}
+              {showProfileNotice && (
+                <div className="menu__link-item__icon">
+                  <NoticeBadge />
+                </div>
+              )}
             </MenuLink>
 
             {user.isAdmin && (

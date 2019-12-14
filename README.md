@@ -378,7 +378,6 @@ variables.**
 
 Some basic info about the service health can be found at https://rapid-prereview-service.azurewebsites.net/
 
-
 #### Backups
 
 Backups are stored in a blob storage container on azure.
