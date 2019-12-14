@@ -332,6 +332,10 @@ Redis](https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/) to store:
 - session data
 - cached data for the payload of the public API.
 
+We use [Sendgrid (from the Azure
+marketplace)](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/SendGrid.SendGrid)
+for emails.
+
 #### Process
 
 ##### Cloudant

@@ -18,9 +18,10 @@ import { createCacheKey } from './middlewares/cache';
 
 const compiler = webpack(webpackConfig);
 
-const logger = pino({ level: 'fatal' });
+const logger = pino({ level: 'error' });
 
 const config = {
+  sendgridApiKey: null, // disable emails
   pino: logger,
   cache: true,
   disableSsr: true
