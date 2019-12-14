@@ -202,7 +202,7 @@ the same time as they will overwrite each other.** If you did:
    extension:watch` **OR** `npm run extension:watch-firefox`
 
 
-#### Production
+#### Production (publish to web stores)
 
 ##### Chrome
 
@@ -210,7 +210,7 @@ the same time as they will overwrite each other.** If you did:
 2. Set the `version` property of the `extension/manifest.json` file
 3. Run `npm run extension:build`
 4. Run `npm run extension:pack`
-5. Upload the created `extension.zip` file to the Chrome web store
+5. Upload the created `extension.zip` file to the [Chrome web store](https://chrome.google.com/webstore/developer/dashboard)
 
 ##### Firefox
 
@@ -218,7 +218,8 @@ the same time as they will overwrite each other.** If you did:
 2. Set the `version` property of the `extension/manifest.json` file
 3. Run `npm run extension:build-firefox`
 4. Run `npm run extension:pack-firefox`
-5. Upload the created `extension-firefox.zip` file to the Firefox web store
+5. Upload the created `extension-firefox.zip` file to the [Firefox web
+   store](https://addons.mozilla.org/en-US/developers/)
 
 
 Note: to include the unbundled source code of the extension (asked by Mozilla
