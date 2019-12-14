@@ -48,6 +48,8 @@ export default async function handleRegisterAction(
     }
   }
 
+  let isFirstTimeLogin = false;
+
   const docs = body
     .filter(entry => entry.ok && !entry.ok._deleted)
     .map(entry => entry.ok);
@@ -72,6 +74,8 @@ export default async function handleRegisterAction(
       }
     );
   } else {
+    isFirstTimeLogin = true;
+
     // First time a profile is created
     const anonRoleId = `role:${uuid.v4()}`;
     const publicRoleId = `role:${uuid.v4()}`;
@@ -153,7 +157,8 @@ export default async function handleRegisterAction(
       startTime: now,
       endTime: now,
       result: user,
-      resultRole: resultRoles
+      resultRole: resultRoles,
+      isFirstTimeLogin
     })
   );
 }

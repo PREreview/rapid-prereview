@@ -10,6 +10,7 @@ import parseQuery from '../middlewares/parse-query';
 import resolve from '../utils/resolve';
 import { cache, invalidate } from '../middlewares/cache';
 import parseApiKey from '../middlewares/parse-api-key';
+import { sendEmails } from '../utils/email';
 
 const jsonParser = bodyParser.json({ limit: '2mb' });
 
@@ -235,6 +236,19 @@ router.post(
     req.invalidate(body);
 
     res.json(body);
+
+    // email
+    const emailClient = req.app.get('emailClient');
+    if (emailClient) {
+      try {
+        await sendEmails(
+          { emailClient, redisClient: req.app.get('redisClient'), db: req.db },
+          body
+        );
+      } catch (err) {
+        req.log.error({ err }, 'error sending email');
+      }
+    }
   }
 );
 
