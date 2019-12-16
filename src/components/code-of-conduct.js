@@ -17,14 +17,14 @@ export default function CodeOfConduct() {
           ingredients that hold our project together include:
         </p>
         <ul>
-          <li>Be constructive</li>
-          <li>Be respectful</li>
-          <li>Be supportive</li>
+          <li>Be constructive;</li>
+          <li>Be respectful;</li>
+          <li>Be supportive.</li>
         </ul>	  
       <section>
         <h2 id="our-pledge">Our Pledge</h2>
         <p>
-          <Org /> provides a space for any researcher to provide rapid feedback
+          <Org /> provides a space for any researcher to give rapid feedback
           to outbreak-related preprints. In the interest of fostering an open and
           welcoming environment we, as contributors and maintainers, pledge to making
           participation in our project and our community a harassment-free experience
@@ -45,10 +45,9 @@ export default function CodeOfConduct() {
           behavior.{' '}
         </p>
         <p>
-          The <Org /> team has the right and responsibility to remove, edit, or
-          reject comments, and other contributions that are not aligned to this
-          Code of Conduct, or to temporarily or permanently ban any contributor
-          for other behaviors that they deem inappropriate, threatening,
+          The <Org /> team has the right and responsibility to remove contributions
+          that are not aligned to this Code of Conduct, or to temporarily or permanently
+          ban any contributor for other behaviors that they deem inappropriate, threatening,
           offensive, or harmful.{' '}
         </p>
       </section>
@@ -68,8 +67,8 @@ export default function CodeOfConduct() {
         </p>
         <ul>
 	  <li>
-	    Flagging a problematic rapid review and briefly explainining the reason for reporting
-	    the misconduct. This can be achieved by any platform use with an active account by
+	    Flagging a problematic rapid review and briefly explaining the reason for reporting
+	    the misconduct. This can be done by any platform user with an active account by
 	    clicking on the problematic rapid review author's avatar and selecting
             "Report Review"; 
           </li>
@@ -82,7 +81,7 @@ export default function CodeOfConduct() {
           <strong>
             <a href={CONTACT_EMAIL_HREF}>{unprefix(CONTACT_EMAIL_HREF)}</a>
           </strong>
-	  ;
+	  .
 	  </li> 
         </ul>
 
@@ -105,15 +104,15 @@ export default function CodeOfConduct() {
         </p>
 
         <ul>
-          <li>Using welcoming and inclusive language</li>
+          <li>Using welcoming and inclusive language;</li>
           <li>
             Providing feedback that is constructive, <em>i.e.</em>, useful to
-            the receiver (see more below)
+            the receiver (see more below);
           </li>
-          <li>Being respectful of differing viewpoints and experiences</li>
-          <li>Gracefully accepting constructive criticism</li>
-          <li>Focusing on what is best for the community</li>
-          <li>Showing empathy towards other community members</li>
+          <li>Being respectful of differing viewpoints and experiences;</li>
+          <li>Gracefully accepting constructive criticism;</li>
+          <li>Focusing on what is best for the community;</li>
+          <li>Showing empathy towards other community members.</li>
         </ul>
 
         <p>
@@ -157,37 +156,37 @@ export default function CodeOfConduct() {
         <p>
           In the context of this platform, a competing interest is anything that
           interferes with, or could reasonably be perceived as interfering with,
-          the objective rapid review of a preprint on <Org />.
+          the objective of a rapid review of a preprint on <Org />.
         </p>
 	<p>
 	  <strong>
 	    Examples of competing interests that would be considered a violation of
-            the <Org /> Code of Conduct if not disclosed include but are not limited to:
+            this Code of Conduct if not disclosed include, but are not limited to:
 	  </strong>
         </p>
 	 <ul>
 	  <li>
-           The author of the rapid review is an author of the reviewed preprint.
+           The author of the rapid review is an author of the reviewed preprint;
           </li>
           <li>
-	   The author of the rapid review has a personal relationship with the preprint
-           author(s) of the reviewed preprint.
+	   The author of the rapid review has a personal relationship with the
+           author(s) of the reviewed preprint;
           </li>
           <li>
            The author of the rapid review is a rival or competitor of the author(s) of the
-           reviewed preprint.
+           reviewed preprint;
           </li>
 	  <li>
            The author of the rapid review has recently worked in the same institution or
-           organization as the author(s) of the reviewed preprint.
+           organization as the author(s) of the reviewed preprint;
           </li>
 	  <li>
            The author of the rapid review is a collaborator of the author(s) of the
-           reviewed preprint.
+           reviewed preprint;
           </li>
 	  <li>
            The author of the rapid review has published with the author(s) of the reviewed
-           preprint during the last 5 years.
+           preprint during the last 5 years;
           </li>
 	  <li>
            The author of the rapid review holds a grant with the author(s) of the reviewed
@@ -206,7 +205,7 @@ export default function CodeOfConduct() {
             If you think that you have a potential competing interest with the authors, or
             the organization to which the author(s) is affiliated, please do
             disclose it in your review. A failure to disclose a competing
-            interest is considered a violation of the <Org /> Code of Conduct
+            interest is considered a violation of this Code of Conduct
             and will be treated accordingly.
           </strong>
         </p>
