@@ -1,5 +1,6 @@
 .text-answers {
   & .text-answers__question {
+    font: var(--ui-basic-font);
     margin: var(--sgrd);
   }
 
@@ -20,6 +21,7 @@
   }
 
   & .text-answers__response {
+    font: var(--ui-basic-font);
     border: 1px solid var(--ruling-color);
     border-radius: 2px;
     padding: var(--sgrd) var(--mgrd);

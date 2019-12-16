@@ -10,12 +10,13 @@ import { useRole } from '../hooks/api-hooks';
 import UserBadge from './user-badge';
 import XLink from './xlink';
 import NoticeBadge from './notice-badge';
+import { checkIfRoleLacksMininmalData } from '../utils/roles';
 
 export default function HeaderBar({ onClickMenuButton }) {
   const [user] = useUser();
   const [role] = useRole(user && user.defaultRole);
 
-  const showProfileNotice = true; // TODO @sballesteros - wire this
+  const showProfileNotice = checkIfRoleLacksMininmalData(role);
 
   return (
     <div className="header-bar">

@@ -13,6 +13,7 @@ import apiRoutes from './routes/api-routes';
 import addDb from './middlewares/add-db';
 import { createPassport } from './utils/orcid';
 import { createRedisClient } from './utils/redis';
+import { createSendgridEmailClient } from './utils/email';
 
 export function rapid(config = {}, redisClient) {
   const RedisStore = connectRedis(session);
@@ -22,6 +23,7 @@ export function rapid(config = {}, redisClient) {
   const app = express();
   app.locals.config = config;
   app.set('redisClient', redisClient || createRedisClient(config));
+  app.set('emailClient', createSendgridEmailClient(config));
 
   app.enable('case sensitive routing');
   app.set('views', path.join(path.dirname(__dirname), 'views'));

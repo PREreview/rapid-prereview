@@ -202,7 +202,7 @@ the same time as they will overwrite each other.** If you did:
    extension:watch` **OR** `npm run extension:watch-firefox`
 
 
-#### Production
+#### Production (publish to web stores)
 
 ##### Chrome
 
@@ -210,7 +210,7 @@ the same time as they will overwrite each other.** If you did:
 2. Set the `version` property of the `extension/manifest.json` file
 3. Run `npm run extension:build`
 4. Run `npm run extension:pack`
-5. Upload the created `extension.zip` file to the Chrome web store
+5. Upload the created `extension.zip` file to the [Chrome web store](https://chrome.google.com/webstore/developer/dashboard)
 
 ##### Firefox
 
@@ -218,7 +218,8 @@ the same time as they will overwrite each other.** If you did:
 2. Set the `version` property of the `extension/manifest.json` file
 3. Run `npm run extension:build-firefox`
 4. Run `npm run extension:pack-firefox`
-5. Upload the created `extension-firefox.zip` file to the Firefox web store
+5. Upload the created `extension-firefox.zip` file to the [Firefox web
+   store](https://addons.mozilla.org/en-US/developers/)
 
 
 Note: to include the unbundled source code of the extension (asked by Mozilla
@@ -332,6 +333,10 @@ Redis](https://docs.microsoft.com/en-us/azure/azure-cache-for-redis/) to store:
 - session data
 - cached data for the payload of the public API.
 
+We use [Sendgrid (from the Azure
+marketplace)](https://azuremarketplace.microsoft.com/en-us/marketplace/apps/SendGrid.SendGrid)
+for emails.
+
 #### Process
 
 ##### Cloudant
@@ -356,6 +361,9 @@ the databases)**.
 
 ##### Azure
 
+Visit https://portal.azure.com/ All the resources we used are defined in a
+`rapid-prereview` resource group.
+
 1. Install Azure CLI (see
    https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
 2. Run `az login` to login to the CLI
@@ -378,15 +386,12 @@ variables.**
 
 Some basic info about the service health can be found at https://rapid-prereview-service.azurewebsites.net/
 
-
 #### Backups
 
 Backups are stored in a blob storage container on azure.
 
-- Install AzCopy see
-  https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azcopy-v10
-  (on a mac you can put the binary in `/usr/local/bin` so it's available in the
-  PATH.
-- run `azcopy login` to authenticate
-- run `npm run backup` **Be aware that this will source the production
+1. Install Azure CLI (see
+   https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest)
+2. Run `az login` to login to the CLI
+3. Run `npm run backup` **Be aware that this will source the production
   environment variables.**

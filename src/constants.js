@@ -252,6 +252,8 @@ export const TOGGLE_SHELL_TAB = 'TOGGLE_SHELL_TAB';
 export const HISTORY_STATE_UPDATED = 'HISTORY_STATE_UPDATED';
 
 export const CONTACT_EMAIL_HREF = 'mailto:outbreaksci@prereview.org';
+export const SENDER_EMAIL_HREF = 'mailto:notifications@prereview.org';
+
 export const PRODUCTION_DOMAIN = 'https://outbreaksci.prereview.org'; // 'https://rapid-prereview.azurewebsites.net';
 
 export const CSS_HEADER_HEIGHT = 72;

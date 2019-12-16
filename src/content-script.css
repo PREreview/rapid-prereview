@@ -46,3 +46,5 @@
 @import './components/settings-roles.css';
 @import './components/suspense-loading.css';
 @import './components/moderation-modal.css';
+@import './components/notice-box.css';
+@import './components/notice-badge.css';
