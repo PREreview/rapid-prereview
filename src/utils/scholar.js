@@ -11,6 +11,8 @@ import { unversionDoi } from './ids';
  */
 export function parseGoogleScholar(head, { id, sourceUrl } = {}) {
   if (id == null) {
+    // TODO? consider using https://www.npmjs.com/package/get-dois if we come
+    // accross cases where some preprint servers use other tag for the identifier
     const $id =
       head.querySelector('meta[name="citation_arxiv_id"][content]') ||
       head.querySelector('meta[property="citation_arxiv_id"][content]') ||
