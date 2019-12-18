@@ -79,3 +79,23 @@
     margin-top: var(--mgrd);
   }
 }
+
+.shell-content-read,
+.shell-content-review,
+.shell-content-request {
+  animation-name: open-tab;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-out;
+}
+
+@keyframes open-tab {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--mgrd));
+  }
+  100% {
+    opacity: 100%;
+    transform: translateY(0px);
+  }
+}

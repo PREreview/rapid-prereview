@@ -6,7 +6,8 @@
   height: var(--lgrd);
   width: var(--lgrd);
   cursor: pointer;
-  /*flex: 0 0 var(--lgrd);*/
+  box-shadow: none;
+  border-radius: none;
 
   &:focus {
     outline: none;
