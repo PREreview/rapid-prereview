@@ -37,6 +37,9 @@ export default function HeaderBar({ onClickMenuButton }) {
       </div>
 
       <div className="header-bar__right">
+        <Link className="header-bar__nav-item" to="/about">
+          About
+        </Link>
         <Link className="header-bar__nav-item" to="/code-of-conduct">
           Code of Conduct
         </Link>

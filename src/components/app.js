@@ -18,6 +18,7 @@ import PrivateRoute, { AdminRoute } from './private-route';
 import ModeratorRoute from './moderator-route';
 import ExtensionSplash from './extension-splash';
 import ToCPage from './toc-page';
+import About from './about';
 import CodeOfConduct from './code-of-conduct';
 import NotFound from './not-found';
 import API from './api';
@@ -47,6 +48,12 @@ export default function App({ user }) {
                 </Route>
                 <Route exact={true} path="/login">
                   <Login />
+                </Route>
+
+                <Route exact={true} path="/about">
+                  <ToCPage>
+                    <About />
+                  </ToCPage>
                 </Route>
 
                 <Route exact={true} path="/code-of-conduct">

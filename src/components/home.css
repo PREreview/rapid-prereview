@@ -30,7 +30,7 @@
   & .home__content {
     background: white;
     min-height: 100vh;
-    padding: var(--sgrd);
+    padding: var(--mgrd) var(--sgrd);
     flex: 0 0 var(--middle-column-default-width);
     width: var(--middle-column-default-width);
     max-width: calc(100vw - var(--left-panel-min-width));

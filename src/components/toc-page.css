@@ -21,7 +21,7 @@
   & .toc-page__body {
     background: white;
     min-height: calc(100vh - var(--header-bar-height) - 2 * var(--lgrd));
-    padding: var(--sgrd);
+    padding: var(--mgrd);
     flex: 0 0 var(--middle-column-default-width);
     width: var(--middle-column-default-width);
     max-width: calc(100vw - var(--left-panel-min-width));
@@ -72,6 +72,7 @@
 
       & li {
         color: var(--ui-basic-font-color);
+        margin-bottom: var(--xsgrd);
       }
     }
 
