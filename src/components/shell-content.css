@@ -62,7 +62,7 @@
 }
 
 .shell-content__body {
-  padding: 64px var(--sgrd) var(--sgrd) var(--sgrd);
+  padding: 64px var(--sgrd) var(--lgrd) var(--sgrd);
 }
 
 .shell-content-read__title,

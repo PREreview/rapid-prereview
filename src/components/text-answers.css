@@ -1,7 +1,11 @@
 .text-answers {
   & .text-answers__question {
-    font: var(--ui-basic-font);
-    margin: var(--sgrd);
+    font: var(--ui-basic-font--large);
+    font-weight: 600;
+    margin: var(--lgrd) 0 var(--sgrd);
+    padding-bottom: var(--xsgrd);
+    display: block;
+    border-bottom: 2px solid var(--ruling-color);
   }
 
   & .text-answers__response-row {

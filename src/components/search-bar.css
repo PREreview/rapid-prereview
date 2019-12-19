@@ -20,6 +20,8 @@
     box-shadow: none;
     margin-top: var(--header-bar-height);
     top: 0;
+    height: auto;
+    padding: var(--mgrd) 0;
   }
 
   /* the spacers are used to align the search box with the main content width */

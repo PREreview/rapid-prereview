@@ -529,6 +529,7 @@ function ShellContentReview({
         <Controls error={error}>
           <Button
             type="submit"
+            primary="true"
             isWaiting={isPosting}
             disabled={disabled || !canSubmit}
             onClick={() => {
@@ -582,6 +583,7 @@ function ShellContentRequest({
 
       <Controls error={error}>
         <Button
+          primary={true}
           isWaiting={isPosting}
           disabled={disabled}
           onClick={() => {
