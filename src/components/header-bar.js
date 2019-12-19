@@ -11,12 +11,14 @@ import UserBadge from './user-badge';
 import XLink from './xlink';
 import NoticeBadge from './notice-badge';
 import { checkIfRoleLacksMininmalData } from '../utils/roles';
+import { useIsMobile } from '../hooks/ui-hooks';
 
 export default function HeaderBar({ onClickMenuButton }) {
   const [user] = useUser();
   const [role] = useRole(user && user.defaultRole);
 
   const showProfileNotice = checkIfRoleLacksMininmalData(role);
+  const isMobile = useIsMobile();
 
   return (
     <div className="header-bar">
@@ -41,10 +43,14 @@ export default function HeaderBar({ onClickMenuButton }) {
           About
         </Link>
         <Link className="header-bar__nav-item" to="/code-of-conduct">
-          Code of Conduct
+          {isMobile ? (
+            <abbr title="Code of Conduct">CoC</abbr>
+          ) : (
+            <span>Code of Conduct</span>
+          )}
         </Link>
         <Link className="header-bar__nav-item" to="/app">
-          App
+          Extension
         </Link>
         <Link className="header-bar__nav-item" to="/api">
           API

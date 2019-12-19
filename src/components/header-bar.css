@@ -18,6 +18,12 @@
     padding-left: var(--sgrd);
   }
 
+  & .rapid-pre-review-logo {
+    @media (--mobile) {
+      height: var(--lgrd);
+    }
+  }
+
   & .header-bar__give-feedback {
     position: fixed;
     font: var(--ui-basic-font);
@@ -83,18 +89,16 @@
     white-space: nowrap;
     line-height: 0;
 
+    & abbr {
+      text-decoration: none;
+    }
     &:last-child {
       margin-right: 0;
     }
 
-    &.header-bar__nav-item--extension {
-      /* hide extension option on mobile */
-      @media (--mobile-portrait) {
-        display: none;
-      }
-      @media (--mobile-landscape) {
-        display: none;
-      }
+    @media (--mobile) {
+      font: var(--ui-header-menu-font--small);
+      margin-right: var(--sgrd);
     }
   }
 }
