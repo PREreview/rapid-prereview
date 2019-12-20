@@ -34,7 +34,10 @@ export function useAnimatedScore(actions, now = new Date().toISOString()) {
 
   useEffect(() => {
     if (index !== null && index < sorted.length) {
-      const totalAnimTime = Math.min(sorted.length * 100, 600);
+      const totalAnimTime = Math.max(
+        Math.min(sorted.length * 100, 10000),
+        10000
+      );
 
       let timeout;
       if (prettify) {
@@ -119,6 +122,10 @@ export function useAnimatedScore(actions, now = new Date().toISOString()) {
     dateFirstActivity: sorted[0] && sorted[0].startTime,
     dateLastActivity:
       sorted[sorted.length - 1] && sorted[sorted.length - 1].startTime,
+    lastActionType:
+      sorted[sorted.length - 1] && sorted[sorted.length - 1]['@type'],
+    dateLastReview: getDateLastReview(sorted),
+    dateLastRequest: getDateLastRequest(sorted),
     onStartAnim: handleStartAnim,
     onStopAnim: handleStopAnim,
     isAnimating: isAnimating
@@ -141,4 +148,22 @@ function getNRequests(actions) {
     }
     return count;
   }, 0);
+}
+
+function getDateLastRequest(sorted) {
+  if (!sorted) return;
+  for (let i = sorted.length - 1; i >= 0; i--) {
+    if (sorted[i]['@type'] === 'RequestForRapidPREreviewAction') {
+      return sorted[i].startTime;
+    }
+  }
+}
+
+function getDateLastReview(sorted) {
+  if (!sorted) return;
+  for (let i = sorted.length - 1; i >= 0; i--) {
+    if (sorted[i]['@type'] === 'RapidPREreviewAction') {
+      return sorted[i].startTime;
+    }
+  }
 }

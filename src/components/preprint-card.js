@@ -37,6 +37,7 @@ export default function PreprintCard({
   onNewRequest,
   onNewReview,
   onNew,
+  sortOption,
   hoveredSortOption,
   isNew = false
 }) {
@@ -74,8 +75,20 @@ export default function PreprintCard({
     onStopAnim,
     dateFirstActivity,
     dateLastActivity,
+    lastActionType,
+    dateLastReview,
+    dateLastRequest,
     isAnimating
   } = useAnimatedScore(safeActions);
+
+  const agoData = getAgoData(
+    sortOption,
+    hoveredSortOption,
+    lastActionType,
+    dateLastReview,
+    dateLastRequest,
+    dateLastActivity
+  );
 
   return (
     <Fragment>
@@ -272,14 +285,15 @@ export default function PreprintCard({
               <span
                 className={classNames('preprint-card__days-ago', {
                   'preprint-card__days-ago--highlighted':
-                    hoveredSortOption === 'new'
+                    hoveredSortOption === 'new' ||
+                    hoveredSortOption === 'reviewed' ||
+                    hoveredSortOption === 'requested'
                 })}
               >
                 <span className="preprint-card__days-ago__prefix">
-                  Last active{' '}
+                  Last {agoData.verb}{' '}
                 </span>
-                {formatDistanceStrict(new Date(dateLastActivity), new Date())}{' '}
-                ago
+                {formatDistanceStrict(new Date(agoData.date), new Date())} ago
               </span>
 
               <IconButton
@@ -381,5 +395,62 @@ PreprintCard.propTypes = {
   onNewReview: PropTypes.func.isRequired,
   onNew: PropTypes.func.isRequired,
   isNew: PropTypes.bool,
-  hoveredSortOption: PropTypes.oneOf(['score', 'new', 'date'])
+  sortOption: PropTypes.oneOf([
+    'score',
+    'new',
+    'reviewed',
+    'requested',
+    'date'
+  ]),
+  hoveredSortOption: PropTypes.oneOf([
+    'score',
+    'new',
+    'reviewed',
+    'requested',
+    'date'
+  ])
 };
+
+function getAgoData(
+  sortOption,
+  hoveredSortOption,
+  lastActionType,
+  dateLastReview,
+  dateLastRequest,
+  dateLastActivity
+) {
+  const option = hoveredSortOption || sortOption;
+
+  switch (option) {
+    case 'new':
+    case 'score':
+    case 'date':
+      return {
+        verb:
+          lastActionType === 'RapidPREreviewAction' ? 'reviewed' : 'requested',
+        date: dateLastActivity
+      };
+
+    case 'reviewed':
+      return dateLastReview
+        ? {
+            verb: 'reviewed',
+            date: dateLastReview
+          }
+        : {
+            verb: 'requested',
+            date: dateLastRequest
+          };
+
+    case 'requested':
+      return dateLastRequest
+        ? {
+            verb: 'requested',
+            date: dateLastRequest
+          }
+        : {
+            verb: 'reviewed',
+            date: dateLastReview
+          };
+  }
+}

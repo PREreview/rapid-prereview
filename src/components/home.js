@@ -134,6 +134,7 @@ export default function Home() {
         >
           <Facets
             counts={results.counts}
+            ranges={results.ranges}
             isFetching={fetchResultsProgress.isActive}
           />
         </LeftSidePanel>
@@ -267,6 +268,10 @@ export default function Home() {
                     onNew={handleNew}
                     onNewReview={handleNewReview}
                     hoveredSortOption={hoveredSortOption}
+                    sortOption={
+                      new URLSearchParams(location.search).get('sort') ||
+                      'score'
+                    }
                   />
                 </li>
               ))}

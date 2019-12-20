@@ -6,7 +6,7 @@ import { DISEASES } from '../constants';
 import Checkbox from './checkbox';
 import { createPreprintQs } from '../utils/search';
 
-export default function Facets({ counts = {}, isFetching }) {
+export default function Facets({ counts = {}, ranges = {}, isFetching }) {
   const history = useHistory();
   const location = useLocation();
 
@@ -51,96 +51,133 @@ export default function Facets({ counts = {}, isFetching }) {
 
           <li className="facets__list-item">
             <Checkbox
+              label={
+                <span className="facets__facet-label">
+                  With at least {qs.get('minimumReviews') || 3} Reviews{' '}
+                  <Count
+                    value={(ranges.nReviews || {}).minimum || 0}
+                    isFetching={isFetching}
+                  />
+                </span>
+              }
+              type="checkbox"
+              inputId="counts-minimumReviews"
+              name="nReviews"
+              disabled={
+                isFetching || ((ranges.nReviews || {}).minimum || 0) === 0
+              }
+              checked={qs.has('minimumReviews')}
+              onChange={e => {
+                const search = createPreprintQs(
+                  {
+                    nReviews: e.target.checked ? 3 : null
+                  },
+                  location.search
+                );
+
+                history.push({
+                  pathname: location.pathname,
+                  search
+                });
+              }}
+            />
+          </li>
+
+          {/*
+              <li className="facets__list-item">
+              <Checkbox
               inputId="counts-reviews-false"
               name="hasNoReview"
               disabled={isFetching || !(counts.hasReviews || {}).false}
               label={
-                <span className="facets__facet-label">
-                  Without Reviews{' '}
-                  <Count
-                    value={(counts.hasReviews || {}).false || 0}
-                    isFetching={isFetching}
-                  />
-                </span>
+              <span className="facets__facet-label">
+              Without Reviews{' '}
+              <Count
+              value={(counts.hasReviews || {}).false || 0}
+              isFetching={isFetching}
+              />
+              </span>
               }
               checked={qs.get('reviews') === 'false'}
               onChange={e => {
-                const search = createPreprintQs(
-                  {
-                    hasReviews: e.target.checked ? false : null
-                  },
-                  location.search
-                );
+              const search = createPreprintQs(
+              {
+              hasReviews: e.target.checked ? false : null
+              },
+              location.search
+              );
 
-                history.push({
-                  pathname: location.pathname,
-                  search
-                });
+              history.push({
+              pathname: location.pathname,
+              search
+              });
               }}
-            />
-          </li>
+              />
+              </li>*/}
 
-          <li className="facets__list-item">
-            <Checkbox
+          {/*
+              <li className="facets__list-item">
+              <Checkbox
               inputId="counts-requests"
               name="hasRequests"
               label={
-                <span className="facets__facet-label">
-                  With Requests{' '}
-                  <Count
-                    value={(counts.hasRequests || {}).true || 0}
-                    isFetching={isFetching}
-                  />
-                </span>
+              <span className="facets__facet-label">
+              With Requests{' '}
+              <Count
+              value={(counts.hasRequests || {}).true || 0}
+              isFetching={isFetching}
+              />
+              </span>
               }
               disabled={isFetching || !(counts.hasRequests || {}).true}
               checked={qs.get('requests') === 'true'}
               onChange={e => {
-                const search = createPreprintQs(
-                  {
-                    hasRequests: e.target.checked || null
-                  },
-                  location.search
-                );
+              const search = createPreprintQs(
+              {
+              hasRequests: e.target.checked || null
+              },
+              location.search
+              );
 
-                history.push({
-                  pathname: location.pathname,
-                  search
-                });
+              history.push({
+              pathname: location.pathname,
+              search
+              });
               }}
-            />
-          </li>
+              />
+              </li>*/}
 
-          <li className="facets__list-item">
-            <Checkbox
+          {/*
+              <li className="facets__list-item">
+              <Checkbox
               inputId="counts-requests-false"
               name="hasNoRequest"
               label={
-                <span className="facets__facet-label">
-                  Without Requests{' '}
-                  <Count
-                    value={(counts.hasRequests || {}).false || 0}
-                    isFetching={isFetching}
-                  />
-                </span>
+              <span className="facets__facet-label">
+              Without Requests{' '}
+              <Count
+              value={(counts.hasRequests || {}).false || 0}
+              isFetching={isFetching}
+              />
+              </span>
               }
               disabled={isFetching || !(counts.hasRequests || {}).false}
               checked={qs.get('requests') === 'false'}
               onChange={e => {
-                const search = createPreprintQs(
-                  {
-                    hasRequests: e.target.checked ? false : null
-                  },
-                  location.search
-                );
+              const search = createPreprintQs(
+              {
+              hasRequests: e.target.checked ? false : null
+              },
+              location.search
+              );
 
-                history.push({
-                  pathname: location.pathname,
-                  search
-                });
+              history.push({
+              pathname: location.pathname,
+              search
+              });
               }}
-            />
-          </li>
+              />
+              </li>*/}
 
           <li className="facets__list-item">
             <Checkbox
@@ -267,6 +304,11 @@ export default function Facets({ counts = {}, isFetching }) {
 
 Facets.propTypes = {
   isFetching: PropTypes.bool,
+  ranges: PropTypes.shape({
+    nReviews: PropTypes.shape({
+      minimum: PropTypes.number
+    })
+  }),
   counts: PropTypes.shape({
     hasReviews: PropTypes.oneOfType([
       PropTypes.number, // 0

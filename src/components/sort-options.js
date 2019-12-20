@@ -15,7 +15,7 @@ export default function SortOptions({
 
   return (
     <div className="sort-options">
-      {['score', 'new', 'date'].map(name => (
+      {['score', 'reviewed', 'requested', 'date'].map(name => (
         <div
           key={name}
           className={classNames('sort-options__item', {
@@ -27,6 +27,7 @@ export default function SortOptions({
             id={`sort-options-${name}`}
             name={name}
             value={name}
+            disabled={name === value}
             checked={name === value}
             onChange={e => {
               const sortOption = e.target.value;
@@ -42,6 +43,10 @@ export default function SortOptions({
                 ? 'trending score (number of reviews and requests divided by time elapsed since first activity)'
                 : name === 'new'
                 ? 'date of last activity'
+                : name === 'reviewed'
+                ? 'date of latest review'
+                : name === 'requested'
+                ? 'date of latest request for reviews'
                 : 'date posted on preprint server'
             }`}
           >
@@ -62,16 +67,26 @@ export default function SortOptions({
               {name === 'score'
                 ? 'Trending'
                 : name === 'new'
-                ? 'Recently Active'
+                ? isMobile
+                  ? 'Active'
+                  : 'Recently Active'
+                : name === 'reviewed'
+                ? isMobile
+                  ? 'Reviewed'
+                  : 'Recently Reviewed'
+                : name === 'requested'
+                ? isMobile
+                  ? 'Requested'
+                  : 'Recently Requested'
                 : isMobile
-                ? 'Date Posted'
-                : 'Preprint Server Post Date'}
+                ? 'Published'
+                : 'Date Published'}
             </label>
           </Tooltip>
 
           <MdArrowUpward
             className={classNames('sort-options__icon', {
-              'sort-options__icon--hidden': name !== value
+              'sort-options__icon--selected': name === value
             })}
           />
         </div>
@@ -82,7 +97,7 @@ export default function SortOptions({
 
 SortOptions.propTypes = {
   onChange: PropTypes.func.isRequired,
-  value: PropTypes.oneOf(['score', 'new', 'date']),
+  value: PropTypes.oneOf(['score', 'reviewed', 'requested', 'new', 'date']),
   onMouseEnterSortOption: PropTypes.func.isRequired,
   onMouseLeaveSortOption: PropTypes.func.isRequired
 };

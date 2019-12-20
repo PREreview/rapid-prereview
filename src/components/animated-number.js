@@ -7,14 +7,13 @@ export default function AnimatedNumber({ value, isAnimating }) {
 
   return (
     <div className="animated-number">
-      {!!(isAnimating && value !== previousValue && value !== 0) && (
+      {!!(isAnimating && value !== previousValue) && (
         <div className="animated-number__bg" />
       )}
       <span
         className={classNames('animated-number__value', {
           'animated-number__value--animating':
-            (value !== previousValue && isAnimating) ||
-            (isAnimating && value !== 0)
+            value !== previousValue && isAnimating
         })}
       >
         {value}

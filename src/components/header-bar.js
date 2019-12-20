@@ -49,7 +49,7 @@ export default function HeaderBar({ onClickMenuButton }) {
             <span>Code of Conduct</span>
           )}
         </Link>
-        <Link className="header-bar__nav-item" to="/app">
+        <Link className="header-bar__nav-item" to="/extension">
           Extension
         </Link>
         <Link className="header-bar__nav-item" to="/api">

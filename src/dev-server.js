@@ -40,6 +40,8 @@ feed.on('sync', (seq, preprint) => {
   redisClient
     .batch()
     .del(createCacheKey('home:score'))
+    .del(createCacheKey('home:reviewed'))
+    .del(createCacheKey('home:requested'))
     .del(createCacheKey('home:new'))
     .del(createCacheKey('home:date'))
     .exec(err => {
@@ -93,6 +95,8 @@ const intervalId = setIntervalAsync(async () => {
   redisClient
     .batch()
     .del(createCacheKey('home:score'))
+    .del(createCacheKey('home:reviewed'))
+    .del(createCacheKey('home:requested'))
     .del(createCacheKey('home:new'))
     .del(createCacheKey('home:date'))
     .exec(err => {

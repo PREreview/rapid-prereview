@@ -44,7 +44,7 @@ export default function WelcomeModal(props) {
             <Button pill={true} primary={true} onClick={props.onClose}>
               Get Started
             </Button>
-            <Link className="welcome-modal__get-app" to="/app">
+            <Link className="welcome-modal__get-app" to="/extension">
               Get Extension
             </Link>
           </div>

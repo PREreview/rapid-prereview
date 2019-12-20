@@ -71,7 +71,7 @@ export default function App({ user }) {
                 <Route exact={true} path="/about/:roleId">
                   <Profile />
                 </Route>
-                <Route exact={true} path="/app">
+                <Route exact={true} path="/extension">
                   <ExtensionSplash />
                 </Route>
                 <PrivateRoute exact={true} path="/settings">

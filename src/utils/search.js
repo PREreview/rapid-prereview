@@ -7,6 +7,7 @@ export function createPreprintQs(
     text,
     // facets
     hasReviews,
+    nReviews,
     hasRequests,
     hasData,
     hasCode,
@@ -29,6 +30,12 @@ export function createPreprintQs(
     ui.set('reviews', hasReviews);
   } else if (hasReviews === null) {
     ui.delete('reviews');
+  }
+
+  if (nReviews != null) {
+    ui.set('minimumReviews', nReviews);
+  } else if (nReviews === null) {
+    ui.delete('minimumReviews');
   }
 
   // With and without requests
@@ -103,6 +110,9 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   if (ui.has('reviews')) {
     anded.push(`hasReviews:${ui.get('reviews')}`);
   }
+  if (ui.has('minimumReviews')) {
+    anded.push(`nReviews:[${ui.get('minimumReviews')} TO Infinity]`);
+  }
   if (ui.has('requests')) {
     anded.push(`hasRequests:${ui.get('requests')}`);
   }
@@ -131,6 +141,26 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
         'sort',
         JSON.stringify([
           '-dateLastActivity<number>',
+          '-score<number>',
+          '-datePosted<number>'
+        ])
+      );
+    } else if (ui.get('sort') === 'reviewed') {
+      // dateLastReview
+      api.set(
+        'sort',
+        JSON.stringify([
+          '-dateLastReview<number>',
+          '-score<number>',
+          '-datePosted<number>'
+        ])
+      );
+    } else if (ui.get('sort') === 'requested') {
+      // dateLastReview
+      api.set(
+        'sort',
+        JSON.stringify([
+          '-dateLastRequest<number>',
           '-score<number>',
           '-datePosted<number>'
         ])
@@ -168,6 +198,14 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
       'hasRequests',
       'subjectName'
     ])
+  );
+  api.set(
+    'ranges',
+    JSON.stringify({
+      nReviews: {
+        minimum: `[${ui.get('minimumReviews') || 3} TO Infinity]`
+      }
+    })
   );
 
   api.set('limit', 10);

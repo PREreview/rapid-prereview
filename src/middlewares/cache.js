@@ -218,6 +218,8 @@ export function invalidate() {
             batch.del(createCacheKey(action));
             batch.del(createCacheKey(`activity:${getId(action.agent)}`));
             batch.del(createCacheKey('home:score'));
+            batch.del(createCacheKey('home:reviewed'));
+            batch.del(createCacheKey('home:requested'));
             batch.del(createCacheKey('home:new'));
             batch.del(createCacheKey('home:date'));
             batch.del(createCacheKey(action.object));
