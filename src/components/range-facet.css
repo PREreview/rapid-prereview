@@ -35,6 +35,11 @@
       width: 100%;
       align-items: flex-end;
       background-color: var(--xlight-grey);
+      transition: height 0.3s;
+    }
+
+    & .range-facet__count-filler {
+      transition: height 0.3s;
     }
 
     &.range-facet__label--na {

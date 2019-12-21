@@ -8,6 +8,7 @@ export function createPreprintQs(
     // facets
     hasReviews,
     nReviews,
+    nRequests,
     hasRequests,
     hasData,
     hasCode,
@@ -36,6 +37,12 @@ export function createPreprintQs(
     ui.set('minimumReviews', nReviews);
   } else if (nReviews === null) {
     ui.delete('minimumReviews');
+  }
+
+  if (nRequests != null) {
+    ui.set('minimumRequests', nRequests);
+  } else if (nRequests === null) {
+    ui.delete('minimumRequests');
   }
 
   // With and without requests
@@ -115,6 +122,9 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   }
   if (ui.has('requests')) {
     anded.push(`hasRequests:${ui.get('requests')}`);
+  }
+  if (ui.has('minimumRequests')) {
+    anded.push(`nRequests:[${ui.get('minimumRequests')} TO Infinity]`);
   }
   if (ui.has('data')) {
     anded.push(`hasData:${ui.get('data')}`);
@@ -204,7 +214,6 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
     'ranges',
     JSON.stringify({
       nReviews: {
-        minimum: `[${ui.get('minimumReviews') || 3} TO Infinity]`,
         '1+': '[1 TO Infinity]',
         '2+': '[2 TO Infinity]',
         '3+': '[3 TO Infinity]',

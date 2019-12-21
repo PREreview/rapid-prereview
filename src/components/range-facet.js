@@ -1,16 +1,54 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Tooltip from '@reach/tooltip';
 
 export default function RangeFacet({
   type,
-  range = { '1+': 0, '2+': 0, '3+': 0, '4+': 0, '5+': 0 },
-  value
+  range,
+  value,
+  isFetching,
+  onChange
 }) {
-  const values = Object.values(range);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
+  const prevRangeRef = useRef();
+  const prevMinRef = useRef();
+  const prevMaxRef = useRef();
+
+  const eRange = range || prevRangeRef.current;
+
+  const values = Object.values(eRange || {});
+  let min, max;
+  if (values.length) {
+    min = Math.min(...values);
+    max = Math.max(...values);
+  }
+
+  // we track prev values to avoid rescaling of the barplot
+  useEffect(() => {
+    if (range) {
+      prevRangeRef.current = range;
+    }
+    if (min != null) {
+      prevMinRef.current = min;
+    }
+    if (max != null) {
+      prevMaxRef.current = max;
+    }
+  }, [range, min, max, value]);
+
+  if (
+    value != null &&
+    range &&
+    prevRangeRef.current &&
+    range[`${value}+`] === prevRangeRef.current[`${value}+`]
+  ) {
+    if (prevMinRef.current != null) {
+      min = Math.min(min, prevMinRef.current);
+    }
+    if (prevMaxRef.current != null) {
+      max = Math.max(max, prevMaxRef.current);
+    }
+  }
 
   return (
     <div className="range-facet">
@@ -18,11 +56,20 @@ export default function RangeFacet({
         {[1, 2, 3, 4, 5].map(i => {
           const key = `${i}+`;
           const checked = value === i;
-          const na = value && i < value;
+          const na = !eRange || (value && i < value);
+          const height = na
+            ? '1.3'
+            : `${1.3 + rescale(eRange[key], { min, max })}`;
+
+          const maxHeight = 2.3;
 
           return (
             <div key={key}>
-              <Tooltip label={`With at least ${i} ${type}${i > 1 ? 's' : ''}`}>
+              <Tooltip
+                label={`Number of preprints with at least ${i} ${type}${
+                  i > 1 ? 's' : ''
+                }`}
+              >
                 <label
                   htmlFor={`${type}-${key}`}
                   className={classNames('range-facet__label', {
@@ -31,26 +78,30 @@ export default function RangeFacet({
                   })}
                 >
                   <span className="range-facet__caption">{key}</span>
+
                   <span
                     className="range-facet__count"
                     style={{
-                      height: na
-                        ? '1em'
-                        : `${1.3 + rescale(range[key], { min, max })}em`
+                      height: `${height}em`
                     }}
                   >
-                    {na ? '-' : range[key]}
+                    {na ? '-' : eRange[key]}
                   </span>
+                  <span
+                    className="range-facet__count-filler"
+                    style={{
+                      height: `${maxHeight - height}em`
+                    }}
+                  />
                 </label>
               </Tooltip>
               <input
                 type="checkbox"
                 id={`${type}-${key}`}
-                name={key}
+                name={i}
                 checked={checked}
-                onChange={() => {
-                  console.log('change');
-                }}
+                disabled={isFetching}
+                onChange={onChange}
               />
             </div>
           );
@@ -61,6 +112,7 @@ export default function RangeFacet({
 }
 
 RangeFacet.propTypes = {
+  isFetching: PropTypes.bool,
   type: PropTypes.oneOf(['review', 'request']).isRequired,
   range: PropTypes.shape({
     '1+': PropTypes.number,
@@ -69,9 +121,13 @@ RangeFacet.propTypes = {
     '4+': PropTypes.number,
     '5+': PropTypes.number
   }),
-  value: PropTypes.oneOf([1, 2, 3, 4, 5])
+  value: PropTypes.oneOf([1, 2, 3, 4, 5]),
+  onChange: PropTypes.func.isRequired
 };
 
 function rescale(x, { a = 0, b = 1, min, max }) {
+  if (min === max) {
+    return 1;
+  }
   return ((b - a) * (x - min)) / (max - min) + a;
 }
