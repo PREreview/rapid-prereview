@@ -211,6 +211,7 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   api.set('limit', 10);
 
   // cache key
+  // TODO only set if `nReviews` and `nRequests` are set to default
   if (api.get('q') === '*:*' && !bookmark) {
     api.set('key', `home:${ui.get('sort') || 'score'}`);
   }

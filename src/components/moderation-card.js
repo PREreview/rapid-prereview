@@ -387,11 +387,11 @@ function ModerationCardModal({
         ) : (
           <Fragment>
             <p>{`Success: ${
-              frame === 'ModerateRapidPREreviewAction'
+              defaultFrame === 'ModerateRapidPREreviewAction'
                 ? 'the review has now been retracted'
-                : frame === 'IgnoreReportRapidPREreviewAction'
+                : defaultFrame === 'IgnoreReportRapidPREreviewAction'
                 ? 'the moderation reports have been ignored and will now longer be displayed here'
-                : 'the user personna has been blocked and won’t be able to post further reviews'
+                : 'the user persona has been blocked and won’t be able to post further reviews'
             }.`}</p>
 
             <Controls>

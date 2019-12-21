@@ -17,6 +17,7 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
       <section className="facets__section">
         <header className="facets__section-header">Contents</header>
         <ul className="facets__list">
+          {/*
           <li className="facets__list-item">
             <Checkbox
               label={
@@ -47,13 +48,61 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
                 });
               }}
             />
+          </li>*/}
+
+          <li className="facets__list-item">
+            <Checkbox
+              label={
+                <span className="facets__facet-label">
+                  <span>
+                    With{' '}
+                    <input
+                      type="number"
+                      value={qs.get('minimumReviews') || 3}
+                    />
+                    + reviews{' '}
+                  </span>
+                  <Count
+                    value={(ranges.nReviews || {}).minimum || 0}
+                    isFetching={isFetching}
+                  />
+                </span>
+              }
+              type="checkbox"
+              inputId="counts-minimumReviews"
+              name="nReviews"
+              disabled={
+                isFetching || ((ranges.nReviews || {}).minimum || 0) === 0
+              }
+              checked={qs.has('minimumReviews')}
+              onChange={e => {
+                const search = createPreprintQs(
+                  {
+                    nReviews: e.target.checked ? 3 : null
+                  },
+                  location.search
+                );
+
+                history.push({
+                  pathname: location.pathname,
+                  search
+                });
+              }}
+            />
           </li>
 
           <li className="facets__list-item">
             <Checkbox
               label={
                 <span className="facets__facet-label">
-                  With at least {qs.get('minimumReviews') || 3} Reviews{' '}
+                  <span>
+                    With{' '}
+                    <input
+                      type="number"
+                      value={qs.get('minimumReviews') || 1}
+                    />
+                    + requests{' '}
+                  </span>
                   <Count
                     value={(ranges.nReviews || {}).minimum || 0}
                     isFetching={isFetching}
