@@ -134,7 +134,9 @@ export default function Home() {
           <Facets
             counts={results.counts}
             ranges={results.ranges}
-            isFetching={fetchResultsProgress.isActive}
+            isFetching={
+              fetchResultsProgress.isActive || results.search !== apiQs
+            }
           />
         </LeftSidePanel>
 

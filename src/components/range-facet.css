@@ -30,12 +30,19 @@
 
 
     & .range-facet__count {
+      position: relative;
       display: flex;
       justify-content: center;
       width: 100%;
       align-items: flex-end;
       background-color: var(--xlight-grey);
       transition: height 0.3s;
+
+      & .range-facet__count-text {
+        position: absolute;
+        top: -2.6em;
+        font-size: 0.4em;
+      }
     }
 
     & .range-facet__count-filler {
@@ -46,6 +53,10 @@
       & .range-facet__count {
         background-color: var(--xlight-grey);
       }
+    }
+
+    &.range-facet__label--disabled {
+      cursor: default;
     }
 
     &.range-facet__label--active {

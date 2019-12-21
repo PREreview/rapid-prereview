@@ -1,4 +1,5 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Tooltip from '@reach/tooltip';
@@ -10,44 +11,58 @@ export default function RangeFacet({
   isFetching,
   onChange
 }) {
+  const location = useLocation();
+  const search = location.search;
+
   const prevRangeRef = useRef();
-  const prevMinRef = useRef();
-  const prevMaxRef = useRef();
+  const prevUnfilteredRangeRef = useRef();
+  const prevSearchRef = useRef();
 
-  const eRange = range || prevRangeRef.current;
+  // we buffer the prev values to remember the counts in case the user select a
+  // facet
+  useEffect(() => {
+    if (range) {
+      prevRangeRef.current = range;
+    }
+  }, [range]);
 
+  useEffect(() => {
+    prevSearchRef.current = search;
+  }, [search]);
+
+  const isSameQuery = checkIfIsSameQuery(type, search, prevSearchRef.current);
+
+  const hasOneSelected = value != null;
+
+  useEffect(() => {
+    if (!isFetching && range && isSameQuery && !hasOneSelected) {
+      prevUnfilteredRangeRef.current = range;
+    }
+  }, [hasOneSelected, isSameQuery, search, range, type, isFetching]);
+
+  const overwrite =
+    !!(isFetching && isSameQuery && prevUnfilteredRangeRef.current) ||
+    !!(hasOneSelected && isSameQuery && prevUnfilteredRangeRef.current) ||
+    !!(
+      !hasOneSelected &&
+      isSameQuery &&
+      prevUnfilteredRangeRef.current &&
+      !new URLSearchParams(search).has(
+        type === 'review' ? 'minimumReviews' : 'minimumRequests'
+      ) &&
+      new URLSearchParams(prevSearchRef.current).has(
+        type === 'review' ? 'minimumReviews' : 'minimumRequests'
+      )
+    );
+
+  const eRange = overwrite
+    ? prevUnfilteredRangeRef.current
+    : range || prevRangeRef.current;
   const values = Object.values(eRange || {});
   let min, max;
   if (values.length) {
     min = Math.min(...values);
     max = Math.max(...values);
-  }
-
-  // we track prev values to avoid rescaling of the barplot
-  useEffect(() => {
-    if (range) {
-      prevRangeRef.current = range;
-    }
-    if (min != null) {
-      prevMinRef.current = min;
-    }
-    if (max != null) {
-      prevMaxRef.current = max;
-    }
-  }, [range, min, max, value]);
-
-  if (
-    value != null &&
-    range &&
-    prevRangeRef.current &&
-    range[`${value}+`] === prevRangeRef.current[`${value}+`]
-  ) {
-    if (prevMinRef.current != null) {
-      min = Math.min(min, prevMinRef.current);
-    }
-    if (prevMaxRef.current != null) {
-      max = Math.max(max, prevMaxRef.current);
-    }
   }
 
   return (
@@ -56,10 +71,13 @@ export default function RangeFacet({
         {[1, 2, 3, 4, 5].map(i => {
           const key = `${i}+`;
           const checked = value === i;
-          const na = !eRange || (value && i < value);
+          const na =
+            (!range && !prevRangeRef.current) ||
+            (!prevUnfilteredRangeRef.current && hasOneSelected && i < value);
+
           const height = na
             ? '1.3'
-            : `${1.3 + rescale(eRange[key], { min, max })}`;
+            : `${(eRange[key] ? 1.3 : 0) + rescale(eRange[key], { min, max })}`;
 
           const maxHeight = 2.3;
 
@@ -74,7 +92,8 @@ export default function RangeFacet({
                   htmlFor={`${type}-${key}`}
                   className={classNames('range-facet__label', {
                     'range-facet__label--na': na,
-                    'range-facet__label--active': checked
+                    'range-facet__label--active': checked,
+                    'range-facet__label--disabled': eRange && !eRange[key]
                   })}
                 >
                   <span className="range-facet__caption">{key}</span>
@@ -85,7 +104,9 @@ export default function RangeFacet({
                       height: `${height}em`
                     }}
                   >
-                    {na ? '-' : eRange[key]}
+                    <span className="range-facet__count-text">
+                      {na ? '-' : eRange[key]}
+                    </span>
                   </span>
                   <span
                     className="range-facet__count-filler"
@@ -100,7 +121,7 @@ export default function RangeFacet({
                 id={`${type}-${key}`}
                 name={i}
                 checked={checked}
-                disabled={isFetching}
+                disabled={isFetching || !eRange[key]}
                 onChange={onChange}
               />
             </div>
@@ -130,4 +151,18 @@ function rescale(x, { a = 0, b = 1, min, max }) {
     return 1;
   }
   return ((b - a) * (x - min)) / (max - min) + a;
+}
+
+function checkIfIsSameQuery(type, search, prevSearch) {
+  const p1 = new URLSearchParams(search);
+  const p2 = new URLSearchParams(prevSearch);
+  if (type === 'review') {
+    p1.delete('minimumReviews');
+    p2.delete('minimumReviews');
+  } else if (type === 'request') {
+    p1.delete('minimumRequests');
+    p2.delete('minimumRequests');
+  }
+
+  return p1.toString() == p2.toString();
 }
