@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { MdCheckBox, MdCheckBoxOutlineBlank } from 'react-icons/md';
 import Tooltip from '@reach/tooltip';
 
 export default function RangeFacet({
@@ -18,9 +19,9 @@ export default function RangeFacet({
   const prevUnfilteredRangeRef = useRef();
   const prevSearch = location.state && location.state.prevSearch;
 
-  // we buffer the prev values to remember the counts in case the user select a
-  // facet
   useEffect(() => {
+    // when is fetching is true `range` is undefined so we re-use the previous
+    // defined one to avoid flickering
     if (range && !isFetching) {
       prevRangeRef.current = range;
     }
@@ -31,6 +32,10 @@ export default function RangeFacet({
   const hasOneSelected = value != null;
 
   useEffect(() => {
+    // When the user select a value (e.g. 3+) cloudant will update all the value
+    // of the other potential option smaller than the value (1+, 2+) to the count
+    // obtained for that value => in order to circumvent that we keep track of the
+    // "unfiltered" counts and use that instand of the `range` in those situations
     if (!isFetching && range && isSameQuery && !hasOneSelected) {
       prevUnfilteredRangeRef.current = range;
     } else if (!isSameQuery) {
@@ -38,20 +43,8 @@ export default function RangeFacet({
     }
   }, [hasOneSelected, isSameQuery, range, isFetching]);
 
-  const overwrite =
-    !!(isFetching && isSameQuery && prevUnfilteredRangeRef.current) ||
-    !!(hasOneSelected && isSameQuery && prevUnfilteredRangeRef.current) ||
-    !!(
-      !hasOneSelected &&
-      isSameQuery &&
-      prevUnfilteredRangeRef.current &&
-      !new URLSearchParams(search).has(
-        type === 'review' ? 'minimumReviews' : 'minimumRequests'
-      ) &&
-      new URLSearchParams(prevSearch).has(
-        type === 'review' ? 'minimumReviews' : 'minimumRequests'
-      )
-    );
+  // When to overwrite `range` with the unfiltered range
+  const overwrite = isSameQuery && prevUnfilteredRangeRef.current;
 
   const eRange = overwrite
     ? prevUnfilteredRangeRef.current
@@ -84,7 +77,7 @@ export default function RangeFacet({
               <Tooltip
                 label={`Number of preprints with at least ${i} ${type}${
                   i > 1 ? 's' : ''
-                }`}
+                } (${i}+)`}
               >
                 <label
                   htmlFor={`${type}-${key}`}
@@ -102,8 +95,11 @@ export default function RangeFacet({
                       height: `${height}em`
                     }}
                   >
+                    {eRange &&
+                      eRange[key] > 0 &&
+                      (checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />)}
                     <span className="range-facet__count-text">
-                      {na ? '-' : eRange[key]}
+                      {na ? 'n.a' : eRange[key]}
                     </span>
                   </span>
                   <span

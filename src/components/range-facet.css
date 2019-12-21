@@ -55,7 +55,7 @@
 
     &.range-facet__label--na {
       & .range-facet__count {
-        background-color: var(--xlight-grey);
+        background-color: transparent;
       }
     }
 
