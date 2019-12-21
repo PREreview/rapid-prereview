@@ -247,6 +247,8 @@ export default function Home() {
                     onNewRequest={handleNewRequest}
                     onNew={handleNew}
                     onNewReview={handleNewReview}
+                    hoveredSortOption={hoveredSortOption}
+                    sortOption={params.get('sort') || 'score'}
                   />
                 </li>
               ))}
