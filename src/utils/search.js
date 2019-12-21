@@ -199,11 +199,24 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
       'subjectName'
     ])
   );
+
   api.set(
     'ranges',
     JSON.stringify({
       nReviews: {
-        minimum: `[${ui.get('minimumReviews') || 3} TO Infinity]`
+        minimum: `[${ui.get('minimumReviews') || 3} TO Infinity]`,
+        '1+': '[1 TO Infinity]',
+        '2+': '[2 TO Infinity]',
+        '3+': '[3 TO Infinity]',
+        '4+': '[4 TO Infinity]',
+        '5+': '[5 TO Infinity]'
+      },
+      nRequests: {
+        '1+': '[1 TO Infinity]',
+        '2+': '[2 TO Infinity]',
+        '3+': '[3 TO Infinity]',
+        '4+': '[4 TO Infinity]',
+        '5+': '[5 TO Infinity]'
       }
     })
   );
