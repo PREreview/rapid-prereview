@@ -52,6 +52,8 @@ export default function Home() {
     window.scrollTo(0, 0);
   }, [apiQs]);
 
+  const params = new URLSearchParams(location.search);
+
   const handleNewReview = useCallback(
     preprint => {
       if (user) {
@@ -107,10 +109,7 @@ export default function Home() {
         <title>{ORG} • Home</title>
       </Helmet>
 
-      {!!(
-        (isNewVisitor || new URLSearchParams(location.search).get('welcome')) &&
-        isWelcomeModalOpen
-      ) && (
+      {!!((isNewVisitor || params.get('welcome')) && isWelcomeModalOpen) && (
         <WelcomeModal
           onClose={() => {
             setIsWelcomeModalOpen(false);
@@ -133,8 +132,19 @@ export default function Home() {
           }}
         >
           <Facets
-            counts={results.counts}
-            isFetching={fetchResultsProgress.isActive}
+            counts={
+              fetchResultsProgress.isActive || results.search !== apiQs
+                ? undefined
+                : results.counts
+            }
+            ranges={
+              fetchResultsProgress.isActive || results.search !== apiQs
+                ? undefined
+                : results.ranges
+            }
+            isFetching={
+              fetchResultsProgress.isActive || results.search !== apiQs
+            }
           />
         </LeftSidePanel>
 
@@ -205,7 +215,7 @@ export default function Home() {
           )}
 
           <SortOptions
-            value={new URLSearchParams(location.search).get('sort') || 'score'}
+            value={params.get('sort') || 'score'}
             onMouseEnterSortOption={sortOption => {
               setHoveredSortOption(sortOption);
             }}
@@ -237,6 +247,8 @@ export default function Home() {
                     onNewRequest={handleNewRequest}
                     onNew={handleNew}
                     onNewReview={handleNewReview}
+                    hoveredSortOption={hoveredSortOption}
+                    sortOption={params.get('sort') || 'score'}
                   />
                 </li>
               ))}
@@ -267,6 +279,7 @@ export default function Home() {
                     onNew={handleNew}
                     onNewReview={handleNewReview}
                     hoveredSortOption={hoveredSortOption}
+                    sortOption={params.get('sort') || 'score'}
                   />
                 </li>
               ))}

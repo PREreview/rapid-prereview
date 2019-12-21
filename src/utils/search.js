@@ -7,6 +7,8 @@ export function createPreprintQs(
     text,
     // facets
     hasReviews,
+    nReviews,
+    nRequests,
     hasRequests,
     hasData,
     hasCode,
@@ -29,6 +31,18 @@ export function createPreprintQs(
     ui.set('reviews', hasReviews);
   } else if (hasReviews === null) {
     ui.delete('reviews');
+  }
+
+  if (nReviews != null) {
+    ui.set('minimumReviews', nReviews);
+  } else if (nReviews === null) {
+    ui.delete('minimumReviews');
+  }
+
+  if (nRequests != null) {
+    ui.set('minimumRequests', nRequests);
+  } else if (nRequests === null) {
+    ui.delete('minimumRequests');
   }
 
   // With and without requests
@@ -103,8 +117,14 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   if (ui.has('reviews')) {
     anded.push(`hasReviews:${ui.get('reviews')}`);
   }
+  if (ui.has('minimumReviews')) {
+    anded.push(`nReviews:[${ui.get('minimumReviews')} TO Infinity]`);
+  }
   if (ui.has('requests')) {
     anded.push(`hasRequests:${ui.get('requests')}`);
+  }
+  if (ui.has('minimumRequests')) {
+    anded.push(`nRequests:[${ui.get('minimumRequests')} TO Infinity]`);
   }
   if (ui.has('data')) {
     anded.push(`hasData:${ui.get('data')}`);
@@ -131,6 +151,26 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
         'sort',
         JSON.stringify([
           '-dateLastActivity<number>',
+          '-score<number>',
+          '-datePosted<number>'
+        ])
+      );
+    } else if (ui.get('sort') === 'reviewed') {
+      // dateLastReview
+      api.set(
+        'sort',
+        JSON.stringify([
+          '-dateLastReview<number>',
+          '-score<number>',
+          '-datePosted<number>'
+        ])
+      );
+    } else if (ui.get('sort') === 'requested') {
+      // dateLastReview
+      api.set(
+        'sort',
+        JSON.stringify([
+          '-dateLastRequest<number>',
           '-score<number>',
           '-datePosted<number>'
         ])
@@ -170,9 +210,30 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
     ])
   );
 
+  api.set(
+    'ranges',
+    JSON.stringify({
+      nReviews: {
+        '1+': '[1 TO Infinity]',
+        '2+': '[2 TO Infinity]',
+        '3+': '[3 TO Infinity]',
+        '4+': '[4 TO Infinity]',
+        '5+': '[5 TO Infinity]'
+      },
+      nRequests: {
+        '1+': '[1 TO Infinity]',
+        '2+': '[2 TO Infinity]',
+        '3+': '[3 TO Infinity]',
+        '4+': '[4 TO Infinity]',
+        '5+': '[5 TO Infinity]'
+      }
+    })
+  );
+
   api.set('limit', 10);
 
   // cache key
+  // TODO only set if `nReviews` and `nRequests` are set to default
   if (api.get('q') === '*:*' && !bookmark) {
     api.set('key', `home:${ui.get('sort') || 'score'}`);
   }

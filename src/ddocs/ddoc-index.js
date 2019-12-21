@@ -216,6 +216,12 @@ const ddoc = {
             var reviewActions = actions.filter(function(action) {
               return action['@type'] === 'RapidPREreviewAction';
             });
+            index('nReviews', reviewActions.length, { facet: true });
+
+            var requestActions = actions.filter(function(action) {
+              return action['@type'] === 'RequestForRapidPREreviewAction';
+            });
+            index('nRequests', requestActions.length, { facet: true });
 
             var threshold = Math.ceil(reviewActions.length / 2);
 

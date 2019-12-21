@@ -34,7 +34,8 @@ export default function SearchBar({ isFetching }) {
     if (search !== location.search) {
       history.push({
         pathname: location.pathame,
-        search
+        search,
+        state: { prevSearch: location.search }
       });
     }
   }

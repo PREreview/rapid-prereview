@@ -400,6 +400,8 @@ export function usePreprintSearchResults(
           }
         })
         .then(data => {
+          data.search = search;
+
           arrayify(data.rows).forEach(row => {
             if (row.doc) {
               preprintsWithActionsStore.set(row.doc, { emit: false });
