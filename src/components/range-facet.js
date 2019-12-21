@@ -16,7 +16,7 @@ export default function RangeFacet({
 
   const prevRangeRef = useRef();
   const prevUnfilteredRangeRef = useRef();
-  const prevSearchRef = useRef();
+  const prevSearch = location.state && location.state.prevSearch;
 
   // we buffer the prev values to remember the counts in case the user select a
   // facet
@@ -26,11 +26,7 @@ export default function RangeFacet({
     }
   }, [range]);
 
-  useEffect(() => {
-    prevSearchRef.current = search;
-  }, [search]);
-
-  const isSameQuery = checkIfIsSameQuery(type, search, prevSearchRef.current);
+  const isSameQuery = checkIfIsSameQuery(type, search, prevSearch);
 
   const hasOneSelected = value != null;
 
@@ -38,7 +34,7 @@ export default function RangeFacet({
     if (!isFetching && range && isSameQuery && !hasOneSelected) {
       prevUnfilteredRangeRef.current = range;
     }
-  }, [hasOneSelected, isSameQuery, search, range, type, isFetching]);
+  }, [hasOneSelected, isSameQuery, range, isFetching]);
 
   const overwrite =
     !!(isFetching && isSameQuery && prevUnfilteredRangeRef.current) ||
@@ -50,7 +46,7 @@ export default function RangeFacet({
       !new URLSearchParams(search).has(
         type === 'review' ? 'minimumReviews' : 'minimumRequests'
       ) &&
-      new URLSearchParams(prevSearchRef.current).has(
+      new URLSearchParams(prevSearch).has(
         type === 'review' ? 'minimumReviews' : 'minimumRequests'
       )
     );
@@ -72,7 +68,7 @@ export default function RangeFacet({
           const key = `${i}+`;
           const checked = value === i;
           const na =
-            (!range && !prevRangeRef.current) ||
+            (!eRange && !prevRangeRef.current) ||
             (!prevUnfilteredRangeRef.current && hasOneSelected && i < value);
 
           const height = na

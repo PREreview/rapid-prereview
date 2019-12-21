@@ -132,8 +132,16 @@ export default function Home() {
           }}
         >
           <Facets
-            counts={results.counts}
-            ranges={results.ranges}
+            counts={
+              fetchResultsProgress.isActive || results.search !== apiQs
+                ? undefined
+                : results.counts
+            }
+            ranges={
+              fetchResultsProgress.isActive || results.search !== apiQs
+                ? undefined
+                : results.ranges
+            }
             isFetching={
               fetchResultsProgress.isActive || results.search !== apiQs
             }

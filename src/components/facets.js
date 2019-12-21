@@ -39,7 +39,8 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
 
             history.push({
               pathname: location.pathname,
-              search
+              search,
+              state: { prevSearch: location.search }
             });
           }}
         />
@@ -69,7 +70,8 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
 
             history.push({
               pathname: location.pathname,
-              search
+              search,
+              state: { prevSearch: location.search }
             });
           }}
         />
@@ -103,7 +105,8 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
 
                 history.push({
                   pathname: location.pathname,
-                  search
+                  search,
+                  state: { prevSearch: location.search }
                 });
               }}
             />
@@ -134,7 +137,8 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
 
                 history.push({
                   pathname: location.pathname,
-                  search
+                  search,
+                  state: { prevSearch: location.search }
                 });
               }}
             />
@@ -189,7 +193,8 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
 
                   history.push({
                     pathname: location.pathname,
-                    search
+                    search,
+                    state: { prevSearch: location.search }
                   });
                 }}
               />

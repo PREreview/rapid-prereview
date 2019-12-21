@@ -26,6 +26,10 @@
       &.range-facet__label--disabled {
         color: var(--ui-basic-font-color--light);
       }
+
+      & .range-facet__count {
+        background-color: var(--light-grey);
+      }
     }
 
 
