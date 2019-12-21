@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -21,10 +21,10 @@ export default function RangeFacet({
   // we buffer the prev values to remember the counts in case the user select a
   // facet
   useEffect(() => {
-    if (range) {
+    if (range && !isFetching) {
       prevRangeRef.current = range;
     }
-  }, [range]);
+  }, [range, isFetching]);
 
   const isSameQuery = checkIfIsSameQuery(type, search, prevSearch);
 
@@ -33,6 +33,8 @@ export default function RangeFacet({
   useEffect(() => {
     if (!isFetching && range && isSameQuery && !hasOneSelected) {
       prevUnfilteredRangeRef.current = range;
+    } else if (!isSameQuery) {
+      prevUnfilteredRangeRef.current = null;
     }
   }, [hasOneSelected, isSameQuery, range, isFetching]);
 
