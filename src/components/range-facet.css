@@ -84,7 +84,7 @@
 
     &.range-facet__label--na {
       & .range-facet__count {
-        background-color: transparent;
+        /*background-color: transparent*/
       }
     }
 

@@ -68,7 +68,7 @@ export default function RangeFacet({
             (!prevUnfilteredRangeRef.current && hasOneSelected && i < value);
 
           const height = na
-            ? '1.3'
+            ? `2.3`
             : `${(eRange[key] ? 1.3 : 0) + rescale(eRange[key], { min, max })}`;
 
           const maxHeight = 2.3;
@@ -100,7 +100,7 @@ export default function RangeFacet({
                       eRange[key] > 0 &&
                     (checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />)*/}
                     <span className="range-facet__count-text">
-                      {na ? 'n.a' : eRange[key]}
+                      {na || eRange[key] === 'n.a' ? '' : eRange[key]}
                     </span>
                   </span>
                   <span
