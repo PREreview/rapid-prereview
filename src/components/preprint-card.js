@@ -2,7 +2,7 @@ import React, { Fragment, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 import classNames from 'classnames';
-import { formatDistanceStrict, differenceInHours } from 'date-fns';
+import { formatDistanceStrict } from 'date-fns';
 import {
   MdTimeline,
   MdCode,

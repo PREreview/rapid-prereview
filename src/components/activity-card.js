@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { format, differenceInHours } from 'date-fns';
+import { format, formatDistanceStrict } from 'date-fns';
 import { MdChevronRight } from 'react-icons/md';
 import { getId } from '../utils/jsonld';
 import Value from './value';
@@ -102,11 +102,7 @@ export default function ActivityCard({ action }) {
             {isAnimating && (
               <div className="activity-card__count">
                 <span className="preprint-card__animation-time">
-                  <AnimatedNumber
-                    value={differenceInHours(new Date(), new Date(now))}
-                    isAnimating={isAnimating}
-                  />
-                  hours ago
+                  {`(${formatDistanceStrict(new Date(now), new Date())} ago)`}
                 </span>
               </div>
             )}
