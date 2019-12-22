@@ -71,12 +71,6 @@
         font: var(--ui-basic-font--small);
       }
     }
-    &.range-facet__label--na:hover {
-      & .range-facet__count {
-        background-color: transparent;
-        color: inherit;
-      }
-    }
 
     & .range-facet__count-filler {
       transition: height 0.3s;
