@@ -16,7 +16,7 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
   return (
     <div className="facets">
       <section className="facets__section">
-        <header className="facets__section-header">Reviews</header>
+        <header className="facets__section-header">Number of Reviews</header>
 
         <RangeFacet
           type="review"
@@ -47,7 +47,7 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
       </section>
 
       <section className="facets__section">
-        <header className="facets__section-header">Requests</header>
+        <header className="facets__section-header">Number of Requests</header>
 
         <RangeFacet
           type="request"

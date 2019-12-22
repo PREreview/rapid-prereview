@@ -59,6 +59,7 @@ export default function RangeFacet({
   return (
     <div className="range-facet">
       <div className="range-facet__bars">
+        <div className="range-facet__ruling-line" />
         {[1, 2, 3, 4, 5].map(i => {
           const key = `${i}+`;
           const checked = value === i;
@@ -95,9 +96,9 @@ export default function RangeFacet({
                       height: `${height}em`
                     }}
                   >
-                    {eRange &&
+                    {/*eRange &&
                       eRange[key] > 0 &&
-                      (checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />)}
+                    (checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />)*/}
                     <span className="range-facet__count-text">
                       {na ? 'n.a' : eRange[key]}
                     </span>
