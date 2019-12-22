@@ -21,8 +21,8 @@ export function useAnimatedScore(actions, now = new Date().toISOString()) {
     new Date(sorted[sorted.length - 1].startTime).getTime()
   );
 
-  // if all the actions are at the beginning and long past, the animation is
-  // going to be ugly with all the number changing without the circle growing
+  // if all the actions are at the beginning and all happened a while ago, the animation is
+  // going to be uggly with all the numbers changing without the circle growing
   // => In those case we just pretent that all the actions were posted regularly
   // and one after another
   const prettify =

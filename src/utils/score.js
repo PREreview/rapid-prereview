@@ -65,7 +65,7 @@ export function getTimeScore(
     ) /
     (1000 * 60 * 60);
 
-  const timeScore = 1 / Math.pow(timeSinceFirstActivityHours + 1, 0.1);
+  const timeScore = 1 / Math.pow(timeSinceFirstActivityHours + 1, 0.5);
 
   return timeScore;
 }

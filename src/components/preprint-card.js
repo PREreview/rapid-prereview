@@ -270,12 +270,10 @@ export default function PreprintCard({
 
                   {isAnimating && (
                     <span className="preprint-card__animation-time">
-                      (
-                      <AnimatedNumber
-                        value={differenceInHours(new Date(), new Date(now))}
-                        isAnimating={isAnimating}
-                      />{' '}
-                      hours ago)
+                      {`(${formatDistanceStrict(
+                        new Date(now),
+                        new Date()
+                      )} ago)`}
                     </span>
                   )}
                 </div>

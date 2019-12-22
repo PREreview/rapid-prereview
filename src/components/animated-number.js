@@ -24,6 +24,6 @@ export default function AnimatedNumber({ value, isAnimating }) {
 }
 
 AnimatedNumber.propTypes = {
-  value: PropTypes.number,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isAnimating: PropTypes.bool
 };
