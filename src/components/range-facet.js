@@ -2,7 +2,6 @@ import React, { useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { MdCheckBox, MdCheckBoxOutlineBlank } from 'react-icons/md';
 import Tooltip from '@reach/tooltip';
 
 export default function RangeFacet({
@@ -67,9 +66,8 @@ export default function RangeFacet({
             (!eRange && !prevRangeRef.current) ||
             (!prevUnfilteredRangeRef.current && hasOneSelected && i < value);
 
-          const height = na
-            ? `2.3`
-            : `${(eRange[key] ? 1.3 : 0) + rescale(eRange[key], { min, max })}`;
+          const height = `${(eRange && eRange[key] ? 1.3 : 0) +
+            rescale(eRange && eRange[key], { min, max })}`;
 
           const maxHeight = 2.3;
 
@@ -97,10 +95,10 @@ export default function RangeFacet({
                     }}
                   >
                     {/*eRange &&
-                      eRange[key] > 0 &&
-                    (checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />)*/}
+                        eRange[key] > 0 &&
+                        (checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />)*/}
                     <span className="range-facet__count-text">
-                      {na || eRange[key] === 'n.a' ? '' : eRange[key]}
+                      {na ? '' : eRange[key]}
                     </span>
                   </span>
                   <span

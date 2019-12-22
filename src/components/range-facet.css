@@ -27,7 +27,8 @@
     flex-direction: column-reverse;
     align-items: center;
     justify-content: flex-start;
-    margin-right: var(--xxsgrd);
+    margin-left: calc(var(--xxsgrd) / 2);
+    margin-right: calc(var(--xxsgrd) / 2);
 
     min-width: 2em;
     cursor: pointer;
