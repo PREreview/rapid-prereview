@@ -1,3 +1,4 @@
+import orcidUtils from 'orcid-utils';
 import doiRegex from 'doi-regex';
 import identifiersArxiv from 'identifiers-arxiv';
 import { getId, unprefix } from '../utils/jsonld';
@@ -82,4 +83,12 @@ export function unversionDoi(doi = '') {
   }
 
   return null;
+}
+
+export function createUserId(orcid) {
+  return `user:${orcidUtils.toDashFormat(unprefix(orcid))}`;
+}
+
+export function createContactPointId(userId) {
+  return `contact:${unprefix(userId)}`;
 }

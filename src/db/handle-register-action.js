@@ -8,6 +8,7 @@ import { getId, unprefix, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import { mergeUserConflicts } from '../utils/conflicts';
 import { getOrcidProfile } from '../utils/orcid';
+import { createUserId } from '../utils/ids';
 
 /**
  * Create (or update) an user
@@ -36,7 +37,7 @@ export default async function handleRegisterAction(
     throw createError(400, `Invalid ORCID (${orcid})`);
   }
 
-  const userId = `user:${orcidUtils.toDashFormat(orcid)}`;
+  const userId = createUserId(orcid);
 
   // Get previous user (if any) and merge conflicts (if any)
   let body;

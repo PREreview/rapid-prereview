@@ -7,6 +7,8 @@ import handleRapidPrereviewAction from './handle-rapid-prereview-action';
 import handleDeanonimyzeRoleAction from './handle-deanonymize-role-action';
 import handleUpdateRoleAction from './handle-update-role-action';
 import handleUpdateUserAction from './handle-update-user-action';
+import handleUpdateContactPointAction from './handle-update-contact-point-action';
+import handleVerifyContactPointAction from './handle-verify-contact-point-action';
 import handleRequestForRapidPrereviewAction from './handle-request-for-rapid-prereview-action';
 import handleGrantModeratorRoleAction from './handle-grant-moderator-role-action';
 import handleRevokeModeratorRoleAction from './handle-revoke-moderator-role-action';
@@ -846,6 +848,30 @@ export default class DB {
           user,
           now
         });
+        break;
+
+      case 'UpdateContactPointAction':
+        handledAction = await handleUpdateContactPointAction.call(
+          this,
+          action,
+          {
+            strict,
+            user,
+            now
+          }
+        );
+        break;
+
+      case 'VerifyContactPointAction':
+        handledAction = await handleVerifyContactPointAction.call(
+          this,
+          action,
+          {
+            strict,
+            user,
+            now
+          }
+        );
         break;
 
       case 'UpdateRoleAction':
