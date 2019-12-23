@@ -1,11 +1,13 @@
 import orcidUtils from 'orcid-utils';
+import flatten from 'lodash/flatten';
 import Ajv from 'ajv';
 import uuid from 'uuid';
 import pick from 'lodash/pick';
 import schema from '../schemas/register-action';
-import { getId, unprefix, cleanup } from '../utils/jsonld';
+import { getId, unprefix, cleanup, arrayify } from '../utils/jsonld';
 import { createError } from '../utils/errors';
 import { mergeUserConflicts } from '../utils/conflicts';
+import { getOrcidProfile } from '../utils/orcid';
 
 /**
  * Create (or update) an user
@@ -132,6 +134,32 @@ export default async function handleRegisterAction(
   // udpate token
   if (action.token) {
     merged.token = Object.assign({}, action.token, { dateCreated: now });
+  }
+
+  // try to get the user email so we can subscribe the user to the
+  // notifications (we only do that if the user never set a contact point
+  if (merged.token && !merged.contactPoint) {
+    let profile;
+    try {
+      profile = await getOrcidProfile(orcid, action.token);
+    } catch (err) {
+      // noop;
+    }
+    if (profile) {
+      const emails = flatten(
+        arrayify(profile.emails).map(email => email.email)
+      ).filter(Boolean);
+      const email = emails[0];
+      if (email) {
+        merged.contactPoint = {
+          '@type': 'ContactPoint',
+          contactType: 'notifications',
+          active: true,
+          email: `mailto:${unprefix(email)}`,
+          dateVerified: now
+        };
+      }
+    }
   }
 
   const payload = [merged].concat(

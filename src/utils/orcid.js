@@ -2,6 +2,7 @@ import orcidUtils from 'orcid-utils';
 import passport from 'passport';
 import { Strategy as OrcidStrategy } from 'passport-orcid';
 import Strategy from 'passport-strategy';
+import fetch from 'node-fetch';
 import DB from '../db/db';
 import { getId, cleanup } from './jsonld';
 import { createError } from './errors';
@@ -142,4 +143,22 @@ export function createPassport(config) {
   passport.use(strategy);
 
   return passport;
+}
+
+/**
+ * See https://members.orcid.org/api/tutorial/read-orcid-records
+ */
+export async function getOrcidProfile(orcid, token) {
+  const r = await fetch(`https://pub.orcid.org/v2.1/${orcid}/person`, {
+    headers: {
+      Accept: 'application/json',
+      Authorization: `${token.tokenType} ${token.accessToken}`
+    }
+  });
+
+  if (r.ok) {
+    return await r.json();
+  } else {
+    throw createError(r.status);
+  }
 }
