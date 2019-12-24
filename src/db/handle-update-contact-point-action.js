@@ -52,7 +52,7 @@ export default async function handleUpdateContactPointAction(
       },
       nextUser.contactPoint,
       action.payload,
-      // if email is updated we need to reset the verification token
+      // if email is updated we need to reset `dateVerified` and the verification token
       isEmailUpdated
         ? {
             token: {
@@ -67,6 +67,10 @@ export default async function handleUpdateContactPointAction(
   });
 
   const resp = await this.users.insert(nextUser, getId(nextUser));
+
+  if (strict) {
+    delete nextUser.contactPoint.token;
+  }
 
   return Object.assign({}, action, {
     result: Object.assign({}, nextUser, {

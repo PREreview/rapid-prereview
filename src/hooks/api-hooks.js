@@ -92,6 +92,8 @@ export function usePostAction() {
 
           if (
             body['@type'] === 'UpdateUserAction' ||
+            body['@type'] === 'UpdateContactPointAction' ||
+            body['@type'] === 'VerifyContactPointAction' ||
             body['@type'] === 'CreateApiKeyAction'
           ) {
             setUser(body.result);

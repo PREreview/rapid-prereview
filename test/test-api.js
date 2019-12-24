@@ -12,6 +12,7 @@ import {
   arXivId,
   openAireDoi
 } from './utils/create-preprint-server';
+import { createContactPointId } from '../src/utils/ids';
 
 describe('API', function() {
   this.timeout(40000);
@@ -44,6 +45,23 @@ describe('API', function() {
     });
 
     user = action.result;
+
+    const updateContactPointAction = await db.post(
+      {
+        '@type': 'UpdateContactPointAction',
+        agent: getId(user),
+        actionStatus: 'CompletedActionStatus',
+        object: createContactPointId(user),
+        payload: {
+          contactType: 'notifications',
+          email: 'mailto:me@example.com',
+          active: true
+        }
+      },
+      { user }
+    );
+
+    user = updateContactPointAction.result;
 
     const apiUserRegisterAction = await db.post({
       '@type': 'RegisterAction',
@@ -129,6 +147,7 @@ describe('API', function() {
     const body = await resp.json();
     assert.equal(getId(body), getId(user));
     assert(!body.token);
+    assert(!body.contactPoint.token);
   });
 
   it('should get a role', async () => {

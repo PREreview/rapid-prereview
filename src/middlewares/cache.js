@@ -170,6 +170,8 @@ export function invalidate() {
         switch (action['@type']) {
           case 'RegisterAction':
           case 'UpdateUserAction':
+          case 'UpdateContactPointAction':
+          case 'VerifyContactPointAction':
           case 'CreateRoleAction':
           case 'UpdateRoleAction':
           case 'DeanonymizeRoleAction':

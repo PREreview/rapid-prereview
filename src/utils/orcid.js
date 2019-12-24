@@ -129,7 +129,13 @@ export function createPassport(config) {
 
   passport.deserializeUser(function(userId, done) {
     db.get(userId, { user: userId, raw: true })
-      .then(user => done(null, user))
+      .then(user => {
+        delete user.token;
+        if (user.contactPoint) {
+          delete user.contactPoint.token;
+        }
+        done(null, user);
+      })
       .catch(err => {
         done(
           createError(

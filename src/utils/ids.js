@@ -90,5 +90,5 @@ export function createUserId(orcid) {
 }
 
 export function createContactPointId(userId) {
-  return `contact:${unprefix(userId)}`;
+  return `contact:${unprefix(getId(userId))}`;
 }

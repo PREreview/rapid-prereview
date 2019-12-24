@@ -248,7 +248,11 @@ export default class DB {
     switch (prefix) {
       case 'user': {
         const doc = await this.users.get(id);
+
         if (!raw) {
+          if (doc.contactPoint) {
+            delete doc.contactPoint.token;
+          }
           delete doc.token;
           delete doc.apiKey;
           // To be sure not to leak identity we do not return the roles
