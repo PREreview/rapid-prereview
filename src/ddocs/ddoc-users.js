@@ -17,6 +17,21 @@ const ddoc = {
       reduce: '_count'
     },
 
+    usersByContactPointVerificationToken: {
+      map: function(doc) {
+        if (
+          doc['@type'] === 'Person' &&
+          doc.contactPoint &&
+          doc.contactPoint.token &&
+          doc.contactPoint.token['@type'] === 'ContactPointVerificationToken' &&
+          typeof doc.contactPoint.token.value === 'string'
+        ) {
+          emit(doc.contactPoint.token.value, null);
+        }
+      },
+      reduce: '_count'
+    },
+
     usersByApiKeyValue: {
       map: function(doc) {
         if (doc['@type'] === 'Person' && doc.apiKey) {

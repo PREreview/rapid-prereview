@@ -44,6 +44,7 @@ describe('UpdateContactPointAction', function() {
     // console.log(require('util').inspect(createAction, { depth: null }));
 
     assert(createAction.result.contactPoint.token.value);
+    assert.equal(createAction.result.contactPoint.token.dateCreated, now);
     assert.equal(createAction.result.contactPoint.dateVerified, null);
 
     // we need `dateModified` for the reconciliation logic

@@ -335,6 +335,25 @@ export default class DB {
     return row.doc;
   }
 
+  async getUserByContactPointVerificationToken(token) {
+    const body = await this.users.view(
+      'ddoc-users',
+      'usersByContactPointVerificationToken',
+      {
+        key: token,
+        include_docs: true,
+        reduce: false
+      }
+    );
+
+    const row = body.rows[0];
+    if (!row) {
+      throw createError(404, `Not found (${token})`);
+    }
+
+    return row.doc;
+  }
+
   async getUserByApiKeyValue(value) {
     const body = await this.users.view('ddoc-users', 'usersByApiKeyValue', {
       key: value,

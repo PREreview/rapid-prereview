@@ -1,4 +1,5 @@
 import assert from 'assert';
+import omit from 'lodash/omit';
 import DB from '../src/db/db';
 import { createContactPointId } from '../src/utils/ids';
 import { getId } from '../src/utils/jsonld';
@@ -49,7 +50,7 @@ describe('VerifyContactPointAction', function() {
         agent: getId(user),
         actionStatus: 'CompletedActionStatus',
         object: createContactPointId(user),
-        token: user.contactPoint.token
+        token: omit(user.contactPoint.token, ['dateCreated'])
       },
       { user, now }
     );

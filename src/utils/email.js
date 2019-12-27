@@ -86,6 +86,9 @@ A new Rapid PREreview was just posted.
 
 Have a good day!
       `;
+
+      // TODO email every user who posted a request for review and have notification enabled
+
       break;
     }
 

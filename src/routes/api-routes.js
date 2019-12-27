@@ -7,10 +7,12 @@ import omit from 'lodash/omit';
 import { QUESTIONS } from '../constants';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
+import { unprefix, getId } from '../utils/jsonld';
 import resolve from '../utils/resolve';
 import { cache, invalidate } from '../middlewares/cache';
 import parseApiKey from '../middlewares/parse-api-key';
 import { sendEmails } from '../utils/email';
+import { createContactPointId } from '../utils/ids';
 
 const jsonParser = bodyParser.json({ limit: '2mb' });
 
@@ -251,6 +253,52 @@ router.post(
     }
   }
 );
+
+/**
+ * Used to handle the link present in the email sent to user when a user
+ * update his/her contact info
+ */
+router.get('/verify', parseQuery, invalidate(), async (req, res, next) => {
+  if (!req.query.token) {
+    return next(createError(400, 'Missing querystring parameter token'));
+  }
+
+  let user;
+  try {
+    user = await req.db.getUserByContactPointVerificationToken(req.query.token);
+  } catch (err) {
+    if (err.statusCode === 404) {
+      throw createError(400, 'invalid token');
+    }
+  }
+
+  const action = {
+    '@type': 'VerifyContactPointAction',
+    agent: getId(user),
+    actionStatus: 'CompletedActionStatus',
+    object: createContactPointId(getId(user)),
+    token: {
+      '@type': 'ContactPointVerificationToken',
+      value: req.query.token
+    }
+  };
+
+  let body;
+
+  try {
+    body = await req.db.post(action, { user });
+  } catch (err) {
+    return next(err);
+  }
+
+  req.invalidate(body);
+
+  res.redirect(
+    `/settings?verified=true&contact-point=${unprefix(
+      getId(createContactPointId(getId(user)))
+    )}`
+  );
+});
 
 /**
  * Search for actions

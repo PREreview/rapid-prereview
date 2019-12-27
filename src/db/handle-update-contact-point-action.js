@@ -46,7 +46,8 @@ export default async function handleUpdateContactPointAction(
         '@type': 'ContactPoint',
         token: {
           '@type': 'ContactPointVerificationToken',
-          value: crypto.randomBytes(16).toString('hex')
+          value: crypto.randomBytes(16).toString('hex'),
+          dateCreated: now // used for email logic: if `token.dateCreated` === `user.dateModified`, we send an email
         },
         dateVerified: null
       },
@@ -57,7 +58,8 @@ export default async function handleUpdateContactPointAction(
         ? {
             token: {
               '@type': 'ContactPointVerificationToken',
-              value: crypto.randomBytes(16).toString('hex')
+              value: crypto.randomBytes(16).toString('hex'),
+              dateCreated: now
             },
             dateVerified: null
           }
