@@ -1,6 +1,7 @@
 import email from '@sendgrid/mail';
 import { getId, unprefix } from '../utils/jsonld';
 import {
+  ORG,
   SENDER_EMAIL_HREF,
   CONTACT_EMAIL_HREF,
   PRODUCTION_DOMAIN
@@ -24,7 +25,7 @@ export async function sendEmails(
   { emailClient, db, redis },
   action // result from db.post (so `action.result` is defined)
 ) {
-  let subject, text;
+  let to, subject, text;
 
   switch (action['@type']) {
     case 'RegisterAction':
@@ -37,6 +38,7 @@ export async function sendEmails(
           role => role['@type'] === 'AnonymousReviewerRole'
         );
 
+        to = unprefix(CONTACT_EMAIL_HREF);
         subject = 'New user registration';
         text = `Hello,
 
@@ -52,6 +54,7 @@ Have a good day!
 
     case 'ReportRapidPREreviewAction': {
       const reviewAction = action.result;
+      to = unprefix(CONTACT_EMAIL_HREF);
       subject = 'New moderation report';
       text = `Hello,
 
@@ -72,6 +75,9 @@ Have a good day!
     }
 
     case 'RapidPREreviewAction': {
+      // TODO generalize
+
+      to = unprefix(CONTACT_EMAIL_HREF);
       subject = 'New Rapid PREreview';
       text = `Hello,
 
@@ -93,6 +99,7 @@ Have a good day!
     }
 
     case 'RequestForRapidPREreviewAction': {
+      to = unprefix(CONTACT_EMAIL_HREF);
       subject = 'New Request for Rapid PREreview';
       text = `Hello,
 
@@ -110,17 +117,44 @@ Have a good day!
       break;
     }
 
+    case 'UpdateContactPointAction': {
+      if (
+        action.result.contactPoint &&
+        action.result.contactPoint.email &&
+        action.result.contactPoint.token &&
+        action.result.contactPoint.token['@type'] ===
+          'ContactPointVerificationToken' &&
+        action.result.contactPoint.token.value &&
+        action.result.contactPoint.token.dateCreated ===
+          action.result.dateModified
+      ) {
+        to = unprefix(action.result.contactPoint.email);
+        subject = `Verify your email address for {ORG}`;
+        text = `Hello,
+
+We need to verify that this email address belongs to you and that you want to use it to receive notifications from ${ORG}.
+If that is the case, please click on the following link: ${PRODUCTION_DOMAIN}/verify?token=${action.result.contactPoint.token.value}
+
+Otherwise you can ignore that email.
+
+Have a good day!
+        `;
+      }
+      break;
+    }
+
     default:
       break;
   }
 
-  if (subject || text) {
+  if (to && (subject || text)) {
     return [
       emailClient.send({
         from: unprefix(SENDER_EMAIL_HREF),
-        to: unprefix(CONTACT_EMAIL_HREF),
+        to,
         subject,
-        text
+        text,
+        isMultiple: !!(Array.isArray(to) && to.length > 1)
       })
     ];
   }
