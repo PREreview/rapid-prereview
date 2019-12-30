@@ -87,7 +87,7 @@ Have a good day!
       messages.push({
         from: unprefix(SENDER_EMAIL_HREF),
         to: unprefix(CONTACT_EMAIL_HREF),
-        subject: `New Request for Rapid PREreview for ${action.object.name}`,
+        subject: `New Rapid PREreview for "${action.object.name}"`,
         text: `Hello,
 
 A new Rapid PREreview was just posted.

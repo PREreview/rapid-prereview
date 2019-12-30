@@ -2,7 +2,7 @@ import assert from 'assert';
 import omit from 'lodash/omit';
 import { QUESTIONS } from '../src/constants';
 import DB from '../src/db/db';
-import { getId } from '../src/utils/jsonld';
+import { getId, arrayify, unprefix } from '../src/utils/jsonld';
 import { createRandomOrcid } from '../src/utils/orcid';
 import {
   createPreprintServer,
@@ -119,9 +119,17 @@ describe('email utils', function() {
     );
   });
 
-  it.skip('should create emails so that requesters are notified when reviews are created', async () => {
+  it('should create emails so that requesters are notified when reviews are created', async () => {
     const messages = await createEmailMessages({ db }, reviewAction);
-    console.log(require('util').inspect(messages, { depth: null }));
+    // console.log(require('util').inspect(messages, { depth: null }));
+    assert.equal(messages.length, 2);
+    assert(
+      messages.some(message =>
+        arrayify(message.to).some(
+          email => email === unprefix(requester.contactPoint.email)
+        )
+      )
+    );
   });
 
   after(done => {
