@@ -22,7 +22,9 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
           type="review"
           value={
             params.has('minimumReviews')
-              ? parseInt(params.get('minimumReviews'), 10)
+              ? params.get('minimumReviews') === 'false'
+                ? 0
+                : parseInt(params.get('minimumReviews'), 10)
               : null
           }
           range={ranges.nReviews}
@@ -32,7 +34,14 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
 
             const search = createPreprintQs(
               {
-                nReviews: e.target.checked ? minReviews : null
+                nReviews:
+                  e.target.name === '0'
+                    ? e.target.checked
+                      ? 'false'
+                      : null
+                    : e.target.checked
+                    ? minReviews
+                    : null
               },
               location.search
             );
@@ -53,7 +62,9 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
           type="request"
           value={
             params.has('minimumRequests')
-              ? parseInt(params.get('minimumRequests'), 10)
+              ? params.get('minimumRequests') === 'false'
+                ? 0
+                : parseInt(params.get('minimumRequests'), 10)
               : null
           }
           range={ranges.nRequests}
@@ -63,7 +74,14 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
 
             const search = createPreprintQs(
               {
-                nRequests: e.target.checked ? minRequests : null
+                nRequests:
+                  e.target.name === '0'
+                    ? e.target.checked
+                      ? 'false'
+                      : null
+                    : e.target.checked
+                    ? minRequests
+                    : null
               },
               location.search
             );

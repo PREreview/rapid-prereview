@@ -19,22 +19,6 @@ const ddoc = {
       reduce: '_count'
     },
 
-    actionsByObjectIdAndType: {
-      map: function(doc) {
-        if (
-          doc.object &&
-          (doc['@type'] === 'RapidPREreviewAction' ||
-            doc['@type'] === 'RequestForRapidPREreviewAction')
-        ) {
-          var objectId = doc.object['@id'] || doc.object;
-          if (typeof objectId === 'string') {
-            emit([objectId, doc['@type']], null);
-          }
-        }
-      },
-      reduce: '_count'
-    },
-
     byType: {
       map: function(doc) {
         if (

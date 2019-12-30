@@ -59,8 +59,8 @@ export default function RangeFacet({
     <div className="range-facet">
       <div className="range-facet__bars">
         <div className="range-facet__ruling-line" />
-        {[1, 2, 3, 4, 5].map(i => {
-          const key = `${i}+`;
+        {[0, 1, 2, 3, 4, 5].map(i => {
+          const key = i === 0 ? `${i}` : `${i}+`;
           const checked = value === i;
           const na =
             (!eRange && !prevRangeRef.current) ||
@@ -94,9 +94,6 @@ export default function RangeFacet({
                       height: `${height}em`
                     }}
                   >
-                    {/*eRange &&
-                        eRange[key] > 0 &&
-                        (checked ? <MdCheckBox /> : <MdCheckBoxOutlineBlank />)*/}
                     <span className="range-facet__count-text">
                       {na ? '' : eRange[key]}
                     </span>
@@ -129,13 +126,14 @@ RangeFacet.propTypes = {
   isFetching: PropTypes.bool,
   type: PropTypes.oneOf(['review', 'request']).isRequired,
   range: PropTypes.shape({
+    '0': PropTypes.number,
     '1+': PropTypes.number,
     '2+': PropTypes.number,
     '3+': PropTypes.number,
     '4+': PropTypes.number,
     '5+': PropTypes.number
   }),
-  value: PropTypes.oneOf([1, 2, 3, 4, 5]),
+  value: PropTypes.oneOf([0, 1, 2, 3, 4, 5]),
   onChange: PropTypes.func.isRequired
 };
 

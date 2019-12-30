@@ -1,7 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { CONTACT_EMAIL_HREF, ORG } from '../constants';
-import { unprefix } from '../utils/jsonld';
+import { ORG } from '../constants';
 import Org from './org';
 import WellcomeLogo from '../svgs/wellcome-logo-black.svg';
 
@@ -43,7 +42,7 @@ export default function About() {
         <p>
           <a href="https://v2.prereview.org/">PREreview</a> is an open project
           fiscally sponsored by the non-profit organization Code for Science &
-          Society. PREreview's mission is to increase diversity in the scholarly
+          Society. PREreview’s mission is to increase diversity in the scholarly
           peer review process by empowering all researchers to engage with
           preprint reviews.
         </p>

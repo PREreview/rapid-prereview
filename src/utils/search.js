@@ -118,14 +118,26 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
     anded.push(`hasReviews:${ui.get('reviews')}`);
   }
   if (ui.has('minimumReviews')) {
-    anded.push(`nReviews:[${ui.get('minimumReviews')} TO Infinity]`);
+    const nReviews = ui.get('minimumReviews');
+    if (nReviews === 'false' && !ui.has('reviews')) {
+      anded.push(`hasReviews:false`);
+    } else {
+      anded.push(`nReviews:[${ui.get('minimumReviews')} TO Infinity]`);
+    }
   }
+
   if (ui.has('requests')) {
     anded.push(`hasRequests:${ui.get('requests')}`);
   }
   if (ui.has('minimumRequests')) {
-    anded.push(`nRequests:[${ui.get('minimumRequests')} TO Infinity]`);
+    const nRequests = ui.get('minimumRequests');
+    if (nRequests === 'false' && !ui.has('requests')) {
+      anded.push(`hasRequests:false`);
+    } else {
+      anded.push(`nRequests:[${ui.get('minimumRequests')} TO Infinity]`);
+    }
   }
+
   if (ui.has('data')) {
     anded.push(`hasData:${ui.get('data')}`);
   }
@@ -214,6 +226,7 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
     'ranges',
     JSON.stringify({
       nReviews: {
+        '0': '[0 TO 1}',
         '1+': '[1 TO Infinity]',
         '2+': '[2 TO Infinity]',
         '3+': '[3 TO Infinity]',
@@ -221,6 +234,7 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
         '5+': '[5 TO Infinity]'
       },
       nRequests: {
+        '0': '[0 TO 1}',
         '1+': '[1 TO Infinity]',
         '2+': '[2 TO Infinity]',
         '3+': '[3 TO Infinity]',
@@ -233,7 +247,6 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   api.set('limit', 10);
 
   // cache key
-  // TODO only set if `nReviews` and `nRequests` are set to default
   if (api.get('q') === '*:*' && !bookmark) {
     api.set('key', `home:${ui.get('sort') || 'score'}`);
   }
