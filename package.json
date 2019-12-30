@@ -169,7 +169,7 @@
     "@cloudant/couchbackup": "^2.5.1",
     "@storybook/addon-actions": "^5.2.8",
     "@storybook/react": "^5.2.8",
-    "@svgr/webpack": "^4.3.3",
+    "@svgr/webpack": "^5.0.1",
     "assets-webpack-plugin": "^3.9.10",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
@@ -207,11 +207,11 @@
     "@babel/polyfill": "^7.7.0",
     "@babel/runtime": "^7.7.7",
     "@cloudant/cloudant": "^4.2.3",
-    "@reach/combobox": "^0.6.4",
-    "@reach/dialog": "^0.6.4",
-    "@reach/menu-button": "^0.6.4",
-    "@reach/tooltip": "^0.6.4",
-    "@reach/visually-hidden": "^0.6.2",
+    "@reach/combobox": "^0.7.0",
+    "@reach/dialog": "^0.7.0",
+    "@reach/menu-button": "^0.7.0",
+    "@reach/tooltip": "^0.7.0",
+    "@reach/visually-hidden": "^0.7.0",
     "@sendgrid/mail": "^6.4.0",
     "ajv": "^6.10.2",
     "classnames": "^2.2.6",
@@ -259,6 +259,6 @@
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "uuid": "^3.3.3",
-    "xmldom": "^0.1.27"
+    "xmldom": "^0.2.1"
   }
 }
