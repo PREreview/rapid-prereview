@@ -11,7 +11,7 @@ import { unprefix, getId } from '../utils/jsonld';
 import resolve from '../utils/resolve';
 import { cache, invalidate } from '../middlewares/cache';
 import parseApiKey from '../middlewares/parse-api-key';
-import { sendEmails } from '../utils/email';
+import { createEmailMessages } from '../utils/email';
 import { createContactPointId } from '../utils/ids';
 
 const jsonParser = bodyParser.json({ limit: '2mb' });
@@ -242,13 +242,19 @@ router.post(
     // email
     const emailClient = req.app.get('emailClient');
     if (emailClient) {
+      let messages;
       try {
-        await sendEmails(
-          { emailClient, redisClient: req.app.get('redisClient'), db: req.db },
-          body
-        );
+        messages = await createEmailMessages({ db: req.db }, body);
       } catch (err) {
-        req.log.error({ err }, 'error sending email');
+        req.log.error({ err }, 'error creating emails');
+      }
+
+      for (const message of messages) {
+        try {
+          await emailClient.send(message);
+        } catch (err) {
+          req.log.error({ err, message }, 'error sending email message');
+        }
       }
     }
   }

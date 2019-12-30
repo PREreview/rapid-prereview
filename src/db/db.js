@@ -335,6 +335,16 @@ export default class DB {
     return row.doc;
   }
 
+  async getUsersByRoleIds(roleIds) {
+    const body = await this.users.view('ddoc-users', 'usersByRoleId', {
+      keys: roleIds,
+      include_docs: true,
+      reduce: false
+    });
+
+    return body.rows.map(row => row.doc);
+  }
+
   async getUserByContactPointVerificationToken(token) {
     const body = await this.users.view(
       'ddoc-users',
@@ -371,8 +381,20 @@ export default class DB {
 
   async getActionsByPreprintId(preprintId) {
     preprintId = getId(preprintId);
-    const body = await this.docs.view('ddoc-docs', 'actionsByPreprintId', {
-      key: preprintId,
+    const body = await this.docs.view('ddoc-docs', 'actionsByObjectIdAndType', {
+      startkey: [preprintId],
+      endkey: [preprintId, '\ufff0'],
+      include_docs: true,
+      reduce: false
+    });
+
+    return body.rows.map(row => row.doc);
+  }
+
+  async getRequestsByPreprintId(preprintId) {
+    preprintId = getId(preprintId);
+    const body = await this.docs.view('ddoc-docs', 'actionsByObjectIdAndType', {
+      key: [preprintId, 'RequestForRapidPREreviewAction'],
       include_docs: true,
       reduce: false
     });
