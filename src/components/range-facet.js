@@ -64,7 +64,9 @@ export default function RangeFacet({
           const checked = value === i;
           const na =
             (!eRange && !prevRangeRef.current) ||
-            (!prevUnfilteredRangeRef.current && hasOneSelected && i < value);
+            (!prevUnfilteredRangeRef.current &&
+              hasOneSelected &&
+              (i < value || (value === 0 && i > value)));
 
           const height = `${(eRange && eRange[key] ? 1.3 : 0) +
             rescale(eRange && eRange[key], { min, max })}`;

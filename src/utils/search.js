@@ -93,6 +93,8 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   }
 
   const anded = [];
+  const drilldown = [];
+
   if (ui.has('q')) {
     const q = ui.get('q');
     const splt = q.split(/(\s+)/);
@@ -117,11 +119,17 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   if (ui.has('reviews')) {
     anded.push(`hasReviews:${ui.get('reviews')}`);
   }
+
   if (ui.has('minimumReviews')) {
     const nReviews = ui.get('minimumReviews');
     if (nReviews === 'false' && !ui.has('reviews')) {
+      //drilldown.push(['nReviews', '[0 TO 1}']);
       anded.push(`hasReviews:false`);
     } else {
+      //drilldown.push([
+      //  'nReviews',
+      //  `[${ui.get('minimumReviews')} TO Infinity]`
+      //]);
       anded.push(`nReviews:[${ui.get('minimumReviews')} TO Infinity]`);
     }
   }
@@ -129,11 +137,17 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   if (ui.has('requests')) {
     anded.push(`hasRequests:${ui.get('requests')}`);
   }
+
   if (ui.has('minimumRequests')) {
     const nRequests = ui.get('minimumRequests');
     if (nRequests === 'false' && !ui.has('requests')) {
+      //drilldown.push(['nRequests', '[0 TO 1}']);
       anded.push(`hasRequests:false`);
     } else {
+      //drilldown.push([
+      //  'nRequests',
+      //  `[${ui.get('minimumRequests')} TO Infinity]`
+      //]);
       anded.push(`nRequests:[${ui.get('minimumRequests')} TO Infinity]`);
     }
   }
@@ -151,6 +165,13 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
       subjects.length === 1
         ? `subjectName:"${subjects[0]}"`
         : `(${subjects.map(s => `subjectName:"${s}"`).join(' OR ')})`
+    );
+  }
+
+  if (drilldown.length) {
+    api.set(
+      'drilldown',
+      JSON.stringify(drilldown.length === 1 ? drilldown[0] : drilldown)
     );
   }
 
@@ -247,7 +268,7 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   api.set('limit', 10);
 
   // cache key
-  if (api.get('q') === '*:*' && !bookmark) {
+  if (api.get('q') === '*:*' && !bookmark && !api.has('drilldown')) {
     api.set('key', `home:${ui.get('sort') || 'score'}`);
   }
 
