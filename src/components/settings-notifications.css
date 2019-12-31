@@ -1,0 +1,40 @@
+.settings-notifications__notice {
+  box-sizing: border-box;
+  font: var(--ui-basic-font);
+  color: var(--ui-basic-font-color--light);
+  margin-top: var(--lgrd);
+  border: 1px solid var(--ruling-color);
+  padding: var(--xsgrd);
+  border-radius: var(--xxsgrd);
+  display: flex;
+  align-items: center;
+}
+
+.settings-notifications__notice-icon {
+  margin-right: var(--xsgrd);
+  height: var(--sgrd);
+  width: var(--sgrd);
+  flex: 0 0 var(--sgrd);
+}
+
+.settings-notifications__toggle {
+  margin-top: var(--sgrd);
+  margin-bottom: var(--sgrd);
+  display: flex;
+  align-items: center;
+  & .toggle-switch {
+    margin-left: auto;
+  }
+}
+
+.settings-notifications__email {
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: var(--sgrd);
+  & .text-input {
+    width: 100%;
+  }
+  & .icon-button {
+    margin-left: auto;
+  }
+}

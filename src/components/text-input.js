@@ -1,4 +1,5 @@
 import React, { useState, createRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import noop from 'lodash/noop';
 
@@ -6,6 +7,7 @@ export default function TextInput({
   label,
   inputId,
   className,
+  type = 'text',
   minimal = false,
   onChange = noop,
   ...inputProps
@@ -39,7 +41,7 @@ export default function TextInput({
         className="text-input__input"
         ref={inputRef}
         id={inputId}
-        type="text"
+        type={type}
         onChange={e => {
           if (e.currentTarget.value) {
             setEmpty(false);
@@ -53,3 +55,12 @@ export default function TextInput({
     </div>
   );
 }
+
+TextInput.propTypes = {
+  type: PropTypes.string,
+  label: PropTypes.any,
+  inputId: PropTypes.string,
+  className: PropTypes.string,
+  minimal: PropTypes.bool,
+  onChange: PropTypes.func
+};

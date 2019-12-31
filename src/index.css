@@ -63,6 +63,7 @@
 @import './components/settings.css';
 @import './components/settings-api.css';
 @import './components/settings-roles.css';
+@import './components/settings-notifications.css';
 @import './components/subject-editor.css';
 @import './components/suspense-loading.css';
 @import './components/tag-pill.css';
@@ -72,3 +73,4 @@
 @import './components/toc-page.css';
 @import './components/welcome-modal.css';
 @import './components/range-facet.css';
+@import './components/toggle-switch.css';

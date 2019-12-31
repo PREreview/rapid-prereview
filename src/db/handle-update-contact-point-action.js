@@ -49,6 +49,7 @@ export default async function handleUpdateContactPointAction(
           value: crypto.randomBytes(16).toString('hex'),
           dateCreated: now // used for email logic: if `token.dateCreated` === `user.dateModified`, we send an email
         },
+        active: false,
         dateVerified: null
       },
       nextUser.contactPoint,

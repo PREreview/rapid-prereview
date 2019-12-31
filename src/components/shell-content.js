@@ -146,6 +146,24 @@ export default function ShellContent({
             user={user}
             showNotice={showProfileNotice}
           >
+            {showProfileNotice && (
+              <MenuLink
+                as={process.env.IS_EXTENSION ? undefined : Link}
+                to={process.env.IS_EXTENSION ? undefined : '/settings'}
+                href={
+                  process.env.IS_EXTENSION
+                    ? `${process.env.API_URL}/settings`
+                    : undefined
+                }
+                target={process.env.IS_EXTENSION ? '_blank' : undefined}
+              >
+                Complete Profile
+                <div className="menu__link-item__icon">
+                  <NoticeBadge />
+                </div>
+              </MenuLink>
+            )}
+
             <MenuLink
               as={process.env.IS_EXTENSION ? undefined : Link}
               to={process.env.IS_EXTENSION ? undefined : '/settings'}
@@ -156,12 +174,7 @@ export default function ShellContent({
               }
               target={process.env.IS_EXTENSION ? '_blank' : undefined}
             >
-              {showProfileNotice ? 'Complete Profile' : 'Profile Settings'}
-              {showProfileNotice && (
-                <div className="menu__link-item__icon">
-                  <NoticeBadge />
-                </div>
-              )}
+              User Settings
             </MenuLink>
 
             {user.isAdmin && (
