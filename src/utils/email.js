@@ -113,7 +113,13 @@ Have a good day!
 
       const to = uniq(
         users
-          .filter(user => user.contactPoint && user.contactPoint.email)
+          .filter(
+            user =>
+              user.contactPoint &&
+              user.contactPoint.email &&
+              user.contactPoint.dateVerified &&
+              user.contactPoint.active
+          )
           .map(user => unprefix(user.contactPoint.email))
       );
 
@@ -137,7 +143,9 @@ You can view:
           )}
 
 Have a good day!
-        `,
+
+PS: You can turn off those notifications from the settings page: ${PRODUCTION_DOMAIN}/settings.
+          `,
           isMultiple: !!(to.length > 1)
         });
       }

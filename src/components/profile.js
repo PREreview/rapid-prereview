@@ -13,10 +13,6 @@ import NotFound from './not-found';
 import { ORG } from '../constants';
 import { unprefix } from '../utils/jsonld';
 
-// TODO:
-// - other public persona + number of private persona
-// - latest activity (with counts of rapid PREreviews and counts of request for rapid PREreviews)
-
 export default function Profile() {
   const { roleId: unprefixedRoleId } = useParams();
   const roleId = `role:${unprefixedRoleId}`;
@@ -33,7 +29,7 @@ export default function Profile() {
     orcid = unprefix(userId);
   }
 
-  if (fetchRoleProgress.error && fetchRoleProgress.error.statusCode >= 404) {
+  if (fetchRoleProgress.error && fetchRoleProgress.error.statusCode >= 400) {
     return <NotFound />;
   }
 

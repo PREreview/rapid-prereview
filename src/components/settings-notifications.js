@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useLocation, useHistory } from 'react-router-dom';
 import { MdInfoOutline, MdWarning, MdCheck } from 'react-icons/md';
-import { unprefix } from '../utils/jsonld';
+import { getId, unprefix } from '../utils/jsonld';
 import { usePostAction } from '../hooks/api-hooks';
 import ToggleSwitch from './toggle-switch';
 import TextInput from './text-input';
@@ -9,15 +10,31 @@ import Controls from './controls';
 import Button from './button';
 import IconButton from './icon-button';
 import Modal from './modal';
+import { createContactPointId } from '../utils/ids';
 
 export default function SettingsNotifications({ user }) {
+  const history = useHistory();
+  const location = useLocation();
   const contactPoint = user.contactPoint || {};
   const [email, setEmail] = useState(unprefix(contactPoint.email || ''));
   const [isEmailValid, setIsEmailValid] = useState(true);
 
+  const params = new URLSearchParams(location.search);
+
   const [postEmail, postEmailProgress] = usePostAction();
   const [postActive, postActiveProgress] = usePostAction();
-  const [modalType, setModalType] = useState(null);
+  const [modalType, setModalType] = useState(
+    params.get('verified') === 'true' ? 'checked' : null
+  );
+
+  function handleClose() {
+    if (params.has('verified')) {
+      history.replace({
+        pathname: location.pathname
+      });
+    }
+    setModalType(null);
+  }
 
   return (
     <section className="settings-notifications settings__section">
@@ -28,7 +45,9 @@ export default function SettingsNotifications({ user }) {
 
         <span>
           Enabling notifications ensures that you receive an email every time a
-          review is added to a preprint for which you requested reviews.
+          review is added to a preprint for which you requested reviews. The
+          email provided will only be used for notifications and will never be
+          shared.
         </span>
       </p>
 
@@ -39,7 +58,16 @@ export default function SettingsNotifications({ user }) {
           disabled={postEmailProgress.isActive || postActiveProgress.isActive}
           checked={contactPoint.active || false}
           onChange={e => {
-            console.log('TODO');
+            postActive({
+              '@type': 'UpdateContactPointAction',
+              agent: getId(user),
+              actionStatus: 'CompletedActionStatus',
+              object: createContactPointId(user),
+              payload: {
+                contactType: 'notifications',
+                active: !contactPoint.active
+              }
+            });
           }}
         />
       </div>
@@ -80,35 +108,41 @@ export default function SettingsNotifications({ user }) {
             postActiveProgress.isActive
           }
           isWaiting={postEmailProgress.isActive}
+          onClick={() => {
+            postEmail(
+              {
+                '@type': 'UpdateContactPointAction',
+                agent: getId(user),
+                actionStatus: 'CompletedActionStatus',
+                object: createContactPointId(user),
+                payload: {
+                  contactType: 'notifications',
+                  active: !!contactPoint.active,
+                  email: `mailto:${email}`
+                }
+              },
+              action => {
+                setModalType('verifying');
+              }
+            );
+          }}
         >
           {contactPoint.email ? 'Update' : 'Submit'}
         </Button>
       </Controls>
 
       {!!modalType && (
-        <Modal
-          title="Info"
-          showCloseButton={true}
-          onClose={() => {
-            setModalType(null);
-          }}
-        >
+        <Modal title="Info" showCloseButton={true} onClose={handleClose}>
           <p>
             {modalType === 'checked'
               ? 'The email address was successfully verified.'
-              : modalType === 'verify'
+              : modalType === 'verifying'
               ? 'An email with a verification link has been sent and we are waiting for you to click on it.'
               : 'An email must be set to be able to receive notifications'}
           </p>
 
           <Controls>
-            <Button
-              onClick={() => {
-                setModalType(null);
-              }}
-            >
-              Close
-            </Button>
+            <Button onClick={handleClose}>Close</Button>
           </Controls>
         </Modal>
       )}

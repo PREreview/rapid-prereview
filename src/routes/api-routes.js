@@ -299,11 +299,7 @@ router.get('/verify', parseQuery, invalidate(), async (req, res, next) => {
 
   req.invalidate(body);
 
-  res.redirect(
-    `/settings?verified=true&contact-point=${unprefix(
-      getId(createContactPointId(getId(user)))
-    )}`
-  );
+  res.redirect('/settings?verified=true');
 });
 
 /**
