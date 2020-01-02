@@ -114,7 +114,7 @@
   & .barplot__question {
     width: 50%;
     text-align: left;
-    padding: var(--sgrd) var(--sgrd) var(--sgrd) var(--xsgrd);
+    padding: var(--xsgrd) var(--sgrd) var(--xsgrd) var(--xsgrd);
     box-sizing: border-box;
   }
 

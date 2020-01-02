@@ -85,6 +85,9 @@
 
     &.range-facet__label--disabled {
       cursor: default;
+      & .range-facet__count {
+        pointer-events: none;
+      }
     }
 
     &.range-facet__label--active {
@@ -94,6 +97,16 @@
         background-color: var(--prereview-grey);
         color: var(--prereview-white);
       }
+    }
+  }
+  & .range-facet__caption {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  & .range-facet__ruling-line + .range-facet__segment {
+    & .range-facet__caption {
+      border-right: 2px solid var(--xlight-grey);
     }
   }
 }

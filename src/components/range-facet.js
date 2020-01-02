@@ -74,7 +74,7 @@ export default function RangeFacet({
           const maxHeight = 2.3;
 
           return (
-            <div key={key}>
+            <div key={key} className="range-facet__segment">
               <Tooltip
                 label={`Number of preprints with at least ${i} ${type}${
                   i > 1 ? 's' : ''
