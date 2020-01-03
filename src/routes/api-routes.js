@@ -7,12 +7,13 @@ import omit from 'lodash/omit';
 import { QUESTIONS } from '../constants';
 import { createError } from '../utils/errors';
 import parseQuery from '../middlewares/parse-query';
-import { unprefix, getId } from '../utils/jsonld';
+import { getId } from '../utils/jsonld';
 import resolve from '../utils/resolve';
 import { cache, invalidate } from '../middlewares/cache';
 import parseApiKey from '../middlewares/parse-api-key';
 import { createEmailMessages } from '../utils/email';
 import { createContactPointId } from '../utils/ids';
+import { omitPrivate } from '../utils/actions';
 
 const jsonParser = bodyParser.json({ limit: '2mb' });
 
@@ -237,7 +238,7 @@ router.post(
 
     req.invalidate(body);
 
-    res.json(body);
+    res.json(omitPrivate(body));
 
     // email
     const emailClient = req.app.get('emailClient');

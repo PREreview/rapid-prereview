@@ -71,10 +71,9 @@ export default async function handleUpdateContactPointAction(
 
   const resp = await this.users.insert(nextUser, getId(nextUser));
 
-  if (strict) {
-    delete nextUser.contactPoint.token;
-  }
-
+  // Note: we return the `token` here so that it can be used for the
+  // verification email.
+  // `token` is removed in the API route with the `omitPrivate` util
   return Object.assign({}, action, {
     result: Object.assign({}, nextUser, {
       _id: resp.id,

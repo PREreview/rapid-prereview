@@ -1,3 +1,4 @@
+import omit from 'lodash/omit';
 import uniqWith from 'lodash/uniqWith';
 import { QUESTIONS } from '../constants';
 import { getId, unprefix, arrayify } from '../utils/jsonld';
@@ -94,4 +95,18 @@ export function getUniqueModerationActions(
   }).sort((a, b) => {
     return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
   });
+}
+
+export function omitPrivate(action) {
+  switch (action['@type']) {
+    case 'UpdateContactPointAction':
+      return Object.assign({}, action, {
+        result: Object.assign({}, action.result, {
+          contactPoint: omit(action.result.contactPoint, ['token'])
+        })
+      });
+
+    default:
+      return action;
+  }
 }

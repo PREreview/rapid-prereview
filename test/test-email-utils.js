@@ -64,7 +64,7 @@ describe('email utils', function() {
           active: true
         }
       },
-      { user: requester, strict: false }
+      { user: requester }
     );
 
     requester = updateContactPointAction.result;

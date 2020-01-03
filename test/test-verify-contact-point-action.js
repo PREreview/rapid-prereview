@@ -36,7 +36,7 @@ describe('VerifyContactPointAction', function() {
           active: true
         }
       },
-      { user, strict: false }
+      { user }
     );
 
     user = updateAction.result;

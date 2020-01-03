@@ -190,12 +190,12 @@ Have a good day!
         messages.push({
           from: unprefix(SENDER_EMAIL_HREF),
           to: unprefix(action.result.contactPoint.email),
-          subject: `Verify your email address for {ORG}`,
+          subject: `Verify your email address for ${ORG}`,
           text: `Hello,
 
 We need to verify that this email address belongs to you and that you want to use it to receive notifications from ${ORG}.
 
-If that is the case, please click on the following link: ${PRODUCTION_DOMAIN}/verify?token=${action.result.contactPoint.token.value}.
+If that is the case, please click on the following link: ${PRODUCTION_DOMAIN}/api/verify?token=${action.result.contactPoint.token.value}.
 
 Otherwise, you can ignore this email.
 

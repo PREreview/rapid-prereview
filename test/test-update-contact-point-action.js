@@ -38,7 +38,7 @@ describe('UpdateContactPointAction', function() {
           active: true
         }
       },
-      { user, now, strict: false }
+      { user, now }
     );
 
     // console.log(require('util').inspect(createAction, { depth: null }));
@@ -64,7 +64,7 @@ describe('UpdateContactPointAction', function() {
           active: true
         }
       },
-      { user, now, strict: false }
+      { user, now }
     );
 
     assert(updateAction.result.contactPoint.token.value);
@@ -77,24 +77,5 @@ describe('UpdateContactPointAction', function() {
     assert.equal(updateAction.result.dateModified, now);
 
     // console.log(require('util').inspect(updateAction, { depth: null }));
-  });
-
-  it('should not leak the token in strict mode', async () => {
-    const action = await db.post(
-      {
-        '@type': 'UpdateContactPointAction',
-        agent: getId(user),
-        actionStatus: 'CompletedActionStatus',
-        object: createContactPointId(user),
-        payload: {
-          contactType: 'notifications',
-          email: 'mailto:me@example.com',
-          active: true
-        }
-      },
-      { user }
-    );
-
-    assert(!action.result.contactPoint.token);
   });
 });
