@@ -148,10 +148,14 @@ export default async function handleRegisterAction(
     }
     if (profile) {
       const emails = flatten(
-        arrayify(profile.emails).map(email => email.email)
+        arrayify(profile.emails)
+          .filter(email => email && email.email)
+          .map(email =>
+            flatten(arrayify(email.email).map(email => email.email))
+          )
       ).filter(Boolean);
       const email = emails[0];
-      if (email) {
+      if (email && typeof email === 'string') {
         merged.contactPoint = {
           '@type': 'ContactPoint',
           contactType: 'notifications',
