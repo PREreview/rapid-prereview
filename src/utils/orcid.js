@@ -33,7 +33,14 @@ export function createPassport(config) {
   const db = new DB(config);
 
   // see https://members.orcid.org/api/oauth/refresh-tokens
-  function verifyCallback(accessToken, refreshToken, params, profile, done) {
+  function verifyCallback(
+    req,
+    accessToken,
+    refreshToken,
+    params,
+    profile,
+    done
+  ) {
     // `profile` is empty as ORCID has no generic profile URL,
     // so populate the profile object from the params instead
     const action = {
@@ -49,9 +56,15 @@ export function createPassport(config) {
         accessToken: params.access_token || accessToken,
         refreshToken,
         tokenType: params.token_type,
-        expiresIn: params.expires_in
+        expiresIn: params.expires_in // in seconds
       })
     };
+
+    if (req && req.session && req.session.cookie && params.expires_in) {
+      req.session.cookie.expires = new Date(
+        Date.now() + params.expires_in * 1000
+      );
+    }
 
     db.post(action, {
       isAdmin:
@@ -82,7 +95,8 @@ export function createPassport(config) {
         orcid: createRandomOrcid(),
         name: 'Test User',
         isAdmin: true, // in dev mode we create admin users
-        isModerator: true
+        isModerator: true,
+        expires_in: 20 * 365 * 24 * 60 * 60 // in secs
       };
       const profile = {};
 
@@ -90,6 +104,7 @@ export function createPassport(config) {
         this.redirect(this._callbackURL);
       } else {
         this._verifyCallback(
+          req,
           accessToken,
           refreshToken,
           params,
@@ -115,7 +130,8 @@ export function createPassport(config) {
         clientID: config.orcidClientId || process.env.ORCID_CLIENT_ID,
         clientSecret:
           config.orcidClientSecret || process.env.ORCID_CLIENT_SECRET,
-        callbackURL
+        callbackURL,
+        passReqToCallback: true
       },
       verifyCallback
     );

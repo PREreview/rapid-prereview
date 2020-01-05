@@ -6,7 +6,7 @@ import { rapid, assets, ws } from './index';
 import { PRODUCTION_DOMAIN } from './constants';
 import { createRedisClient } from './utils/redis';
 
-const logger = pino({ logLevel: 'warn' });
+const logger = pino({ level: 'info' });
 
 const config = {
   cache: true,

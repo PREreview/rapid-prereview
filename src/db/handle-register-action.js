@@ -151,7 +151,11 @@ export default async function handleRegisterAction(
         arrayify(profile.emails)
           .filter(email => email && email.email)
           .map(email =>
-            flatten(arrayify(email.email).map(email => email.email))
+            flatten(
+              arrayify(email.email)
+                .filter(email => email && email.email)
+                .map(email => email.email)
+            )
           )
       ).filter(Boolean);
       const email = emails[0];

@@ -18,7 +18,7 @@ let lastDateScoreUpdated = null;
 let lastDateSynced = null;
 let lastScoreErr = null;
 
-const logger = pino({ logLevel: 'info' });
+const logger = pino({ level: 'info' });
 
 const config = {
   pino: logger,
