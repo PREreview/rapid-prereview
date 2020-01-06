@@ -28,6 +28,7 @@
     height: 20px;
     box-sizing: border-box;
     margin-right: var(--xxsgrd);
+    flex: 0 0 20px;
   }
   & .checkbox__icon {
     width: 100%;
