@@ -6,9 +6,12 @@
     border-left: 1px solid var(--xlight-grey);
     border-right: 1px solid var(--xlight-grey);
 
-    & td, th {
+    & td,
+    th {
       border-left: 1px solid var(--xlight-grey);
       border-right: 1px solid var(--xlight-grey);
+      padding: var(--xsgrd) var(--sgrd);
+      vertical-align: top;
     }
 
     & tr {
@@ -28,5 +31,11 @@
     & tr:hover {
       background-color: var(--light-grey);
     }
+  }
+  dt {
+    font-weight: 600;
+  }
+  dd {
+    margin: 0 0 var(--sgrd) 0;
   }
 }

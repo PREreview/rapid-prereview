@@ -24,7 +24,7 @@
 
   /* UI Colors */
   --ui-basic-font-color: #181818;
-  --ui-basic-font-color--light: rgb(120, 120, 120);
+  --ui-basic-font-color--light: #767676; /* lightest grey that passes WCAG AA accessability standard */
 
   --ruling-color: rgb(220, 220, 228);
   --ruling-color--light: rgb(226, 226, 235);

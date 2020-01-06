@@ -1,13 +1,14 @@
 .icon-button {
   border: none;
   padding: 0;
-  margin: 0;
+  margin: 4px; /* make room for drop shadow */
   background-color: transparent;
   height: var(--lgrd);
   width: var(--lgrd);
   cursor: pointer;
   box-shadow: none;
   border-radius: none;
+  flex: 0 0 auto;
 
   &:focus {
     outline: none;

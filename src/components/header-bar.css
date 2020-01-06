@@ -30,6 +30,7 @@
     line-height: 1.25em;
     background-color: var(--prereview-red);
     color: white;
+    text-shadow: 0px 0px 10px #eb0000; /* improve contrast for accessability */
     right: 0px;
     bottom: var(--xlgrd);
     width: 56px;

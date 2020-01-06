@@ -38,3 +38,11 @@
     margin-left: auto;
   }
 }
+.settings-notifications__email-input {
+  margin-right: var(--xsgrd);
+}
+
+.settings-notifications__email-icon {
+  width: 20px !important;
+  height: 20px !important;
+}

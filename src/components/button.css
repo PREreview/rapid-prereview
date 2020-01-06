@@ -74,6 +74,7 @@ a.button {
     color: var(--button-foreground-color--primary);
     font: var(--ui-button-font--primary);
     height: var(--lgrd);
+    text-shadow: 0px 0px 10px #eb0000; /* improve contrast for accessability */
   }
   &.button--primary.button--pill .button__contents {
     border-radius: 16px;

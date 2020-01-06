@@ -142,6 +142,7 @@ function DraggableRoleBadge({ roleId, onDropped, children, type }) {
         className={classNames('draggable-role-badge', {
           'draggable-role-badge--dragging': isDragging
         })}
+        disabled={isDragging}
       >
         {children}
       </RoleBadge>

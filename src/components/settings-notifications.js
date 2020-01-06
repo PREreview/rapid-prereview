@@ -77,6 +77,7 @@ export default function SettingsNotifications({ user }) {
           label="Email"
           type="email"
           value={email}
+          className="settings-notifications__email-input"
           onChange={e => {
             const isValid = !e.target.validity.typeMismatch;
             setEmail(e.target.value);
@@ -95,7 +96,11 @@ export default function SettingsNotifications({ user }) {
             );
           }}
         >
-          {contactPoint.dateVerified ? <MdCheck /> : <MdWarning />}
+          {contactPoint.dateVerified ? (
+            <MdCheck className="settings-notifications__email-icon" />
+          ) : (
+            <MdWarning className="settings-notifications__email-icon" />
+          )}
         </IconButton>
       </div>
 

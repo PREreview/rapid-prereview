@@ -7,6 +7,7 @@ import { DndProvider } from 'react-dnd';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import smoothscroll from 'smoothscroll-polyfill';
+import 'url-search-params-polyfill'; /* pollyfill for IE / Edge */
 import Home from './home';
 import ExtensionFallback from './extension-fallback';
 import { UserProvider } from '../contexts/user-context';

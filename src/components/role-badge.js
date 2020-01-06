@@ -10,7 +10,7 @@ import { useRole } from '../hooks/api-hooks';
 import NoticeBadge from './notice-badge';
 
 const RoleBadge = React.forwardRef(function RoleBadge(
-  { roleId, children, className, tooltip, showNotice },
+  { roleId, children, className, tooltip, showNotice, disabled },
   ref
 ) {
   const [role, fetchRoleProgress] = useRole(roleId);
@@ -24,6 +24,7 @@ const RoleBadge = React.forwardRef(function RoleBadge(
       fetchRoleProgress={fetchRoleProgress}
       className={className}
       showNotice={showNotice}
+      disabled={disabled}
     >
       {children}
     </RoleBadgeUI>
@@ -35,7 +36,8 @@ RoleBadge.propTypes = {
   roleId: PropTypes.string.isRequired,
   children: PropTypes.any,
   className: PropTypes.string,
-  showNotice: PropTypes.bool
+  showNotice: PropTypes.bool,
+  disabled: PropTypes.bool
 };
 
 export default RoleBadge;
@@ -51,7 +53,8 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
     className,
     children,
     tooltip,
-    showNotice = false
+    showNotice = false,
+    disabled = false
   },
   ref
 ) {
@@ -72,6 +75,7 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
             'role-badge-menu--loading':
               fetchRoleProgress && fetchRoleProgress.isActive
           })}
+          disabled={disabled}
         >
           {/*NOTE: the `ref` is typically used for Drag and Drop: we need 1 DOM element that will be used as the drag preview */}
           <Tooltipify tooltip={tooltip} role={role} roleId={roleId}>
@@ -90,7 +94,8 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
                     !!role &&
                     role.avatar &&
                     role.avatar.contentUrl &&
-                    (fetchRoleProgress && !fetchRoleProgress.isActive)
+                    fetchRoleProgress &&
+                    !fetchRoleProgress.isActive
                 })}
                 style={
                   role && role.avatar && role.avatar.contentUrl
@@ -107,7 +112,10 @@ const RoleBadgeUI = React.forwardRef(function RoleBadgeUI(
 
         {/* Note: MenuList is currently bugged if children is undefined hence the ternary */}
         {children ? (
-          <MenuList className="menu__list">
+          <MenuList
+            className="menu__list"
+            style={{ display: disabled ? 'none' : 'block' }}
+          >
             <MenuLink
               as={process.env.IS_EXTENSION ? undefined : Link}
               className="menu__list__link-item"
@@ -177,7 +185,8 @@ RoleBadgeUI.propTypes = {
     error: PropTypes.instanceOf(Error)
   }),
   children: PropTypes.any,
-  className: PropTypes.string
+  className: PropTypes.string,
+  disabled: PropTypes.bool
 };
 
 export { RoleBadgeUI };
