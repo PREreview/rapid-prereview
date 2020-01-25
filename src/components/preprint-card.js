@@ -129,9 +129,11 @@ export default function PreprintCard({
           </div>
           <div className="preprint-card__info-row">
             <div className="preprint-card__info-row__left">
-              <Value tagName="span" className="preprint-card__server-name">
-                {preprintServer.name}
-              </Value>
+              {!!preprintServer && (
+                <Value tagName="span" className="preprint-card__server-name">
+                  {preprintServer.name}
+                </Value>
+              )}
               <MdChevronRight className="preprint-card__server-arrow-icon" />
               <Value tagName="span" className="preprint-card__server-id">
                 {doi ? (

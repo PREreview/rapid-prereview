@@ -51,7 +51,9 @@ export default function Popup({ preprint, dispatch }) {
         <Fragment>
           <section className="popup__stats-section">
             <div className="popup__preprint-info">
-              <span>{preprint.preprintServer.name}</span>
+              {!!(preprint.preprintServer && preprint.preprintServer.name) && (
+                <span>{preprint.preprintServer.name}</span>
+              )}
               <MdChevronRight />
               <span>{preprint.doi || preprint.arXivId}</span>
             </div>
