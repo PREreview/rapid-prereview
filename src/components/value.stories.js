@@ -18,3 +18,7 @@ export function withHTML() {
     </Value>
   );
 }
+
+export function withNullOrUndefined() {
+  return <Value></Value>;
+}

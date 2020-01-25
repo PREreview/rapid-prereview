@@ -8,6 +8,10 @@ export default function Value({
   className,
   ...others
 }) {
+  if (children == null) {
+    return null;
+  }
+
   return React.createElement(
     tagName,
     Object.assign(
