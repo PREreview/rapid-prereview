@@ -521,6 +521,8 @@ export default class DB {
         INDEXED_PREPRINT_PROPS.forEach(p => {
           merged[p] = action.object[p];
         });
+        merged.sdRetrievedFields = action.object.sdRetrievedFields;
+        merged.sdDateRetrieved = action.object.sdDateRetrieved;
       }
 
       if (

@@ -27,6 +27,8 @@ export function mergePreprintConflicts(docs) {
       INDEXED_PREPRINT_PROPS.forEach(p => {
         merged[p] = doc[p];
       });
+      merged.sdRetrievedFields = doc.sdRetrievedFields;
+      merged.sdDateRetrieved = doc.sdDateRetrieved;
     }
 
     // `potentialAction`: we merge all distincts taking care to always merge
