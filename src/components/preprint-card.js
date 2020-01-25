@@ -109,9 +109,11 @@ export default function PreprintCard({
                 }}
                 className="preprint-card__title"
               >
-                <Value tagName="h2" className="preprint-card__title-text">
-                  {name}
-                </Value>
+                {!!name && (
+                  <Value tagName="h2" className="preprint-card__title-text">
+                    {name}
+                  </Value>
+                )}
                 <ShellIcon className="preprint-card__title__shell-icon" />
               </XLink>
             </div>
