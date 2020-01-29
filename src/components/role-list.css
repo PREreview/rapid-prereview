@@ -21,7 +21,7 @@
   & .role-list__clear-button {
     position: absolute;
     right: 8px;
-    top: 8px;
+    top: 4px;
     z-index: 500;
 
     & .role-list__clear-button__icon {
@@ -45,7 +45,7 @@
 
   /* scrolling hints (credits to Lea Verou in her CSS secrets book and
      http://lea.verou.me/2012/04/background-attachment-local/ */
-  background: 
+  background:
     /* left shadow cover mask (scrolls) */ linear-gradient(
       to right,
       var(--xlight-grey) 0px,
@@ -94,8 +94,4 @@
 
 .role-list--is-over {
   background-color: var(--prereview-blue);
-}
-
-.draggable-role-badge--dragging {
-  visibility: hidden;
 }

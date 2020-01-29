@@ -42,6 +42,13 @@ export default async function handleRapidPrereviewAction(
     retrieved = {};
   }
 
+  if (!retrieved.name) {
+    throw createError(
+      503,
+      `We could not find the title associated with ${identifier}, please try again later`
+    );
+  }
+
   const handledAction = Object.assign({}, action, {
     '@id': `review:${unprefix(getId(action.agent))}@${unprefix(preprintId)}`,
     startTime: now,

@@ -48,16 +48,16 @@ export default class DB {
 
     this.docsDbName =
       this.config.couchDocsDbName ||
-      process.env.COUCH_DOCS_DB_NAME ||
-      'rapid-prereview-docs';
+        process.env.COUCH_DOCS_DB_NAME ||
+        'rapid-prereview-docs';
     this.indexDbName =
       this.config.couchIndexDbName ||
-      process.env.COUCH_INDEX_DB_NAME ||
-      'rapid-prereview-index';
+        process.env.COUCH_INDEX_DB_NAME ||
+        'rapid-prereview-index';
     this.usersDbName =
       this.config.couchUsersDbName ||
-      process.env.COUCH_USERS_DB_NAME ||
-      'rapid-prereview-users';
+        process.env.COUCH_USERS_DB_NAME ||
+        'rapid-prereview-users';
 
     const cloudant = new Cloudant({
       username,
