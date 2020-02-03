@@ -37,7 +37,9 @@ export default async function handleRapidPrereviewAction(
 
   let retrieved;
   try {
-    retrieved = await resolve(identifier, this.config);
+    retrieved = await resolve(identifier, this.config, {
+      fallbackUrl: action.object.url
+    });
   } catch (err) {
     retrieved = {};
   }

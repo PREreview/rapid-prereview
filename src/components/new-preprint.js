@@ -8,7 +8,7 @@ import {
   createPreprintId,
   unversionDoi
 } from '../utils/ids';
-import { unprefix, cleanup, getId } from '../utils/jsonld';
+import { unprefix, cleanup, getId, nodeify } from '../utils/jsonld';
 import {
   usePostAction,
   usePreprint,
@@ -41,22 +41,29 @@ export default function NewPreprint({
 
   const isSingleStep = location.state && location.state.isSingleStep;
 
-  const [identifier, setIdentifier] = useState(
-    qs.get('identifier') ||
+  const [{ identifier, url }, setIdentifierAndUrl] = useState({
+    identifier:
+      qs.get('identifier') ||
       (location.state &&
         location.state.preprint &&
         location.state.preprint.doi) ||
       (location.state &&
         location.state.preprint &&
         location.state.preprint.arXivId) ||
-      ''
-  );
+      '',
+    url:
+      (location.state &&
+        location.state.preprint &&
+        location.state.preprint.url) ||
+      null
+  });
 
   const [actions, fetchActionsProgress] = usePreprintActions(identifier);
 
   const [preprint, resolvePreprintStatus] = usePreprint(
     identifier,
-    location.state && location.state.preprint
+    location.state && location.state.preprint,
+    url
   );
 
   const [action, setAction] = useState(null);
@@ -89,7 +96,10 @@ export default function NewPreprint({
           user={user}
           onCancel={onCancel}
           onStep={setStep}
-          onIdentifier={setIdentifier}
+          onIdentifier={(identifier, url = null) => {
+            console.log({ identifier, url });
+            setIdentifierAndUrl({ identifier, url });
+          }}
           identifier={identifier}
           preprint={preprint}
           resolvePreprintStatus={resolvePreprintStatus}
@@ -182,6 +192,8 @@ function StepPreprint({
   const doi = doiMatch && doiMatch[0];
   const unversionedDoi = unversionDoi(value);
 
+  const url = /^\s*https?:\/\//.test(value) ? value.trim() : undefined;
+
   return (
     <div className="new-preprint__step-preprint">
       <div className="new-preprint__input-row">
@@ -220,7 +232,7 @@ function StepPreprint({
             }
 
             if (nextIdentifier !== identifier) {
-              onIdentifier(nextIdentifier);
+              onIdentifier(nextIdentifier, url);
             }
 
             setValue(value);
@@ -243,7 +255,7 @@ function StepPreprint({
             href="#"
             onClick={e => {
               e.preventDefault();
-              onIdentifier(unversionedDoi);
+              onIdentifier(unversionedDoi, url);
               setValue(unversionedDoi);
             }}
           >
@@ -403,7 +415,9 @@ function StepReview({
                   '@type': 'RapidPREreviewAction',
                   actionStatus: 'CompletedActionStatus',
                   agent: user.defaultRole,
-                  object: createPreprintIdentifierCurie(preprint),
+                  object: Object.assign({}, nodeify(preprint), {
+                    '@id': createPreprintIdentifierCurie(preprint)
+                  }),
                   resultReview: cleanup(
                     {
                       '@type': 'RapidPREreview',
@@ -477,7 +491,9 @@ function StepRequest({
                 '@type': 'RequestForRapidPREreviewAction',
                 actionStatus: 'CompletedActionStatus',
                 agent: user.defaultRole,
-                object: createPreprintIdentifierCurie(preprint)
+                object: Object.assign({}, nodeify(preprint), {
+                  '@id': createPreprintIdentifierCurie(preprint)
+                })
               },
               onSuccess
             );

@@ -352,7 +352,7 @@ router.get(
   cors(),
   cache(req => req.query.identifier),
   async (req, res, next) => {
-    const { identifier } = req.query;
+    const { identifier, url } = req.query;
     if (!identifier) {
       return next(
         createError(400, 'missing identifier query string parameter')
@@ -362,7 +362,7 @@ router.get(
     const { config } = req.app.locals;
 
     try {
-      const data = await resolve(identifier, config);
+      const data = await resolve(identifier, config, { fallbackUrl: url });
       req.cache(data);
       res.json(data);
     } catch (err) {

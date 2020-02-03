@@ -34,7 +34,8 @@ export default function ExtensionFallback() {
 
   const [preprint, fetchPreprintProgress] = usePreprint(
     identifier,
-    location.state && location.state.preprint
+    location.state && location.state.preprint,
+    location.state && location.state.preprint && location.state.preprint.url
   );
   useExtension(preprint && createPreprintId(preprint));
 

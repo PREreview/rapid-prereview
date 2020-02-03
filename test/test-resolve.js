@@ -181,6 +181,56 @@ describe('resolve', function() {
     });
   });
 
+  describe('fallbackUrl', () => {
+    it('should use the fallback URL', async () => {
+      const data = await resolve(
+        crossrefDoi,
+        Object.assign({}, config, {
+          baseUrlDoi: `http://127.0.0.1:${port}/404/`
+        }),
+        {
+          strategy: 'htmlOnly',
+          fallbackUrl: `${config.baseUrlDoi}${unprefix(crossrefDoi)}`
+        }
+      );
+      assert.deepEqual(data, {
+        '@type': 'ScholarlyPreprint',
+        doi: unprefix(crossrefDoi),
+        name:
+          'Temporal and spatial limitations in global surveillance for bat filoviruses and henipaviruses',
+        datePosted: '2019-09-30T00:00:00.000Z',
+        preprintServer: { '@type': 'PreprintServer', name: 'bioRxiv' },
+        url: 'https://www.biorxiv.org/content/10.1101/674655v2',
+        encoding: [
+          {
+            '@type': 'MediaObject',
+            encodingFormat: 'application/pdf',
+            contentUrl:
+              'https://www.biorxiv.org/content/biorxiv/early/2019/09/30/674655.full.pdf'
+          }
+        ]
+      });
+    });
+
+    it('should 404 if the fallback URL results in a different identifier', async () => {
+      await assert.rejects(
+        resolve(
+          crossrefDoi,
+          Object.assign({}, config, {
+            baseUrlDoi: `http://127.0.0.1:${port}/404/`
+          }),
+          {
+            strategy: 'htmlOnly',
+            fallbackUrl: `${config.baseUrlDoi}${unprefix(openAireDoi)}`
+          }
+        ),
+        {
+          statusCode: 404
+        }
+      );
+    });
+  });
+
   after(done => {
     server.close(done);
   });

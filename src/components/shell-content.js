@@ -19,7 +19,7 @@ import {
   checkIfIsModerated
 } from '../utils/actions';
 import { getCounts } from '../utils/stats';
-import { getId, cleanup, unprefix } from '../utils/jsonld';
+import { getId, cleanup, unprefix, nodeify } from '../utils/jsonld';
 import { createPreprintIdentifierCurie, createPreprintId } from '../utils/ids';
 import LoginRequiredModal from './login-required-modal';
 import UserBadge from './user-badge';
@@ -542,7 +542,7 @@ function ShellContentReview({
         <Controls error={error}>
           <Button
             type="submit"
-            primary="true"
+            primary={true}
             isWaiting={isPosting}
             disabled={disabled || !canSubmit}
             onClick={() => {
@@ -550,7 +550,9 @@ function ShellContentReview({
                 '@type': 'RapidPREreviewAction',
                 actionStatus: 'CompletedActionStatus',
                 agent: getId(user.defaultRole),
-                object: createPreprintIdentifierCurie(preprint),
+                object: Object.assign({}, nodeify(preprint), {
+                  '@id': createPreprintIdentifierCurie(preprint)
+                }),
                 resultReview: cleanup(
                   {
                     '@type': 'RapidPREreview',
@@ -604,7 +606,9 @@ function ShellContentRequest({
               '@type': 'RequestForRapidPREreviewAction',
               actionStatus: 'CompletedActionStatus',
               agent: user.defaultRole,
-              object: createPreprintIdentifierCurie(preprint)
+              object: Object.assign({}, nodeify(preprint), {
+                '@id': createPreprintIdentifierCurie(preprint)
+              })
             });
           }}
         >

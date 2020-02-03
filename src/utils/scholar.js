@@ -165,7 +165,9 @@ export function parseGoogleScholar(head, { id, sourceUrl } = {}) {
   }
   const $urlMeta =
     head.querySelector('meta[name="og:url"][content]') ||
-    head.querySelector('meta[property="og:url"][content]');
+    head.querySelector('meta[property="og:url"][content]') ||
+    head.querySelector('meta[property="citation_public_url"][content]');
+
   if ($urlMeta) {
     urlFromMeta = $urlMeta.getAttribute('content');
   }

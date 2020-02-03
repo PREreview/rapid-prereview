@@ -52,6 +52,10 @@ export const openAireDoi = 'doi:10.5281/zenodo.3356153';
 export function createPreprintServer(config) {
   const app = express();
 
+  app.get('/404/*', (req, res, next) => {
+    res.status(404).json({ statusCode: 404 });
+  });
+
   Object.keys(id2paths).forEach(id => {
     const formats = id2paths[id];
     Object.keys(formats).forEach(format => {

@@ -138,7 +138,8 @@ export function usePostAction() {
  */
 export function usePreprint(
   identifier, // arXivId or DOI
-  prefetchedPreprint
+  prefetchedPreprint,
+  fallbackUrl // a URL to use in case `identifier` hasn't been registered with the DOI service yet (e.g., crossref)
 ) {
   identifier = unprefix(identifier);
 
@@ -182,7 +183,7 @@ export function usePreprint(
         fetch(
           `${process.env.API_URL}/api/resolve?identifier=${encodeURIComponent(
             identifier
-          )}`,
+          )}${fallbackUrl ? `&url=${encodeURIComponent(fallbackUrl)}` : ''}`,
           {
             signal: controller.signal
           }
@@ -227,7 +228,7 @@ export function usePreprint(
       });
       setPreprint(null);
     }
-  }, [identifier, prefetchedPreprint, preprintsWithActionsStore]);
+  }, [identifier, fallbackUrl, prefetchedPreprint, preprintsWithActionsStore]);
 
   return [preprint, progress];
 }

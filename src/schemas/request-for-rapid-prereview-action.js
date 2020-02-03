@@ -73,6 +73,11 @@ const schema = {
             arXivId: {
               type: 'string'
             },
+            url: {
+              type: 'string',
+              format: 'uri',
+              pattern: '^https?://'
+            },
             name: { $ref: '#/definitions/text' },
             datePosted: {
               type: 'string',
@@ -85,7 +90,8 @@ const schema = {
                 name: { type: 'string' }
               }
             }
-          }
+          },
+          required: ['@id']
         }
       ]
     }

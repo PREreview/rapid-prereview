@@ -200,6 +200,13 @@ export const DISEASES = [
     name: 'Nipah',
     priority: 'red'
   },
+
+  {
+    name: '2019 novel coronavirus',
+    alternateName: '2019-nCoV',
+    priority: 'red'
+  },
+
   {
     name: 'Plague',
     priority: 'yellow'

@@ -34,15 +34,20 @@ export default async function handleRequestForRapidPrereviewAction(
 
   let retrieved;
   try {
-    retrieved = await resolve(identifier, this.config);
+    retrieved = await resolve(identifier, this.config, {
+      fallbackUrl: action.object.url
+    });
   } catch (err) {
     retrieved = {};
   }
 
   if (!retrieved.name) {
-    throw createError(503, `We could not find the title associated with ${identifier}, please try again later`);
+    throw createError(
+      503,
+      `We could not find the title associated with ${identifier}, please try again later`
+    );
   }
-  
+
   const handledAction = Object.assign({}, action, {
     '@id': `request:${unprefix(getId(action.agent))}@${unprefix(preprintId)}`,
     startTime: now,

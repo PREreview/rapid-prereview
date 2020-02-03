@@ -20,7 +20,8 @@ export default async function resolve(
     baseUrlDoi = 'https://doi.org/'
   } = {},
   {
-    strategy = 'all' // `htmlOnly`, `apiOnly`
+    strategy = 'all', // `htmlOnly`, `apiOnly`
+    fallbackUrl // The URL of the canonical HTML version of the article. This is so that if the DOI service is down or hasn't acknowledge the DOI yet we can still get metadata
   } = {}
 ) {
   id = getIdentifierFromPdfUrl(id) || id;
@@ -36,7 +37,11 @@ export default async function resolve(
   if (doi) {
     if (strategy === 'all' || strategy === 'htmlOnly') {
       try {
-        htmlData = await resolveFromHTML(`${baseUrlDoi}${doi}`, doi);
+        htmlData = await resolveFromHTML(
+          `${baseUrlDoi}${doi}`,
+          doi,
+          fallbackUrl
+        );
       } catch (err) {
         if (strategy === 'htmlOnly') {
           throw err;
@@ -276,20 +281,61 @@ async function resolveOpenAireDoi(
  * See https://scholar.google.com/intl/en/scholar/inclusion.html#indexing
  * we also fallback on some open graph properties and <link> tags
  */
-async function resolveFromHTML(htmlUrl, id) {
+async function resolveFromHTML(
+  htmlUrl,
+  id,
+  fallbackUrl // a fallback URL if `htmlUrl` doesn't resolve. This is a common issue for new content as Crossref takes some time to reflect the DOI registration
+) {
   const r = await fetch(htmlUrl, {
     headers: {
       Accept: 'text/html, application/xhtml+xml'
     }
   });
-  if (!r.ok) {
-    throw createError(r.status);
+
+  if (r.ok) {
+    const text = await r.text();
+
+    const { document } = new JSDOM(text).window;
+    const head = document.head;
+
+    return parseGoogleScholar(head, { id, sourceUrl: r.url });
+  } else {
+    if (
+      fallbackUrl &&
+      /^https?:\/\//.test(fallbackUrl) &&
+      htmlUrl !== fallbackUrl
+    ) {
+      const r = await fetch(fallbackUrl, {
+        headers: {
+          Accept: 'text/html, application/xhtml+xml'
+        }
+      });
+
+      if (r.ok) {
+        const text = await r.text();
+
+        const { document } = new JSDOM(text).window;
+        const head = document.head;
+
+        // !! we do not set `id` as option to `parseGoogleScholar` as we need to
+        // infer it to validate if the fallbackUrl lead to the same identifier as
+        /// `id`
+        const parsed = parseGoogleScholar(head, { sourceUrl: r.url });
+
+        if (parsed.doi !== id && parsed.arXivId !== id) {
+          throw createError(
+            404,
+            `Could not find ${id} when fetching ${fallbackUrl} (got ${parsed.doi ||
+              parsed.arXivId})`
+          );
+        }
+
+        return parsed;
+      } else {
+        throw createError(r.status);
+      }
+    } else {
+      throw createError(r.status);
+    }
   }
-
-  const text = await r.text();
-
-  const { document } = new JSDOM(text).window;
-  const head = document.head;
-
-  return parseGoogleScholar(head, { id, sourceUrl: r.url });
 }
