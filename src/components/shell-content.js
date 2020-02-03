@@ -278,8 +278,9 @@ export default function ShellContent({
             disabled={postProgress.isActive}
             error={
               postProgress.body &&
-              postProgress.body['@type'] === 'RequestForRapidPREreviewAction' &&
-              postProgress.error
+              postProgress.body['@type'] === 'RequestForRapidPREreviewAction'
+                ? postProgress.error
+                : undefined
             }
           />
         ) : tab === 'review' ? (
@@ -312,8 +313,9 @@ export default function ShellContent({
             disabled={postProgress.isActive}
             error={
               postProgress.body &&
-              postProgress.body['@type'] === 'RapidPREreviewAction' &&
-              postProgress.error
+              postProgress.body['@type'] === 'RapidPREreviewAction'
+                ? postProgress.error
+                : undefined
             }
           />
         ) : tab === 'review#success' ? (
