@@ -44,17 +44,32 @@ Channel](https://join.slack.com/t/prereview/shared_invite/enQtMzYwMjQzMTk3ODMxLT
 
 ### Getting started
 
-#### On a Mac (OS X)
+#### Required software
 
-1. install and setup `git`. See
-   https://help.github.com/en/github/getting-started-with-github/set-up-git to
-   help you get started.
-2. install Node.js LTS. See https://nodejs.org/en/
-3. install homebrew https://brew.sh/
-4. install redis by running `brew install redis`
-5. install docker. See https://docs.docker.com/docker-for-mac/install/
-6. install cloudant docker container by running: `docker pull
-   ibmcom/cloudant-developer`
+1. [`git`](https://git-scm.org/) is used for versioning in this project.
+
+1. [Docker](https://www.docker.com/) is used to manage services for local development.
+
+This repo also contains configuration files for Visual Studio Code's Remote Containers which reduces the need to manually execute Docker commands; see [the Visual Studio Code manual](https://code.visualstudio.com/docs/remote/containers) for more information about how to use these.
+
+#### Creating the environment
+
+1. `docker-compose -f .devcontainer/docker-compose.yml up --build`
+
+This command will keep running in the shell to display log output from all services; you can stop the server by typing Control+C.
+
+#### Running commands in the container
+
+1. `docker-compose -f .devcontainer/docker-compose.yml exec web bash`
+
+The source folder will appear in the container as `/workspace`; change to that directory before running any `npm` commands.
+You can edit these files with your preferred editor and the container will stay updated.
+
+#### Viewing logs
+1. `docker-compose -f .devcontainer/docker-compose.yml logs`
+
+You can optionally name a service whose logs you want to view; the default is to show logs for all services.
+Service names are defined in `docker-compose.yml` and include 'web', 'cache', 'db'.
 
 You should have everything needed to follow the rest of this README.
 
@@ -71,55 +86,9 @@ npm install
 If you are having permission issues with `npm` checkout
 https://docs.npmjs.com/resolving-eacces-permissions-errors-when-installing-packages-globally
 
-
-### Redis
-
-Be sure that redis is running on the default port (6379).
-For convenience you can run: `npm run redis` to start redis
-
-### Database (CouchDB 2.x + Clouseau + Dreyfus)
-
-The simplest way to get that up and running locally is to use the
-`cloudant-developer` docker container. To do so follow the instruction on:
-https://hub.docker.com/r/ibmcom/cloudant-developer/
-
-After installing docker run:
-
-```sh
-docker pull ibmcom/cloudant-developer
-```
-
-To start the container run:
-
-```sh
-docker run --detach --volume cloudant:/srv --name cloudant-developer --publish 5984:80 --hostname cloudant.dev ibmcom/cloudant-developer
-```
-
-The cloudant dashboard will be available at http://127.0.0.1:5984/dashboard.html
-
-To restart the container after quiting Docker, run:
-```sh
-docker restart cloudant-developer
-```
-
-To stop the container and remove any previous one run:
-```sh
-docker rm `docker ps --no-trunc -aq` -f
-```
-
-To view the logs run:
-```sh
-docker logs cloudant-developer
-```
-
 ### App (web server)
 
-Be sure that Cloudant and Redis are running.
-
-You can for instance open 2 terminal tabs and run `npm run redis` in one and
-`npm run cloudant` on the other.
-
-Once cloudant and redis are running run:
+Please note the section above labelled 'Running commands in the container.'
 
 ```sh
 npm run init
@@ -147,20 +116,6 @@ If you want to start from an empty state (or reset the DB to an empty state) you
 ```sh
 npm run reset
 ```
-
-#### Troubleshooting
-
-If your computer gets slow or you see error messages you can try to reboot
-everything:
-
-1. kill all the node processes (`ctr+c` in each shell)
-2. run `killal node` to be sure you no longer have node processes running
-3. kill redis (`ctrl + c` in the shell running redis) and restart it with `npm
-   run redis`
-4. restart cloudant `npm run cloudant`
-5. either run `npm run reset` or `npm run seed` to reseed the database
-6. re-run `npm start`
-
 
 ### Web extension
 
@@ -234,17 +189,13 @@ upload the generated `extension-src.zip`:
 
 ### Demoing the platform
 
-#### OSX (mac)
-
 This supposes that you have followed the instruction from the rest of this README.
 
 ##### First time
 
 Suggested steps:
-1. Open 4 tabs in a terminal and `cd` into this repository for each tab
-2. In the first tab run `npm run redis`.
-3. In the second tab run `npm run cloudant`
-4. In the third tab:
+1. Start the local services using `docker-compose`.
+1. In a shell attached to the 'web' container:
    - run `npm run seed` or `npm run reset` to either seed the database with
      sample data (or start from a clean state)
    - run `npm start` to start the web server
@@ -252,31 +203,14 @@ Suggested steps:
    your browser (see section above for instructions)
 6. You can now visit [http://127.0.0.1:3000/](http://127.0.0.1:3000/) and give a demo
 
-When you are done with the demo do:
-
-1. in the fourth tab (extension watcher) run `ctrl + c` to kill the node process.
-2. in the third tab (web server) run `ctrl + c` to kill the node process. To be
-   sure you can also run `killall node` to be sure that no zombie node processes
-   remain.
-3. in the second tab (cloudant) nothing to do (you can quit docker if you are done using it)
-4. in the first tab (redis) run `ctrl + c`
-
-Everything should now be shut down.
-
-##### Subsequent times
-
-1. Open 3 tabs in a terminal and `cd` into this repository for each tab
-2. In the first tab run `npm run redis`
-3. In the second tab run `npm run cloudant`
-4. In the third tab run `npm start`
+When you are done with the demo you can use `docker-compose down` to shut down the server.
 
 ##### Updating your local install
 
 1. `cd` into this repository
 2. run `git fetch` followed by `git merge origin/master`
-3. run `npm install`
+3. Connect a shell to the web container and run `npm install`
 4. Follow the First time instructions (see above)
-
 
 ### Storybook (components playground)
 
