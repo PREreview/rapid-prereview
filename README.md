@@ -1,3 +1,5 @@
+![OSrPRE logo](https://github.com/PREreview/rapid-prereview/OSRP-logo.png)
+
 # Welcome to Outbreak Science Rapid PREreview!
 
 ## What is it?
