@@ -1,4 +1,4 @@
-![OSrPRE logo](https://github.com/PREreview/rapid-prereview/master/OSRP-logo.png)
+![OSrPRE logo](https://github.com/PREreview/rapid-prereview/raw/master/OSRP-logo.png)
 
 # Welcome to Outbreak Science Rapid PREreview!
 
