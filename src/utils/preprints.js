@@ -54,7 +54,8 @@ export function getPdfUrl(preprint = {}) {
       encoding.contentUrl && encoding.encodingFormat === 'application/pdf'
   );
 
-  return encoding && encoding.contentUrl;
+  // doesn't seem to do anything, but FitH should set PDF view to Fit Horizontally
+  return encoding && (encoding.contentUrl+"?#view=FitH");
 }
 
 export function getCanonicalUrl(preprint = {}) {

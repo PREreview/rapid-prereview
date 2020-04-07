@@ -22,8 +22,16 @@
   & object {
     display: block; /* iframes are inline by default */
     border: none; /* Reset default border */
-    height: 100vh; /* Viewport-relative units */
-    width: 100vw;
+    @media (--narrow-screen) {
+      height: 100vh; /* Viewport-relative units */
+      width: 100vw;
+    }
+    @media (--wide-screen) {
+      position:absolute;
+      width:50%;
+      height:100%;
+      overflow-y: scroll;
+    }
   }
 
 }

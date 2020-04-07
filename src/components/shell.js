@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import { MdDragHandle, MdUnfoldMore, MdUnfoldLess } from 'react-icons/md';
 import IconButton from './icon-button';
 import RapidPreReviewLogo from './rapid-pre-review-logo';
+import { debounce } from '../utils/render';
 
 const SHELL_HEADER_HEIGHT = 40; // !! keep in sync with CSS
 
@@ -83,6 +84,13 @@ export default function Shell({ children, defaultStatus = 'default' }) {
       }
     }
 
+    function renderShellHeight() {
+      // detect if the shell is docked right
+      if (ref.current && getComputedStyle(ref.current).top === "0px") {
+        setStatus('maximized');
+      }
+    }
+
     // callback for rAF
     function resizeShell() {
       needForRafRef.current = true;
@@ -94,6 +102,11 @@ export default function Shell({ children, defaultStatus = 'default' }) {
       }
     }
 
+    // ensure we render height as side-effect of page load
+    renderShellHeight();
+
+    const debouncedWindowResize = debounce(renderShellHeight, 500);
+    window.addEventListener('resize', debouncedWindowResize);
     window.addEventListener('mouseup', handleMouseUp);
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('touchend', handleTouchEnd);
@@ -101,6 +114,7 @@ export default function Shell({ children, defaultStatus = 'default' }) {
     window.addEventListener('touchcancel', handleTouchCancel);
 
     return () => {
+      window.removeEventListener('resize', debouncedWindowResize);
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('touchend', handleTouchEnd);

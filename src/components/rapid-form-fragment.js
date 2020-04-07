@@ -13,26 +13,21 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
     onChange(key, value);
   }
 
-  const yesNoQuestions = QUESTIONS.filter(
-    ({ type }) => type === 'YesNoQuestion'
-  );
-
   const [isOpenedMap, setIsOpenedMap] = useState(
-    yesNoQuestions.reduce((map, q) => {
+    QUESTIONS.filter(q => q.type == "YesNoQuestion").reduce((map, q) => {
       map[q.identifier] = false;
       return map;
     }, {})
   );
 
-  const freeFormQuestions = QUESTIONS.filter(({ type }) => type === 'Question');
-
   return (
     <div className="rapid-form-fragment">
-      <fieldset className="rapid-form-fragment__multi-choice-questions">
-        {yesNoQuestions.map(({ identifier, question, help, required }, i) => {
+      <fieldset className="rapid-form-fragment__text-response-questions">
+        {QUESTIONS.map(({ type, identifier, question, help, required }) => {
+
           const answer = answerMap[identifier];
 
-          return (
+          return (type == "YesNoQuestion") ? (
             <Fragment key={identifier}>
               <div className="radid-form-fragment__question-row">
                 <div className="radid-form-fragment__question">
@@ -117,17 +112,7 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
                 )}
               </div>
             </Fragment>
-          );
-        })}
-      </fieldset>
-
-      <hr className="rapid-form-fragment__divider" />
-
-      <fieldset className="rapid-form-fragment__text-response-questions">
-        {freeFormQuestions.map(({ identifier, question, required }) => {
-          const answer = answerMap[identifier];
-
-          return (
+          ) : (
             <div
               key={identifier}
               className="radid-form-fragment__text-question-row"

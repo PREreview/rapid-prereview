@@ -12,6 +12,13 @@ const CSS_MAX_WIDTH = 900; // keep in sync with CSS
  * few pages at the time
  */
 export default function PdfViewer({ pdfUrl, loading }) {
+  const containerEl = useRef(null);
+  const getWidth = () => {
+    const el = containerEl.current;
+    const containerWidth = !!el ? parseInt(getComputedStyle(el).width, 10) : CSS_MAX_WIDTH;
+    return Math.min(containerWidth, CSS_MAX_WIDTH);
+  };
+
   const [width, setWidth] = useState(getWidth());
   const [focused, setFocused] = useState(0);
   const [dims, setDims] = useState([]);
@@ -64,7 +71,7 @@ export default function PdfViewer({ pdfUrl, loading }) {
   });
 
   return (
-    <div className="pdf-viewer">
+    <div className="pdf-viewer" ref={containerEl}>
       <Document
         file={`${process.env.API_URL}/api/pdf?url=${encodeURIComponent(
           pdfUrl
@@ -127,9 +134,7 @@ PdfViewer.propTypes = {
   loading: PropTypes.element
 };
 
-function getWidth() {
-  return Math.min(window.innerWidth, CSS_MAX_WIDTH);
-}
+
 
 function getScaledPageHeight({ desiredWidth, nativeWidth, nativeHeight }) {
   return (desiredWidth * nativeHeight) / nativeWidth;
