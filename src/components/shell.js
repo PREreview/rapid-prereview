@@ -114,6 +114,7 @@ export default function Shell({ children, defaultStatus = 'default' }) {
     window.addEventListener('touchcancel', handleTouchCancel);
 
     return () => {
+      debouncedWindowResize.cancel();
       window.removeEventListener('resize', debouncedWindowResize);
       window.removeEventListener('mouseup', handleMouseUp);
       window.removeEventListener('mousemove', handleMouseMove);

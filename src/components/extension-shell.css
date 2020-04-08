@@ -1,0 +1,139 @@
+:root {
+  --shell-header-height: var(--xlgrd); /* !! keep in sync with shell.js */
+  --shell-control-icon-width: var(--lgrd);
+}
+
+.shell {
+  z-index: 2;
+  position: fixed;
+  background-color: white;
+  bottom: 0;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  overflow-y: auto;
+  overflow-x: hidden;
+  left: 10vw;
+  /* note we use width here instead of setting right position so we can inherit it int he shell content */
+  width: 80vw;
+  border-top: 1px solid var(--ruling-color);
+  border-left: 1px solid var(--ruling-color);
+  border-right: 1px solid var(--ruling-color);
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.3);
+
+  @media (--narrow-screen) {
+    left: 0;
+    width: 100vw;
+  }
+}
+
+.shell--default {
+  max-height: 50%;
+  min-height: 50%;
+  transition: max-height 0.2s ease-in-out;
+}
+
+.shell--revealed {
+  height: var(--shell-header-height);
+  transition: height 0.2s ease-in-out;
+}
+
+.shell--minimized {
+  height: 0;
+  transition: height 0.2s ease-in-out;
+}
+
+.shell--maximized {
+  height: 100%;
+  transition: height 0.2s ease-in-out;
+}
+
+.shell__control-bar {
+  height: var(--shell-header-height);
+
+  position: relative;
+  z-index: 1000001;
+}
+.shell__controls {
+  background: white;
+  z-index: 1000001;
+  height: var(--shell-header-height);
+  box-sizing: border-box;
+  position: fixed;
+  /* left: calc(50vw - var(--shell-control-icon-width) - var(--shell-control-icon-width) / 2); */
+  left: 10vw;
+  width: 80vw;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--xsgrd) var(--sgrd);
+
+  @media (--narrow-screen) {
+    left: 0;
+    width: 100vw;
+  }
+  & .shell__controls__left {
+    display: flex;
+    align-items: center;
+    flex: 1 1 50%;
+  }
+  & .shell__controls__right {
+    display: flex;
+    align-items: center;
+    flex: 1 1 50%;
+    justify-content: flex-end;
+  }
+  & .shell__controls__center {
+    display: flex;
+    align-items: center;
+  }
+
+  & .shell__controls__button {
+    border-radius: 50%;
+    flex: 0 0 auto;
+    margin-left: 4px;
+    width: 24px !important;
+    min-width: 24px !important;
+    height: 24px;
+    color: var(--prereview-black);
+
+    & .shell__controls__button__icon-container {
+      width: 16px !important;
+      height: 16px;
+      border-radius: 50%;
+      min-width: 16px;
+      border: 2px solid var(--prereview-black);
+
+      /* width: 16px;
+      height: 16px; */
+    }
+
+    &.shell__controls__button--drag {
+      color: black;
+      background-color: white;
+      width: 24px !important;
+      height: 24px;
+      min-width: 24px;
+    }
+
+    /* Add enough space so that finger fits on mobile (otherwise minimize and maximize are too close */
+    @media (--narrow-screen) {
+      &.shell__controls__button--maximize {
+      }
+    }
+  }
+}
+
+.shell__mask {
+  z-index: 1;
+  position: fixed;
+  background-color: transparent;
+  height: calc(var(--shell-header-height) + 5px);
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.shell__mask--full {
+  height: auto;
+  top: 0;
+}
