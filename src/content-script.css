@@ -17,6 +17,7 @@
 @import './components/count-badge.css';
 @import './components/diseases.css';
 @import './components/extension-fallback.css';
+@import './components/extension-shell.css';
 @import './components/header-bar.css';
 @import './components/icon-button.css';
 @import './components/label-style.css';
@@ -28,7 +29,6 @@
 @import './components/role-editor.css';
 @import './components/score-badge.css';
 @import './components/share-menu.css';
-@import './components/shell.css';
 @import './components/tag-pill.css';
 @import './components/text-input.css';
 @import './components/shell-content.css';
