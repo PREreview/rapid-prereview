@@ -1,13 +1,15 @@
 .pdf-viewer {
-  max-width: 900px; /* Keep in sync with JS */
-  @media (--narrow-screen) {
+  position:absolute;
+  height:100%;
+  overflow-y: scroll;
+
+  .pdf-margin {
     margin: 0 auto;
+    max-width: 900px; /* Keep in sync with JS */
   }
+
   @media (--wide-screen) {
-    position:absolute;
-    width:50vw;
-    height:100%;
-    overflow-y: scroll;
+    width: 60vw;
   }
 }
 

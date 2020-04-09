@@ -28,7 +28,7 @@
     }
     @media (--wide-screen) {
       position:absolute;
-      width:50%;
+      width:60vw;
       height:100%;
       overflow-y: scroll;
     }

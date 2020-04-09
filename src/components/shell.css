@@ -21,9 +21,8 @@
     width: 100vw;
   }
   @media (--wide-screen) {
-    top: 0;
-    left: 50vw;
-    width: 50vw;
+    right: 0;
+    width: 40vw;
   }
 }
 
@@ -75,8 +74,8 @@
   /* on wide screens, use right-docked shell layout, hiding shell controls */
   @media (--wide-screen) {
   /* left: calc(50vw - var(--shell-control-icon-width) - var(--shell-control-icon-width) / 2); */
-    left: 50vw;
-    width: 50vw;
+    right: 0;
+    width: 40vw;
 
     & .shell__controls__right {
       display: none;
