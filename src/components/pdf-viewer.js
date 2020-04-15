@@ -12,6 +12,13 @@ const CSS_MAX_WIDTH = 900; // keep in sync with CSS
  * few pages at the time
  */
 export default function PdfViewer({ pdfUrl, loading }) {
+  const containerEl = useRef(null);
+  const getWidth = () => {
+    const el = containerEl.current;
+    const containerWidth = !!el ? parseInt(getComputedStyle(el).width, 10) : CSS_MAX_WIDTH;
+    return Math.min(containerWidth, CSS_MAX_WIDTH);
+  };
+
   const [width, setWidth] = useState(getWidth());
   const [focused, setFocused] = useState(0);
   const [dims, setDims] = useState([]);
@@ -22,7 +29,8 @@ export default function PdfViewer({ pdfUrl, loading }) {
         const nextWidth = getWidth();
         setWidth(nextWidth);
 
-        const bottomScroll = window.scrollY + window.innerHeight;
+        const el = containerEl.current;
+        const bottomScroll = el.scrollTop + el.clientHeight;
         setFocused(findFocused(bottomScroll, dims, nextWidth));
       },
       150,
@@ -32,6 +40,7 @@ export default function PdfViewer({ pdfUrl, loading }) {
       }
     );
 
+    setWidth(getWidth());
     window.addEventListener('resize', throttled);
     return () => {
       throttled.cancel();
@@ -41,7 +50,8 @@ export default function PdfViewer({ pdfUrl, loading }) {
 
   useEffect(() => {
     function handleScroll(e) {
-      const bottomScroll = window.scrollY + window.innerHeight;
+      const el = containerEl.current;
+      const bottomScroll = el.scrollTop + el.clientHeight;
 
       const nextFocused = findFocused(bottomScroll, dims, width);
       if (focused !== nextFocused) {
@@ -49,9 +59,9 @@ export default function PdfViewer({ pdfUrl, loading }) {
       }
     }
 
-    window.addEventListener('scroll', handleScroll);
+    containerEl.current.addEventListener('scroll', handleScroll);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      containerEl.current.removeEventListener('scroll', handleScroll);
     };
   }, [focused, dims, width]);
 
@@ -64,60 +74,62 @@ export default function PdfViewer({ pdfUrl, loading }) {
   });
 
   return (
-    <div className="pdf-viewer">
-      <Document
-        file={`${process.env.API_URL}/api/pdf?url=${encodeURIComponent(
-          pdfUrl
-        )}`}
-        loading={loading}
-        onLoadSuccess={async pdf => {
-          let dims = [];
-          for (let i = 0; i < pdf.numPages; i++) {
-            const page = await pdf.getPage(i + 1);
-            const [, , w, h] = page.view;
+    <div className="pdf-viewer" ref={containerEl}>
+      <div className="pdf-margin">
+        <Document
+          file={`${process.env.API_URL}/api/pdf?url=${encodeURIComponent(
+            pdfUrl
+          )}`}
+          loading={loading}
+          onLoadSuccess={async pdf => {
+            let dims = [];
+            for (let i = 0; i < pdf.numPages; i++) {
+              const page = await pdf.getPage(i + 1);
+              const [, , w, h] = page.view;
 
-            dims.push({ w, h });
-          }
-          if (isMountedRef.current) {
-            setDims(dims);
-          }
-        }}
-      >
-        {dims.map((dim, i) =>
-          i === focused ||
-          i === focused - 1 ||
-          i === focused - 2 ||
-          i === focused + 1 ||
-          i === focused + 2 ? (
-            <Page
-              key={i}
-              width={width}
-              loading={
-                <VirtualPage
-                  width={width}
-                  height={getScaledPageHeight({
-                    desiredWidth: width,
-                    nativeWidth: dim.w,
-                    nativeHeight: dim.h
-                  })}
-                />
-              }
-              pageNumber={i + 1}
-              renderAnnotationLayer={false}
-            />
-          ) : (
-            <VirtualPage
-              key={i}
-              width={width}
-              height={getScaledPageHeight({
-                desiredWidth: width,
-                nativeWidth: dim.w,
-                nativeHeight: dim.h
-              })}
-            />
-          )
-        )}
-      </Document>
+              dims.push({ w, h });
+            }
+            if (isMountedRef.current) {
+              setDims(dims);
+            }
+          }}
+        >
+          {dims.map((dim, i) =>
+            i === focused ||
+            i === focused - 1 ||
+            i === focused - 2 ||
+            i === focused + 1 ||
+            i === focused + 2 ? (
+              <Page
+                key={i}
+                width={width}
+                loading={
+                  <VirtualPage
+                    width={width}
+                    height={getScaledPageHeight({
+                      desiredWidth: width,
+                      nativeWidth: dim.w,
+                      nativeHeight: dim.h
+                    })}
+                  />
+                }
+                pageNumber={i + 1}
+                renderAnnotationLayer={false}
+              />
+            ) : (
+              <VirtualPage
+                key={i}
+                width={width}
+                height={getScaledPageHeight({
+                  desiredWidth: width,
+                  nativeWidth: dim.w,
+                  nativeHeight: dim.h
+                })}
+              />
+            )
+          )}
+        </Document>
+      </div>
     </div>
   );
 }
@@ -127,9 +139,7 @@ PdfViewer.propTypes = {
   loading: PropTypes.element
 };
 
-function getWidth() {
-  return Math.min(window.innerWidth, CSS_MAX_WIDTH);
-}
+
 
 function getScaledPageHeight({ desiredWidth, nativeWidth, nativeHeight }) {
   return (desiredWidth * nativeHeight) / nativeWidth;

@@ -1,6 +1,17 @@
 .pdf-viewer {
-  max-width: 900px; /* Keep in sync with JS */
-  margin: 0 auto;
+  position:absolute;
+  height:100%;
+  width:100%;
+  overflow-y: scroll;
+
+  .pdf-margin {
+    margin: 0 auto;
+    max-width: 900px; /* Keep in sync with JS */
+  }
+
+  @media (--wide-screen) {
+    width: 60vw;
+  }
 }
 
 @keyframes pdf-viewer__loading__text-ellipsis {
