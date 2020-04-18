@@ -194,14 +194,14 @@ This supposes that you have followed the instruction from the rest of this READM
 ##### First time
 
 Suggested steps:
-1. Start the local services using `docker-compose`.
-1. In a shell attached to the 'web' container:
+1. Start the local services using `docker-compose -f .devcontainer/docker-compose.yml up`.
+2. In a shell attached to the 'web' container:
    - run `npm run seed` or `npm run reset` to either seed the database with
      sample data (or start from a clean state)
    - run `npm start` to start the web server
-5. In the fourth tab run `npm run extension:watch` and update the extension in
+3. In another terminal, run `npm run extension:watch` and update the extension in
    your browser (see section above for instructions)
-6. You can now visit [http://127.0.0.1:3000/](http://127.0.0.1:3000/) and give a demo
+4. You can now visit [http://127.0.0.1:3000/](http://127.0.0.1:3000/) and give a demo
 
 When you are done with the demo you can use `docker-compose down` to shut down the server.
 
