@@ -5,8 +5,6 @@
   "main": "index.js",
   "scripts": {
     "profile": "cross-env NODE_ENV=production webpack --mode production --profile --json > stats.json && webpack-bundle-analyzer stats.json public/assets",
-    "redis": "redis-server /usr/local/etc/redis.conf",
-    "cloudant": "docker restart cloudant-developer",
     "cloudant:init": "source env.private.sh && babel-node ./scripts/ddocs.js",
     "cloudant:ddocs": "source env.private.sh && babel-node ./scripts/ddocs.js",
     "cloudant:reset": "source env.private.sh && babel-node ./scripts/init.js",
@@ -16,7 +14,6 @@
     "azure:reset-redis": "source env.private.sh && babel-node ./scripts/reset-redis.js",
     "azure:reset-cache": "source env.private.sh && babel-node ./scripts/reset-redis.js --cache-only",
     "backup": "source env.private.sh && ./backup.sh",
-    "log-cloudant": "docker logs cloudant-developer",
     "extension:watch": "webpack --config webpack-extension.config.js --watch --mode development",
     "extension:watch-firefox": "cross-env EXTENSION_BROwSER_ENV=firefox webpack --config webpack-extension.config.js --watch --mode development",
     "extension:build": "cross-env NODE_ENV=production webpack --config webpack-extension.config.js --mode production",

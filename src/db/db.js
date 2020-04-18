@@ -122,7 +122,7 @@ export default class DB {
     return res;
   }
 
-  async ddoc({ waitFor = 1000 } = {}) {
+  async ddoc({ waitFor = 10000 } = {}) {
     function toUnnamedString(f) {
       const str = f
         .toString()
