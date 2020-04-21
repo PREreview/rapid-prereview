@@ -72,7 +72,7 @@ router.get(
 router.get(
   '/preprint/:preprintId',
   cors(),
-  // cache(req => `preprint:${req.params.preprintId}`),
+  cache(req => `preprint:${req.params.preprintId}`),
   async (req, res, next) => {
     try {
       const body = await req.db.get(`preprint:${req.params.preprintId}`);
