@@ -83,7 +83,7 @@ export default class DB {
     this.users = cloudant.use(this.usersDbName);
   }
 
-  async init({ reset = false, waitFor = 1000 } = {}) {
+  async init({ reset = false } = {}) {
     async function setup(dbName) {
       if (reset) {
         try {
@@ -95,9 +95,10 @@ export default class DB {
         }
       }
 
+      const createOptions = process.env.COUCH_SINGLE_REPLICA_FOR_TEST ? { n: 1, q: 1} : undefined;
       let resp;
       try {
-        resp = await this.cloudant.db.create(dbName);
+        resp = await this.cloudant.db.create(dbName, createOptions);
       } catch (err) {
         if (err.error !== 'file_exists') {
           throw err;
@@ -107,22 +108,14 @@ export default class DB {
       return Object.assign({ dbName }, resp);
     }
 
-    const res = await Promise.all([
+    return Promise.all([
       setup.call(this, this.docsDbName),
       setup.call(this, this.indexDbName),
       setup.call(this, this.usersDbName)
     ]);
-
-    await new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, waitFor);
-    });
-
-    return res;
   }
 
-  async ddoc({ waitFor = 10000 } = {}) {
+  async ddoc() {
     function toUnnamedString(f) {
       const str = f
         .toString()
@@ -178,7 +171,7 @@ export default class DB {
       }, {});
     });
 
-    const resps = await Promise.all([
+    return Promise.all([
       this.docs.insert(
         Object.assign(
           revMap[ddocDocs._id] ? { _rev: revMap[ddocDocs._id] } : {},
@@ -198,14 +191,6 @@ export default class DB {
         )
       )
     ]);
-
-    await new Promise(resolve => {
-      setTimeout(() => {
-        resolve();
-      }, waitFor);
-    });
-
-    return resps;
   }
 
   async secure() {
