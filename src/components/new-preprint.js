@@ -97,7 +97,6 @@ export default function NewPreprint({
           onCancel={onCancel}
           onStep={setStep}
           onIdentifier={(identifier, url = null) => {
-            console.log({ identifier, url });
             setIdentifierAndUrl({ identifier, url });
           }}
           identifier={identifier}
@@ -339,6 +338,9 @@ function StepReview({
     createPreprintId(preprint),
     []
   );
+  console.log(subjects)
+  
+
   const [answerMap, setAnswerMap] = useLocalState(
     'answerMap',
     user.defaultRole,
@@ -457,12 +459,36 @@ function StepRequest({
 }) {
   const [user] = useUser();
   const [post, postData] = usePostAction();
+  const [subjects, setSubjects] = useLocalState(
+    'subjects',
+    user.defaultRole,
+    createPreprintId(preprint),
+    []
+  );
 
   return (
     <div className="new-preprint__step-request">
       <header className="new-preprint__title">Confirm Review Request</header>
 
       <PreprintPreview preprint={preprint} />
+
+      <SubjectEditor
+        subjects={subjects}
+        onAdd={subject => {
+          setSubjects(
+            subjects.concat(subject).sort((a, b) => {
+              return (a.alternateName || a.name).localeCompare(
+                b.alternateName || b.name
+              );
+            })
+          );
+        }}
+        onDelete={subject => {
+          setSubjects(
+            subjects.filter(_subject => _subject.name !== subject.name)
+          );
+        }}
+      />
 
       <Controls error={postData.error} className="new-preprint__button-bar">
         <Button
@@ -493,7 +519,14 @@ function StepRequest({
                 agent: user.defaultRole,
                 object: Object.assign({}, nodeify(preprint), {
                   '@id': createPreprintIdentifierCurie(preprint)
-                })
+                }),
+                resultReview: cleanup(
+                  {
+                    '@type': 'RapidPREreview',
+                    about: subjects,
+                  },
+                  { removeEmptyArray: true }
+                )
               },
               onSuccess
             );
