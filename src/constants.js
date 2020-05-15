@@ -203,7 +203,7 @@ export const DISEASES = [
 
   {
     name: '2019 novel coronavirus',
-    alternateName: '2019-nCoV',
+    alternateName: 'COVID-19',
     priority: 'red'
   },
 
