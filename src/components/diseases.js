@@ -16,12 +16,6 @@ export default function Diseases({ onSubmit, blacklist = [] }) {
   const [term, setTerm] = useState('');
   const [selected, setSelected] = useState(null);
 
-  const featured = useMemo(() => {
-    return DISEASES.filter(
-      subject => subject.featured
-    )
-  })
-
   const options = useMemo(() => {
     return DISEASES.filter(
       subject =>
@@ -71,11 +65,8 @@ export default function Diseases({ onSubmit, blacklist = [] }) {
           className="diseases__combobox-popover"
         >
           <ComboboxList persistSelection={true}>
-            {featured.map(subject => (
-              <ComboboxOption className="diseases__featured" key={subject.name} value={format(subject)} />
-            ))}
             {sorted.map(subject => (
-              <ComboboxOption key={subject.name} value={format(subject)} />
+              <ComboboxOption className={subject.featured ? "diseases__featured" : ""} key={subject.name} value={format(subject)} />
             ))}
           </ComboboxList>
         </ComboboxPopover>
