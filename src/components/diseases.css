@@ -40,4 +40,10 @@
     position: absolute;
     z-index: 10000000;
   }
+
+  & .diseases__featured {
+    border: 1px solid var(--ruling-color);
+
+  }
 }
+
