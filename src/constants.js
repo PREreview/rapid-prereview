@@ -138,7 +138,7 @@ export const INDEXED_PREPRINT_PROPS = [
 // See https://github.com/PREreview/rapid-prereview/issues/10
 export const DISEASES = [
   {
-    name: '2019 novel coronavirus',
+    name: 'Coronavirus disease 2019',
     alternateName: 'COVID-19',
     priority: 'red',
     featured: true
