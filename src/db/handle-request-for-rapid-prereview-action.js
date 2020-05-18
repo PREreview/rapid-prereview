@@ -20,12 +20,14 @@ export default async function handleRequestForRapidPrereviewAction(
     !user ||
     !arrayify(user.hasRole).some(role => getId(role) === getId(action.agent))
   ) {
+    console.log('acl error');
     throw createError(403, 'Forbidden');
   }
 
   // Moderation
   const agent = await this.get(getId(action.agent));
   if (agent.isModerated) {
+    console.log('error')
     throw createError(403, 'Forbidden');
   }
 
