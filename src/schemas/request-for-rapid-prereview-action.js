@@ -128,7 +128,7 @@ const schema = {
         },
       },
       additionalProperties: false,
-      required: ['@type', 'reviewAnswer']  
+      required: ['@type']  
     }
   },
   additionalProperties: false,
