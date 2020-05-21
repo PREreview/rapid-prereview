@@ -116,7 +116,7 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
               onChange={e => {
                 const search = createPreprintQs(
                   {
-                    hasData: e.target.checked || null
+                    text: e.target.checked || null
                   },
                   location.search
                 );
@@ -173,7 +173,8 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
                 inputId={`counts-${subject.alternateName || subject.name}`}
                 name={subject.name}
                 disabled={
-                  isFetching || !(counts.subjectName || {})[subject.name]
+                  isFetching
+                  // isFetching || !(counts.subjectName || {})[subject.name]
                 }
                 label={
                   <span className="facets__facet-label">
@@ -182,10 +183,6 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
                     ) : (
                       subject.name
                     )}{' '}
-                    <Count
-                      value={(counts.subjectName || {})[subject.name] || 0}
-                      isFetching={isFetching}
-                    />
                   </span>
                 }
                 checked={
@@ -193,7 +190,7 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
                   params
                     .get('subject')
                     .split(',')
-                    .includes(subject.name)
+                    .includes(subject.alternateName)
                 }
                 onChange={e => {
                   const subjectNames = params.has('subject')
@@ -202,9 +199,9 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
 
                   const search = createPreprintQs(
                     {
-                      subjects: e.target.checked
-                        ? subjectNames.concat(subject.name)
-                        : subjectNames.filter(name => name !== subject.name)
+                      text: e.target.checked
+                        ? subjectNames.concat(subject.alternateName ? subject.alternateName : subject.name)
+                        : subjectNames.filter(name => name !== subject.alternateName)
                     },
                     location.search
                   );
