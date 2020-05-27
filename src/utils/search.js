@@ -22,7 +22,7 @@ export function createPreprintQs(
 
   if (text != null && text != '') {
     ui.set('q', text);
-  } else if (text === null) {
+  } else if (text === text) {
     ui.delete('q');
   }
 

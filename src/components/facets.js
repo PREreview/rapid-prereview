@@ -116,7 +116,7 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
               onChange={e => {
                 const search = createPreprintQs(
                   {
-                    text: e.target.checked || null
+                    hasData: e.target.checked || null
                   },
                   location.search
                 );
@@ -173,24 +173,23 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
                 inputId={`counts-${subject.alternateName || subject.name}`}
                 name={subject.name}
                 disabled={
-                  isFetching
-                  // isFetching || !(counts.subjectName || {})[subject.name]
+                  isFetching 
                 }
                 label={
                   <span className="facets__facet-label">
                     {subject.alternateName ? (
                       <abbr title={subject.name}>{subject.alternateName}</abbr>
                     ) : (
-                      subject.name
-                    )}{' '}
+                        subject.name
+                      )}{' '}
                   </span>
                 }
                 checked={
-                  params.has('subject') &&
+                  params.has('q') &&
                   params
-                    .get('subject')
+                    .get('q')
                     .split(',')
-                    .includes(subject.alternateName)
+                    .includes(subject.alternateName || subject.name)
                 }
                 onChange={e => {
                   const subjectNames = params.has('subject')
