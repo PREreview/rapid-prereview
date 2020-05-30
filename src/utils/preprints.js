@@ -36,6 +36,17 @@ export function dehydrateAction(action) {
           { removeEmptyArray: true }
         );
         break;
+      
+      case 'resultRequest':
+        compacted[key] = cleanup(
+          Object.assign({}, action[key], {
+            about: arrayify(action[key].about)
+              .filter(about => about.name)
+              .map(about => pick(about, ['name']))
+          }),
+          { removeEmptyArray: true }
+        );
+        break;
 
       default:
         compacted[key] = action[key];
