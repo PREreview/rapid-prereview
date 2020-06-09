@@ -19,7 +19,7 @@ describe('feed', function() {
   const db = new DB(config);
 
   before(async () => {
-    await db.init({ reset: true, waitFor: 2000 });
+    await db.init({ reset: true });
     await db.ddoc();
 
     server = createPreprintServer({ logLevel: 'fatal' });
