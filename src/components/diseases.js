@@ -66,7 +66,7 @@ export default function Diseases({ onSubmit, blacklist = [] }) {
         >
           <ComboboxList persistSelection={true}>
             {sorted.map(subject => (
-              <ComboboxOption key={subject.name} value={format(subject)} />
+              <ComboboxOption className={subject.featured ? "diseases__featured" : ""} key={subject.name} value={format(subject)} />
             ))}
           </ComboboxList>
         </ComboboxPopover>

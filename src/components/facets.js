@@ -176,7 +176,7 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
                   isFetching || !(counts.subjectName || {})[subject.name]
                 }
                 label={
-                  <span className="facets__facet-label">
+                  <span className={`facets__facet-label ${subject.featured ? "facets__facet-label-featured" : ""}`}>
                     {subject.alternateName ? (
                       <abbr title={subject.name}>{subject.alternateName}</abbr>
                     ) : (

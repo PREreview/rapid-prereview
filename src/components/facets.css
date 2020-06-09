@@ -39,6 +39,11 @@
     & input {
       width: 2em;
     }
+
+    &-featured {
+      color: var(--prereview-red);
+      font-weight: bold;
+    }
   }
 }
 
