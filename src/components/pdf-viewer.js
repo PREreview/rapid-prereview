@@ -11,7 +11,7 @@ const CSS_MAX_WIDTH = 900; // keep in sync with CSS
  * This implement an infinite scroll mechanism so that we never load more than a
  * few pages at the time
  */
-export default function PdfViewer({ pdfUrl, loading }) {
+export default function PdfViewer({ docId, loading }) {
   const containerEl = useRef(null);
   const getWidth = () => {
     const el = containerEl.current;
@@ -77,8 +77,8 @@ export default function PdfViewer({ pdfUrl, loading }) {
     <div className="pdf-viewer" ref={containerEl}>
       <div className="pdf-margin">
         <Document
-          file={`${process.env.API_URL}/api/pdf?url=${encodeURIComponent(
-            pdfUrl
+          file={`${process.env.API_URL}/api/pdf?preprintId=${encodeURIComponent(
+            docId
           )}`}
           loading={loading}
           onLoadSuccess={async pdf => {
@@ -135,7 +135,7 @@ export default function PdfViewer({ pdfUrl, loading }) {
 }
 
 PdfViewer.propTypes = {
-  pdfUrl: PropTypes.string.isRequired,
+  docId: PropTypes.string.isRequired,
   loading: PropTypes.element
 };
 

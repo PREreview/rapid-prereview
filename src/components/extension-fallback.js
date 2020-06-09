@@ -11,6 +11,7 @@ import NotFound from './not-found';
 import SuspenseLoading from './suspense-loading';
 import { ORG } from '../constants';
 import { createPreprintId } from '../utils/ids';
+import { unprefix } from '../utils/jsonld';
 
 const PdfViewer = React.lazy(() =>
   import(/* webpackChunkName: "pdf-viewer" */ './pdf-viewer')
@@ -46,6 +47,8 @@ export default function ExtensionFallback() {
     return <NotFound />;
   }
 
+  let preprintId = preprint && createPreprintId(preprint);
+  preprintId = preprintId && unprefix(preprintId);
   const pdfUrl = getPdfUrl(preprint);
   const canonicalUrl = getCanonicalUrl(preprint);
 
@@ -62,7 +65,7 @@ export default function ExtensionFallback() {
           /* for mobile devices we always use the fallback */
           <Suspense fallback={<SuspenseLoading>Loading PDF</SuspenseLoading>}>
             <PdfViewer
-              pdfUrl={pdfUrl}
+              docId={preprintId}
               loading={<SuspenseLoading>Loading PDF</SuspenseLoading>}
             />
           </Suspense>
@@ -76,7 +79,7 @@ export default function ExtensionFallback() {
             {/* fallback text in case we can't load the PDF */}
             <Suspense fallback={<SuspenseLoading>Loading PDF</SuspenseLoading>}>
               <PdfViewer
-                pdfUrl={pdfUrl}
+                docId={identifier}
                 loading={<SuspenseLoading>Loading PDF</SuspenseLoading>}
               />
             </Suspense>
