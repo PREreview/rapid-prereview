@@ -48,6 +48,8 @@ export default function ShellContent({
   const [actions, fetchActionsProgress] = usePreprintActions(
     preprint.doi || preprint.arXivId
   );
+  
+  console.log("********", '\n', "******", '\n', actions)
 
   const safeActions = actions.filter(action => !checkIfIsModerated(action));
 

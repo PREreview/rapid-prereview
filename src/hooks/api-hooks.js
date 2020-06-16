@@ -320,6 +320,8 @@ export function usePreprintActions(identifier) {
     }
   }, [identifier, preprintsWithActionsStore]);
 
+  console.log("actions ***** progress,  *******", '\n', [actions, progress])
+
   return [actions, progress];
 }
 
