@@ -173,27 +173,23 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
                 inputId={`counts-${subject.alternateName || subject.name}`}
                 name={subject.name}
                 disabled={
-                  isFetching || !(counts.subjectName || {})[subject.name]
+                  isFetching 
                 }
                 label={
-                  <span className="facets__facet-label">
+                  <span className={`facets__facet-label ${subject.featured ? "facets__facet-label-featured" : ""}`}>
                     {subject.alternateName ? (
                       <abbr title={subject.name}>{subject.alternateName}</abbr>
                     ) : (
-                      subject.name
-                    )}{' '}
-                    <Count
-                      value={(counts.subjectName || {})[subject.name] || 0}
-                      isFetching={isFetching}
-                    />
+                        subject.name
+                      )}{' '}
                   </span>
                 }
                 checked={
-                  params.has('subject') &&
+                  params.has('q') &&
                   params
-                    .get('subject')
+                    .get('q')
                     .split(',')
-                    .includes(subject.name)
+                    .includes(subject.alternateName || subject.name)
                 }
                 onChange={e => {
                   const subjectNames = params.has('subject')
@@ -202,9 +198,9 @@ export default function Facets({ counts = {}, ranges = {}, isFetching }) {
 
                   const search = createPreprintQs(
                     {
-                      subjects: e.target.checked
-                        ? subjectNames.concat(subject.name)
-                        : subjectNames.filter(name => name !== subject.name)
+                      text: e.target.checked
+                        ? subjectNames.concat(subject.alternateName ? subject.alternateName : subject.name)
+                        : subjectNames.filter(name => name !== subject.alternateName)
                     },
                     location.search
                   );

@@ -11,7 +11,7 @@ export default function SearchBar({ isFetching }) {
   const location = useLocation();
   const isMobile = useIsMobile();
 
-  const defaultValue = new URLSearchParams(location.search).get('q') || '';
+  const defaultValue = '';
   const prevDefaultValueRef = useRef(null);
 
   const [value, setValue] = useState(defaultValue);

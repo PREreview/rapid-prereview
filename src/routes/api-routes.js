@@ -14,6 +14,7 @@ import parseApiKey from '../middlewares/parse-api-key';
 import { createEmailMessages } from '../utils/email';
 import { createContactPointId } from '../utils/ids';
 import { omitPrivate } from '../utils/actions';
+import { getPdfUrl } from '../utils/preprints';
 
 const jsonParser = bodyParser.json({ limit: '2mb' });
 
@@ -74,7 +75,7 @@ router.get(
   async (req, res, next) => {
     try {
       const body = await req.db.get(`preprint:${req.params.preprintId}`);
-      req.cache(body);
+      // req.cache(body);
       res.json(body);
     } catch (err) {
       next(err);
@@ -414,9 +415,20 @@ router.get(
  * due to cross origin restriction we need to proxy the PDF
  */
 router.get('/pdf', async (req, res, next) => {
-  const pdfUrl = req.query.url;
+  let pdfUrl;
+  const preprintId = req.query.preprintId;
+  try {
+    const body = await req.db.get(`preprint:${preprintId}`);
+    pdfUrl = getPdfUrl(body);
+    if (!pdfUrl) {
+      return next(createError(500, `Could not determine PDF from prereview: ${JSON.stringify(body)}`));
+    }
+  } catch (err) {
+    return next(createError(500, `Prereview query failed: ${preprintId} ${JSON.stringify(err)}`));
+  }
+
   if (!pdfUrl) {
-    return next(createError(400, 'missing url query string parameter'));
+    return next(createError(400, `Could not determine PDF from request. ${JSON.stringify(req.query)}`));
   }
 
   let r;

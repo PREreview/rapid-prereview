@@ -257,7 +257,7 @@ export default function Home() {
 
           {results.total_rows === 0 && !fetchResultsProgress.isActive ? (
             <div>
-              No results found.{' '}
+              No preprints about this topic have been added to Rapid PREreview.{' '}
               {!!location.search && (
                 <XLink to={location.pathname} href={location.pathname}>
                   Clear search terms.
