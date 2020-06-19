@@ -28,13 +28,6 @@ export const QUESTIONS = [
   },
 
   {
-    identifier: 'cRelevance',
-    question: 'Editorial comments on novelty, importance, relevance',
-    type: 'Question',
-    required: false
-  },
-
-  {
     identifier: 'ynMethods',
     question: 'Are the methods and statistics appropriate for the analysis?',
     type: 'YesNoQuestion',
@@ -66,13 +59,6 @@ export const QUESTIONS = [
       'For example, if a human study, is Institutional Review Board (IRB) approval presented?',
     type: 'YesNoQuestion',
     required: true
-  },
-
-  {
-    identifier: 'cMethods',
-    question: 'Technical comments on methods, data, limitations',
-    type: 'Question',
-    required: false
   },
 
   {
@@ -119,6 +105,20 @@ export const QUESTIONS = [
       'Would you recommend this manuscript to a journal editor for formal peer review?',
     type: 'YesNoQuestion',
     required: true
+  },
+
+  {
+    identifier: 'cRelevance',
+    question: 'Editorial comments on novelty, importance, relevance',
+    type: 'Question',
+    required: false
+  },
+
+  {
+    identifier: 'cMethods',
+    question: 'Technical comments on methods, data, limitations',
+    type: 'Question',
+    required: false
   },
 
 ];
