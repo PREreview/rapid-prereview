@@ -3,17 +3,19 @@
   font: var(--ui-basic-font);
   margin: 0;
   min-height: 100vh;
-  padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd);
+  top: calc(var(--announcement-bar-height) + calc(var(--header-bar-height)));
+  /* padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd); */
   box-sizing: border-box;
   color: var(--ui-basic-font-color);
   & :any-link {
     text-decoration: none;
   }
   & .login__content {
+    top: calc(var(--announcement-bar-height) + calc(var(--header-bar-height)));
     max-width: var(--middle-column-default-width);
     margin: 0 auto;
     background-color: white;
-    min-height: 100vh;
+    min-height: calc(100vh - (calc(var(--announcement-bar-height) + var(--header-bar-height))));
     padding: 0 var(--xlgrd);
   }
 

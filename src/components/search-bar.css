@@ -3,7 +3,7 @@
   width: 100vw;
   height: var(--search-bar-height);
   display: flex;
-  top: calc(var(--announcement-bar-height) + calc(var(--header-bar-height)));
+  top: calc(var(--announcement-bar-height) + var(--header-bar-height));
   /* justify-content: center; */
   align-items: center;
   position: fixed;

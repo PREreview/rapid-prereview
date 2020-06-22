@@ -3,7 +3,7 @@
   width: 100vw;
   height: var(--header-bar-height);
   position: fixed;
-  top: 72px;
+  top: var(--announcement-bar-height);
   left: 0;
   box-sizing: border-box;
   display: flex;

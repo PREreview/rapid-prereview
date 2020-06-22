@@ -1,17 +1,17 @@
 .extension-splash {
   width: 100%;
-
   background-color: var(--xlight-grey);
   box-sizing: border-box;
   font: var(--ui-basic-font);
   margin: 0;
   min-height: 100vh;
-  padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd);
+  /* padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd); */
   box-sizing: border-box;
 
   & .extension-splash__content {
     max-width: var(--middle-column-default-width);
-    margin: 0 auto;
+    /* margin: 0 auto; */
+    top: calc(var(--announcement-bar-height) + var(--header-bar-height));
     background-color: white;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
     min-height: calc(100vh - var(--header-bar-height) - 2*var(--lgrd));

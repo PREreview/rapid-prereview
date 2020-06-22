@@ -1,12 +1,13 @@
 .announcement {
-  display: inline-block;
+  display: flex;
   text-align: center;
   background: var(--prereview-grey);
   color: white;
-  margin: 0;
-  padding: 0;
+  left: 0;
+  align-items: center;
+  padding: 0 var(--mgrd) 0 var(--mgrd);
   vertical-align: middle;
-  font-size: 0.9em;
+  font-size: 0.8em;
   position: fixed;
   height: var(--announcement-bar-height);
   width: 100vw;
