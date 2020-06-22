@@ -159,5 +159,5 @@ export default function HeaderBar({ onClickMenuButton }) {
 }
 
 HeaderBar.propTypes = {
-  onClickMenuButton: PropTypes.func
+  onClickMenuButton: PropTypes.func,
 };
