@@ -10,7 +10,7 @@
 
   & .extension-splash__content {
     max-width: var(--middle-column-default-width);
-    /* margin: 0 auto; */
+    margin: 0 auto;
     top: calc(var(--announcement-bar-height) + var(--header-bar-height));
     background-color: white;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.15);
