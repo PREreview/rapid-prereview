@@ -1,16 +1,22 @@
 .announcement {
   display: inline-block;
-  height: 100%;
   text-align: center;
-  width: 100%;
-  background: var(--prereview-red);
-  font-family: var(--ui-font-family);
+  background: var(--prereview-grey);
   color: white;
   margin: 0;
   padding: 0;
   vertical-align: middle;
+  font-size: 0.9em;
+  position: fixed;
+  height: var(--announcement-bar-height);
+  width: 100vw;
+  z-index: 1000;
+
+  @media (--narrow-screen) {
+    padding-left: var(--sgrd);
+  }
 }
 
 .announcement a { 
-  color: white; 
+  color: var(--prereview-red); 
 }

@@ -3,10 +3,10 @@
   width: 100vw;
   height: var(--search-bar-height);
   display: flex;
+  top: calc(var(--header-bar-height) + var(--announcement-bar-height));
   /* justify-content: center; */
   align-items: center;
   position: fixed;
-  top: var(--header-bar-height);
   left: 0;
   border-top: 1px solid var(--ruling-color--light);
   z-index: 1001;

@@ -8,14 +8,8 @@ export default function Banner() {
   <React.Fragment>
     <div className='announcement'>
       <p>Click <a href={`${process.env.API_URL}/?q=COVID-19`}>here</a> to find preprints on COVID-19 with reviews or requests for reviews.</p>
-    </div>
-    <div className='announcement'>
       <p>Click <a href="https://oaspa.org/covid-19-publishers-open-letter-of-intent-rapid-review/?highlight=covid-19" target="_blank">here</a> to read OASPA's open letter of intent to ensure rapid review of key work related to COVID-19.</p>
     </div>
   </React.Fragment>
   )
-}
-
-Banner.propTypes = {
-  type: PropTypes.oneOf(['covid-preprints', 'oaspa-letter'])
 }

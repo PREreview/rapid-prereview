@@ -118,11 +118,11 @@ export default function Home() {
           }}
         />
       )}
-      {/* <HeaderBar
+      <HeaderBar
         onClickMenuButton={e => {
           setShowLeftPanel(!showLeftPanel);
         }}
-      /> */}
+      />
 
       <SearchBar isFetching={fetchResultsProgress.isActive} />
 
