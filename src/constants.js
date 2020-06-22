@@ -81,7 +81,7 @@ export const QUESTIONS = [
 
   {
     identifier: 'linkToData',
-    question: 'Please provide links to the data here',
+    question: 'Links to the data used in the manuscript',
     type: 'Question',
     required: false
   },
