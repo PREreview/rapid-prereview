@@ -3,7 +3,7 @@
   width: 100vw;
   height: var(--search-bar-height);
   display: flex;
-  top: calc(var(--header-bar-height) + var(--announcement-bar-height));
+  top: calc(var(--announcement-bar-height) + calc(var(--header-bar-height)));
   /* justify-content: center; */
   align-items: center;
   position: fixed;
@@ -18,7 +18,7 @@
     position: relative;
     z-index: 800;
     box-shadow: none;
-    margin-top: var(--header-bar-height);
+    margin-top: calc(var(--announcement-bar-height) + calc(var(--header-bar-height)));
     top: 0;
     height: auto;
     padding: var(--mgrd) 0;
