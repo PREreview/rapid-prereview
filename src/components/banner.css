@@ -1,0 +1,16 @@
+.announcement {
+  display: inline-block;
+  height: 100%;
+  text-align: center;
+  width: 100%;
+  background: var(--prereview-red);
+  font-family: var(--ui-font-family);
+  color: white;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.announcement a { 
+  color: white; 
+}
