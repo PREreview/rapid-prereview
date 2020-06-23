@@ -3,10 +3,10 @@
   width: 100vw;
   height: var(--search-bar-height);
   display: flex;
+  top: calc(var(--announcement-bar-height) + var(--header-bar-height));
   /* justify-content: center; */
   align-items: center;
   position: fixed;
-  top: var(--header-bar-height);
   left: 0;
   border-top: 1px solid var(--ruling-color--light);
   z-index: 1001;
@@ -18,10 +18,14 @@
     position: relative;
     z-index: 800;
     box-shadow: none;
-    margin-top: var(--header-bar-height);
+    margin-top: calc(var(--announcement-bar-height) + calc(var(--header-bar-height)));
     top: 0;
     height: auto;
     padding: var(--mgrd) 0;
+  }
+
+  @media (--mobile) {
+    margin-top: calc(var(--announcement-bar-height--mobile) + var(--header-bar-height));
   }
 
   /* the spacers are used to align the search box with the main content width */

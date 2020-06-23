@@ -62,6 +62,8 @@
 
   /* standard dimensions */
   --header-bar-height: 72px;
+  --announcement-bar-height: 72px;
+  --announcement-bar-height--mobile: 110px;
   --search-bar-height: 72px;
   --left-panel-min-width: 240px;
 

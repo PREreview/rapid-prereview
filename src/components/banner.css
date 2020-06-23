@@ -1,0 +1,28 @@
+.announcement {
+  height: var(--announcement-bar-height);
+  text-align: center;
+  width: 100%;
+  background: var(--prereview-red);
+  font-family: var(--ui-font-family);
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  vertical-align: middle;
+  z-index: 1001;
+
+  @media (--mobile) {
+    height: var(--announcement-bar-height--mobile);
+  }
+}
+
+.announcement-link {
+  color: #fff !important;
+}
+
+.announcement-link:hover, .announcement-link:active, .announcement-link:focus {
+  background-color: #fff !important;
+  color: var(--prereview-red) !important;
+}
