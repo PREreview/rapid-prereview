@@ -12,7 +12,7 @@
   & .home__main {
     display: flex;
     width: 100vw;
-    padding-top: calc(var(--header-bar-height) + var(--search-bar-height));
+    padding-top: calc(var(--header-bar-height) + var(--search-bar-height) + var(--announcement-bar-height));
 
     @media (--short-screen) {
       padding-top: 0;

@@ -1,21 +1,20 @@
 .announcement {
-  /* display: inline-table; */
-  text-align: center;
-  background: var(--prereview-grey);
-  color: white;
-  padding: 0 var(--mgrd) 0 var(--mgrd);
-  vertical-align: middle;
-  font-size: 0.9em;
-  position: fixed;
+  display: inline-block;
   height: var(--announcement-bar-height);
-  width: 100vw;
+  text-align: center;
+  width: 100%;
+  background: var(--prereview-red);
+  font-family: var(--ui-font-family);
+  color: white;
+  margin: 0;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  vertical-align: middle;
   z-index: 1000;
-
-  @media (--narrow-screen) {
-    padding-left: var(--sgrd);
-  }
 }
 
-.announcement a { 
-  color: var(--prereview-red); 
+.announcement a {
+  color: white;
 }
