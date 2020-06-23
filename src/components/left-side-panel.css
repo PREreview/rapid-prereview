@@ -20,8 +20,8 @@
 
   @media (--short-screen) {
     & .left-side-panel__content {
-      top: calc(var(--header-bar-height) + var(--announcement-bar-height) + var(--search-bar-height));
-      height: calc(100vh - var(--header-bar-height) - var(--announcement-bar-height) - var(--search-bar-height));
+      top: calc(var(--header-bar-height) + var(--announcement-bar-height));
+      height: calc(100vh - var(--header-bar-height) - var(--announcement-bar-height));
     }
   }
 

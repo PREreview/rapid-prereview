@@ -18,6 +18,10 @@
     padding-left: var(--sgrd);
   }
 
+  @media (--mobile) {
+    top: var(--announcement-bar-height--mobile);
+  }
+
   & .rapid-pre-review-logo {
     @media (--mobile) {
       height: var(--lgrd);

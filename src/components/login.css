@@ -2,8 +2,9 @@
   box-sizing: border-box;
   font: var(--ui-basic-font);
   margin: 0;
-  min-height: 100vh;
-  top: calc(var(--announcement-bar-height) + calc(var(--header-bar-height)));
+  position: relative;
+  /* min-height: 100vh; */
+  top: calc(var(--announcement-bar-height) + var(--header-bar-height));
   /* padding: calc(var(--header-bar-height) + var(--lgrd)) 0 var(--lgrd); */
   box-sizing: border-box;
   color: var(--ui-basic-font-color);
@@ -11,7 +12,7 @@
     text-decoration: none;
   }
   & .login__content {
-    top: calc(var(--announcement-bar-height) + calc(var(--header-bar-height)));
+    top: calc(var(--announcement-bar-height) + var(--header-bar-height));
     max-width: var(--middle-column-default-width);
     margin: 0 auto;
     background-color: white;

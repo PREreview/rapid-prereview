@@ -24,6 +24,10 @@
     padding: var(--mgrd) 0;
   }
 
+  @media (--mobile) {
+    margin-top: calc(var(--announcement-bar-height--mobile) + var(--header-bar-height));
+  }
+
   /* the spacers are used to align the search box with the main content width */
   & .search-bar__left-spacer {
     min-width: var(--left-panel-min-width);
