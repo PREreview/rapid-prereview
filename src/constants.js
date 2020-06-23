@@ -28,13 +28,6 @@ export const QUESTIONS = [
   },
 
   {
-    identifier: 'cRelevance',
-    question: 'Editorial comments on novelty, importance, relevance',
-    type: 'Question',
-    required: false
-  },
-
-  {
     identifier: 'ynMethods',
     question: 'Are the methods and statistics appropriate for the analysis?',
     type: 'YesNoQuestion',
@@ -69,13 +62,6 @@ export const QUESTIONS = [
   },
 
   {
-    identifier: 'cMethods',
-    question: 'Technical comments on methods, data, limitations',
-    type: 'Question',
-    required: false
-  },
-
-  {
     identifier: 'ynNewData',
     question: 'Does the manuscript include new data?',
     help: 'Were data collected or made available specifically for this study?',
@@ -86,11 +72,18 @@ export const QUESTIONS = [
   {
     identifier: 'ynAvailableData', // DO NOT CHANGE THIS IS USED IN THE INDEX (or update everywhere)
     indexed: true,
-    question: 'Are the data used in the manuscript available?',
+    question: 'Are the data used in the manuscript available? If yes, please paste the link to the data in the box below.',
     help:
-      'In the paper, supplement, on a public repository, or from a cited source?',
+      'The data are available for anyone to download (e.g. from a public repository) and are linked in the manuscript or supplementary information.',
     type: 'YesNoQuestion',
     required: true
+  },
+
+  {
+    identifier: 'linkToData',
+    question: 'Links to the data used in the manuscript',
+    type: 'Question',
+    required: false
   },
 
   {
@@ -119,6 +112,20 @@ export const QUESTIONS = [
       'Would you recommend this manuscript to a journal editor for formal peer review?',
     type: 'YesNoQuestion',
     required: true
+  },
+
+  {
+    identifier: 'cRelevance',
+    question: 'Editorial comments on novelty, importance, relevance',
+    type: 'Question',
+    required: false
+  },
+
+  {
+    identifier: 'cMethods',
+    question: 'Technical comments on methods, data, limitations',
+    type: 'Question',
+    required: false
   },
 
 ];
