@@ -24,10 +24,9 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
     <div className="rapid-form-fragment">
       <fieldset className="rapid-form-fragment__text-response-questions">
         {QUESTIONS.map(({ type, identifier, question, help, required }) => {
-
           const answer = answerMap[identifier];
 
-          return (type == "YesNoQuestion") ? (
+          return type == 'YesNoQuestion' ? (
             <Fragment key={identifier}>
               <div className="radid-form-fragment__question-row">
                 <div className="radid-form-fragment__question">
@@ -142,7 +141,8 @@ export default function RapidFormFragment({ answerMap = {}, onChange }) {
       </fieldset>
       <NoticeBox type="warning">
         Beta Notice: Please note that any reviews submitted during the beta
-        stage of Outbreak Science Rapid PREreview may be lost in future updates.
+        stage of Outbreak Science Rapid PREreview will be migrated over into
+        future updates.
       </NoticeBox>
     </div>
   );

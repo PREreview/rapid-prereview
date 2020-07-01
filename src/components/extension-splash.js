@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import HeaderBar from './header-bar';
+import Banner from './banner'
 import Button from './button';
 // import LabelStyle from './label-style';
 import { CONTACT_EMAIL_HREF, ORG } from '../constants';
@@ -16,7 +17,7 @@ export default function ExtensionSplash() {
       <Helmet>
         <title>{ORG} • Get the extension</title>
       </Helmet>
-
+      <Banner />
       <HeaderBar />
       <div className="extension-splash__content">
         <h1 className="extension-splash__title">

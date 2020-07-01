@@ -3,7 +3,7 @@
   width: 100vw;
   height: var(--header-bar-height);
   position: fixed;
-  top: 0;
+  top: var(--announcement-bar-height);
   left: 0;
   box-sizing: border-box;
   display: flex;
@@ -16,6 +16,10 @@
 
   @media (--narrow-screen) {
     padding-left: var(--sgrd);
+  }
+
+  @media (--mobile) {
+    top: var(--announcement-bar-height--mobile);
   }
 
   & .rapid-pre-review-logo {

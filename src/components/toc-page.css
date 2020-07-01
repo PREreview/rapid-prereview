@@ -1,12 +1,12 @@
 .toc-page {
-  padding: calc(var(--header-bar-height)) 0 var(--lgrd);
+  /* padding: calc(var(--header-bar-height)) 0 var(--lgrd); */
   margin: 0;
   box-sizing: border-box;
 
   & .toc-page__main {
     display: flex;
     width: 100vw;
-    padding-top: var(--sgrd);
+    /* padding-top: var(--sgrd); */
   }
 
   & .toc-page__right {
@@ -20,8 +20,9 @@
 
   & .toc-page__body {
     background: white;
-    min-height: calc(100vh - var(--header-bar-height) - 2 * var(--lgrd));
+    min-height: calc(100vh - var(--header-bar-height) - - 2 * var(--lgrd));
     padding: var(--mgrd);
+    top: calc(var(--header-bar-height) + var(--announcement-bar-height));
     flex: 0 0 var(--middle-column-default-width);
     width: var(--middle-column-default-width);
     max-width: calc(100vw - var(--left-panel-min-width));

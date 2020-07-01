@@ -27,6 +27,7 @@ import WelcomeModal from './welcome-modal';
 import XLink from './xlink';
 import AddButton from './add-button';
 import { ORG } from '../constants';
+import Banner from './banner';
 
 export default function Home() {
   const history = useHistory();
@@ -108,6 +109,7 @@ export default function Home() {
       <Helmet>
         <title>{ORG} • Home</title>
       </Helmet>
+      <Banner />
 
       {!!((isNewVisitor || params.get('welcome')) && isWelcomeModalOpen) && (
         <WelcomeModal

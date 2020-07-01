@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
 import HeaderBar from './header-bar';
 import LeftSidePanel from './left-side-panel';
 import { useIsMobile } from '../hooks/ui-hooks';
 import { CSS_HEADER_HEIGHT } from '../constants';
+import Banner from "./banner.js"
 
 /**
  * Use that for all the documentation like pages (Code of Conduct etc.)
@@ -60,46 +61,47 @@ export default function TocPage({ children }) {
   );
 
   return (
-    <div className="toc-page">
-      <HeaderBar
-        onClickMenuButton={() => {
-          setShowLeftPanel(!showLeftPanel);
-        }}
-      />
-
-      <div className="toc-page__main">
-        <LeftSidePanel
-          visible={showLeftPanel}
-          onClickOutside={() => {
-            setShowLeftPanel(false);
+      <div className="toc-page">
+        <Banner />
+        <HeaderBar
+          onClickMenuButton={() => {
+            setShowLeftPanel(!showLeftPanel);
           }}
-        >
-          <nav>
-            <ul>
-              {toc.map($h2 => (
-                <li key={$h2.id}>
-                  <Link
-                    to={{
-                      pathname: location.pathname,
-                      search: location.search,
-                      hash: `#${$h2.id}`
-                    }}
-                    onClick={handleClick}
-                    dangerouslySetInnerHTML={{ __html: $h2.innerHTML }}
-                  />
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </LeftSidePanel>
+        />
 
-        <div className="toc-page__body" ref={ref}>
-          {children}
+        <div className="toc-page__main">
+          <LeftSidePanel
+            visible={showLeftPanel}
+            onClickOutside={() => {
+              setShowLeftPanel(false);
+            }}
+          >
+            <nav>
+              <ul>
+                {toc.map($h2 => (
+                  <li key={$h2.id}>
+                    <Link
+                      to={{
+                        pathname: location.pathname,
+                        search: location.search,
+                        hash: `#${$h2.id}`
+                      }}
+                      onClick={handleClick}
+                      dangerouslySetInnerHTML={{ __html: $h2.innerHTML }}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </LeftSidePanel>
+
+          <div className="toc-page__body" ref={ref}>
+            {children}
+          </div>
+
+          <div className="toc-page__right"></div>
         </div>
-
-        <div className="toc-page__right"></div>
       </div>
-    </div>
   );
 }
 
