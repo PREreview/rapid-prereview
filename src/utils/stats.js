@@ -104,6 +104,46 @@ export function getTags(actions) {
 
   const hasCode = reviewsWithCode.length && reviewsWithCode.length >= threshold;
 
+  // recommended to others
+  const reviewsWithRecs = reviewActions.filter(action => {
+    if (action.resultReview && action.resultReview.reviewAnswer) {
+      const answers = action.resultReview.reviewAnswer;
+
+      for (let i = 0; i < answers.length; i++) {
+        const answer = answers[i];
+        if (answer.parentItem) {
+          const questionId = getId(answer.parentItem);
+          if (questionId === 'question:ynRecommend') {
+            return isYes(answer);
+          }
+        }
+      }
+    }
+    return false;
+  });
+
+  const recdToOthers = reviewsWithRecs.length && reviewsWithRecs.length >= threshold;
+
+  // recommended for peer review
+  const reviewsWithPeers = reviewActions.filter(action => {
+    if (action.resultReview && action.resultReview.reviewAnswer) {
+      const answers = action.resultReview.reviewAnswer;
+
+      for (let i = 0; i < answers.length; i++) {
+        const answer = answers[i];
+        if (answer.parentItem) {
+          const questionId = getId(answer.parentItem);
+          if (questionId === 'question:ynPeerReview') {
+            return isYes(answer);
+          }
+        }
+      }
+    }
+    return false;
+  });
+
+  const recdForPeers = reviewsWithPeers.length && reviewsWithPeers.length >= threshold;
+
   // subjects
   const subjectCountMap = {};
   reviewActions.forEach(action => {
@@ -125,7 +165,7 @@ export function getTags(actions) {
     return count >= threshold;
   });
 
-  return { hasReviews, hasRequests, hasData, hasCode, subjects };
+  return { hasReviews, hasRequests, hasData, hasCode, recdToOthers, recdForPeers, subjects };
 }
 
 export function getYesNoStats(actions = []) {
