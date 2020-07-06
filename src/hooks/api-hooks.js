@@ -320,7 +320,7 @@ export function usePreprintActions(identifier) {
     }
   }, [identifier, preprintsWithActionsStore]);
 
-  console.log("actions ***** progress,  *******", '\n', [actions, progress])
+  console.log("actions ***** progress,  *******", '\n', identifier, [actions, progress])
 
   return [actions, progress];
 }
@@ -646,6 +646,9 @@ export function useActionsSearchResults(
     isActive: false,
     error: null
   });
+
+  console.log("**** we're in the useActionsSearchResults")
+  console.log("search?!", search)
 
   const [results, setResults] = useState(DEFAULT_SEARCH_RESULTS);
 

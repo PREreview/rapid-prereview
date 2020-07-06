@@ -18,6 +18,7 @@ import Profile from './profile';
 import PrivateRoute, { AdminRoute } from './private-route';
 import ModeratorRoute from './moderator-route';
 import ExtensionSplash from './extension-splash';
+import Dashboard from './dashboard'
 import ToCPage from './toc-page';
 import About from './about';
 import CodeOfConduct from './code-of-conduct';
@@ -55,6 +56,10 @@ export default function App({ user }) {
                   <ToCPage>
                     <About />
                   </ToCPage>
+                </Route>
+
+                <Route exact={true} path="/dashboard">
+                  <Dashboard />
                 </Route>
 
                 <Route exact={true} path="/code-of-conduct">

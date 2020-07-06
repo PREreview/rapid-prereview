@@ -450,7 +450,7 @@ export default class DB {
   }
 
   streamActions(params, { user = null } = {}) {
-    console.log("PARAMS in streamActions: ", params)
+    console.log("we are in stream actions, here are the params*****", params)
     return this.docs.searchAsStream('ddoc-docs', 'actions', params);
   }
 

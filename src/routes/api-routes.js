@@ -356,7 +356,6 @@ router.get(
 
     const s = req.db.streamActions(omit(req.query, ['key']));
     s.on('response', response => {
-      console.log("HELLO??????")
       res.status(response.statusCode);
     });
     s.on('error', err => {

@@ -168,6 +168,32 @@ export function getTags(actions) {
   return { hasReviews, hasRequests, hasData, hasCode, recdToOthers, recdForPeers, subjects };
 }
 
+export function getReviewerStats(actions = []) {
+
+  const reviewActions = actions.filter(
+    action => action['@type'] === 'RapidPREreviewAction'
+  );
+
+  const reviewerCount = {};
+
+  reviewActions.forEach(action => {
+    if (action.resultReview && action.agent) {
+      if (typeof action.agent === 'string') {
+        if (action.agent in reviewerCount) {
+          reviewerCount[action.agent] += 1;
+        } else {
+          reviewerCount[action.agent] = 1;
+        }
+      }
+    }
+  });
+
+  return { reviewerCount };
+
+  //TODO: rank
+
+}
+
 export function getYesNoStats(actions = []) {
   const pairs = actions
     .filter(action => action['@type'] === 'RapidPREreviewAction')
