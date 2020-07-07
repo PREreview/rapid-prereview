@@ -293,8 +293,8 @@ export default function Home() {
               <Button
                 onClick={() => {
                   history.push({
-                    pathname: location.pathame,
-                    search: createPreprintQs({}, location.search)
+                    pathname: location.pathname,
+                    search: createPreprintQs({ text: params.get('q') }, location.search)
                   });
                 }}
               >
@@ -310,8 +310,8 @@ export default function Home() {
                 className="home__next-page-button"
                 onClick={() => {
                   history.push({
-                    pathname: location.pathame,
-                    search: createPreprintQs({}, location.search),
+                    pathname: location.pathname,
+                    search: createPreprintQs({ text: params.get('q') }, location.search),
                     state: { bookmark: results.bookmark }
                   });
                 }}
