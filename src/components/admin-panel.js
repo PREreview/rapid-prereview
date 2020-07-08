@@ -39,7 +39,7 @@ export default function AdminPanel() {
       <Helmet>
         <title>{ORG} • Admin panel</title>
       </Helmet>
-      <HeaderBar />
+      <HeaderBar closeGap />
 
       <section>
         <header className="admin-panel__header">

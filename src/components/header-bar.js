@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { MdMenu } from 'react-icons/md';
 import { Link } from 'react-router-dom';
@@ -13,12 +13,44 @@ import NoticeBadge from './notice-badge';
 import { checkIfRoleLacksMininmalData } from '../utils/roles';
 import { useIsMobile } from '../hooks/ui-hooks';
 
-export default function HeaderBar({ onClickMenuButton }) {
+export default function HeaderBar({ onClickMenuButton, closeGap }) {
   const [user] = useUser();
   const [role] = useRole(user && user.defaultRole);
 
   const showProfileNotice = checkIfRoleLacksMininmalData(role);
   const isMobile = useIsMobile();
+
+  const [initialHeaderOffset, setinitialHeaderOffset] = useState(null);
+  const [initialHeaderOffsetMobile, setinitialHeaderOffsetMobile] = useState(
+    null
+  );
+
+  useEffect(() => {
+    setHeaderOffset();
+  }, []);
+
+  const setHeaderOffset = () => {
+    const headerBarOffset = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue('--announcement-bar-height');
+
+    const headerBarOffsetMobile = window
+      .getComputedStyle(document.documentElement)
+      .getPropertyValue('--announcement-bar-height--mobile');
+
+    setinitialHeaderOffset(headerBarOffset);
+    setinitialHeaderOffsetMobile(headerBarOffsetMobile);
+  };
+
+  document.documentElement.style.setProperty(
+    '--announcement-bar-height',
+    closeGap ? '0px' : initialHeaderOffset
+  );
+
+  document.documentElement.style.setProperty(
+    '--announcement-bar-height--mobile',
+    closeGap ? '0px' : initialHeaderOffsetMobile
+  );
 
   return (
     <div className="header-bar">
@@ -160,4 +192,5 @@ export default function HeaderBar({ onClickMenuButton }) {
 
 HeaderBar.propTypes = {
   onClickMenuButton: PropTypes.func,
+  closeGap: PropTypes.bool
 };

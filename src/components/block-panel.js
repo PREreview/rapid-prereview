@@ -39,7 +39,7 @@ export default function BlockPanel() {
       <Helmet>
         <title>{ORG} • Moderate Users</title>
       </Helmet>
-      <HeaderBar />
+      <HeaderBar closeGap />
 
       <section>
         <header className="block-panel__header">
