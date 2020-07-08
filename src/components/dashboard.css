@@ -1,0 +1,65 @@
+.dashboard {
+  width: 96vw;
+
+  & .dashboard__checkbox {
+    position: relative;
+  }
+
+  & .dashboard__checkbox input {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  & .dashboard__flex {
+    display: flex;
+    margin-top: 40px;
+  }
+
+  & .dashboard__flex_item {
+    width: 50%;
+
+    @media (--mobile) {
+      width: 100%;
+    }
+  }
+
+  & .dashboard__h2 {
+    margin-top: 0 !important;
+  }
+
+  & .dashboard__list {
+    display: flex;
+    list-style: none !important;
+    margin-left: 5px;
+  }
+
+  & .dashboard__list_item {
+    margin-left: 5px;
+  }
+
+  & .dashboard__options {
+    display: flex;
+    margin-left: -30px;
+  }
+
+  & .dashboard__options_item {
+    margin-left: 30px;
+  }
+
+  & .dashboard__tags {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.vh {
+  position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap; /* added line */
+}
