@@ -20,7 +20,7 @@ export default function Settings() {
         <title>{ORG} • Settings</title>
       </Helmet>
 
-      <HeaderBar />
+      <HeaderBar closeGap />
       <div className="settings__content">
         <section className="settings__section">
           <h2 className="settings__title">User Settings</h2>

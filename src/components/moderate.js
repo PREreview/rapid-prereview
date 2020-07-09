@@ -85,7 +85,7 @@ export default function Moderate() {
       <Helmet>
         <title>{ORG} • Moderate Reviews</title>
       </Helmet>
-      <HeaderBar />
+      <HeaderBar closeGap />
 
       <section>
         <header className="moderate__header">
