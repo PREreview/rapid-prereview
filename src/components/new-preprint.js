@@ -103,6 +103,7 @@ export default function NewPreprint({
           identifier={identifier}
           preprint={preprint}
           resolvePreprintStatus={resolvePreprintStatus}
+          onViewInContext={onViewInContext}
         />
       ) : preprint && step === 'NEW_REVIEW' ? (
         <StepReview
@@ -174,7 +175,8 @@ function StepPreprint({
   preprint,
   actions,
   fetchActionsProgress,
-  resolvePreprintStatus
+  resolvePreprintStatus,
+  onViewInContext
 }) {
   const history = useHistory();
   const location = useLocation();
@@ -297,7 +299,10 @@ function StepPreprint({
         </Button>
         <Button
           onClick={e => {
-            onStep('NEW_REVIEW');
+            onViewInContext({
+              preprint,
+              tab: 'review'
+            });
           }}
           disabled={
             fetchActionsProgress.isActive ||
@@ -321,7 +326,8 @@ StepPreprint.propTypes = {
   preprint: PropTypes.object,
   resolvePreprintStatus: PropTypes.object.isRequired,
   actions: PropTypes.array.isRequired,
-  fetchActionsProgress: PropTypes.object.isRequired
+  fetchActionsProgress: PropTypes.object.isRequired,
+  onViewInContext: PropTypes.func.isRequired
 };
 
 function StepReview({
@@ -474,14 +480,6 @@ function StepRequest({
           {isSingleStep ? 'Cancel' : 'Go Back'}
         </Button>
 
-        <Button
-          onClick={e => {
-            onViewInContext({ preprint, tab: 'request' });
-          }}
-          disabled={postData.isActive}
-        >
-          View In Context
-        </Button>
         <Button
           primary={true}
           isWaiting={postData.isActive}
