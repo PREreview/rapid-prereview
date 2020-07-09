@@ -13,6 +13,8 @@ import { getId } from '../utils/jsonld';
 import { getTags, getReviewerStats } from '../utils/stats';
 import { createActivityQs } from '../utils/search';
 
+// contexts
+import { useUser } from '../contexts/user-context';
 
 // modules
 import AddButton from './add-button';
@@ -22,14 +24,21 @@ import SearchBar from './search-bar';
 import TagPill from './tag-pill';
 import Tooltip from '@reach/tooltip';
 
+import PreprintCard from './preprint-card';
+import SortOptions from './sort-options';
+
+
 const subjects = ['vaccine', 'mask', 'antibody'];
 
 export default function Dashboard() {
   const [loginModalOpenNext, setLoginModalOpenNext] = useState(null);
-  // fetch all preprints with  covid-19 in the title
-  // endpoint would look something like https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true
 
   const [preprints, setPreprints] = useState([])
+
+  const [user] = useUser();
+
+  // fetch all preprints with  covid-19 in the title
+  // endpoint would look something like https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true
 
   useEffect(() => {
     fetchPreprints();
@@ -38,17 +47,13 @@ export default function Dashboard() {
   const fetchPreprints = async () => {
     const response = await fetch(`http://localhost:3000/api/preprint?q=name%3ACOVID-19&include_docs=true`)
     const data = await response.json();
-    console.log("data?", data.rows)
     setPreprints(data.rows)
-  }
-
-  let actions = [] 
-  
-  /*** 
-   * collects an array of action objects from each preprint, 
+  }  
+  /**
+   * builds an array of action objects from each preprint, 
    * where each item of the array has actions from each preprint
    * */ 
-  
+  let actions = [] 
   preprints.length ? actions = preprints.map(preprint => {
     return {
       preprint: preprint.doc,
@@ -56,20 +61,19 @@ export default function Dashboard() {
     }
   })
   : actions = []
-
-  let allActions = []
   
   /**
    * adding the preprint info to each action, 
    * and pushing each individual action to a new array
-   * */ 
-
+   */ 
+  let allActions = [] 
   actions.forEach(object => object.actions.forEach(action => {
     action["preprint"] = object.preprint
     allActions.push(action)
   }))
-  
-  // get all actions related to these preprints 
+
+  allActions.forEach(action => console.log("action startTime", action.startTime))
+
   const safeActions = useMemo(() => {
     return allActions.filter(
       action =>
@@ -80,7 +84,10 @@ export default function Dashboard() {
   }, [allActions]);
 
   // // find preprints that are recommended to others and for peer review 
-  const { recdToOthers, recdForPeers } = getTags(safeActions)
+  actions.forEach(object => { return { recdToOthers, recdForPeers } = getTags(object.actions)})
+
+  // actions.forEach( set => set.actions.forEach(action => ))
+
   // TODO: figure out if it's enough to search just the titles/names
   // TODO: how to incorporate subjects, as well
   // TODO: create shortcuts for potentially common searches, e.g. masks, etc

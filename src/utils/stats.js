@@ -50,6 +50,7 @@ function isUnsure(textOrAnswer) {
  * Tags are computed following a majority rule
  */
 export function getTags(actions) {
+  console.log("*****actions! in getTags", actions)
   const hasReviews = actions.some(
     action => action['@type'] === 'RapidPREreviewAction'
   );
@@ -104,7 +105,9 @@ export function getTags(actions) {
 
   const hasCode = reviewsWithCode.length && reviewsWithCode.length >= threshold;
 
-  // recommended to others
+  /** collect all reviews where
+   * reviewers say they'd recommend this preprint to others
+  */
   const reviewsWithRecs = reviewActions.filter(action => {
     if (action.resultReview && action.resultReview.reviewAnswer) {
       const answers = action.resultReview.reviewAnswer;
@@ -122,9 +125,13 @@ export function getTags(actions) {
     return false;
   });
 
-  const recdToOthers = reviewsWithRecs.length && reviewsWithRecs.length >= threshold;
+  const othersCount = reviewsWithRecs.length 
 
-  // recommended for peer review
+  const recdToOthers = othersCount && othersCount >= threshold;
+
+  /*** collect all reviews where
+   * reviewers say they'd recommend this preprint for peer review
+   */
   const reviewsWithPeers = reviewActions.filter(action => {
     if (action.resultReview && action.resultReview.reviewAnswer) {
       const answers = action.resultReview.reviewAnswer;
@@ -142,7 +149,8 @@ export function getTags(actions) {
     return false;
   });
 
-  const recdForPeers = reviewsWithPeers.length && reviewsWithPeers.length >= threshold;
+  const peerReviewCount = reviewsWithPeers.length 
+  const recdForPeers = peerReviewCount && peerReviewCount >= threshold;
 
   // subjects
   const subjectCountMap = {};
@@ -165,7 +173,7 @@ export function getTags(actions) {
     return count >= threshold;
   });
 
-  return { hasReviews, hasRequests, hasData, hasCode, recdToOthers, recdForPeers, subjects };
+  return { hasReviews, hasRequests, hasData, hasCode, othersCount, recdToOthers, peerReviewCount, recdForPeers, subjects };
 }
 
 export function getReviewerStats(actions = []) {
@@ -189,9 +197,6 @@ export function getReviewerStats(actions = []) {
   });
 
   return { reviewerCount };
-
-  //TODO: rank
-
 }
 
 export function getYesNoStats(actions = []) {
