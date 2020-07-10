@@ -66,25 +66,14 @@ export default function Dashboard() {
    * adding the preprint info to each action, 
    * and pushing each individual action to a new array
    */ 
-  let allActions = [] 
-  actions.forEach(object => object.actions.forEach(action => {
+  let allActions = []
+  actions.forEach( setOfActions => setOfActions.actions.forEach( action => {
     action["preprint"] = object.preprint
     allActions.push(action)
   }))
-
-  allActions.forEach(action => console.log("action startTime", action.startTime))
-
-  const safeActions = useMemo(() => {
-    return allActions.filter(
-      action =>
-        !checkIfIsModerated(action) &&
-        (action['@type'] === 'RequestForRapidPREreviewAction' ||
-          action['@type'] === 'RapidPREreviewAction')
-    );
-  }, [allActions]);
+  
 
   // // find preprints that are recommended to others and for peer review 
-  actions.forEach(object => { return { recdToOthers, recdForPeers } = getTags(object.actions)})
 
   // actions.forEach( set => set.actions.forEach(action => ))
 
@@ -168,6 +157,22 @@ export default function Dashboard() {
                 />
               </div>
             </div>
+            <ul className="home__preprint-list">
+              {results.rows.map(row => (
+                <li key={row.id} className="home__preprint-list__item">
+                  <PreprintCard
+                    isNew={false}
+                    user={user}
+                    preprint={row.doc}
+                    onNewRequest={handleNewRequest}
+                    onNew={handleNew}
+                    onNewReview={handleNewReview}
+                    hoveredSortOption={hoveredSortOption}
+                    sortOption={params.get('sort') || 'score'}
+                  />
+                </li>
+              ))}
+            </ul>
           </section>
         </div>
       </article>

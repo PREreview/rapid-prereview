@@ -52,6 +52,20 @@
     display: flex;
     justify-content: center;
   }
+
+  & .dashboard__preprint-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    & .dashboard__preprint-list__item {
+      margin: 0;
+      padding: 0;
+      /* the user badge list can stretch the content in a way that forces a resize
+      when the expansion panel is open. Force it match with of container */
+      max-width: calc(var(--middle-column-default-width) - var(--lgrd));
+    }
+  }
 }
 
 .vh {
