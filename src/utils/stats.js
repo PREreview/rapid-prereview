@@ -50,7 +50,6 @@ function isUnsure(textOrAnswer) {
  * Tags are computed following a majority rule
  */
 export function getTags(actions) {
-  console.log("*****actions! in getTags", actions)
   const hasReviews = actions.some(
     action => action['@type'] === 'RapidPREreviewAction'
   );
