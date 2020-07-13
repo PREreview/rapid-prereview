@@ -89,6 +89,10 @@
         padding-left: 0;
         padding-right: 0;
       }
+
+      & .preprint-card__tag-list {
+        list-style: none;
+      }
     }
   }
 

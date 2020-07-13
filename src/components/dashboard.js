@@ -1,19 +1,20 @@
 // base imports
 import React, { useEffect, useState, useCallback } from 'react';
 import { Helmet } from 'react-helmet-async';
+import omit from 'lodash/omit';
 import { ORG } from '../constants';
 import { useHistory, useLocation } from 'react-router-dom';
 
 import Org from './org';
 
 // hooks
-import { useActionsSearchResults, usePreprintActions } from '../hooks/api-hooks';
+import { useActionsSearchResults, usePreprintActions, usePreprintSearchResults } from '../hooks/api-hooks';
 
 // utils
 import { checkIfIsModerated } from '../utils/actions';
 import { getId } from '../utils/jsonld';
 import { getTags, getReviewerStats } from '../utils/stats';
-import { createActivityQs, createPreprintQs } from '../utils/search';
+import { createActivityQs, createPreprintQs, apifyPreprintQs } from '../utils/search';
 
 
 // contexts
@@ -22,12 +23,13 @@ import { useUser } from '../contexts/user-context';
 // modules
 import AddButton from './add-button';
 import Banner from "./banner.js"
+import SortOptions from './sort-options';
 import HeaderBar from './header-bar';
+import PreprintCard from './preprint-card';
 import SearchBar from './search-bar';
 import TagPill from './tag-pill';
 import Tooltip from '@reach/tooltip';
-import PreprintCard from './preprint-card';
-import DashboardSortOptions from './dashboard-sort';
+import XLink from './xlink';
 
 
 const subjects = ['vaccine', 'mask', 'antibody'];
@@ -39,16 +41,31 @@ const subjects = ['vaccine', 'mask', 'antibody'];
 export default function Dashboard() {
   const history = useHistory();
   const location = useLocation();
+  console.log(location);
 
   const [loginModalOpenNext, setLoginModalOpenNext] = useState(null);
 
-  const [preprints, setPreprints] = useState([])
+  // const [preprints, setPreprints] = useState({})
 
   const [user] = useUser();
+
+  const [progress, setProgress] = useState({
+    isActive: true,
+    error: null
+  });
+
+  const apiQs = apifyPreprintQs(
+    location.search,
+    location.state && location.state.bookmark
+  );
+
+  const [preprints, fetchResultsProgress] = usePreprintSearchResults(apiQs);
 
   const [hoveredSortOption, setHoveredSortOption] = useState(null);
 
   const params = new URLSearchParams(location.search);
+
+  useEffect(() => {}, [apiQs]);
 
   /**
    * fetch all preprints with  covid-19 in the title
@@ -56,15 +73,24 @@ export default function Dashboard() {
    * https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true
   */
 
-  useEffect(() => {
-    fetchPreprints();
-  }, []);
-
-  const fetchPreprints = async () => {
-    const response = await fetch(`http://localhost:3000/api/preprint?q=name%3ACOVID-19&include_docs=true`)
-    const data = await response.json();
-    setPreprints(data.rows)
-  }
+  // const fetchPreprints = async () => {
+    // fetch(`http://localhost:3000/api/preprint?q=name%3ACOVID-19&include_docs=true`)
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.json();
+    //     }
+    //   })
+    //   .then(result => {
+    //     const data = result;
+    //     setProgress({ isActive: false, error: null });
+    //     return setPreprints(data);
+    //   })
+    //   .catch(err => {
+    //     if (err.name !== 'AbortError') {
+    //       setProgress({ isActive: false, error: err });
+    //     }
+    //   })
+  // }
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
@@ -160,7 +186,7 @@ export default function Dashboard() {
         <div className="toc-page__body">
           <h1 id="Dashboard">Dashboard</h1>
           <section className="dashboard home__main">
-            <SearchBar />
+            <SearchBar isFetching={fetchResultsProgress.isActive} />
             <div className="preprint-card dashboard__tags">
               <ul className="preprint-card__tag-list dashboard__list">
                 {subjects.map(subject => (
@@ -212,7 +238,7 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-                <DashboardSortOptions
+                <SortOptions
                   value={params.get('sort') || 'score'}
                   onMouseEnterSortOption={sortOption => {
                     setHoveredSortOption(sortOption);
@@ -224,7 +250,10 @@ export default function Dashboard() {
                     nextSortOption // `score` | `new` | `date`
                   ) => {
                     const search = createPreprintQs(
-                      { sort: nextSortOption },
+                      {
+                        text: 'COVID-19',
+                        sort: nextSortOption
+                      },
                       location.search
                     );
                     history.push({
@@ -233,22 +262,36 @@ export default function Dashboard() {
                     });
                   }}
                 />
-                <ul className="dashboard__preprint-list">
-                  {preprints.map(row => (
-                    <li key={row.id} className="dashboard__preprint-list__item">
-                      <PreprintCard
-                        isNew={false}
-                        user={user}
-                        preprint={row.doc}
-                        onNewRequest={handleNewRequest}
-                        onNew={handleNew}
-                        onNewReview={handleNewReview}
-                        hoveredSortOption={hoveredSortOption}
-                        sortOption={params.get('sort') || 'score'}
-                      />
-                    </li>
-                  ))}
-                </ul>
+                {preprints.total_rows === 0 && !fetchResultsProgress.isActive ? (
+                  <div>
+                    No preprints about this topic have been added to Rapid PREreview.{' '}
+                    {!!location.search && (
+                      <XLink to={location.pathname} href={location.pathname}>
+                        Clear search terms.
+                      </XLink>
+                    )}
+                  </div>
+                ) : preprints.bookmark ===
+                  (location.state && location.state.bookmark) ? (
+                  <div>No more preprints.</div>
+                ) : (
+                  <ul className="dashboard__preprint-list">
+                    {preprints.rows.map(row => (
+                      <li key={row.id} className="dashboard__preprint-list__item">
+                        <PreprintCard
+                          isNew={false}
+                          user={user}
+                          preprint={row.doc}
+                          onNewRequest={handleNewRequest}
+                          onNew={handleNew}
+                          onNewReview={handleNewReview}
+                          hoveredSortOption={hoveredSortOption}
+                          sortOption={params.get('sort') || 'score'}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
               <div className="dashboard__flex_item">
                 <div>
