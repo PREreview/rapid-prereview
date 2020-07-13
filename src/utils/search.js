@@ -13,6 +13,8 @@ export function createPreprintQs(
     hasData,
     hasCode,
     subjects,
+    hasOthersRec,
+    hasPeerRec,
     // sort
     sort // `score`, `new` or `date`
   } = {},
@@ -64,6 +66,20 @@ export function createPreprintQs(
     ui.set('code', hasCode);
   } else if (hasCode === null) {
     ui.delete('code');
+  }
+
+  // recommended for others
+  if (hasOthersRec != null) {
+    ui.set('others', hasOthersRec);
+  } else if (hasOthersRec === null) {
+    ui.delete('others');
+  }
+  
+  // recommended for peer review
+  if (hasPeerRec != null) {
+    ui.set('peer', hasPeerRec);
+  } else if (hasPeerRec === null) {
+    ui.delete('peer');
   }
 
   if (sort === null || sort === 'score') {

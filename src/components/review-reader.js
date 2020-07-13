@@ -55,8 +55,6 @@ const ReviewReader = React.memo(function ReviewReader({
       : actions;
   }, [actions, highlightedRoleIds]);
 
-  console.log("actions***** in ReviewReader  ", '\n', actions)
-
   return (
     <div
       className={classNames('review-reader', {

@@ -105,7 +105,7 @@ export function getTags(actions) {
   const hasCode = reviewsWithCode.length && reviewsWithCode.length >= threshold;
 
   /** collect all reviews where
-   * reviewers say they'd recommend this preprint to others
+   * the reviewer says they'd recommend this preprint to others
   */
   const reviewsWithRecs = reviewActions.filter(action => {
     if (action.resultReview && action.resultReview.reviewAnswer) {
@@ -126,10 +126,10 @@ export function getTags(actions) {
 
   const othersCount = reviewsWithRecs.length 
 
-  const recdToOthers = othersCount && othersCount >= threshold;
+  const hasOthersRec = othersCount && othersCount >= threshold;
 
   /*** collect all reviews where
-   * reviewers say they'd recommend this preprint for peer review
+   * the reviewer says they'd recommend this preprint for peer review
    */
   const reviewsWithPeers = reviewActions.filter(action => {
     if (action.resultReview && action.resultReview.reviewAnswer) {
@@ -149,7 +149,7 @@ export function getTags(actions) {
   });
 
   const peerReviewCount = reviewsWithPeers.length 
-  const recdForPeers = peerReviewCount && peerReviewCount >= threshold;
+  const hasPeerRec = peerReviewCount && peerReviewCount >= threshold;
 
   // subjects
   const subjectCountMap = {};
@@ -172,7 +172,7 @@ export function getTags(actions) {
     return count >= threshold;
   });
 
-  return { hasReviews, hasRequests, hasData, hasCode, othersCount, recdToOthers, peerReviewCount, recdForPeers, subjects };
+  return { hasReviews, hasRequests, hasData, hasCode, othersCount, hasOthersRec, peerReviewCount, hasPeerRec, subjects };
 }
 
 export function getReviewerStats(actions = []) {

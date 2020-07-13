@@ -92,7 +92,7 @@ export default function Dashboard() {
 
   // sort actions to populate a "Recent activity" section
   const sortedActions = allActions.slice().sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
-  
+
   // next three functions copied from home.js 
   const handleNewRequest = useCallback(
     preprint => {
