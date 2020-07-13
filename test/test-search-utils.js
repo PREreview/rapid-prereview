@@ -36,7 +36,7 @@ describe('search utils', () => {
       const p = querystring.parse(apifyPreprintQs(ui).substring(1));
       assert.equal(
         p.q,
-        'name:text AND hasReviews:true AND (subjectName:"influenza" OR subjectName:"zika")'
+        'name:"text" AND hasReviews:true AND (subjectName:"influenza" OR subjectName:"zika")'
       );
     });
 

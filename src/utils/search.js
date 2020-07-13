@@ -97,11 +97,8 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
 
   if (ui.has('q')) {
     const q = ui.get('q');
-    const splt = q.split(/(\s+)/);
 
-    const ored = [
-      `name:${splt.length > 1 && escapeLucene(q) === q ? JSON.stringify(q) : q}` // we auto quote multiple terms if they do not contain lucene operators
-    ];
+    const ored = [`name:"${escapeLucene(q)}"`];
 
     const doiMatched = q.match(doiRegex());
     if (doiMatched) {
