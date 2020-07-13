@@ -104,11 +104,27 @@
 
       &:first-child {
         width: 60%;
+
+        @media (--mid) {
+          margin-left: 0;
+          width: 90%;
+        }
       }
 
       &:last-child {
         width: 40%;
+
+        @media (--mid) {
+          margin-left: 0;
+          margin-top: 20px;
+          width: 90%;
+        }
       }
+    }
+
+    @media (--mid) {
+      display: block;
+      margin-left: 0;
     }
   }
 
