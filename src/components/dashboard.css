@@ -15,13 +15,25 @@
   & .dashboard__flex {
     display: flex;
     margin-top: 40px;
+    margin-left: -50px;
+
+    @media (--mid) {
+      display: block;
+      margin-left: 0;
+    }
   }
 
   & .dashboard__flex_item {
+    margin-left: 50px;
     width: 50%;
 
-    @media (--mobile) {
+    @media (--mid) {
+      margin-left: 0;
       width: 100%;
+
+      &:last-child {
+        margin-top: 50px;
+      }
     }
   }
 
@@ -39,6 +51,10 @@
     margin-left: 5px;
   }
 
+  & .tag-pill {
+    cursor: pointer;
+  }
+
   & .dashboard__options {
     display: flex;
     margin-left: -30px;
@@ -54,9 +70,9 @@
   }
 
   & .dashboard__preprint-list {
-    list-style: none;
+    list-style: none !important;
     margin: 0;
-    padding: 0;
+    padding: 0 !important;
 
     & .dashboard__preprint-list__item {
       margin: 0;
@@ -64,7 +80,40 @@
       /* the user badge list can stretch the content in a way that forces a resize
       when the expansion panel is open. Force it match with of container */
       max-width: calc(var(--middle-column-default-width) - var(--lgrd));
+
+      & .preprint-card:active, .preprint-card:focus, .preprint-card:hover {
+        box-shadow: unset;
+      }
+
+      & .preprint-card__header, preprint-card__info-row, preprint-card__expansion-header {
+        padding-left: 0;
+        padding-right: 0;
+      }
     }
+  }
+
+  & .dashboard__activity {
+    display: flex;
+    margin-left: -10px;
+    margin-top: 30px;
+
+    & .dashboard__activity_item {
+      border: 2px solid var(--prereview-black);
+      padding: 10px;
+      margin-left: 10px;
+
+      &:first-child {
+        width: 60%;
+      }
+
+      &:last-child {
+        width: 40%;
+      }
+    }
+  }
+
+  @media (--mid) {
+    width: 92vw;
   }
 }
 
