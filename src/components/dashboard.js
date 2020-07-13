@@ -26,7 +26,6 @@ import HeaderBar from './header-bar';
 import SearchBar from './search-bar';
 import TagPill from './tag-pill';
 import Tooltip from '@reach/tooltip';
-
 import PreprintCard from './preprint-card';
 import DashboardSortOptions from './dashboard-sort';
 
@@ -48,12 +47,12 @@ export default function Dashboard() {
   const [user] = useUser();
 
   const [hoveredSortOption, setHoveredSortOption] = useState(null);
-  
+
   const params = new URLSearchParams(location.search);
-  
-  /** 
+
+  /**
    * fetch all preprints with  covid-19 in the title
-   * endpoint would look something like 
+   * endpoint would look something like
    * https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true
   */
 
@@ -65,13 +64,13 @@ export default function Dashboard() {
     const response = await fetch(`http://localhost:3000/api/preprint?q=name%3ACOVID-19&include_docs=true`)
     const data = await response.json();
     setPreprints(data.rows)
-  }  
+  }
 
   /**
-   * builds an array where each item of the array is an object with an 'actions' key, 
+   * builds an array where each item of the array is an object with an 'actions' key,
    * the value to which are all of actions from each preprint
-   * */ 
-  let actions = [] 
+   * */
+  let actions = []
   preprints.length ? actions = preprints.map(preprint => {
     return {
       preprint: preprint.doc, // details of each preprint
@@ -79,11 +78,11 @@ export default function Dashboard() {
     }
   })
   : actions = []
-  
+
   /**
-   * adding the preprint info to each action, 
+   * adding the preprint info to each action,
    * and pushing each individual action to a new array
-   */ 
+   */
   let allActions = []
   actions.forEach( setOfActions => setOfActions.actions.forEach( action => {
     action["preprint"] = setOfActions.preprint
@@ -183,7 +182,7 @@ export default function Dashboard() {
             <div className="dashboard__flex">
               <div className="dashboard__flex_item">
                 <h2 className="dashboard__h2">Most Recommended</h2>
-                <label className="vh" for="reviewer-type">
+                <label className="vh" htmlFor="reviewer-type">
                   Choose a category:
                 </label>
                 <div className="dashboard__options">
@@ -196,68 +195,84 @@ export default function Dashboard() {
                   </div>
                   <div className="dashboard__options_item">
                     <div className="dashboard__checkbox">
-                      <label for="data">Contains reported data</label>
+                      <label htmlFor="recommended-others">Recommended to others</label>
+                      <input type="checkbox" id="recommended-others" name="recommended-others" />
+                    </div>
+                    <div className="dashboard__checkbox">
+                      <label htmlFor="recommended-peers">Recommended for peer review</label>
+                      <input type="checkbox" id="recommended-peers" name="recommended-peers" />
+                    </div>
+                    <div className="dashboard__checkbox">
+                      <label htmlFor="data">Contains reported data</label>
                       <input type="checkbox" id="data" name="data" />
                     </div>
                     <div className="dashboard__checkbox">
-                      <label for="data">Contains reported code</label>
+                      <label htmlFor="data">Contains reported code</label>
                       <input type="checkbox" id="code" name="code" />
                     </div>
                   </div>
                 </div>
+                <DashboardSortOptions
+                  value={params.get('sort') || 'score'}
+                  onMouseEnterSortOption={sortOption => {
+                    setHoveredSortOption(sortOption);
+                  }}
+                  onMouseLeaveSortOption={sortOption => {
+                    setHoveredSortOption(null);
+                  }}
+                  onChange={(
+                    nextSortOption // `score` | `new` | `date`
+                  ) => {
+                    const search = createPreprintQs(
+                      { sort: nextSortOption },
+                      location.search
+                    );
+                    history.push({
+                      pathname: location.pathame,
+                      search
+                    });
+                  }}
+                />
+                <ul className="dashboard__preprint-list">
+                  {preprints.map(row => (
+                    <li key={row.id} className="dashboard__preprint-list__item">
+                      <PreprintCard
+                        isNew={false}
+                        user={user}
+                        preprint={row.doc}
+                        onNewRequest={handleNewRequest}
+                        onNew={handleNew}
+                        onNewReview={handleNewReview}
+                        hoveredSortOption={hoveredSortOption}
+                        sortOption={params.get('sort') || 'score'}
+                      />
+                    </li>
+                  ))}
+                </ul>
               </div>
               <div className="dashboard__flex_item">
-                <AddButton
-                  onClick={e => {
-                    if (user) {
-                      history.push('/new');
-                    } else {
-                      setLoginModalOpenNext('/new');
-                    }
-                  }}
-                  disabled={location.pathname === '/new'}
-                />
+                <div>
+                  <AddButton
+                    onClick={e => {
+                      if (user) {
+                        history.push('/new');
+                      } else {
+                        setLoginModalOpenNext('/new');
+                      }
+                    }}
+                    disabled={location.pathname === '/new'}
+                  />
+                </div>
+                <div className="dashboard__activity">
+                  <div  className="dashboard__activity_item">
+                    <h2 className="dashboard__h2">Recent Activity</h2>
+                  </div>
+                  <div  className="dashboard__activity_item">
+                    <h2 className="dashboard__h2">Active Reviewer</h2>
+                  </div>
+                </div>
               </div>
             </div>
-
-            <DashboardSortOptions
-              value={params.get('sort') || 'score'}
-              onMouseEnterSortOption={sortOption => {
-                setHoveredSortOption(sortOption);
-              }}
-              onMouseLeaveSortOption={sortOption => {
-                setHoveredSortOption(null);
-              }}
-              onChange={(
-                nextSortOption // `score` | `new` | `date`
-              ) => {
-                const search = createPreprintQs(
-                  { sort: nextSortOption },
-                  location.search
-                );
-                history.push({
-                  pathname: location.pathame,
-                  search
-                });
-              }}
-            />
-            
-            <ul className="dashboard__preprint-list">
-              {preprints.map(row => (
-                <li key={row.id} className="dashboard__preprint-list__item">
-                  <PreprintCard
-                    isNew={false}
-                    user={user}
-                    preprint={row.doc}
-                    onNewRequest={handleNewRequest}
-                    onNew={handleNew}
-                    onNewReview={handleNewReview}
-                    hoveredSortOption={hoveredSortOption}
-                    sortOption={params.get('sort') || 'score'}
-                  />
-                </li>
-              ))}
-            </ul>
           </section>
         </div>
       </article>
