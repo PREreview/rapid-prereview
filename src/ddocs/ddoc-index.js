@@ -67,7 +67,9 @@ const ddoc = {
           hasReviews: 'keyword',
           hasRequests: 'keyword',
           hasData: 'keyword',
-          hasCode: 'keyword'
+          hasCode: 'keyword', 
+          // hasOthersRec: 'keyword',
+          // hasPeerRec: 'keyword',
         }
       },
       index: function(doc) {
@@ -274,6 +276,56 @@ const ddoc = {
             index('hasCode', hasCode ? 'true' : 'false', {
               facet: true
             });
+
+            // has recommendations to others
+            // var reviewsWithRecs = reviewActions.filter(function (action) {
+            //   if (action.resultReview && action.resultReview.reviewAnswer) {
+            //     var answers = action.resultReview.reviewAnswer;
+
+            //     for (var i = 0; i < answers.length; i++) {
+            //       var answer = answers[i];
+            //       if (answer.parentItem) {
+            //         var questionId =
+            //           answer.parentItem['@id'] || answer.parentItem;
+            //         if (questionId === 'question:ynRecommend') {
+            //           return (answer.text || '').toLowerCase().trim() === 'yes';
+            //         }
+            //       }
+            //     }
+            //   }
+            //   return false;
+            // });
+
+            // var hasOthersRec =
+            //   reviewsWithRecs.length && reviewsWithRecs.length >= threshold;
+            // index('hasOthersRec', hasOthersRec ? 'true' : 'false', {
+            //   facet: true
+            // });
+
+            // // has recommendations for peer review
+            // var reviewsWithPeers = reviewActions.filter(function (action) {
+            //   if (action.resultReview && action.resultReview.reviewAnswer) {
+            //     var answers = action.resultReview.reviewAnswer;
+
+            //     for (var i = 0; i < answers.length; i++) {
+            //       var answer = answers[i];
+            //       if (answer.parentItem) {
+            //         var questionId =
+            //           answer.parentItem['@id'] || answer.parentItem;
+            //         if (questionId === 'question:ynPeerReview') {
+            //           return (answer.text || '').toLowerCase().trim() === 'yes';
+            //         }
+            //       }
+            //     }
+            //   }
+            //   return false;
+            // });
+
+            // var hasPeerRec =
+            //   reviewsWithPeers.length && reviewsWithPeers.length >= threshold;
+            // index('hasPeerRec', hasPeerRec ? 'true' : 'false', {
+            //   facet: true
+            // });
 
             // subjectName
             var subjectCountMap = {};

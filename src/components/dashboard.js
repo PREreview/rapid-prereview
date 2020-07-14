@@ -23,6 +23,7 @@ import { useUser } from '../contexts/user-context';
 // modules
 import AddButton from './add-button';
 import Banner from "./banner.js"
+import Checkbox from './checkbox';
 import SortOptions from './sort-options';
 import HeaderBar from './header-bar';
 import PreprintCard from './preprint-card';
@@ -66,31 +67,6 @@ export default function Dashboard() {
   const params = new URLSearchParams(location.search);
 
   useEffect(() => {}, [apiQs]);
-
-  /**
-   * fetch all preprints with  covid-19 in the title
-   * endpoint would look something like
-   * https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true
-  */
-
-  // const fetchPreprints = async () => {
-    // fetch(`http://localhost:3000/api/preprint?q=name%3ACOVID-19&include_docs=true`)
-    //   .then(response => {
-    //     if (response.ok) {
-    //       return response.json();
-    //     }
-    //   })
-    //   .then(result => {
-    //     const data = result;
-    //     setProgress({ isActive: false, error: null });
-    //     return setPreprints(data);
-    //   })
-    //   .catch(err => {
-    //     if (err.name !== 'AbortError') {
-    //       setProgress({ isActive: false, error: err });
-    //     }
-    //   })
-  // }
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
@@ -171,6 +147,7 @@ export default function Dashboard() {
   // get active reviewers
 
 
+
   return (
     <div className="toc-page">
       <Helmet>
@@ -221,20 +198,120 @@ export default function Dashboard() {
                   </div>
                   <div className="dashboard__options_item">
                     <div className="dashboard__checkbox">
-                      <label htmlFor="recommended-others">Recommended to others</label>
-                      <input type="checkbox" id="recommended-others" name="recommended-others" />
+                      {/* <label htmlFor="recommended-others">Recommended to others</label>
+                      <input type="checkbox" id="recommended-others" name="recommended-others" /> */}
+                      <Checkbox
+                        inputId="counts-others"
+                        name="hasOthersRec"
+                        label={
+                          <span className="facets__facet-label">
+                            Recommended to others{' '}
+                          </span>
+                        }
+                        // disabled={!(counts.hasData || {}).true}
+                        checked={params.get('others') === 'true'}
+                        onChange={e => {
+                          const search = createPreprintQs(
+                            {
+                              hasOthersRec: e.target.checked || null
+                            },
+                            location.search
+                          );
+
+                          history.push({
+                            pathname: location.pathname,
+                            search,
+                            state: { prevSearch: location.search }
+                          });
+                        }}
+                      /> 
                     </div>
                     <div className="dashboard__checkbox">
-                      <label htmlFor="recommended-peers">Recommended for peer review</label>
-                      <input type="checkbox" id="recommended-peers" name="recommended-peers" />
+                      {/* <label htmlFor="recommended-peers">Recommended for peer review</label>
+                      <input type="checkbox" id="recommended-peers" name="recommended-peers" /> */}
+                      <Checkbox
+                        inputId="counts-peer"
+                        name="hasPeerRec"
+                        label={
+                          <span className="facets__facet-label">
+                            Recommended for peer review{' '}
+                          </span>
+                        }
+                        // disabled={!(counts.hasData || {}).true}
+                        checked={params.get('peer') === 'true'}
+                        onChange={e => {
+                          const search = createPreprintQs(
+                            {
+                              hasPeerRec: e.target.checked || null
+                            },
+                            location.search
+                          );
+
+                          history.push({
+                            pathname: location.pathname,
+                            search,
+                            state: { prevSearch: location.search }
+                          });
+                        }}
+                      />
                     </div>
                     <div className="dashboard__checkbox">
-                      <label htmlFor="data">Contains reported data</label>
-                      <input type="checkbox" id="data" name="data" />
+                      {/* <label htmlFor="data">Contains reported data</label>
+                      <input type="checkbox" id="data" name="data" /> */}
+                      <Checkbox
+                        inputId="counts-data"
+                        name="hasData"
+                        label={
+                          <span className="facets__facet-label">
+                            With reported data{' '}
+                          </span>
+                        }
+                        // disabled={!(counts.hasData || {}).true}
+                        checked={params.get('data') === 'true'}
+                        onChange={e => {
+                          const search = createPreprintQs(
+                            {
+                              hasData: e.target.checked || null
+                            },
+                            location.search
+                          );
+
+                          history.push({
+                            pathname: location.pathname,
+                            search,
+                            state: { prevSearch: location.search }
+                          });
+                        }}
+                      />
                     </div>
                     <div className="dashboard__checkbox">
-                      <label htmlFor="data">Contains reported code</label>
-                      <input type="checkbox" id="code" name="code" />
+                      {/* <label htmlFor="data">Contains reported code</label>
+                      <input type="checkbox" id="code" name="code" /> */}
+                      <Checkbox
+                        inputId="counts-code"
+                        name="hasCode"
+                        label={
+                          <span className="facets__facet-label">
+                            With reported code{' '}
+                          </span>
+                        }
+                        // disabled={!(counts.hasCode || {}).true}
+                        checked={params.get('code') === 'true'}
+                        onChange={e => {
+                          const search = createPreprintQs(
+                            {
+                              hasCode: e.target.checked || null
+                            },
+                            location.search
+                          );
+
+                          history.push({
+                            pathname: location.pathname,
+                            search,
+                            state: { prevSearch: location.search }
+                          });
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -311,7 +388,7 @@ export default function Dashboard() {
                     <h2 className="dashboard__h2">Recent Activity</h2>
                   </div>
                   <div  className="dashboard__activity_item">
-                    <h2 className="dashboard__h2">Active Reviewer</h2>
+                    <h2 className="dashboard__h2">Active Reviewers</h2>
                   </div>
                 </div>
               </div>

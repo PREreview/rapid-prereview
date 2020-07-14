@@ -174,6 +174,12 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   if (ui.has('code')) {
     anded.push(`hasCode:${ui.get('code')}`);
   }
+  if (ui.has('peer')) {
+    anded.push(`hasPeerRec:${ui.get('peer')}`);
+  }
+  if (ui.has('others')) {
+    anded.push(`hasOthersRec:${ui.get('others')}`);
+  }
   if (ui.has('subject')) {
     const subjects = ui.get('subject').split(',');
 
@@ -255,6 +261,8 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
       'hasCode',
       'hasReviews',
       'hasRequests',
+      // 'hasPeerRec',
+      // 'hasOthersRec',
       'subjectName'
     ])
   );
@@ -379,6 +387,7 @@ export function createBlockedRolesQs({ bookmark }) {
   api.set('limit', 10);
 
   const sapi = api.toString();
+  console.log("****sapi", sapi)
 
   return sapi ? `?${sapi}` : undefined;
 }
