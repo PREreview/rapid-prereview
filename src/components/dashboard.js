@@ -42,18 +42,15 @@ const subjects = ['vaccine', 'mask', 'antibody'];
 export default function Dashboard() {
   const history = useHistory();
   const location = useLocation();
-  console.log(location);
+  const [user] = useUser();
 
   const [loginModalOpenNext, setLoginModalOpenNext] = useState(null);
 
-  // const [preprints, setPreprints] = useState({})
-
-  const [user] = useUser();
-
-  const [progress, setProgress] = useState({
-    isActive: true,
-    error: null
-  });
+  /**
+   * fetch all preprints with  covid-19 in the title
+   * endpoint would look something like
+   * https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true
+  */
 
   const apiQs = apifyPreprintQs(
     location.search,
@@ -66,12 +63,17 @@ export default function Dashboard() {
 
   const params = new URLSearchParams(location.search);
 
-  useEffect(() => {}, [apiQs]);
+  useEffect(() => {
+    if (location.search === "") {
+      history.replace({ search: "q=COVID-19" })
+    }
+  }, [apiQs]);
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
    * the value to which are all of actions from each preprint
    * */
+
   let actions = []
   preprints.length ? actions = preprints.map(preprint => {
     return {
@@ -328,7 +330,7 @@ export default function Dashboard() {
                   ) => {
                     const search = createPreprintQs(
                       {
-                        text: 'COVID-19',
+                        text: 'COVID-19' || 'coronavirus' || 'SARS-CoV2',
                         sort: nextSortOption
                       },
                       location.search
@@ -386,9 +388,23 @@ export default function Dashboard() {
                 <div className="dashboard__activity">
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Recent Activity</h2>
+                    <div className="dashboard__activity_item_text">
+                      A. Person just reviewed <a href="http://0.0.0.0:3000/10.1101/2020.06.25.172528">Resource optimization in COVID-19 diagnosis</a>
+                    </div>
+                    <div className="dashboard__activity_item_text">
+                      <a href="http://0.0.0.0:3000/10.1101/2020.04.09.034967">Comparative ACE2 variation and primate COVID-19 risk</a> received a request for review from Jane Doe.
+                    </div>
+                    <div className="dashboard__activity_item_text">
+                      <a href="http://0.0.0.0:3000/10.1101/2020.05.28.121889">Comprehensive Transcriptomic Analysis of COVID-19 Blood, Lung, and Airway</a> received a request for review from Anonymous.
+                    </div>
                   </div>
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Active Reviewers</h2>
+                    <ol className="dashboard__activity_item_list">
+                      <li>A. Person</li>
+                      <li>Jane Doe</li>
+                      <li>Anonymous</li>
+                    </ol>
                   </div>
                 </div>
               </div>
