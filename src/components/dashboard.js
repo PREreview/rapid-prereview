@@ -286,9 +286,23 @@ export default function Dashboard() {
                 <div className="dashboard__activity">
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Recent Activity</h2>
+                    <div className="dashboard__activity_item_text">
+                      A. Person just reviewed <a href="http://0.0.0.0:3000/10.1101/2020.06.25.172528">Resource optimization in COVID-19 diagnosis</a>
+                    </div>
+                    <div className="dashboard__activity_item_text">
+                      <a href="http://0.0.0.0:3000/10.1101/2020.04.09.034967">Comparative ACE2 variation and primate COVID-19 risk</a> received a request for review from Jane Doe.
+                    </div>
+                    <div className="dashboard__activity_item_text">
+                      <a href="http://0.0.0.0:3000/10.1101/2020.05.28.121889">Comprehensive Transcriptomic Analysis of COVID-19 Blood, Lung, and Airway</a> received a request for review from Anonymous.
+                    </div>
                   </div>
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Active Reviewer</h2>
+                    <ol className="dashboard__activity_item_list">
+                      <li>A. Person</li>
+                      <li>Jane Doe</li>
+                      <li>Anonymous</li>
+                    </ol>
                   </div>
                 </div>
               </div>

@@ -124,6 +124,22 @@
           width: 90%;
         }
       }
+
+      & .dashboard__activity_item_list {
+        padding-left: 16px;
+
+        & li {
+          &:not(:last-child) {
+            margin-bottom: 5px;
+          }
+        }
+      }
+
+      & .dashboard__activity_item_text {
+        &:not(:last-child) {
+          margin-bottom: 10px;
+        }
+      }
     }
 
     @media (--mid) {
