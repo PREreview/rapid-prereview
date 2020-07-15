@@ -270,6 +270,8 @@ const ddoc = {
               }
               return false;
             });
+            console.log("....hasCode", reviewsWithCode)
+
 
             var hasCode =
               reviewsWithCode.length && reviewsWithCode.length >= threshold;

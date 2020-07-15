@@ -69,6 +69,12 @@ export default function Dashboard() {
     }
   }, [apiQs]);
 
+  // const fetchPreprints = async () => {
+  //   const response = await fetch(`https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true`)
+  //   const data = await response.json()
+  //   setArray(data.rows)
+  // }
+
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
    * the value to which are all of actions from each preprint

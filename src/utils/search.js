@@ -257,12 +257,12 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   api.set(
     'counts',
     JSON.stringify([
+      'hasPeerRec',
+      'hasOthersRec',
       'hasData',
       'hasCode',
       'hasReviews',
       'hasRequests',
-      // 'hasPeerRec',
-      // 'hasOthersRec',
       'subjectName'
     ])
   );
@@ -297,6 +297,10 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   }
 
   const sapi = api.toString();
+  const regex = /\w/
+  console.log("****", sapi)
+  console.log("******", sapi.match(regex))
+
 
   return sapi ? `?${sapi}` : undefined;
 }
@@ -387,7 +391,6 @@ export function createBlockedRolesQs({ bookmark }) {
   api.set('limit', 10);
 
   const sapi = api.toString();
-  console.log("****sapi", sapi)
 
   return sapi ? `?${sapi}` : undefined;
 }
