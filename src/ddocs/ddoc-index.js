@@ -67,7 +67,9 @@ const ddoc = {
           hasReviews: 'keyword',
           hasRequests: 'keyword',
           hasData: 'keyword',
-          hasCode: 'keyword'
+          hasCode: 'keyword',
+          hasOthersRec: 'keyword',
+          hasPeerRec: 'keyword'
         }
       },
       index: function(doc) {

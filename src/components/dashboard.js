@@ -31,6 +31,7 @@ import TagPill from './tag-pill';
 import Tooltip from '@reach/tooltip';
 import XLink from './xlink';
 
+// const db = new DB();
 
 const subjects = ['vaccine', 'mask', 'antibody'];
 
@@ -42,6 +43,9 @@ export default function Dashboard() {
   const history = useHistory();
   const location = useLocation();
   const [user] = useUser();
+  const [actions, setActions] = useState([
+    'RapidPREreviewAction', 'RequestForRapidPREreviewAction'
+  ]);
 
   const [loginModalOpenNext, setLoginModalOpenNext] = useState(null);
 
@@ -66,31 +70,49 @@ export default function Dashboard() {
     if (location.search === "") {
       history.replace({ search: "q=COVID-19" })
     }
-  }, [apiQs]);
+
+    if (preprints.rows.length) {
+      console.log('preprints: ', preprints);
+      activity(preprints);
+    }
+  }, [apiQs, preprints]);
+
+  const activity = async function (preprints) {
+    const roleIds = preprints.rows
+      .map(preprint => getId(preprint.agent))
+      .filter(roleId => roleId && roleId !== getId(actions.agent));
+
+    // const users = await db.getUsersByRoleIds(roleIds);
+    // console.log(users);
+  };
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
    * the value to which are all of actions from each preprint
    * */
 
-  let actions = []
-  preprints.length ? actions = preprints.map(preprint => {
-    return {
-      preprint: preprint.doc, // details of each preprint
-      actions: preprint.doc.potentialAction
-    }
-  })
-  : actions = []
+   // const [actions, fetchActionsProgress] = usePreprintActions(
+   //   preprint.doi || preprint.arXivId
+   // );
+   // const safeActions = actions.filter(action => !checkIfIsModerated(action));
+
+  // preprints.length ? actions = preprints.map(preprint => {
+  //   return {
+  //     preprint: preprint.doc, // details of each preprint
+  //     actions: preprint.doc.potentialAction
+  //   }
+  // })
+  // : actions = []
 
   /**
    * adding the preprint info to each action,
    * and pushing each individual action to a new array
    */
-  let allActions = []
-  actions.forEach( setOfActions => setOfActions.actions.forEach( action => {
-    action["preprint"] = setOfActions.preprint
-    allActions.push(action)
-  }))
+  let allActions = [];
+  // actions.forEach( setOfActions => setOfActions.actions.forEach( action => {
+  //   action["preprint"] = setOfActions.preprint
+  //   allActions.push(action)
+  // }))
 
   // sort actions to populate a "Recent activity" section
   const sortedActions = allActions.slice().sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
@@ -146,6 +168,8 @@ export default function Dashboard() {
   );
 
   // get active reviewers
+
+  // const activity = getReviewerStats(actions);
 
 
   return (

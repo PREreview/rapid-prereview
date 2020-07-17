@@ -124,7 +124,7 @@ export function getTags(actions) {
     return false;
   });
 
-  const othersCount = reviewsWithRecs.length 
+  const othersCount = reviewsWithRecs.length
 
   const recdToOthers = othersCount && othersCount >= threshold;
 
@@ -148,7 +148,7 @@ export function getTags(actions) {
     return false;
   });
 
-  const peerReviewCount = reviewsWithPeers.length 
+  const peerReviewCount = reviewsWithPeers.length
   const recdForPeers = peerReviewCount && peerReviewCount >= threshold;
 
   // subjects

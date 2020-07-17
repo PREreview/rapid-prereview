@@ -66,6 +66,20 @@ export function createPreprintQs(
     ui.delete('code');
   }
 
+  // recommended for others
+  if (hasOthersRec != null) {
+    ui.set('others', hasOthersRec);
+  } else if (hasOthersRec === null) {
+    ui.delete('others');
+  }
+
+  // recommended for peer review
+  if (hasPeerRec != null) {
+    ui.set('peer', hasPeerRec);
+  } else if (hasPeerRec === null) {
+    ui.delete('peer');
+  }
+
   if (sort === null || sort === 'score') {
     ui.delete('sort');
   } else if (sort != null) {
@@ -237,6 +251,8 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
     JSON.stringify([
       'hasData',
       'hasCode',
+      // 'hasPeerRec',
+      // 'hasOthersRec',
       'hasReviews',
       'hasRequests',
       'subjectName'
