@@ -21,8 +21,8 @@ const PdfViewer = React.lazy(() =>
 
 export default function ExtensionFallback() {
   const location = useLocation(); // location.state can be {preprint, tab} with tab being `request` or `review` (so that we know on which tab the shell should be activated with
-  const { identifierPart1, identifierPart2 } = useParams();
-  const identifier = [identifierPart1, identifierPart2]
+  const { identifierPart1, identifierPart2, identifierPart3 } = useParams();
+  const identifier = [identifierPart1, identifierPart2, identifierPart3]
     .filter(Boolean)
     .join('/');
 
