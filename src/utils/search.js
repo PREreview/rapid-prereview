@@ -74,7 +74,11 @@ export function createPreprintQs(
   } else if (hasOthersRec === null) {
     ui.delete('others');
   }
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> 70a71d060e7c6889f705ed1b50e75d81fc838289
   // recommended for peer review
   if (hasPeerRec != null) {
     ui.set('peer', hasPeerRec);
@@ -261,6 +265,8 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
       // 'hasOthersRec',
       'hasData',
       'hasCode',
+      // 'hasPeerRec',
+      // 'hasOthersRec',
       'hasReviews',
       'hasRequests',
       'subjectName'

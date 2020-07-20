@@ -189,7 +189,7 @@ export default class DB {
           revMap[ddocIndex._id] ? { _rev: revMap[ddocIndex._id] } : {},
           stringify(ddocIndex)
         )
-      )
+      ),
     ]);
   }
 
@@ -437,7 +437,7 @@ export default class DB {
 
     return results;
   }
-
+//
   streamPreprints(params, { user = null } = {}) {
     console.log("params in streamPreprints: ", params)
     return this.index.searchAsStream('ddoc-index', 'preprints', params);

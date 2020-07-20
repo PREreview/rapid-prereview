@@ -32,7 +32,6 @@ import Banner from './banner';
 export default function Home() {
   const history = useHistory();
   const location = useLocation();
-  console.log(location);
 
   const [user] = useUser();
   const isMobile = useIsMobile();

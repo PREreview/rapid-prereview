@@ -320,7 +320,7 @@ export function usePreprintActions(identifier) {
     }
   }, [identifier, preprintsWithActionsStore]);
 
-  console.log("actions ***** progress,  *******", '\n', identifier, [actions, progress])
+  console.log('actions: ', actions);
 
   return [actions, progress];
 }
@@ -647,6 +647,11 @@ export function useActionsSearchResults(
     error: null
   });
 
+<<<<<<< HEAD
+=======
+  console.log("search: ", search);
+
+>>>>>>> 70a71d060e7c6889f705ed1b50e75d81fc838289
   const [results, setResults] = useState(DEFAULT_SEARCH_RESULTS);
 
   useEffect(() => {

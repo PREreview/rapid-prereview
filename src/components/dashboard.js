@@ -33,6 +33,7 @@ import Tooltip from '@reach/tooltip';
 import XLink from './xlink';
 import RecentActivityCard from './recent-activity'
 
+// const db = new DB();
 
 const subjects = ['vaccine', 'mask', 'antibody'];
 
@@ -44,6 +45,9 @@ export default function Dashboard() {
   const history = useHistory();
   const location = useLocation();
   const [user] = useUser();
+  const [actions, setActions] = useState([
+    'RapidPREreviewAction', 'RequestForRapidPREreviewAction'
+  ]);
 
   const [loginModalOpenNext, setLoginModalOpenNext] = useState(null);
 
@@ -68,7 +72,21 @@ export default function Dashboard() {
     if (location.search === "") {
       history.replace({ search: "q=COVID-19" }) // add an OR query here too
     }
-  }, [apiQs]);
+
+    if (preprints.rows.length) {
+      console.log('preprints: ', preprints);
+      activity(preprints);
+    }
+  }, [apiQs, preprints]);
+
+  const activity = async function (preprints) {
+    const roleIds = preprints.rows
+      .map(preprint => getId(preprint.agent))
+      .filter(roleId => roleId && roleId !== getId(actions.agent));
+
+    // const users = await db.getUsersByRoleIds(roleIds);
+    // console.log(users);
+  };
 
   // const fetchPreprints = async () => {
   //   const response = await fetch(`https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true`)
@@ -81,6 +99,7 @@ export default function Dashboard() {
    * the value to which are all of actions from each preprint
    * */
 
+<<<<<<< HEAD
   let actions = []
   preprints.rows.length ? actions = preprints.rows.map(preprint => {
     return {
@@ -89,16 +108,30 @@ export default function Dashboard() {
     }
   })
   : actions = []
+=======
+   // const [actions, fetchActionsProgress] = usePreprintActions(
+   //   preprint.doi || preprint.arXivId
+   // );
+   // const safeActions = actions.filter(action => !checkIfIsModerated(action));
+
+  // preprints.length ? actions = preprints.map(preprint => {
+  //   return {
+  //     preprint: preprint.doc, // details of each preprint
+  //     actions: preprint.doc.potentialAction
+  //   }
+  // })
+  // : actions = []
+>>>>>>> 70a71d060e7c6889f705ed1b50e75d81fc838289
 
   /**
    * adding the preprint info to each action,
    * and pushing each individual action to a new array
    */
-  let allActions = []
-  actions.forEach( setOfActions => setOfActions.actions.forEach( action => {
-    action["preprint"] = setOfActions.preprint
-    allActions.push(action)
-  }))
+  let allActions = [];
+  // actions.forEach( setOfActions => setOfActions.actions.forEach( action => {
+  //   action["preprint"] = setOfActions.preprint
+  //   allActions.push(action)
+  // }))
 
   // sort actions to populate a "Recent activity" section
   const sortedActions = allActions.slice().sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
@@ -154,6 +187,8 @@ export default function Dashboard() {
   );
 
   // get active reviewers
+
+  // const activity = getReviewerStats(actions);
 
 
 

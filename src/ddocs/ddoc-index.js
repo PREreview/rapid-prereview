@@ -67,7 +67,11 @@ const ddoc = {
           hasReviews: 'keyword',
           hasRequests: 'keyword',
           hasData: 'keyword',
+<<<<<<< HEAD
           hasCode: 'keyword', 
+=======
+          hasCode: 'keyword',
+>>>>>>> 70a71d060e7c6889f705ed1b50e75d81fc838289
           hasOthersRec: 'keyword',
           hasPeerRec: 'keyword'
         }
