@@ -49,8 +49,6 @@ export default function ShellContent({
     preprint.doi || preprint.arXivId
   );
   
-  console.log("********", '\n', "******", '\n', actions)
-
   const safeActions = actions.filter(action => !checkIfIsModerated(action));
 
   const [post, postProgress] = usePostAction();

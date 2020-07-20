@@ -257,8 +257,8 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   api.set(
     'counts',
     JSON.stringify([
-      'hasPeerRec',
-      'hasOthersRec',
+      // 'hasPeerRec',
+      // 'hasOthersRec',
       'hasData',
       'hasCode',
       'hasReviews',
@@ -297,10 +297,6 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   }
 
   const sapi = api.toString();
-  const regex = /\w/
-  console.log("****", sapi)
-  console.log("******", sapi.match(regex))
-
 
   return sapi ? `?${sapi}` : undefined;
 }

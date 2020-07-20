@@ -647,9 +647,6 @@ export function useActionsSearchResults(
     error: null
   });
 
-  console.log("**** we're in the useActionsSearchResults")
-  console.log("search?!", search)
-
   const [results, setResults] = useState(DEFAULT_SEARCH_RESULTS);
 
   useEffect(() => {
