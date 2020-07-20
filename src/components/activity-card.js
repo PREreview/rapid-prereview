@@ -15,7 +15,6 @@ import AnimatedNumber from './animated-number';
 export default function ActivityCard({ action }) {
   const [actions, fetchProgress] = usePreprintActions(getId(action.object));
 
-
   const safeActions = useMemo(() => {
     return actions.filter(
       action =>
@@ -24,9 +23,6 @@ export default function ActivityCard({ action }) {
           action['@type'] === 'RapidPREreviewAction')
     );
   }, [actions]);
-
-  console.log('action object:', safeActions);
-
 
   const {
     nRequests,

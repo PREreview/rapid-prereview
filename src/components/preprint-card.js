@@ -67,11 +67,6 @@ export default function PreprintCard({
 
   const { hasData, hasCode, hasOthersRec, hasPeerRec, subjects } = getTags(safeActions);
 
-  // console.log(name, "....recommended to others", hasOthersRec)
-  // console.log(name, "....recommended for peer review", hasPeerRec)
-  // console.log(name, "...... has data & has code", hasData, hasCode)
-
-
   const {
     nRequests,
     nReviews,

@@ -8,12 +8,12 @@ import { useHistory, useLocation } from 'react-router-dom';
 import Org from './org';
 
 // hooks
-import { useActionsSearchResults, usePreprintActions, usePreprintSearchResults } from '../hooks/api-hooks';
+import { useActionsSearchResults, usePreprintActions, usePreprintSearchResults, useRole } from '../hooks/api-hooks';
 
 // utils
 import { checkIfIsModerated } from '../utils/actions';
 import { getId } from '../utils/jsonld';
-import { getTags, getReviewerStats } from '../utils/stats';
+import { getTags, getUsersRank } from '../utils/stats';
 import { createActivityQs, createPreprintQs, apifyPreprintQs } from '../utils/search';
 
 
@@ -32,8 +32,7 @@ import TagPill from './tag-pill';
 import Tooltip from '@reach/tooltip';
 import XLink from './xlink';
 import RecentActivityCard from './recent-activity'
-
-// const db = new DB();
+import ActiveUser from './active-user'
 
 const subjects = ['vaccine', 'mask', 'antibody'];
 
@@ -45,17 +44,8 @@ export default function Dashboard() {
   const history = useHistory();
   const location = useLocation();
   const [user] = useUser();
-  const [actions, setActions] = useState([
-    'RapidPREreviewAction', 'RequestForRapidPREreviewAction'
-  ]);
 
   const [loginModalOpenNext, setLoginModalOpenNext] = useState(null);
-
-  /**
-   * fetch all preprints with  covid-19 in the title
-   * endpoint would look something like
-   * https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true
-  */
 
   const apiQs = apifyPreprintQs(
     location.search,
@@ -72,54 +62,47 @@ export default function Dashboard() {
     if (location.search === "") {
       history.replace({ search: "q=COVID-19" }) // add an OR query here too
     }
+    // if (preprints.rows.length) {
+    //   console.log('preprints: ', preprints);
+    //   activity(preprints);
+    // }
+  }, [apiQs]);
 
-    if (preprints.rows.length) {
-      console.log('preprints: ', preprints);
-      activity(preprints);
-    }
-  }, [apiQs, preprints]);
-
-  const activity = async function (preprints) {
-    const roleIds = preprints.rows
-      .map(preprint => getId(preprint.agent))
-      .filter(roleId => roleId && roleId !== getId(actions.agent));
+  // const activity = async function (preprints) {
+  //   const roleIds = preprints.rows
+  //     .map(preprint => getId(preprint.agent))
+  //     .filter(roleId => roleId && roleId !== getId(actions.agent));
 
     // const users = await db.getUsersByRoleIds(roleIds);
     // console.log(users);
-  };
-
-  // const fetchPreprints = async () => {
-  //   const response = await fetch(`https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true`)
-  //   const data = await response.json()
-  //   setArray(data.rows)
-  // }
+  
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
    * the value to which are all of actions from each preprint
    * */
 
-  let actions = []
-  preprints.rows.length ? actions = preprints.rows.map(preprint => {
+  let allActions = []
+  preprints.rows.length ? allActions = preprints.rows.map(preprint => {
     return {
       preprint: preprint.doc, // details of each preprint
       actions: preprint.doc.potentialAction
     }
   })
-  : actions = []
+  : allActions = []
 
   /**
    * adding the preprint info to each action,
    * and pushing each individual action to a new array
    */
-  let allActions = [];
-  // actions.forEach( setOfActions => setOfActions.actions.forEach( action => {
-  //   action["preprint"] = setOfActions.preprint
-  //   allActions.push(action)
-  // }))
+  let justActions = [];
+  allActions.forEach( setOfActions => setOfActions.actions.forEach( action => {
+    action["preprint"] = setOfActions.preprint
+    justActions.push(action)
+  }))
 
   // sort actions to populate a "Recent activity" section
-  const sortedActions = allActions.slice().sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
+  const sortedActions = justActions.slice().sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
 
   // next three functions copied from home.js 
   const handleNewRequest = useCallback(
@@ -171,11 +154,12 @@ export default function Dashboard() {
     [user, history]
   );
 
-  // get active reviewers
+  // get active users, ranked by number of requests+reviews
+  const rankedUsers = getUsersRank(justActions)
 
-  // const activity = getReviewerStats(actions);
-
-
+  // gets 10 of the top users, just their user ids
+  const justUsers = rankedUsers.slice(0,10).map(user => user[0]) 
+  console.log("...rankedUsers", rankedUsers)
 
   return (
     <div className="toc-page">
@@ -420,9 +404,7 @@ export default function Dashboard() {
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Active Reviewers</h2>
                     <ol className="dashboard__activity_item_list">
-                      <li>A. Person</li>
-                      <li>Jane Doe</li>
-                      <li>Anonymous</li>
+                      {justUsers.map(user => <li><ActiveUser user={user} /></li>)}
                     </ol>
                   </div>
                 </div>

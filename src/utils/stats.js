@@ -175,16 +175,20 @@ export function getTags(actions) {
   return { hasReviews, hasRequests, hasData, hasCode, othersCount, hasOthersRec, peerReviewCount, hasPeerRec, subjects };
 }
 
-export function getReviewerStats(actions = []) {
+export function getUsersRank(actions = []) {
 
-  const reviewActions = actions.filter(
-    action => action['@type'] === 'RapidPREreviewAction'
+  /**
+   * TODO need to clarify in comments what actions are getting passed here */
+
+  const countedActions = actions.filter(
+    action =>
+      action['@type'] === 'RapidPREreviewAction' ||
+      action['@type'] === 'RequestForRapidPREreviewAction'
   );
 
   const reviewerCount = {};
 
-  reviewActions.forEach(action => {
-    if (action.resultReview && action.agent) {
+  countedActions.forEach(action => {
       if (typeof action.agent === 'string') {
         if (action.agent in reviewerCount) {
           reviewerCount[action.agent] += 1;
@@ -192,10 +196,11 @@ export function getReviewerStats(actions = []) {
           reviewerCount[action.agent] = 1;
         }
       }
-    }
   });
 
-  return { reviewerCount };
+  const sortedUsers = Object.entries(reviewerCount).sort((a, b) => b[1] - a[1]);
+  
+  return sortedUsers;
 }
 
 export function getYesNoStats(actions = []) {

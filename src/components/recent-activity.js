@@ -16,10 +16,7 @@ import { unprefix } from '../utils/jsonld';
 // components
 import XLink from './xlink';
 
-
-
 export default function RecentActivityCard({action}) {
-
   const [role, fetchRoleProgress] = useRole(action.agent);
 
   const { name, doi, arXivId } = action.preprint;
@@ -28,8 +25,10 @@ export default function RecentActivityCard({action}) {
     <Fragment>
       <div className="dashboard__activity_item_text">
         {role && role['@type'] !== 'AnonymousReviewerRole'
-          ? `${role.name} `
-          : 'Anonymous '}{' '}
+          ? <XLink to={`/about/${unprefix(action.agent)}`}
+            href={`/about/${unprefix(action.agent)}`} >{role.name}</XLink>
+          : <XLink to={`/about/${unprefix(action.agent)}`}
+            href={`/about/${unprefix(action.agent)}`} >{'Anonymous'}</XLink>}{' '}
         {` requested a review for `}
         <XLink
           href={`/${doi || arXivId}`}
@@ -50,8 +49,10 @@ export default function RecentActivityCard({action}) {
     <Fragment>
       <div className="dashboard__activity_item_text">
         {role && role['@type'] !== 'AnonymousReviewerRole'
-          ? `${role.name} `
-          : 'Anonymous '}{' '}
+            ? <XLink to={`/about/${unprefix(action.agent)}`}
+              href={`/about/${unprefix(action.agent)}`} >{role.name}</XLink>
+            : <XLink to={`/about/${unprefix(action.agent)}`}
+              href={`/about/${unprefix(action.agent)}`} >{'Anonymous'}</XLink>}{' '}
         {` reviewed `}
         <XLink
           href={`/${doi || arXivId}`}
