@@ -99,7 +99,6 @@ export default function Dashboard() {
    * the value to which are all of actions from each preprint
    * */
 
-<<<<<<< HEAD
   let actions = []
   preprints.rows.length ? actions = preprints.rows.map(preprint => {
     return {
@@ -108,20 +107,6 @@ export default function Dashboard() {
     }
   })
   : actions = []
-=======
-   // const [actions, fetchActionsProgress] = usePreprintActions(
-   //   preprint.doi || preprint.arXivId
-   // );
-   // const safeActions = actions.filter(action => !checkIfIsModerated(action));
-
-  // preprints.length ? actions = preprints.map(preprint => {
-  //   return {
-  //     preprint: preprint.doc, // details of each preprint
-  //     actions: preprint.doc.potentialAction
-  //   }
-  // })
-  // : actions = []
->>>>>>> 70a71d060e7c6889f705ed1b50e75d81fc838289
 
   /**
    * adding the preprint info to each action,

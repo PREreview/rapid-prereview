@@ -148,13 +148,8 @@ export function getTags(actions) {
     return false;
   });
 
-<<<<<<< HEAD
   const peerReviewCount = reviewsWithPeers.length 
   const hasPeerRec = peerReviewCount && peerReviewCount >= threshold;
-=======
-  const peerReviewCount = reviewsWithPeers.length
-  const recdForPeers = peerReviewCount && peerReviewCount >= threshold;
->>>>>>> 70a71d060e7c6889f705ed1b50e75d81fc838289
 
   // subjects
   const subjectCountMap = {};
