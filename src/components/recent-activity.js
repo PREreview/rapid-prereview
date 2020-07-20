@@ -42,8 +42,8 @@ export default function RecentActivityCard({action}) {
           }}
         >
           {name}
-        </XLink>
-        { formatDistanceStrict(new Date(action.startTime), new Date()) + ` ago.`}
+        </XLink>{' '}
+        {formatDistanceStrict(new Date(action.startTime), new Date()) + ` ago.`}
       </div>
     </Fragment>
   ) : (
