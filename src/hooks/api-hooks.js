@@ -647,11 +647,6 @@ export function useActionsSearchResults(
     error: null
   });
 
-<<<<<<< HEAD
-=======
-  console.log("search: ", search);
-
->>>>>>> 70a71d060e7c6889f705ed1b50e75d81fc838289
   const [results, setResults] = useState(DEFAULT_SEARCH_RESULTS);
 
   useEffect(() => {
