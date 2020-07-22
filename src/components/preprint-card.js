@@ -65,7 +65,7 @@ export default function PreprintCard({
   const hasReviewed = checkIfHasReviewed(user, preprint.potentialAction); // `actions` (_all_ of them including moderated ones) not `safeActions`
   const hasRequested = checkIfHasRequested(user, preprint.potentialAction); // `actions` (_all_ of them including moderated ones) not `safeActions`
 
-  const { hasData, hasCode, hasOthersRec, hasPeerRec, subjects } = getTags(safeActions);
+  const { hasData, hasCode, subjects } = getTags(safeActions);
 
   const {
     nRequests,

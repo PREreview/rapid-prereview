@@ -17,7 +17,8 @@ import { unprefix } from '../utils/jsonld';
 import XLink from './xlink';
 
 export default function RecentActivityCard({action}) {
-  const [role, fetchRoleProgress] = useRole(action.agent);
+  const user = action.agent
+  const [role, fetchRoleProgress] = useRole(user);
 
   const { name, doi, arXivId } = action.preprint;
 
@@ -25,10 +26,10 @@ export default function RecentActivityCard({action}) {
     <Fragment>
       <div className="dashboard__activity_item_text">
         {role && role['@type'] !== 'AnonymousReviewerRole'
-          ? <XLink to={`/about/${unprefix(action.agent)}`}
-            href={`/about/${unprefix(action.agent)}`} >{role.name}</XLink>
-          : <XLink to={`/about/${unprefix(action.agent)}`}
-            href={`/about/${unprefix(action.agent)}`} >{'Anonymous'}</XLink>}{' '}
+          ? <XLink to={`/about/${unprefix(user)}`}
+            href={`/about/${unprefix(user)}`} >{role.name}</XLink>
+          : <XLink to={`/about/${unprefix(user)}`}
+            href={`/about/${unprefix(user)}`} >{`Community reviewer ${user.slice(user.length - 4, user.length)}`}</XLink>}{' '}
         {` requested a review for `}
         <XLink
           href={`/${doi || arXivId}`}
@@ -49,10 +50,10 @@ export default function RecentActivityCard({action}) {
     <Fragment>
       <div className="dashboard__activity_item_text">
         {role && role['@type'] !== 'AnonymousReviewerRole'
-            ? <XLink to={`/about/${unprefix(action.agent)}`}
-              href={`/about/${unprefix(action.agent)}`} >{role.name}</XLink>
-            : <XLink to={`/about/${unprefix(action.agent)}`}
-              href={`/about/${unprefix(action.agent)}`} >{'Anonymous'}</XLink>}{' '}
+            ? <XLink to={`/about/${unprefix(user)}`}
+              href={`/about/${unprefix(user)}`} >{role.name}</XLink>
+            : <XLink to={`/about/${unprefix(user)}`}
+              href={`/about/${unprefix(user)}`} >{`Community reviewer ${user.slice(user.length - 4, user.length)}`}</XLink>}{' '}
         {` reviewed `}
         <XLink
           href={`/${doi || arXivId}`}

@@ -2,7 +2,7 @@ import { QUESTIONS } from '../constants';
 import { getId, arrayify } from './jsonld';
 import { getAnswerMap, checkIfIsModerated } from './actions';
 
-function isYes(textOrAnswer) {
+export function isYes(textOrAnswer) {
   const text =
     typeof textOrAnswer === 'string'
       ? textOrAnswer

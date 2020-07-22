@@ -1,20 +1,19 @@
 // base imports
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import omit from 'lodash/omit';
 import { ORG } from '../constants';
 import { useHistory, useLocation } from 'react-router-dom';
-
 import Org from './org';
 
 // hooks
-import { useActionsSearchResults, usePreprintActions, usePreprintSearchResults, useRole } from '../hooks/api-hooks';
+import { useActionsSearchResults, usePreprintActions, usePreprintSearchResults } from '../hooks/api-hooks';
 
 // utils
 import { checkIfIsModerated } from '../utils/actions';
-import { getId } from '../utils/jsonld';
-import { getTags, getUsersRank } from '../utils/stats';
+import { getTags, getUsersRank, isYes } from '../utils/stats';
 import { createActivityQs, createPreprintQs, apifyPreprintQs } from '../utils/search';
+import { getId, arrayify } from '../utils/jsonld'
 
 
 // contexts
@@ -28,17 +27,15 @@ import SortOptions from './sort-options';
 import HeaderBar from './header-bar';
 import PreprintCard from './preprint-card';
 import SearchBar from './search-bar';
-import TagPill from './tag-pill';
-import Tooltip from '@reach/tooltip';
 import XLink from './xlink';
 import RecentActivityCard from './recent-activity'
 import ActiveUser from './active-user'
 
-const subjects = ['vaccine', 'mask', 'antibody'];
-
 // TODO: figure out if it's enough to search just the titles/names
 // TODO: how to incorporate subjects, as well
 // TODO: create shortcuts for potentially common searches, e.g. masks, etc
+// TODO: put title and a small description at the top
+// TODO: limit recent activity to a week or if that doesn't exist, then 
 
 export default function Dashboard() {
   const history = useHistory();
@@ -62,26 +59,12 @@ export default function Dashboard() {
     if (location.search === "") {
       history.replace({ search: "q=COVID-19" }) // add an OR query here too
     }
-    // if (preprints.rows.length) {
-    //   console.log('preprints: ', preprints);
-    //   activity(preprints);
-    // }
   }, [apiQs]);
-
-  // const activity = async function (preprints) {
-  //   const roleIds = preprints.rows
-  //     .map(preprint => getId(preprint.agent))
-  //     .filter(roleId => roleId && roleId !== getId(actions.agent));
-
-    // const users = await db.getUsersByRoleIds(roleIds);
-    // console.log(users);
-  
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
    * the value to which are all of actions from each preprint
    * */
-
   let allActions = []
   preprints.rows.length ? allActions = preprints.rows.map(preprint => {
     return {
@@ -101,8 +84,208 @@ export default function Dashboard() {
     justActions.push(action)
   }))
 
+  const safeActions = useMemo(() => {
+    return justActions.filter(
+      action =>
+        !checkIfIsModerated(action) &&
+        (action['@type'] === 'RequestForRapidPREreviewAction' ||
+          action['@type'] === 'RapidPREreviewAction')
+    );
+  }, [justActions]);
+
+  /***** get total count of unmoderated reviews for each preprint ****/
+  const totalReviews = {}
+  safeActions.filter(action => {
+    if (action.resultReview && action.resultReview.reviewAnswer) {
+      const preprintId = action.preprint['@id']
+      console.log("....", action.preprint['name'])
+      if (typeof preprintId === 'string') {
+        if (preprintId in totalReviews) {
+          totalReviews[preprintId] += 1;
+        } else {
+          totalReviews[preprintId] = 1;
+        }
+      }
+    }
+  })
+
+  /*** recommended to others ****/
+  const getReviewsWithRecs = safeActions.length ? safeActions.filter(action => {
+    if (action.resultReview && action.resultReview.reviewAnswer) {
+      const answers = action.resultReview.reviewAnswer;
+
+      for (let i = 0; i < answers.length; i++) {
+        const answer = answers[i];
+        if (answer.parentItem) {
+          const questionId = getId(answer.parentItem);
+          if (questionId === 'question:ynRecommend') {
+            return isYes(answer);
+          }
+        }
+      }
+    }
+    return false;
+  }) : null;
+
+  const othersCount = {};
+
+  getReviewsWithRecs ? getReviewsWithRecs.forEach(review => {
+    const preprintId = review.preprint['@id']
+    if (typeof preprintId === 'string') {
+      if (preprintId in othersCount) {
+        othersCount[preprintId] += 1;
+      } else {
+        othersCount[preprintId] = 1;
+      }
+    }
+  }) : null
+
+  const preprintsWithOthers = Object.keys(othersCount)
+
+  preprintsWithOthers.forEach(id => {
+    const threshold = Math.ceil(totalReviews[id] / 2)
+    console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
+    const lower = threshold >= totalReviews[id]
+    if (id in totalReviews && lower) {
+      delete othersCount[id]
+    }
+  })
+  
+  /*** preprint has available data ****/
+  const getReviewsWithData = safeActions.length ? safeActions.filter(action => {
+    if (action.resultReview && action.resultReview.reviewAnswer) {
+      const answers = action.resultReview.reviewAnswer;
+
+      for (let i = 0; i < answers.length; i++) {
+        const answer = answers[i];
+        if (answer.parentItem) {
+          const questionId = getId(answer.parentItem);
+          if (questionId === 'question:ynAvailableData') {
+            return isYes(answer);
+          }
+        }
+      }
+    }
+    return false;
+  }) : null;
+
+  const dataCount = {};
+
+  getReviewsWithData ? getReviewsWithData.forEach(review => {
+    const preprintId = review.preprint['@id']
+    if (typeof preprintId === 'string') {
+      if (preprintId in dataCount) {
+        dataCount[preprintId] += 1;
+      } else {
+        dataCount[preprintId] = 1;
+      }
+    }
+  }) : null
+
+  const preprintsWithData = Object.keys(dataCount)
+
+  preprintsWithData.forEach(id => {
+    const threshold = Math.ceil(totalReviews[id] / 2)
+    // console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
+    const lower = threshold >= totalReviews[id]
+    if (id in totalReviews && lower) {
+      delete dataCount[id]
+    }
+  })
+
+  /*** recommended for peer review ****/
+  const getReviewsWithPeer = safeActions.length ? safeActions.filter(action => {
+    if (action.resultReview && action.resultReview.reviewAnswer) {
+      const answers = action.resultReview.reviewAnswer;
+
+      for (let i = 0; i < answers.length; i++) {
+        const answer = answers[i];
+        if (answer.parentItem) {
+          const questionId = getId(answer.parentItem);
+          if (questionId === 'question:ynPeerReview') {
+            return isYes(answer);
+          }
+        }
+      }
+    }
+    return false;
+  }) : null;
+
+  const peerCount = {};
+
+  getReviewsWithPeer ? getReviewsWithPeer.forEach(review => {
+    const preprintId = review.preprint['@id']
+    if (typeof preprintId === 'string') {
+      if (preprintId in peerCount) {
+        peerCount[preprintId] += 1;
+      } else {
+        peerCount[preprintId] = 1;
+      }
+    }
+  }) : null
+
+  const preprintsWithPeer = Object.keys(peerCount)
+
+  preprintsWithPeer.forEach(id => {
+    const threshold = Math.ceil(totalReviews[id] / 2)
+    console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
+    const lower = threshold >= totalReviews[id]
+    if (id in totalReviews && lower) {
+      delete peerCount[id]
+    }
+  })
+
+  /******* has available code ******/ 
+  const getReviewsWithCode = safeActions.length ? safeActions.filter(action => {
+    if (action.resultReview && action.resultReview.reviewAnswer) {
+      const answers = action.resultReview.reviewAnswer;
+
+      for (let i = 0; i < answers.length; i++) {
+        const answer = answers[i];
+        if (answer.parentItem) {
+          const questionId = getId(answer.parentItem);
+          if (questionId === 'question:ynAvailableCode') {
+            return isYes(answer);
+          }
+        }
+      }
+    }
+    return false;
+  }) : null;
+
+  const codeCount = {};
+
+  getReviewsWithCode ? getReviewsWithCode.forEach(review => {
+    const preprintId = review.preprint['@id']
+    if (typeof preprintId === 'string') {
+      if (preprintId in codeCount) {
+        codeCount[preprintId] += 1;
+      } else {
+        codeCount[preprintId] = 1;
+      }
+    }
+  }) : null
+
+  const preprintsWithCode = Object.keys(peerCount)
+
+  preprintsWithPeer.forEach(id => {
+    const threshold = Math.ceil(totalReviews[id] / 2)
+    console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
+    const lower = threshold >= totalReviews[id]
+    if (id in totalReviews && lower) {
+      delete peerCount[id]
+    }
+  })
+
+
   // sort actions to populate a "Recent activity" section
-  const sortedActions = justActions.slice().sort((a, b) => new Date(b.startTime) - new Date(a.startTime))
+  const sortedActions = safeActions ? safeActions.slice().sort((a, b) => new Date(b.startTime) - new Date(a.startTime)) : []
+
+  // gets active users, ranked by number of requests+reviews
+  const rankedUsers = getUsersRank(safeActions ? safeActions : [])
+
+  // gets 10 of the top users, just their user ids
+  const justUsers = rankedUsers.slice(0, 10).map(user => user[0]) 
 
   // next three functions copied from home.js 
   const handleNewRequest = useCallback(
@@ -154,13 +337,6 @@ export default function Dashboard() {
     [user, history]
   );
 
-  // get active users, ranked by number of requests+reviews
-  const rankedUsers = getUsersRank(justActions)
-
-  // gets 10 of the top users, just their user ids
-  const justUsers = rankedUsers.slice(0,10).map(user => user[0]) 
-  console.log("...rankedUsers", rankedUsers)
-
   return (
     <div className="toc-page">
       <Helmet>
@@ -177,37 +353,10 @@ export default function Dashboard() {
           <h1 id="Dashboard">Dashboard</h1>
           <section className="dashboard home__main">
             <SearchBar isFetching={fetchResultsProgress.isActive} />
-            <div className="preprint-card dashboard__tags">
-              <ul className="preprint-card__tag-list dashboard__list">
-                {subjects.map(subject => (
-                  <li
-                    key={subject}
-                    className="preprint-card__tag-list__item dashboard__list_item"
-                  >
-                    <Tooltip
-                      label={`Majority of reviewers tagged with ${subject}`}
-                    >
-                      <div>
-                        <TagPill>{subject}</TagPill>
-                      </div>
-                    </Tooltip>
-                  </li>
-                ))}
-              </ul>
-            </div>
             <div className="dashboard__flex">
               <div className="dashboard__flex_item">
-                <h2 className="dashboard__h2">Most Recommended</h2>
-                <label className="vh" htmlFor="reviewer-type">
-                  Choose a category:
-                </label>
                 <div className="dashboard__options">
                   <div className="dashboard__options_item">
-                    <select name="reviewers" id="reviewer-type">
-                      <option value="all">All</option>
-                      <option value="others">To others</option>
-                      <option value="peerreview">For peer reviewers</option>
-                    </select>
                   </div>
                   <div className="dashboard__options_item">
                     <div className="dashboard__checkbox">
@@ -399,7 +548,7 @@ export default function Dashboard() {
                 <div className="dashboard__activity">
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Recent Activity</h2>
-                    { sortedActions.map( action => <RecentActivityCard action={action}/> )}
+                    {sortedActions.map( action => <RecentActivityCard action={action}/> )}
                   </div>
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Active Reviewers</h2>
