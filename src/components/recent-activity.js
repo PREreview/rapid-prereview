@@ -16,7 +16,7 @@ import { unprefix } from '../utils/jsonld';
 // components
 import XLink from './xlink';
 
-export default function RecentActivityCard({action}) {
+export default function RecentActivity({action}) {
   const user = action.agent
   const [role, fetchRoleProgress] = useRole(user);
 

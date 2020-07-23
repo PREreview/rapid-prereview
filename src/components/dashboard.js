@@ -23,12 +23,13 @@ import { useUser } from '../contexts/user-context';
 import AddButton from './add-button';
 import Banner from "./banner.js"
 import Checkbox from './checkbox';
+import FilterOptions from './filter-options';
 import SortOptions from './sort-options';
 import HeaderBar from './header-bar';
 import PreprintCard from './preprint-card';
 import SearchBar from './search-bar';
 import XLink from './xlink';
-import RecentActivityCard from './recent-activity'
+import RecentActivity from './recent-activity'
 import ActiveUser from './active-user'
 
 // TODO: figure out if it's enough to search just the titles/names
@@ -52,6 +53,10 @@ export default function Dashboard() {
   const [preprints, fetchResultsProgress] = usePreprintSearchResults(apiQs);
 
   const [hoveredSortOption, setHoveredSortOption] = useState(null);
+
+  const [filter, setFilter] = useState([])
+
+  const [display, setDisplay] = useState(preprints ? preprints : []) // set the preprints to display depending on filter
 
   const params = new URLSearchParams(location.search);
 
@@ -145,7 +150,7 @@ export default function Dashboard() {
   preprintsWithOthers.forEach(id => {
     const threshold = Math.ceil(totalReviews[id] / 2)
     console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
-    const lower = threshold >= totalReviews[id]
+    const lower = threshold > totalReviews[id]
     if (id in totalReviews && lower) {
       delete othersCount[id]
     }
@@ -187,7 +192,7 @@ export default function Dashboard() {
   preprintsWithData.forEach(id => {
     const threshold = Math.ceil(totalReviews[id] / 2)
     // console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
-    const lower = threshold >= totalReviews[id]
+    const lower = threshold > totalReviews[id]
     if (id in totalReviews && lower) {
       delete dataCount[id]
     }
@@ -229,7 +234,8 @@ export default function Dashboard() {
   preprintsWithPeer.forEach(id => {
     const threshold = Math.ceil(totalReviews[id] / 2)
     console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
-    const lower = threshold >= totalReviews[id]
+    const lower = threshold > totalReviews[id]
+    console.log(`${id}: is this lower or no? ${lower}`)
     if (id in totalReviews && lower) {
       delete peerCount[id]
     }
@@ -266,17 +272,21 @@ export default function Dashboard() {
     }
   }) : null
 
-  const preprintsWithCode = Object.keys(peerCount)
+  const preprintsWithCode = Object.keys(codeCount)
 
-  preprintsWithPeer.forEach(id => {
+  preprintsWithCode.forEach(id => {
     const threshold = Math.ceil(totalReviews[id] / 2)
     console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
-    const lower = threshold >= totalReviews[id]
+    const lower = threshold > totalReviews[id]
     if (id in totalReviews && lower) {
-      delete peerCount[id]
+      delete codeCount[id]
     }
   })
 
+  // console.log("reviewers say these preprints have code    :", codeCount)
+  // console.log("reviewers say these preprints have data    :", dataCount)
+  // console.log("reviewers say they'd rec this preprint to others    :", othersCount)
+  // console.log("reviewers say they'd rec this preprint for peer review    :", peerCount)
 
   // sort actions to populate a "Recent activity" section
   const sortedActions = safeActions ? safeActions.slice().sort((a, b) => new Date(b.startTime) - new Date(a.startTime)) : []
@@ -548,12 +558,24 @@ export default function Dashboard() {
                 <div className="dashboard__activity">
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Recent Activity</h2>
-                    {sortedActions.map( action => <RecentActivityCard action={action}/> )}
+                    {sortedActions.map( action => 
+                      <RecentActivity 
+                        key={action['@id']} 
+                        action={action}
+                      /> 
+                    )}
                   </div>
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Active Reviewers</h2>
                     <ol className="dashboard__activity_item_list">
-                      {justUsers.map(user => <li><ActiveUser user={user} /></li>)}
+                      {justUsers.map(user => 
+                        <li>
+                          <ActiveUser 
+                            key={user['@id']} 
+                            user={user} 
+                          />
+                        </li>
+                      )}
                     </ol>
                   </div>
                 </div>
