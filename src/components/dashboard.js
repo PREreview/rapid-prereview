@@ -36,7 +36,7 @@ import ActiveUser from './active-user'
 // TODO: how to incorporate subjects, as well
 // TODO: create shortcuts for potentially common searches, e.g. masks, etc
 // TODO: put title and a small description at the top
-// TODO: limit recent activity to a week or if that doesn't exist, then 
+// TODO: limit recent activity to a week or if that doesn't exist, then
 
 export default function Dashboard() {
   const history = useHistory();
@@ -155,7 +155,7 @@ export default function Dashboard() {
       delete othersCount[id]
     }
   })
-  
+
   /*** preprint has available data ****/
   const getReviewsWithData = safeActions.length ? safeActions.filter(action => {
     if (action.resultReview && action.resultReview.reviewAnswer) {
@@ -241,7 +241,7 @@ export default function Dashboard() {
     }
   })
 
-  /******* has available code ******/ 
+  /******* has available code ******/
   const getReviewsWithCode = safeActions.length ? safeActions.filter(action => {
     if (action.resultReview && action.resultReview.reviewAnswer) {
       const answers = action.resultReview.reviewAnswer;
@@ -295,9 +295,9 @@ export default function Dashboard() {
   const rankedUsers = getUsersRank(safeActions ? safeActions : [])
 
   // gets 10 of the top users, just their user ids
-  const justUsers = rankedUsers.slice(0, 10).map(user => user[0]) 
+  const justUsers = rankedUsers.slice(0, 10).map(user => user[0])
 
-  // next three functions copied from home.js 
+  // next three functions copied from home.js
   const handleNewRequest = useCallback(
     preprint => {
       if (user) {
@@ -360,131 +360,128 @@ export default function Dashboard() {
       />
       <article className="toc-page__main">
         <div className="toc-page__body">
-          <h1 id="Dashboard">Dashboard</h1>
           <section className="dashboard home__main">
+          <h1 id="Dashboard">COVID-19 Dashboard</h1>
             <SearchBar isFetching={fetchResultsProgress.isActive} />
             <div className="dashboard__flex">
               <div className="dashboard__flex_item">
+                <p>Filter by:</p>
                 <div className="dashboard__options">
                   <div className="dashboard__options_item">
+                    {/* <label htmlFor="recommended-others">Recommended to others</label>
+                    <input type="checkbox" id="recommended-others" name="recommended-others" /> */}
+                    <Checkbox
+                      inputId="counts-others"
+                      name="hasOthersRec"
+                      label={
+                        <span className="facets__facet-label">
+                          Recommended to others{' '}
+                        </span>
+                      }
+                      // disabled={!(counts.hasData || {}).true}
+                      checked={params.get('others') === 'true'}
+                      onChange={e => {
+                        const search = createPreprintQs(
+                          {
+                            hasOthersRec: e.target.checked || null
+                          },
+                          location.search
+                        );
+
+                        history.push({
+                          pathname: location.pathname,
+                          search,
+                          state: { prevSearch: location.search }
+                        });
+                      }}
+                    />
                   </div>
                   <div className="dashboard__options_item">
-                    <div className="dashboard__checkbox">
-                      {/* <label htmlFor="recommended-others">Recommended to others</label>
-                      <input type="checkbox" id="recommended-others" name="recommended-others" /> */}
-                      <Checkbox
-                        inputId="counts-others"
-                        name="hasOthersRec"
-                        label={
-                          <span className="facets__facet-label">
-                            Recommended to others{' '}
-                          </span>
-                        }
-                        // disabled={!(counts.hasData || {}).true}
-                        checked={params.get('others') === 'true'}
-                        onChange={e => {
-                          const search = createPreprintQs(
-                            {
-                              hasOthersRec: e.target.checked || null
-                            },
-                            location.search
-                          );
+                    {/* <label htmlFor="recommended-peers">Recommended for peer review</label>
+                    <input type="checkbox" id="recommended-peers" name="recommended-peers" /> */}
+                    <Checkbox
+                      inputId="counts-peer"
+                      name="hasPeerRec"
+                      label={
+                        <span className="facets__facet-label">
+                          Recommended for peer review{' '}
+                        </span>
+                      }
+                      // disabled={!(counts.hasData || {}).true}
+                      checked={params.get('peer') === 'true'}
+                      onChange={e => {
+                        const search = createPreprintQs(
+                          {
+                            hasPeerRec: e.target.checked || null
+                          },
+                          location.search
+                        );
 
-                          history.push({
-                            pathname: location.pathname,
-                            search,
-                            state: { prevSearch: location.search }
-                          });
-                        }}
-                      /> 
-                    </div>
-                    <div className="dashboard__checkbox">
-                      {/* <label htmlFor="recommended-peers">Recommended for peer review</label>
-                      <input type="checkbox" id="recommended-peers" name="recommended-peers" /> */}
-                      <Checkbox
-                        inputId="counts-peer"
-                        name="hasPeerRec"
-                        label={
-                          <span className="facets__facet-label">
-                            Recommended for peer review{' '}
-                          </span>
-                        }
-                        // disabled={!(counts.hasData || {}).true}
-                        checked={params.get('peer') === 'true'}
-                        onChange={e => {
-                          const search = createPreprintQs(
-                            {
-                              hasPeerRec: e.target.checked || null
-                            },
-                            location.search
-                          );
+                        history.push({
+                          pathname: location.pathname,
+                          search,
+                          state: { prevSearch: location.search }
+                        });
+                      }}
+                    />
+                  </div>
+                  <div className="dashboard__options_item">
+                    {/* <label htmlFor="data">Contains reported data</label>
+                    <input type="checkbox" id="data" name="data" /> */}
+                    <Checkbox
+                      inputId="counts-data"
+                      name="hasData"
+                      label={
+                        <span className="facets__facet-label">
+                          With reported data{' '}
+                        </span>
+                      }
+                      // disabled={!(counts.hasData || {}).true}
+                      checked={params.get('data') === 'true'}
+                      onChange={e => {
+                        const search = createPreprintQs(
+                          {
+                            hasData: e.target.checked || null
+                          },
+                          location.search
+                        );
 
-                          history.push({
-                            pathname: location.pathname,
-                            search,
-                            state: { prevSearch: location.search }
-                          });
-                        }}
-                      />
-                    </div>
-                    <div className="dashboard__checkbox">
-                      {/* <label htmlFor="data">Contains reported data</label>
-                      <input type="checkbox" id="data" name="data" /> */}
-                      <Checkbox
-                        inputId="counts-data"
-                        name="hasData"
-                        label={
-                          <span className="facets__facet-label">
-                            With reported data{' '}
-                          </span>
-                        }
-                        // disabled={!(counts.hasData || {}).true}
-                        checked={params.get('data') === 'true'}
-                        onChange={e => {
-                          const search = createPreprintQs(
-                            {
-                              hasData: e.target.checked || null
-                            },
-                            location.search
-                          );
+                        history.push({
+                          pathname: location.pathname,
+                          search,
+                          state: { prevSearch: location.search }
+                        });
+                      }}
+                    />
+                  </div>
+                  <div className="dashboard__options_item">
+                    {/* <label htmlFor="data">Contains reported code</label>
+                    <input type="checkbox" id="code" name="code" /> */}
+                    <Checkbox
+                      inputId="counts-code"
+                      name="hasCode"
+                      label={
+                        <span className="facets__facet-label">
+                          With reported code{' '}
+                        </span>
+                      }
+                      // disabled={!(counts.hasCode || {}).true}
+                      checked={params.get('code') === 'true'}
+                      onChange={e => {
+                        const search = createPreprintQs(
+                          {
+                            hasCode: e.target.checked || null
+                          },
+                          location.search
+                        );
 
-                          history.push({
-                            pathname: location.pathname,
-                            search,
-                            state: { prevSearch: location.search }
-                          });
-                        }}
-                      />
-                    </div>
-                    <div className="dashboard__checkbox">
-                      {/* <label htmlFor="data">Contains reported code</label>
-                      <input type="checkbox" id="code" name="code" /> */}
-                      <Checkbox
-                        inputId="counts-code"
-                        name="hasCode"
-                        label={
-                          <span className="facets__facet-label">
-                            With reported code{' '}
-                          </span>
-                        }
-                        // disabled={!(counts.hasCode || {}).true}
-                        checked={params.get('code') === 'true'}
-                        onChange={e => {
-                          const search = createPreprintQs(
-                            {
-                              hasCode: e.target.checked || null
-                            },
-                            location.search
-                          );
-
-                          history.push({
-                            pathname: location.pathname,
-                            search,
-                            state: { prevSearch: location.search }
-                          });
-                        }}
-                      />
-                    </div>
+                        history.push({
+                          pathname: location.pathname,
+                          search,
+                          state: { prevSearch: location.search }
+                        });
+                      }}
+                    />
                   </div>
                 </div>
                 <SortOptions
