@@ -50,28 +50,6 @@ export default function Dashboard() {
     location.state && location.state.bookmark
   );
 
-  const [preprints, fetchResultsProgress] = usePreprintSearchResults(apiQs);
-
-  const [hoveredSortOption, setHoveredSortOption] = useState(null);
-
-  const [filters, setFilters] = useState({
-    recToOthers: false,
-    recForPeerReview: false,
-    hasData: false,
-    hasCode: false
-  })
-
-  const handleFilterChange = (e) => {
-    setFilters({
-      ...filters,
-      [e.target.name]: !filters[e.target.name]
-    })
-  }
-
-  // set the IDs of preprints to display depending on filter
-  const [toDisplay, setToDisplay] = useState(preprints.rows.length ? 
-    preprints.rows : [])
-
   const params = new URLSearchParams(location.search);
 
   useEffect(() => {
@@ -80,6 +58,25 @@ export default function Dashboard() {
     }
   }, [apiQs]);
 
+  const [preprints, fetchResultsProgress] = usePreprintSearchResults(apiQs);
+
+  const [hoveredSortOption, setHoveredSortOption] = useState(null);
+
+  const [filters, setFilters] = useState({
+    hasCode: false,
+    hasData: false,
+    recToOthers: false,
+    recForPeerReview: false
+  })
+
+  const handleFilterChange = (e) => {
+    setFilters({
+      ...filters,
+      [e.target.name]: !filters[e.target.name]
+    })
+  }
+  
+  // adding attributes to each preprint 
   preprints.rows.length ? preprints.rows.map(preprint => {
       let codeCount = 0
       let dataCount = 0
@@ -120,10 +117,75 @@ export default function Dashboard() {
     preprint.doc.hasData = dataCount >= threshold;
     preprint.doc.recToOthers = othersCount >= threshold; 
     preprint.doc.recForPeerReview = peerCount >= threshold;
-  }) : []
+  }) : null
 
-  preprints.rows.length ? preprints.rows.forEach(preprint => console.log("this is a preprint called ", preprint.doc.name, '\n', "properties are: ", preprint.doc )) : null
+  // 
+  const filteredPreprints = () => {
+    console.log("...", "filters!", filters)
 
+    if (filters.hasCode && filters.hasData && filters.recForPeerReview && filters.recToOThers) {
+      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.hasData && preprint.doc.recForPeerReview && preprint.doc.recToOthers)
+    }
+
+    if (filters.hasData && filters.recForPeerReview && filters.recToOthers) {
+      return preprints.rows.filter(preprint => preprint.doc.hasData && preprint.doc.recForPeerReview && preprint.doc.recToOthers)
+    }
+
+    if (filters.hasCode && filters.hasData && filters.recForPeerReview) {
+      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.hasData && preprint.doc.recForPeerReview)
+    }
+    
+    if (filters.hasCode && filters.hasData) {
+      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.hasData)
+    }
+
+    if (filters.hasCode && filters.recForPeerReview) {
+      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.recForPeerReview)
+    }
+
+    if (filters.hasCode && filters.recToOthers) {
+      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.recToOthers)
+    }
+    
+    if (filters.recToOthers && filters.recForPeerReview) {
+      return preprints.rows.filter(preprint => preprint.doc.recToOthers && preprint.doc.forPeerReview)
+    }
+
+    if (filters.hasData && filters.recForPeerReview) {
+      return preprints.rows.filter(preprint => preprint.doc.hasData && preprint.doc.recForPeerReview)
+    }
+
+    if (filters.recToOthers && filters.hasData) {
+      return preprints.rows.filter(preprint => preprint.doc.recToOthers && preprint.doc.recToOthers)
+    }
+
+    if (filters.recForPeerReview) {
+      return preprints.rows.filter(preprint => preprint.doc.recForPeerReview)
+    }
+
+    if (filters.recToOthers) {
+      return preprints.rows.filter(preprint => preprint.doc.recToOthers)
+    }
+
+    if (filters.hasCode) {
+      return preprints.rows.filter(preprint => preprint.doc.hasCode)
+    }
+
+    if (filters.hasData) {
+      return preprints.rows.filter(preprint => preprint.doc.hasData)
+    }
+
+    if (filters.hasCode && filters.recForPeerReview) {
+      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.forPeerReview)
+    }
+
+    return preprints.rows.length ? preprints.rows : []
+  }
+
+  useEffect(() => {
+    console.log("...useEffect")
+    filteredPreprints()
+  }, [filters])
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
@@ -331,7 +393,7 @@ export default function Dashboard() {
                   <div>No more preprints.</div>
                 ) : (
                   <ul className="dashboard__preprint-list">
-                    {preprints.rows.map(row => (
+                    {filteredPreprints() ? filteredPreprints().map(row => (
                       <li key={row.id} className="dashboard__preprint-list__item">
                         <PreprintCard
                           isNew={false}
@@ -344,7 +406,7 @@ export default function Dashboard() {
                           sortOption={params.get('sort') || 'score'}
                         />
                       </li>
-                    ))}
+                    )) : null}
                   </ul>
                 )}
               </div>
