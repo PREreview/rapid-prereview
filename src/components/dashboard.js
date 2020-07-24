@@ -21,9 +21,8 @@ import { useUser } from '../contexts/user-context';
 
 // modules
 import AddButton from './add-button';
-import Banner from "./banner.js"
+import Banner from "./banner.js";
 import Checkbox from './checkbox';
-import FilterOptions from './filter-options';
 import SortOptions from './sort-options';
 import HeaderBar from './header-bar';
 import PreprintCard from './preprint-card';
@@ -31,6 +30,7 @@ import SearchBar from './search-bar';
 import XLink from './xlink';
 import RecentActivity from './recent-activity'
 import ActiveUser from './active-user'
+import { filter } from 'lodash';
 
 // TODO: figure out if it's enough to search just the titles/names
 // TODO: how to incorporate subjects, as well
@@ -54,9 +54,23 @@ export default function Dashboard() {
 
   const [hoveredSortOption, setHoveredSortOption] = useState(null);
 
-  const [filter, setFilter] = useState([])
+  const [filters, setFilters] = useState({
+    recToOthers: false,
+    recForPeerReview: false,
+    hasData: false,
+    hasCode: false
+  })
 
-  const [display, setDisplay] = useState(preprints ? preprints : []) // set the preprints to display depending on filter
+  const handleFilterChange = (e) => {
+    setFilters({
+      ...filters,
+      [e.target.name]: !filters[e.target.name]
+    })
+  }
+
+  // set the IDs of preprints to display depending on filter
+  const [toDisplay, setToDisplay] = useState(preprints.rows.length ? 
+    preprints.rows : [])
 
   const params = new URLSearchParams(location.search);
 
@@ -65,6 +79,51 @@ export default function Dashboard() {
       history.replace({ search: "q=COVID-19" }) // add an OR query here too
     }
   }, [apiQs]);
+
+  preprints.rows.length ? preprints.rows.map(preprint => {
+      let codeCount = 0
+      let dataCount = 0
+      let othersCount = 0
+      let peerCount = 0
+      let reviewCount = 0
+    
+      preprint.doc.potentialAction.forEach(action => {
+        if (!checkIfIsModerated(action) && action.resultReview && action.resultReview.reviewAnswer) {
+        reviewCount += 1
+
+        const answers = action.resultReview.reviewAnswer;
+
+        for (let i = 0; i < answers.length; i++) {
+          const answer = answers[i];
+          if (answer.parentItem) {
+            const questionId = getId(answer.parentItem);
+            if (questionId === 'question:ynAvailableCode' && isYes(answer)) {
+              codeCount += 1
+            }
+            if (questionId === 'question:ynPeerReview' && isYes(answer)) {
+              peerCount += 1
+            }
+            if (questionId === 'question:ynAvailableData' && isYes(answer)) {
+              dataCount += 1
+            }
+            if (questionId === 'question:ynRecommend' && isYes(answer)) {
+              othersCount += 1
+            }
+          }
+        }
+      }
+    })
+
+    const threshold = reviewCount / 2
+    
+    preprint.doc.hasCode = codeCount >= threshold
+    preprint.doc.hasData = dataCount >= threshold;
+    preprint.doc.recToOthers = othersCount >= threshold; 
+    preprint.doc.recForPeerReview = peerCount >= threshold;
+  }) : []
+
+  preprints.rows.length ? preprints.rows.forEach(preprint => console.log("this is a preprint called ", preprint.doc.name, '\n', "properties are: ", preprint.doc )) : null
+
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
@@ -77,14 +136,14 @@ export default function Dashboard() {
       actions: preprint.doc.potentialAction
     }
   })
-  : allActions = []
+    : allActions = []
 
   /**
    * adding the preprint info to each action,
    * and pushing each individual action to a new array
    */
   let justActions = [];
-  allActions.forEach( setOfActions => setOfActions.actions.forEach( action => {
+  allActions.forEach(setOfActions => setOfActions.actions.forEach(action => {
     action["preprint"] = setOfActions.preprint
     justActions.push(action)
   }))
@@ -97,196 +156,6 @@ export default function Dashboard() {
           action['@type'] === 'RapidPREreviewAction')
     );
   }, [justActions]);
-
-  /***** get total count of unmoderated reviews for each preprint ****/
-  const totalReviews = {}
-  safeActions.filter(action => {
-    if (action.resultReview && action.resultReview.reviewAnswer) {
-      const preprintId = action.preprint['@id']
-      console.log("....", action.preprint['name'])
-      if (typeof preprintId === 'string') {
-        if (preprintId in totalReviews) {
-          totalReviews[preprintId] += 1;
-        } else {
-          totalReviews[preprintId] = 1;
-        }
-      }
-    }
-  })
-
-  /*** recommended to others ****/
-  const getReviewsWithRecs = safeActions.length ? safeActions.filter(action => {
-    if (action.resultReview && action.resultReview.reviewAnswer) {
-      const answers = action.resultReview.reviewAnswer;
-
-      for (let i = 0; i < answers.length; i++) {
-        const answer = answers[i];
-        if (answer.parentItem) {
-          const questionId = getId(answer.parentItem);
-          if (questionId === 'question:ynRecommend') {
-            return isYes(answer);
-          }
-        }
-      }
-    }
-    return false;
-  }) : null;
-
-  const othersCount = {};
-
-  getReviewsWithRecs ? getReviewsWithRecs.forEach(review => {
-    const preprintId = review.preprint['@id']
-    if (typeof preprintId === 'string') {
-      if (preprintId in othersCount) {
-        othersCount[preprintId] += 1;
-      } else {
-        othersCount[preprintId] = 1;
-      }
-    }
-  }) : null
-
-  const preprintsWithOthers = Object.keys(othersCount)
-
-  preprintsWithOthers.forEach(id => {
-    const threshold = Math.ceil(totalReviews[id] / 2)
-    console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
-    const lower = threshold > totalReviews[id]
-    if (id in totalReviews && lower) {
-      delete othersCount[id]
-    }
-  })
-
-  /*** preprint has available data ****/
-  const getReviewsWithData = safeActions.length ? safeActions.filter(action => {
-    if (action.resultReview && action.resultReview.reviewAnswer) {
-      const answers = action.resultReview.reviewAnswer;
-
-      for (let i = 0; i < answers.length; i++) {
-        const answer = answers[i];
-        if (answer.parentItem) {
-          const questionId = getId(answer.parentItem);
-          if (questionId === 'question:ynAvailableData') {
-            return isYes(answer);
-          }
-        }
-      }
-    }
-    return false;
-  }) : null;
-
-  const dataCount = {};
-
-  getReviewsWithData ? getReviewsWithData.forEach(review => {
-    const preprintId = review.preprint['@id']
-    if (typeof preprintId === 'string') {
-      if (preprintId in dataCount) {
-        dataCount[preprintId] += 1;
-      } else {
-        dataCount[preprintId] = 1;
-      }
-    }
-  }) : null
-
-  const preprintsWithData = Object.keys(dataCount)
-
-  preprintsWithData.forEach(id => {
-    const threshold = Math.ceil(totalReviews[id] / 2)
-    // console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
-    const lower = threshold > totalReviews[id]
-    if (id in totalReviews && lower) {
-      delete dataCount[id]
-    }
-  })
-
-  /*** recommended for peer review ****/
-  const getReviewsWithPeer = safeActions.length ? safeActions.filter(action => {
-    if (action.resultReview && action.resultReview.reviewAnswer) {
-      const answers = action.resultReview.reviewAnswer;
-
-      for (let i = 0; i < answers.length; i++) {
-        const answer = answers[i];
-        if (answer.parentItem) {
-          const questionId = getId(answer.parentItem);
-          if (questionId === 'question:ynPeerReview') {
-            return isYes(answer);
-          }
-        }
-      }
-    }
-    return false;
-  }) : null;
-
-  const peerCount = {};
-
-  getReviewsWithPeer ? getReviewsWithPeer.forEach(review => {
-    const preprintId = review.preprint['@id']
-    if (typeof preprintId === 'string') {
-      if (preprintId in peerCount) {
-        peerCount[preprintId] += 1;
-      } else {
-        peerCount[preprintId] = 1;
-      }
-    }
-  }) : null
-
-  const preprintsWithPeer = Object.keys(peerCount)
-
-  preprintsWithPeer.forEach(id => {
-    const threshold = Math.ceil(totalReviews[id] / 2)
-    console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
-    const lower = threshold > totalReviews[id]
-    console.log(`${id}: is this lower or no? ${lower}`)
-    if (id in totalReviews && lower) {
-      delete peerCount[id]
-    }
-  })
-
-  /******* has available code ******/
-  const getReviewsWithCode = safeActions.length ? safeActions.filter(action => {
-    if (action.resultReview && action.resultReview.reviewAnswer) {
-      const answers = action.resultReview.reviewAnswer;
-
-      for (let i = 0; i < answers.length; i++) {
-        const answer = answers[i];
-        if (answer.parentItem) {
-          const questionId = getId(answer.parentItem);
-          if (questionId === 'question:ynAvailableCode') {
-            return isYes(answer);
-          }
-        }
-      }
-    }
-    return false;
-  }) : null;
-
-  const codeCount = {};
-
-  getReviewsWithCode ? getReviewsWithCode.forEach(review => {
-    const preprintId = review.preprint['@id']
-    if (typeof preprintId === 'string') {
-      if (preprintId in codeCount) {
-        codeCount[preprintId] += 1;
-      } else {
-        codeCount[preprintId] = 1;
-      }
-    }
-  }) : null
-
-  const preprintsWithCode = Object.keys(codeCount)
-
-  preprintsWithCode.forEach(id => {
-    const threshold = Math.ceil(totalReviews[id] / 2)
-    console.log("threshold for code  :", threshold, `total reviews for ${id}  :`, totalReviews[id])
-    const lower = threshold > totalReviews[id]
-    if (id in totalReviews && lower) {
-      delete codeCount[id]
-    }
-  })
-
-  // console.log("reviewers say these preprints have code    :", codeCount)
-  // console.log("reviewers say these preprints have data    :", dataCount)
-  // console.log("reviewers say they'd rec this preprint to others    :", othersCount)
-  // console.log("reviewers say they'd rec this preprint for peer review    :", peerCount)
 
   // sort actions to populate a "Recent activity" section
   const sortedActions = safeActions ? safeActions.slice().sort((a, b) => new Date(b.startTime) - new Date(a.startTime)) : []
@@ -368,66 +237,34 @@ export default function Dashboard() {
                 <p>Filter by:</p>
                 <div className="dashboard__options">
                   <div className="dashboard__options_item">
-                    {/* <label htmlFor="recommended-others">Recommended to others</label>
-                    <input type="checkbox" id="recommended-others" name="recommended-others" /> */}
                     <Checkbox
                       inputId="counts-others"
-                      name="hasOthersRec"
+                      name="recToOthers"
                       label={
                         <span className="facets__facet-label">
                           Recommended to others{' '}
                         </span>
                       }
                       // disabled={!(counts.hasData || {}).true}
-                      checked={params.get('others') === 'true'}
-                      onChange={e => {
-                        const search = createPreprintQs(
-                          {
-                            hasOthersRec: e.target.checked || null
-                          },
-                          location.search
-                        );
-
-                        history.push({
-                          pathname: location.pathname,
-                          search,
-                          state: { prevSearch: location.search }
-                        });
-                      }}
+                      checked={filters['recToOthers']}
+                      onChange={e => handleFilterChange(e)}
                     />
                   </div>
                   <div className="dashboard__options_item">
-                    {/* <label htmlFor="recommended-peers">Recommended for peer review</label>
-                    <input type="checkbox" id="recommended-peers" name="recommended-peers" /> */}
                     <Checkbox
                       inputId="counts-peer"
-                      name="hasPeerRec"
+                      name="recForPeerReview"
                       label={
                         <span className="facets__facet-label">
                           Recommended for peer review{' '}
                         </span>
                       }
                       // disabled={!(counts.hasData || {}).true}
-                      checked={params.get('peer') === 'true'}
-                      onChange={e => {
-                        const search = createPreprintQs(
-                          {
-                            hasPeerRec: e.target.checked || null
-                          },
-                          location.search
-                        );
-
-                        history.push({
-                          pathname: location.pathname,
-                          search,
-                          state: { prevSearch: location.search }
-                        });
-                      }}
+                      checked={filters['recForPeerReview']}
+                      onChange={e => handleFilterChange(e)}
                     />
                   </div>
                   <div className="dashboard__options_item">
-                    {/* <label htmlFor="data">Contains reported data</label>
-                    <input type="checkbox" id="data" name="data" /> */}
                     <Checkbox
                       inputId="counts-data"
                       name="hasData"
@@ -437,26 +274,11 @@ export default function Dashboard() {
                         </span>
                       }
                       // disabled={!(counts.hasData || {}).true}
-                      checked={params.get('data') === 'true'}
-                      onChange={e => {
-                        const search = createPreprintQs(
-                          {
-                            hasData: e.target.checked || null
-                          },
-                          location.search
-                        );
-
-                        history.push({
-                          pathname: location.pathname,
-                          search,
-                          state: { prevSearch: location.search }
-                        });
-                      }}
+                      checked={filters['hasData']}
+                      onChange={e => handleFilterChange(e)}
                     />
                   </div>
                   <div className="dashboard__options_item">
-                    {/* <label htmlFor="data">Contains reported code</label>
-                    <input type="checkbox" id="code" name="code" /> */}
                     <Checkbox
                       inputId="counts-code"
                       name="hasCode"
@@ -466,21 +288,8 @@ export default function Dashboard() {
                         </span>
                       }
                       // disabled={!(counts.hasCode || {}).true}
-                      checked={params.get('code') === 'true'}
-                      onChange={e => {
-                        const search = createPreprintQs(
-                          {
-                            hasCode: e.target.checked || null
-                          },
-                          location.search
-                        );
-
-                        history.push({
-                          pathname: location.pathname,
-                          search,
-                          state: { prevSearch: location.search }
-                        });
-                      }}
+                      checked={filters['hasCode']}
+                      onChange={e=>handleFilterChange(e)}
                     />
                   </div>
                 </div>
