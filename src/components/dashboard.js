@@ -113,7 +113,7 @@ export default function Dashboard() {
 
     const threshold = reviewCount / 2
     
-    preprint.doc.hasCode = codeCount >= threshold
+    preprint.doc.hasCode = codeCount >= threshold;
     preprint.doc.hasData = dataCount >= threshold;
     preprint.doc.recToOthers = othersCount >= threshold; 
     preprint.doc.recForPeerReview = peerCount >= threshold;
@@ -123,69 +123,29 @@ export default function Dashboard() {
   const filteredPreprints = () => {
     console.log("...", "filters!", filters)
 
-    if (filters.hasCode && filters.hasData && filters.recForPeerReview && filters.recToOThers) {
-      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.hasData && preprint.doc.recForPeerReview && preprint.doc.recToOthers)
-    }
-
-    if (filters.hasData && filters.recForPeerReview && filters.recToOthers) {
-      return preprints.rows.filter(preprint => preprint.doc.hasData && preprint.doc.recForPeerReview && preprint.doc.recToOthers)
-    }
-
-    if (filters.hasCode && filters.hasData && filters.recForPeerReview) {
-      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.hasData && preprint.doc.recForPeerReview)
-    }
-    
-    if (filters.hasCode && filters.hasData) {
-      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.hasData)
-    }
-
-    if (filters.hasCode && filters.recForPeerReview) {
-      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.recForPeerReview)
-    }
-
-    if (filters.hasCode && filters.recToOthers) {
-      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.recToOthers)
-    }
-    
-    if (filters.recToOthers && filters.recForPeerReview) {
-      return preprints.rows.filter(preprint => preprint.doc.recToOthers && preprint.doc.forPeerReview)
-    }
-
-    if (filters.hasData && filters.recForPeerReview) {
-      return preprints.rows.filter(preprint => preprint.doc.hasData && preprint.doc.recForPeerReview)
-    }
-
-    if (filters.recToOthers && filters.hasData) {
-      return preprints.rows.filter(preprint => preprint.doc.recToOthers && preprint.doc.recToOthers)
-    }
-
-    if (filters.recForPeerReview) {
-      return preprints.rows.filter(preprint => preprint.doc.recForPeerReview)
-    }
-
-    if (filters.recToOthers) {
-      return preprints.rows.filter(preprint => preprint.doc.recToOthers)
-    }
-
-    if (filters.hasCode) {
-      return preprints.rows.filter(preprint => preprint.doc.hasCode)
-    }
-
-    if (filters.hasData) {
-      return preprints.rows.filter(preprint => preprint.doc.hasData)
-    }
-
-    if (filters.hasCode && filters.recForPeerReview) {
-      return preprints.rows.filter(preprint => preprint.doc.hasCode && preprint.doc.forPeerReview)
-    }
-
-    return preprints.rows.length ? preprints.rows : []
+   return preprints.rows.filter(preprint => {
+      if (filters.hasCode && !preprint.doc.hasCode) {
+        return false
+      } 
+      if (filters.hasData && !preprint.doc.hasData) {
+        return false
+      }
+      if (filters.recToOthers && !preprint.doc.recToOthers) {
+        return false
+      }
+      if (filters.recForPeerReview && !preprint.doc.recForPeerReview) {
+        return false
+      }
+      return true
+    })
   }
 
   useEffect(() => {
     console.log("...useEffect")
     filteredPreprints()
   }, [filters])
+
+  preprints.rows.length ? filteredPreprints().forEach(preprint => console.log("...preprint", preprint.doc.name, '\n', preprint.doc.hasData, preprint.doc.hasCode, preprint.doc.recForPeerReview, preprint.doc.recToOthers)) : null;
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
