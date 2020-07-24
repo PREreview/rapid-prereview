@@ -97,8 +97,15 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
 
   if (ui.has('q')) {
     const q = ui.get('q');
+    const terms = q.split(/[+|\s]/).filter(Boolean);
 
     const ored = [`name:"${escapeLucene(q)}"`];
+
+    if (terms.length > 1) {
+      ored.push(`name:"${escapeLucene(q)}"~5`);
+    } else if (terms.length === 1) {
+      ored.push(`name:${escapeLucene(terms[0])}*`);
+    }
 
     const doiMatched = q.match(doiRegex());
     if (doiMatched) {
