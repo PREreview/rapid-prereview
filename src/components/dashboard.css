@@ -120,7 +120,8 @@
     margin-top: 30px;
 
     & .dashboard__activity_item {
-      border: 2px solid var(--prereview-black);
+      border: 1px solid var(--light-grey);
+      border-radius: 8px;
       padding: 10px;
       margin-left: 10px;
 
