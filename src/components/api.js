@@ -122,7 +122,7 @@ export default function API() {
           Example:
           <br />
           <code>
-            curl https://outbreaksci.prereview.org/api/role\?q\=\@type:AnonymousReviewerRole+and+limit:10
+            curl https://outbreaksci.prereview.org/api/role\?q=\@type:AnonymousReviewerRole+and+limit:10
           </code>
         </p>
       </APISection>
@@ -173,7 +173,7 @@ export default function API() {
           Example:
           <br />
           <code>
-            curl https://outbreaksci.prereview.org/api/role\?q\=\@type:AnonymousReviewerRole+and+objectId:%22preprint:%22doi-10.1101-2020.04.27.20081562+and+limit:10
+            curl https://outbreaksci.prereview.org/api/role\?q=\@type:AnonymousReviewerRole+and+objectId:%22preprint:%22doi-10.1101-2020.04.27.20081562+and+limit:10
           </code>
         </p>
 
@@ -308,7 +308,7 @@ export default function API() {
           Example:
           <br />
           <code>
-            curl https://outbreaksci.prereview.org/api/action\?q\=\@type:RapidPREreviewAction+and+objectId:%22preprint:%22doi-10.1101-2020.04.27.20081562+and+limit:10
+            curl https://outbreaksci.prereview.org/api/action\?q=\@type:RapidPREreviewAction+and+objectId:%22preprint:%22doi-10.1101-2020.04.27.20081562+and+limit:10
           </code>
         </p>
 
