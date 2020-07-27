@@ -30,13 +30,8 @@ import SearchBar from './search-bar';
 import XLink from './xlink';
 import RecentActivity from './recent-activity'
 import ActiveUser from './active-user'
-import { filter } from 'lodash';
 
-// TODO: figure out if it's enough to search just the titles/names
-// TODO: how to incorporate subjects, as well
-// TODO: create shortcuts for potentially common searches, e.g. masks, etc
-// TODO: put title and a small description at the top
-// TODO: limit recent activity to a week or if that doesn't exist, then
+import { subDays } from 'date-fns'
 
 export default function Dashboard() {
   const history = useHistory();
@@ -76,7 +71,7 @@ export default function Dashboard() {
     })
   }
   
-  // adding attributes to each preprint 
+  // calculating tags, following the logic in utils/stats 
   preprints.rows.length ? preprints.rows.map(preprint => {
       let codeCount = 0
       let dataCount = 0
@@ -95,15 +90,19 @@ export default function Dashboard() {
           if (answer.parentItem) {
             const questionId = getId(answer.parentItem);
             if (questionId === 'question:ynAvailableCode' && isYes(answer)) {
+              // Is the code used in the manuscript available?
               codeCount += 1
             }
             if (questionId === 'question:ynPeerReview' && isYes(answer)) {
+              // Do you recommend this manuscript for peer review?
               peerCount += 1
             }
             if (questionId === 'question:ynAvailableData' && isYes(answer)) {
+              // Are the data used in the manuscript available?
               dataCount += 1
             }
             if (questionId === 'question:ynRecommend' && isYes(answer)) {
+             // Would you recommend this manuscript to others?
               othersCount += 1
             }
           }
@@ -111,22 +110,22 @@ export default function Dashboard() {
       }
     })
 
-    const threshold = reviewCount / 2
-    
-    preprint.doc.hasCode = codeCount >= threshold;
-    preprint.doc.hasData = dataCount >= threshold;
-    preprint.doc.recToOthers = othersCount >= threshold; 
-    preprint.doc.recForPeerReview = peerCount >= threshold;
+    // majority rule calculation
+    const threshold = Math.ceil(reviewCount / 2)
+
+    preprint.doc.hasCode = codeCount > 0 && codeCount >= threshold;
+    preprint.doc.hasData = dataCount > 0 && dataCount >= threshold;
+    preprint.doc.recToOthers = othersCount > 0 && othersCount >= threshold; 
+    preprint.doc.recForPeerReview = peerCount > 0 && peerCount >= threshold;
   }) : null
 
-  // 
+  // filtering preprints to render
   const filteredPreprints = () => {
-    console.log("...", "filters!", filters)
 
-   return preprints.rows.filter(preprint => {
+    return preprints.rows.filter(preprint => {
       if (filters.hasCode && !preprint.doc.hasCode) {
         return false
-      } 
+      }
       if (filters.hasData && !preprint.doc.hasData) {
         return false
       }
@@ -144,8 +143,6 @@ export default function Dashboard() {
     console.log("...useEffect")
     filteredPreprints()
   }, [filters])
-
-  preprints.rows.length ? filteredPreprints().forEach(preprint => console.log("...preprint", preprint.doc.name, '\n', preprint.doc.hasData, preprint.doc.hasCode, preprint.doc.recForPeerReview, preprint.doc.recToOthers)) : null;
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
@@ -179,8 +176,12 @@ export default function Dashboard() {
     );
   }, [justActions]);
 
-  // sort actions to populate a "Recent activity" section
-  const sortedActions = safeActions ? safeActions.slice().sort((a, b) => new Date(b.startTime) - new Date(a.startTime)) : []
+  // filtering actions for ones that happened within the last week
+  const recentActions = safeActions ? safeActions.filter(action => new Date(action.startTime) >= subDays(new Date(), 7)) : []
+
+  // sort recent actions to populate a "Recent activity" section, 
+  // but sorts all actions if none occurred in the last week
+  const sortedActions = recentActions.length ? recentActions.slice(0, 15).sort((a, b) => new Date(b.startTime) - new Date(a.startTime)) : safeActions ? safeActions.slice(0, 15).sort((a, b) => new Date(b.startTime) - new Date(a.startTime)) : null
 
   // gets active users, ranked by number of requests+reviews
   const rankedUsers = getUsersRank(safeActions ? safeActions : [])
