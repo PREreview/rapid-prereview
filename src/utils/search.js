@@ -74,7 +74,7 @@ export function createPreprintQs(
   } else if (hasOthersRec === null) {
     ui.delete('others');
   }
-  
+
   // recommended for peer review
   if (hasPeerRec != null) {
     ui.set('peer', hasPeerRec);
