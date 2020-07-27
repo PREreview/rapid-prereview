@@ -173,6 +173,7 @@
     position: relative;
     top: unset;
     width: unset;
+    z-index: unset;
   }
 
   .search-bar .search-bar__left-spacer {
