@@ -4,7 +4,7 @@ import { MdErrorOutline } from 'react-icons/md';
 import Modal from './modal';
 import XLink from './xlink';
 
-export default function LoginRequiredModal({ onClose, next }) {
+export default function LoginRequiredModal({ onClose, next, target }) {
   const url = next ? `/login?next=${encodeURIComponent(next)}` : '/login';
 
   return (
@@ -23,7 +23,7 @@ export default function LoginRequiredModal({ onClose, next }) {
       <p>You need to be logged in to perform this action</p>
 
       <p>
-        <XLink to={url} href={url}>
+        <XLink to={url} href={url} target={target}>
           Log in with your ORCID
         </XLink>
       </p>

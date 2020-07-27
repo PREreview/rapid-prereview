@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-export default function XLink({ to, href, children, ...others }) {
+export default function XLink({ to, href, children, target, ...others }) {
   return process.env.IS_EXTENSION ? (
     <a
-      target="_blank"
+      target={target || "_blank"}
       rel="noopener noreferrer"
       {...others}
       href={`${process.env.API_URL}${href}`}

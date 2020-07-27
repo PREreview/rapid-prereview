@@ -62,8 +62,11 @@ export default function ShellContent({
 
   const counts = getCounts(actions);
 
+  const extensionNextURL = new URL(window.location.href);
+  extensionNextURL.hash = '#osrpre-shell';
+
   const loginUrl = process.env.IS_EXTENSION
-    ? '/login'
+    ? `/login?next=${encodeURIComponent(extensionNextURL)}`
     : `/login?next=${encodeURIComponent(location.pathname)}`;
 
   const showProfileNotice = checkIfRoleLacksMininmalData(role);
@@ -227,14 +230,15 @@ export default function ShellContent({
             </MenuLink>
           </UserBadge>
         ) : (
-          <XLink href={loginUrl} to={loginUrl}>
+          <XLink href={loginUrl} to={loginUrl} target="_self">
             Login
           </XLink>
         )}
       </header>
       {isLoginModalOpen && (
         <LoginRequiredModal
-          next={process.env.IS_EXTENSION ? undefined : location.pathname}
+          next={process.env.IS_EXTENSION ? extensionNextURL : location.pathname}
+          target="_self"
           onClose={() => {
             setIsLoginModalOpen(false);
           }}
