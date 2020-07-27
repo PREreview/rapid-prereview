@@ -70,15 +70,15 @@ export default function Dashboard() {
       [e.target.name]: !filters[e.target.name]
     })
   }
-  
-  // calculating tags, following the logic in utils/stats 
+
+  // calculating tags, following the logic in utils/stats
   preprints.rows.length ? preprints.rows.map(preprint => {
       let codeCount = 0
       let dataCount = 0
       let othersCount = 0
       let peerCount = 0
       let reviewCount = 0
-    
+
       preprint.doc.potentialAction.forEach(action => {
         if (!checkIfIsModerated(action) && action.resultReview && action.resultReview.reviewAnswer) {
         reviewCount += 1
@@ -115,7 +115,7 @@ export default function Dashboard() {
 
     preprint.doc.hasCode = codeCount > 0 && codeCount >= threshold;
     preprint.doc.hasData = dataCount > 0 && dataCount >= threshold;
-    preprint.doc.recToOthers = othersCount > 0 && othersCount >= threshold; 
+    preprint.doc.recToOthers = othersCount > 0 && othersCount >= threshold;
     preprint.doc.recForPeerReview = peerCount > 0 && peerCount >= threshold;
   }) : null
 
@@ -140,7 +140,6 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    console.log("...useEffect")
     filteredPreprints()
   }, [filters])
 
@@ -179,7 +178,7 @@ export default function Dashboard() {
   // filtering actions for ones that happened within the last week
   const recentActions = safeActions ? safeActions.filter(action => new Date(action.startTime) >= subDays(new Date(), 7)) : []
 
-  // sort recent actions to populate a "Recent activity" section, 
+  // sort recent actions to populate a "Recent activity" section,
   // but sorts all actions if none occurred in the last week
   const sortedActions = recentActions.length ? recentActions.slice(0, 15).sort((a, b) => new Date(b.startTime) - new Date(a.startTime)) : safeActions ? safeActions.slice(0, 15).sort((a, b) => new Date(b.startTime) - new Date(a.startTime)) : null
 
@@ -387,21 +386,21 @@ export default function Dashboard() {
                 <div className="dashboard__activity">
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Recent Activity</h2>
-                    {sortedActions.map( action => 
-                      <RecentActivity 
-                        key={action['@id']} 
+                    {sortedActions.map( action =>
+                      <RecentActivity
+                        key={action['@id']}
                         action={action}
-                      /> 
+                      />
                     )}
                   </div>
                   <div  className="dashboard__activity_item">
                     <h2 className="dashboard__h2">Active Reviewers</h2>
                     <ol className="dashboard__activity_item_list">
-                      {justUsers.map(user => 
+                      {justUsers.map(user =>
                         <li>
-                          <ActiveUser 
-                            key={user['@id']} 
-                            user={user} 
+                          <ActiveUser
+                            key={user['@id']}
+                            user={user}
                           />
                         </li>
                       )}

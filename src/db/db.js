@@ -439,7 +439,6 @@ export default class DB {
   }
 //
   streamPreprints(params, { user = null } = {}) {
-    console.log("params in streamPreprints: ", params)
     return this.index.searchAsStream('ddoc-index', 'preprints', params);
   }
 
@@ -450,7 +449,6 @@ export default class DB {
   }
 
   streamActions(params, { user = null } = {}) {
-    console.log("we are in stream actions, here are the params*****", params)
     return this.docs.searchAsStream('ddoc-docs', 'actions', params);
   }
 

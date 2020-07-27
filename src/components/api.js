@@ -14,6 +14,38 @@ export default function API() {
 
       <h1>Public API documentation</h1>
 
+      <div>
+        <p>The Rapid PREreview API can be accessed with the following queries.</p>
+
+      </div>
+
+      <APISection
+        id="get-preprints"
+        title={
+          <Fragment>
+            GET <code>/api/preprint/:id</code>
+          </Fragment>
+        }
+      >
+        <p>
+          Return an array of preprints by <code>id</code>.
+        </p>
+        <p>
+          Example to return one preprint:
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/preprint/doi-10.1101-2020.07.10.197095
+          </code>
+        </p>
+        <p>
+          Example to return many preprints:
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true&limit=2
+          </code>
+        </p>
+      </APISection>
+
       <APISection
         id="get-review"
         title={
@@ -25,6 +57,14 @@ export default function API() {
         <p>
           Get a review by <code>id</code>.
         </p>
+        <p>
+          Example:
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/review/05c66e22-54a0-4d01-9ae9-0cba57b6ad01@arxiv-2003.12444
+          </code>
+        </p>
+
       </APISection>
 
       <APISection
@@ -37,6 +77,13 @@ export default function API() {
       >
         <p>
           Get a request for review by <code>id</code>.
+        </p>
+        <p>
+          Example:
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/request/0bf1768b-78e1-4d2e-a89f-e583c19b80c2@doi-10.1101-2020.04.01.019463
+          </code>
         </p>
       </APISection>
 
@@ -51,6 +98,13 @@ export default function API() {
         <p>
           Get a user by <code>id</code>.
         </p>
+        <p>
+          Example:
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/user/0000-0001-5018-5988
+          </code>
+        </p>
       </APISection>
 
       <APISection
@@ -64,6 +118,13 @@ export default function API() {
         <p>
           Get a role (persona) by <code>id</code>.
         </p>
+        <p>
+          Example:
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/role\?q=\@type:AnonymousReviewerRole+and+limit:10
+          </code>
+        </p>
       </APISection>
 
       <APISection
@@ -76,6 +137,13 @@ export default function API() {
       >
         <p>
           Get a question by <code>id</code>.
+        </p>
+        <p>
+          Example:
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/question/ynNovel
+          </code>
         </p>
       </APISection>
 
@@ -99,6 +167,14 @@ export default function API() {
           Pagination is handled through a <code>bookmark</code> value that needs
           to be passed as a query string parameter (<code>bookmark</code>) to
           get to the next batch.
+        </p>
+
+        <p>
+          Example:
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/role\?q=\@type:AnonymousReviewerRole+and+objectId:%22preprint:%22doi-10.1101-2020.04.27.20081562+and+limit:10
+          </code>
         </p>
 
         <table>
@@ -226,6 +302,14 @@ export default function API() {
           Pagination is handled through a <code>bookmark</code> value that needs
           to be passed as a query string parameter (<code>bookmark</code>) to
           get to the next batch.
+        </p>
+
+        <p>
+          Example:
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/action\?q=\@type:RapidPREreviewAction+and+objectId:%22preprint:%22doi-10.1101-2020.04.27.20081562+and+limit:10
+          </code>
         </p>
 
         <table>
