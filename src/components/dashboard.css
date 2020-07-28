@@ -1,0 +1,208 @@
+.dashboard {
+  width: 96vw;
+
+  & .dashboard__checkbox {
+    position: relative;
+  }
+
+  & .dashboard__checkbox input {
+    position: absolute;
+    right: -20px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  & .dashboard__flex {
+    display: flex;
+    margin-top: 40px;
+    margin-left: -50px;
+
+    @media (--mid) {
+      display: block;
+      margin-left: 0;
+    }
+  }
+
+  & .dashboard__flex_item {
+    margin-left: 50px;
+    width: 50%;
+
+    @media (--mid) {
+      margin-left: 0;
+      width: 100%;
+
+      &:last-child {
+        margin-top: 50px;
+      }
+    }
+  }
+
+  & .dashboard__h2 {
+    margin-top: 0 !important;
+  }
+
+  & .dashboard__list {
+    display: flex;
+    list-style: none !important;
+    margin-left: 5px;
+  }
+
+  & .dashboard__list_item {
+    margin-left: 5px;
+  }
+
+  & .tag-pill {
+    cursor: pointer;
+  }
+
+  & .dashboard__options {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 50px;
+    margin-bottom: 10px;
+    margin-left: -30px;
+
+    @media (--mid) {
+      display: block;
+      height: 100%;
+      margin-left: 0;
+    }
+  }
+
+  & .dashboard__options_item {
+    flex: 1 1 10px;
+    margin-left: 30px;
+    width: 44%;
+
+    @media (--mid) {
+      margin-left: 0;
+      width: 100%;
+    }
+  }
+
+  & .dashboard__tags {
+    display: flex;
+    justify-content: center;
+  }
+
+  & .dashboard__preprint-list {
+    list-style: none !important;
+    margin: 0;
+    padding: 0 !important;
+
+    & .dashboard__preprint-list__item {
+      margin: 0;
+      padding: 0;
+      /* the user badge list can stretch the content in a way that forces a resize
+      when the expansion panel is open. Force it match with of container */
+      max-width: calc(var(--middle-column-default-width) - var(--lgrd));
+
+      & .preprint-card:active, .preprint-card:focus, .preprint-card:hover {
+        box-shadow: unset;
+      }
+
+      & .preprint-card__header, preprint-card__info-row, preprint-card__expansion-header {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      & .preprint-card__tag-list {
+        list-style: none;
+      }
+    }
+  }
+
+  & .dashboard__activity {
+    align-items: flex-start;
+    display: flex;
+    margin-left: -10px;
+    margin-top: 30px;
+
+    & .dashboard__activity_item {
+      border: 1px solid var(--light-grey);
+      border-radius: 8px;
+      padding: 10px;
+      margin-left: 10px;
+
+      &:first-child {
+        width: 60%;
+
+        @media (--mid) {
+          margin-left: 0;
+          width: 90%;
+        }
+      }
+
+      &:last-child {
+        width: 40%;
+
+        @media (--mid) {
+          margin-left: 0;
+          margin-top: 20px;
+          width: 90%;
+        }
+      }
+
+      & .dashboard__activity_item_list {
+        padding-left: 16px;
+
+        & li {
+          &:not(:last-child) {
+            margin-bottom: 5px;
+          }
+        }
+      }
+
+      & .dashboard__activity_item_text {
+        &:not(:last-child) {
+          margin-bottom: 10px;
+        }
+      }
+    }
+
+    @media (--mid) {
+      display: block;
+      margin-left: 0;
+    }
+  }
+
+  .search-bar {
+    border-top: unset;
+    box-shadow: unset;
+    position: relative;
+    top: unset;
+    width: unset;
+    z-index: unset;
+  }
+
+  .search-bar .search-bar__left-spacer {
+    min-width: unset;
+  }
+
+  .sort-options {
+    justify-content: space-between;
+  }
+
+  .sort-options__item:last-of-type {
+    margin-left: 0 !important;
+  }
+
+  @media (--mid) {
+    width: 92vw;
+  }
+}
+
+#Dashboard {
+  text-align: center;
+}
+
+.vh {
+  position: absolute !important;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+    white-space: nowrap; /* added line */
+}

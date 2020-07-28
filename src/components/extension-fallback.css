@@ -19,7 +19,7 @@
     }
   }
 
-  & object {
+  & object, .extension-fallback__no-pdf-message {
     display: block; /* iframes are inline by default */
     border: none; /* Reset default border */
     @media (--narrow-screen) {

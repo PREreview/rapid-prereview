@@ -132,6 +132,7 @@ export default function APISection({
 
 APISection.propTypes = {
   id: PropTypes.oneOf([
+    'get-preprints',
     'get-review',
     'get-request',
     'post-request',

@@ -249,6 +249,20 @@ Facets.propTypes = {
         false: PropTypes.number
       })
     ]),
+    hasOthersRec: PropTypes.oneOfType([
+      PropTypes.number, // 0
+      PropTypes.shape({
+        true: PropTypes.number,
+        false: PropTypes.number
+      })
+    ]),
+    hasPeerRec: PropTypes.oneOfType([
+      PropTypes.number, // 0
+      PropTypes.shape({
+        true: PropTypes.number,
+        false: PropTypes.number
+      })
+    ]),
     hasCode: PropTypes.oneOfType([
       PropTypes.number, // 0
       PropTypes.shape({

@@ -13,6 +13,8 @@ export function createPreprintQs(
     hasData,
     hasCode,
     subjects,
+    hasOthersRec,
+    hasPeerRec,
     // sort
     sort // `score`, `new` or `date`
   } = {},
@@ -66,6 +68,20 @@ export function createPreprintQs(
     ui.delete('code');
   }
 
+  // recommended for others
+  if (hasOthersRec != null) {
+    ui.set('others', hasOthersRec);
+  } else if (hasOthersRec === null) {
+    ui.delete('others');
+  }
+
+  // recommended for peer review
+  if (hasPeerRec != null) {
+    ui.set('peer', hasPeerRec);
+  } else if (hasPeerRec === null) {
+    ui.delete('peer');
+  }
+
   if (sort === null || sort === 'score') {
     ui.delete('sort');
   } else if (sort != null) {
@@ -97,8 +113,15 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
 
   if (ui.has('q')) {
     const q = ui.get('q');
+    const terms = q.split(/[+|\s]/).filter(Boolean);
 
     const ored = [`name:"${escapeLucene(q)}"`];
+
+    if (terms.length > 1) {
+      ored.push(`name:"${escapeLucene(q)}"~5`);
+    } else if (terms.length === 1) {
+      ored.push(`name:${escapeLucene(terms[0])}*`);
+    }
 
     const doiMatched = q.match(doiRegex());
     if (doiMatched) {
@@ -154,6 +177,12 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   }
   if (ui.has('code')) {
     anded.push(`hasCode:${ui.get('code')}`);
+  }
+  if (ui.has('peer')) {
+    anded.push(`hasPeerRec:${ui.get('peer')}`);
+  }
+  if (ui.has('others')) {
+    anded.push(`hasOthersRec:${ui.get('others')}`);
   }
   if (ui.has('subject')) {
     const subjects = ui.get('subject').split(',');
@@ -232,8 +261,12 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   api.set(
     'counts',
     JSON.stringify([
+      // 'hasPeerRec',
+      // 'hasOthersRec',
       'hasData',
       'hasCode',
+      // 'hasPeerRec',
+      // 'hasOthersRec',
       'hasReviews',
       'hasRequests',
       'subjectName'

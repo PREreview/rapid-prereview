@@ -169,12 +169,20 @@ function start() {
                 });
               });
 
+              let shellDefaultStatus = "minimized";
+
+              if (window.location.hash === "#osrpre-shell") {
+                shellDefaultStatus = "maximized";
+                window.history.replaceState(null, '', '#');
+              }
+
               ReactDOM.render(
                 <ExtensionShell
                   preprint={preprint}
                   user={user}
                   preprintsWithActionsStore={preprintsWithActionsStore}
                   roleStore={roleStore}
+                  defaultStatus={shellDefaultStatus}
                 />,
                 $div
               );

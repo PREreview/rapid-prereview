@@ -13,7 +13,8 @@ export default function ExtensionShell({
   preprint,
   user,
   preprintsWithActionsStore,
-  roleStore
+  roleStore,
+  defaultStatus
 }) {
   return (
     <Router>
@@ -24,7 +25,7 @@ export default function ExtensionShell({
         >
           <UserProvider user={user}>
             <div className="extension-shell">
-              <Shell defaultStatus="minimized">
+              <Shell defaultStatus={defaultStatus}>
                 {onRequireScreen => (
                   <ExtensionShellContent
                     onRequireScreen={onRequireScreen}

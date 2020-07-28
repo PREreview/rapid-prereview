@@ -2,7 +2,7 @@ import { QUESTIONS } from '../constants';
 import { getId, arrayify } from './jsonld';
 import { getAnswerMap, checkIfIsModerated } from './actions';
 
-function isYes(textOrAnswer) {
+export function isYes(textOrAnswer) {
   const text =
     typeof textOrAnswer === 'string'
       ? textOrAnswer
@@ -104,6 +104,53 @@ export function getTags(actions) {
 
   const hasCode = reviewsWithCode.length && reviewsWithCode.length >= threshold;
 
+  /** collect all reviews where
+   * the reviewer says they'd recommend this preprint to others
+  */
+  const reviewsWithRecs = reviewActions.filter(action => {
+    if (action.resultReview && action.resultReview.reviewAnswer) {
+      const answers = action.resultReview.reviewAnswer;
+
+      for (let i = 0; i < answers.length; i++) {
+        const answer = answers[i];
+        if (answer.parentItem) {
+          const questionId = getId(answer.parentItem);
+          if (questionId === 'question:ynRecommend') {
+            return isYes(answer);
+          }
+        }
+      }
+    }
+    return false;
+  });
+
+  const othersCount = reviewsWithRecs.length
+
+  const hasOthersRec = othersCount && othersCount >= threshold;
+
+  /*** collect all reviews where
+   * the reviewer says they'd recommend this preprint for peer review
+   */
+  const reviewsWithPeers = reviewActions.filter(action => {
+    if (action.resultReview && action.resultReview.reviewAnswer) {
+      const answers = action.resultReview.reviewAnswer;
+
+      for (let i = 0; i < answers.length; i++) {
+        const answer = answers[i];
+        if (answer.parentItem) {
+          const questionId = getId(answer.parentItem);
+          if (questionId === 'question:ynPeerReview') {
+            return isYes(answer);
+          }
+        }
+      }
+    }
+    return false;
+  });
+
+  const peerReviewCount = reviewsWithPeers.length 
+  const hasPeerRec = peerReviewCount && peerReviewCount >= threshold;
+
   // subjects
   const subjectCountMap = {};
   reviewActions.forEach(action => {
@@ -125,7 +172,35 @@ export function getTags(actions) {
     return count >= threshold;
   });
 
-  return { hasReviews, hasRequests, hasData, hasCode, subjects };
+  return { hasReviews, hasRequests, hasData, hasCode, othersCount, hasOthersRec, peerReviewCount, hasPeerRec, subjects };
+}
+
+export function getUsersRank(actions = []) {
+
+  /**
+   * TODO need to clarify in comments what actions are getting passed here */
+
+  const countedActions = actions.filter(
+    action =>
+      action['@type'] === 'RapidPREreviewAction' ||
+      action['@type'] === 'RequestForRapidPREreviewAction'
+  );
+
+  const reviewerCount = {};
+
+  countedActions.forEach(action => {
+      if (typeof action.agent === 'string') {
+        if (action.agent in reviewerCount) {
+          reviewerCount[action.agent] += 1;
+        } else {
+          reviewerCount[action.agent] = 1;
+        }
+      }
+  });
+
+  const sortedUsers = Object.entries(reviewerCount).sort((a, b) => b[1] - a[1]);
+  
+  return sortedUsers;
 }
 
 export function getYesNoStats(actions = []) {
