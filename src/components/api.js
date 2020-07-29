@@ -65,7 +65,7 @@ export default function API() {
           Get all reviews, sorted from oldest to newest. 
         </p>
         <p>
-          Example to retrieve all reviews, including its associated preprint: 
+          Example to retrieve all reviews, including the preprint associated with each review: 
           <br />
           <code>
             curl https://outbreaksci.prereview.org/api/action?q=@type:RapidPREreviewAction&include_docs=true
