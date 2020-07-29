@@ -54,12 +54,6 @@ const ddoc = {
       },
       reduce: '_count'
     }
-  },
-
-  indexes: {
-    index: function(doc) {
-      return doc;
-    }
   }
 };
 
