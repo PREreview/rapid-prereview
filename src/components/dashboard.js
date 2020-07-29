@@ -2,18 +2,21 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import omit from 'lodash/omit';
-import { ORG } from '../constants';
+import { subDays } from 'date-fns'
+import { MdChevronRight, MdFirstPage } from 'react-icons/md';
 import { useHistory, useLocation } from 'react-router-dom';
+
+import { ORG } from '../constants';
 import Org from './org';
 
 // hooks
-import { useActionsSearchResults, usePreprintActions, usePreprintSearchResults } from '../hooks/api-hooks';
+import { usePreprintSearchResults } from '../hooks/api-hooks';
 
 // utils
 import { checkIfIsModerated } from '../utils/actions';
-import { getTags, getUsersRank, isYes } from '../utils/stats';
-import { createActivityQs, createPreprintQs, apifyPreprintQs } from '../utils/search';
-import { getId, arrayify } from '../utils/jsonld'
+import { getUsersRank, isYes } from '../utils/stats';
+import { createPreprintQs, apifyPreprintQs } from '../utils/search';
+import { getId } from '../utils/jsonld'
 
 
 // contexts
@@ -22,6 +25,8 @@ import { useUser } from '../contexts/user-context';
 // modules
 import AddButton from './add-button';
 import Banner from "./banner.js";
+import Button from './button';
+
 import Checkbox from './checkbox';
 import SortOptions from './sort-options';
 import HeaderBar from './header-bar';
@@ -31,7 +36,6 @@ import XLink from './xlink';
 import RecentActivity from './recent-activity'
 import ActiveUser from './active-user'
 
-import { subDays } from 'date-fns'
 
 export default function Dashboard() {
   const history = useHistory();
@@ -370,6 +374,41 @@ export default function Dashboard() {
                   </ul>
                 )}
               </div>
+
+              <div className="home__pagination">
+                {!!(location.state && location.state.bookmark) && (
+                  <Button
+                    onClick={() => {
+                      history.push({
+                        pathname: location.pathname,
+                        search: createPreprintQs({ text: params.get('q') }, location.search)
+                      });
+                    }}
+                  >
+                    <MdFirstPage /> First page
+                  </Button>
+                )}
+                {/* Cloudant returns the same bookmark when it hits the end of the list */}
+                {!!(
+                  preprints.rows.length < preprints.total_rows &&
+                  preprints.bookmark !== (location.state && location.state.bookmark)
+                ) && (
+                    <Button
+                      className="home__next-page-button"
+                      onClick={() => {
+                        history.push({
+                          pathname: location.pathname,
+                          search: createPreprintQs({ text: params.get('q') }, location.search),
+                          state: { bookmark: preprints.bookmark }
+                        });
+                      }}
+                    >
+                      Next Page <MdChevronRight />
+                    </Button>
+                  )}
+              </div>
+
+
               <div className="dashboard__flex_item">
                 <div>
                   <AddButton
