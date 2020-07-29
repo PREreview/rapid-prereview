@@ -44,6 +44,34 @@ export default function API() {
             curl https://outbreaksci.prereview.org/api/preprint?q=name%3ACOVID-19&include_docs=true&limit=2
           </code>
         </p>
+        <p>
+          Example to return many preprints, sorted by date of last review: 
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/preprint/?q=*:*&sort=[%22-dateLastReview%3Cnumber%3E%22%2C%22-score%3Cnumber%3E%22%2C%22-datePosted%3Cnumber%3E%22]&include_docs=true
+          </code>
+        </p>
+      </APISection>
+
+      <APISection
+        id="get-reviews"
+        title={
+          <Fragment>
+            GET <code>/api/action?q=@type:RapidPREreviewAction</code>
+          </Fragment>
+        }
+      >
+        <p>
+          Get all reviews, sorted from oldest to newest. 
+        </p>
+        <p>
+          Example to retrieve all reviews, including its associated preprint: 
+          <br />
+          <code>
+            curl https://outbreaksci.prereview.org/api/action?q=@type:RapidPREreviewAction&include_docs=true
+          </code>
+        </p>
+
       </APISection>
 
       <APISection
