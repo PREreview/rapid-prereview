@@ -434,7 +434,6 @@ router.get(
   parseQuery,
   cache(req => req.query.key),
   async (req, res, next) => {
-    console.log('in async.....');
     switch (req.query.key) {
       case 'demo:get-preprints': {
         try {
@@ -444,6 +443,27 @@ router.get(
             include_docs: true,
             q: 'name:"COVID\\-19"'
           });
+          req.cache(payload);
+          res.json(payload);
+        } catch (err) {
+          return next(err);
+        }
+        break;
+      }
+
+      case 'demo:get-reviews': {
+        try {
+          const body = await req.db.docs.view('ddoc-docs', 'byType', {
+            key: 'RapidPREreviewAction',
+            include_docs: true,
+            reduce: false
+          });
+          const row = body.rows[0];
+          if (!row) {
+            return next(createError(404));
+          }
+
+          const payload = row.doc;
           req.cache(payload);
           res.json(payload);
         } catch (err) {
