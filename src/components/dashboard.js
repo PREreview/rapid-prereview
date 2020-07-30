@@ -53,7 +53,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (location.search === "") {
-      history.replace({ search: "q=COVID-19" }) // add an OR query here too
+      history.replace({ search: "q=COVID-19" })
     }
   }, [apiQs]);
 
@@ -373,41 +373,41 @@ export default function Dashboard() {
                     )) : null}
                   </ul>
                 )}
-              </div>
-
-              <div className="home__pagination">
-                {!!(location.state && location.state.bookmark) && (
-                  <Button
-                    onClick={() => {
-                      history.push({
-                        pathname: location.pathname,
-                        search: createPreprintQs({ text: params.get('q') }, location.search)
-                      });
-                    }}
-                  >
-                    <MdFirstPage /> First page
-                  </Button>
-                )}
-                {/* Cloudant returns the same bookmark when it hits the end of the list */}
-                {!!(
-                  preprints.rows.length < preprints.total_rows &&
-                  preprints.bookmark !== (location.state && location.state.bookmark)
-                ) && (
+                <br/>
+                <div className="home__pagination">
+                  {!!(location.state && location.state.bookmark) && (
                     <Button
-                      className="home__next-page-button"
                       onClick={() => {
                         history.push({
                           pathname: location.pathname,
-                          search: createPreprintQs({ text: params.get('q') }, location.search),
-                          state: { bookmark: preprints.bookmark }
+                          search: createPreprintQs({ text: params.get('q') }, location.search)
                         });
                       }}
                     >
-                      Next Page <MdChevronRight />
+                      <MdFirstPage /> First page
                     </Button>
                   )}
-              </div>
+                  {/* Cloudant returns the same bookmark when it hits the end of the list */}
+                  {!!(
+                    preprints.rows.length < preprints.total_rows &&
+                    preprints.bookmark !== (location.state && location.state.bookmark)
+                  ) && (
+                      <Button
+                        className="home__next-page-button"
+                        onClick={() => {
+                          history.push({
+                            pathname: location.pathname,
+                            search: createPreprintQs({ text: params.get('q') }, location.search),
+                            state: { bookmark: preprints.bookmark }
+                          });
+                        }}
+                      >
+                        Next Page <MdChevronRight />
+                      </Button>
+                    )}
+                </div>
 
+              </div>
 
               <div className="dashboard__flex_item">
                 <div>
