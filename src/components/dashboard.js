@@ -374,7 +374,7 @@ export default function Dashboard() {
                   </ul>
                 )}
                 <br/>
-                <div className="home__pagination">
+                <div className="home__pagination dashboard__pagination">
                   {!!(location.state && location.state.bookmark) && (
                     <Button
                       onClick={() => {
