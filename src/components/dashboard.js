@@ -189,6 +189,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
+                            text: 'COVID-19',
                             hasOthersRec: e.target.checked || null
                           },
                           location.search
@@ -215,6 +216,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
+                            text: 'COVID-19',
                             hasPeerRec: e.target.checked || null
                           },
                           location.search
@@ -241,6 +243,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
+                            text: 'COVID-19',
                             hasData: e.target.checked || null
                           },
                           location.search
@@ -267,6 +270,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
+                            text: 'COVID-19',
                             hasCode: e.target.checked || null
                           },
                           location.search
