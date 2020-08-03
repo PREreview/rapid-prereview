@@ -40,6 +40,15 @@ describe('search utils', () => {
       );
     });
 
+    it('should allow multiple terms to be used', () => {
+      const ui = createPreprintQs({ text: ['text1', 'text2'] });
+
+      assert.equal(ui, '?q=text1&q=text2');
+
+      const p = querystring.parse(apifyPreprintQs(ui).substring(1));
+      assert.equal(p.q, '(name:"text1" OR name:text1* OR name:"text2" OR name:text2*)' );
+    });
+
     it('should handle DOI and arXivId', () => {
       const ui = createPreprintQs({
         text: `text ${arXivId} ${crossrefDoi} ${openAireDoi}`
