@@ -261,12 +261,10 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   api.set(
     'counts',
     JSON.stringify([
-      // 'hasPeerRec',
-      // 'hasOthersRec',
+      'hasPeerRec',
+      'hasOthersRec',
       'hasData',
       'hasCode',
-      // 'hasPeerRec',
-      // 'hasOthersRec',
       'hasReviews',
       'hasRequests',
       'subjectName'
