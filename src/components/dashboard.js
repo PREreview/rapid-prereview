@@ -236,7 +236,7 @@ export default function Dashboard() {
                       name="hasData"
                       label={
                         <span className="facets__facet-label">
-                          With Reported Data{' '}
+                          With reported data{' '}
                         </span>
                       }
                       checked={params.get('data') === 'true'}
@@ -263,7 +263,7 @@ export default function Dashboard() {
                       name="hasCode"
                       label={
                         <span className="facets__facet-label">
-                          With Reported Code{' '}
+                          With reported code{' '}
                         </span>
                       }
                       checked={params.get('code') === 'true'}
