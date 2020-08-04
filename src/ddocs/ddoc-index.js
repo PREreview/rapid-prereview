@@ -67,7 +67,7 @@ const ddoc = {
           hasReviews: 'keyword',
           hasRequests: 'keyword',
           hasData: 'keyword',
-          hasCode: 'keyword', 
+          hasCode: 'keyword',
           hasOthersRec: 'keyword',
           hasPeerRec: 'keyword'
         }
@@ -270,8 +270,6 @@ const ddoc = {
               }
               return false;
             });
-            console.log("....hasCode", reviewsWithCode)
-
 
             var hasCode =
               reviewsWithCode.length && reviewsWithCode.length >= threshold;

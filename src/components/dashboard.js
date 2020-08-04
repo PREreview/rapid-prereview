@@ -2,18 +2,21 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import omit from 'lodash/omit';
-import { ORG } from '../constants';
+import { subDays } from 'date-fns'
+import { MdChevronRight, MdFirstPage } from 'react-icons/md';
 import { useHistory, useLocation } from 'react-router-dom';
+
+import { ORG } from '../constants';
 import Org from './org';
 
 // hooks
-import { useActionsSearchResults, usePreprintActions, usePreprintSearchResults } from '../hooks/api-hooks';
+import { usePreprintSearchResults } from '../hooks/api-hooks';
 
 // utils
 import { checkIfIsModerated } from '../utils/actions';
-import { getTags, getUsersRank, isYes } from '../utils/stats';
-import { createActivityQs, createPreprintQs, apifyPreprintQs } from '../utils/search';
-import { getId, arrayify } from '../utils/jsonld'
+import { getUsersRank, isYes } from '../utils/stats';
+import { createPreprintQs, apifyPreprintQs } from '../utils/search';
+import { getId } from '../utils/jsonld'
 
 
 // contexts
@@ -22,6 +25,8 @@ import { useUser } from '../contexts/user-context';
 // modules
 import AddButton from './add-button';
 import Banner from "./banner.js";
+import Button from './button';
+
 import Checkbox from './checkbox';
 import SortOptions from './sort-options';
 import HeaderBar from './header-bar';
@@ -31,7 +36,6 @@ import XLink from './xlink';
 import RecentActivity from './recent-activity'
 import ActiveUser from './active-user'
 
-import { subDays } from 'date-fns'
 
 export default function Dashboard() {
   const history = useHistory();
@@ -49,99 +53,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (location.search === "") {
-      history.replace({ search: "q=COVID-19" }) // add an OR query here too
+      history.replace({ search: "q=COVID-19" })
     }
   }, [apiQs]);
 
   const [preprints, fetchResultsProgress] = usePreprintSearchResults(apiQs);
-
+  
   const [hoveredSortOption, setHoveredSortOption] = useState(null);
-
-  const [filters, setFilters] = useState({
-    hasCode: false,
-    hasData: false,
-    recToOthers: false,
-    recForPeerReview: false
-  })
-
-  const handleFilterChange = (e) => {
-    setFilters({
-      ...filters,
-      [e.target.name]: !filters[e.target.name]
-    })
-  }
-
-  // calculating tags, following the logic in utils/stats
-  preprints.rows.length ? preprints.rows.map(preprint => {
-      let codeCount = 0
-      let dataCount = 0
-      let othersCount = 0
-      let peerCount = 0
-      let reviewCount = 0
-
-      preprint.doc.potentialAction.forEach(action => {
-        if (!checkIfIsModerated(action) && action.resultReview && action.resultReview.reviewAnswer) {
-        reviewCount += 1
-
-        const answers = action.resultReview.reviewAnswer;
-
-        for (let i = 0; i < answers.length; i++) {
-          const answer = answers[i];
-          if (answer.parentItem) {
-            const questionId = getId(answer.parentItem);
-            if (questionId === 'question:ynAvailableCode' && isYes(answer)) {
-              // Is the code used in the manuscript available?
-              codeCount += 1
-            }
-            if (questionId === 'question:ynPeerReview' && isYes(answer)) {
-              // Do you recommend this manuscript for peer review?
-              peerCount += 1
-            }
-            if (questionId === 'question:ynAvailableData' && isYes(answer)) {
-              // Are the data used in the manuscript available?
-              dataCount += 1
-            }
-            if (questionId === 'question:ynRecommend' && isYes(answer)) {
-             // Would you recommend this manuscript to others?
-              othersCount += 1
-            }
-          }
-        }
-      }
-    })
-
-    // majority rule calculation
-    const threshold = Math.ceil(reviewCount / 2)
-
-    preprint.doc.hasCode = codeCount > 0 && codeCount >= threshold;
-    preprint.doc.hasData = dataCount > 0 && dataCount >= threshold;
-    preprint.doc.recToOthers = othersCount > 0 && othersCount >= threshold;
-    preprint.doc.recForPeerReview = peerCount > 0 && peerCount >= threshold;
-  }) : null
-
-  // filtering preprints to render
-  const filteredPreprints = () => {
-
-    return preprints.rows.filter(preprint => {
-      if (filters.hasCode && !preprint.doc.hasCode) {
-        return false
-      }
-      if (filters.hasData && !preprint.doc.hasData) {
-        return false
-      }
-      if (filters.recToOthers && !preprint.doc.recToOthers) {
-        return false
-      }
-      if (filters.recForPeerReview && !preprint.doc.recForPeerReview) {
-        return false
-      }
-      return true
-    })
-  }
-
-  useEffect(() => {
-    filteredPreprints()
-  }, [filters])
 
   /**
    * builds an array where each item of the array is an object with an 'actions' key,
@@ -261,29 +179,55 @@ export default function Dashboard() {
                   <div className="dashboard__options_item">
                     <Checkbox
                       inputId="counts-others"
-                      name="recToOthers"
+                      name="hasOthersRec"
                       label={
                         <span className="facets__facet-label">
                           Recommended to others{' '}
                         </span>
                       }
-                      // disabled={!(counts.hasData || {}).true}
-                      checked={filters['recToOthers']}
-                      onChange={e => handleFilterChange(e)}
+                      checked={params.get('others') === 'true'}
+                      onChange={e => {
+                        const search = createPreprintQs(
+                          {
+                            text: 'COVID-19',
+                            hasOthersRec: e.target.checked || null
+                          },
+                          location.search
+                        );
+
+                        history.push({
+                          pathname: location.pathname,
+                          search,
+                          state: { prevSearch: location.search }
+                        });
+                      }}
                     />
                   </div>
                   <div className="dashboard__options_item">
                     <Checkbox
                       inputId="counts-peer"
-                      name="recForPeerReview"
+                      name="hasPeerRec"
                       label={
                         <span className="facets__facet-label">
                           Recommended for peer review{' '}
                         </span>
                       }
-                      // disabled={!(counts.hasData || {}).true}
-                      checked={filters['recForPeerReview']}
-                      onChange={e => handleFilterChange(e)}
+                      checked={params.get('peer') === 'true'}
+                      onChange={e => {
+                        const search = createPreprintQs(
+                          {
+                            text: 'COVID-19',
+                            hasPeerRec: e.target.checked || null
+                          },
+                          location.search
+                        );
+
+                        history.push({
+                          pathname: location.pathname,
+                          search,
+                          state: { prevSearch: location.search }
+                        });
+                      }}
                     />
                   </div>
                   <div className="dashboard__options_item">
@@ -295,9 +239,22 @@ export default function Dashboard() {
                           With reported data{' '}
                         </span>
                       }
-                      // disabled={!(counts.hasData || {}).true}
-                      checked={filters['hasData']}
-                      onChange={e => handleFilterChange(e)}
+                      checked={params.get('data') === 'true'}
+                      onChange={e => {
+                        const search = createPreprintQs(
+                          {
+                            text: 'COVID-19',
+                            hasData: e.target.checked || null
+                          },
+                          location.search
+                        );
+
+                        history.push({
+                          pathname: location.pathname,
+                          search,
+                          state: { prevSearch: location.search }
+                        });
+                      }}
                     />
                   </div>
                   <div className="dashboard__options_item">
@@ -309,9 +266,22 @@ export default function Dashboard() {
                           With reported code{' '}
                         </span>
                       }
-                      // disabled={!(counts.hasCode || {}).true}
-                      checked={filters['hasCode']}
-                      onChange={e=>handleFilterChange(e)}
+                      checked={params.get('code') === 'true'}
+                      onChange={e => {
+                        const search = createPreprintQs(
+                          {
+                            text: 'COVID-19',
+                            hasCode: e.target.checked || null
+                          },
+                          location.search
+                        );
+
+                        history.push({
+                          pathname: location.pathname,
+                          search,
+                          state: { prevSearch: location.search }
+                        });
+                      }}
                     />
                   </div>
                 </div>
@@ -353,7 +323,7 @@ export default function Dashboard() {
                   <div>No more preprints.</div>
                 ) : (
                   <ul className="dashboard__preprint-list">
-                    {filteredPreprints() ? filteredPreprints().map(row => (
+                    {preprints.rows.length ? preprints.rows.map(row => (
                       <li key={row.id} className="dashboard__preprint-list__item">
                         <PreprintCard
                           isNew={false}
@@ -369,7 +339,42 @@ export default function Dashboard() {
                     )) : null}
                   </ul>
                 )}
+                <br/>
+                <div className="home__pagination dashboard__pagination">
+                  {!!(location.state && location.state.bookmark) && (
+                    <Button
+                      onClick={() => {
+                        history.push({
+                          pathname: location.pathname,
+                          search: createPreprintQs({ text: params.get('q') }, location.search)
+                        });
+                      }}
+                    >
+                      <MdFirstPage /> First page
+                    </Button>
+                  )}
+                  {/* Cloudant returns the same bookmark when it hits the end of the list */}
+                  {!!(
+                    preprints.rows.length < preprints.total_rows &&
+                    preprints.bookmark !== (location.state && location.state.bookmark)
+                  ) && (
+                      <Button
+                        className="home__next-page-button"
+                        onClick={() => {
+                          history.push({
+                            pathname: location.pathname,
+                            search: createPreprintQs({ text: params.get('q') }, location.search),
+                            state: { bookmark: preprints.bookmark }
+                          });
+                        }}
+                      >
+                        Next Page <MdChevronRight />
+                      </Button>
+                    )}
+                </div>
+
               </div>
+
               <div className="dashboard__flex_item">
                 <div>
                   <AddButton

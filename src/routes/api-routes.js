@@ -152,45 +152,6 @@ router.get(
   }
 );
 
-// feed of useful things
-// router.get(
-//   '/feed',
-//   cors(),
-//   parseQuery,
-//   cashe(req => req.query.key),
-//   (req, res, next) => {
-//     res.setHeader('content-type', 'application/json');
-//     let hasErrored = false;
-
-//     const s = req.db.streamActions(omit(req.query, ['key']));
-//     s.on('response', response => {
-//       console.log("HELLO??????")
-//       res.status(response.statusCode);
-//     });
-//     s.on('error', err => {
-//       if (!hasErrored) {
-//         hasErrored = true;
-//         next(err);
-//       }
-
-//       try {
-//         s.destroy();
-//       } catch (err) {
-//         // noop
-//       }
-//     });
-
-//     s.pipe(
-//       concatStream(buffer => {
-//         req.cache(JSON.parse(buffer));
-//       })
-//     );
-
-//     s.pipe(res);
-//   }
-// )
-
-
 /**
  * Search for roles
  */
@@ -473,7 +434,6 @@ router.get(
   parseQuery,
   cache(req => req.query.key),
   async (req, res, next) => {
-    console.log('in async.....');
     switch (req.query.key) {
       case 'demo:get-preprints': {
         try {
@@ -483,6 +443,27 @@ router.get(
             include_docs: true,
             q: 'name:"COVID\\-19"'
           });
+          req.cache(payload);
+          res.json(payload);
+        } catch (err) {
+          return next(err);
+        }
+        break;
+      }
+
+      case 'demo:get-reviews': {
+        try {
+          const body = await req.db.docs.view('ddoc-docs', 'byType', {
+            key: 'RapidPREreviewAction',
+            include_docs: true,
+            reduce: false
+          });
+          const row = body.rows[0];
+          if (!row) {
+            return next(createError(404));
+          }
+
+          const payload = row.doc;
           req.cache(payload);
           res.json(payload);
         } catch (err) {
