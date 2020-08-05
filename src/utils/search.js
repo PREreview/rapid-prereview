@@ -23,7 +23,12 @@ export function createPreprintQs(
   const ui = new URLSearchParams(uiQs);
 
   if (text != null && text != '') {
-    ui.set('q', text);
+    if (Array.isArray(text)) {
+      ui.delete('q');
+      text.forEach(term => ui.append('q', term));
+    } else {
+      ui.set('q', text);
+    }
   } else {
     ui.delete('q');
   }
@@ -112,26 +117,10 @@ export function apifyPreprintQs(uiQs = '', bookmark) {
   const drilldown = [];
 
   if (ui.has('q')) {
-    const q = ui.get('q');
-    const terms = q.split(/[+|\s]/).filter(Boolean);
-
-    const ored = [`name:"${escapeLucene(q)}"`];
-
-    if (terms.length > 1) {
-      ored.push(`name:"${escapeLucene(q)}"~5`);
-    } else if (terms.length === 1) {
-      ored.push(`name:${escapeLucene(terms[0])}*`);
-    }
-
-    const doiMatched = q.match(doiRegex());
-    if (doiMatched) {
-      ored.push(...doiMatched.map(doi => `doi:"${doi}"`));
-    }
-
-    const arXivIds = identifiersArxiv.extract(q);
-    if (arXivIds && arXivIds.length) {
-      ored.push(...arXivIds.map(arXivId => `arXivId:"${arXivId}"`));
-    }
+    const searchTerms = ui.getAll('q');
+    const ored = searchTerms.length > 1
+      ? searchTerms.map(q => buildLuceneQueryForTerm(q)).reduce((prev, curr) => prev.concat(curr))
+      : buildLuceneQueryForTerm(searchTerms[0]);
 
     anded.push(ored.length == 1 ? ored[0] : `(${ored.join(' OR ')})`);
   }
@@ -397,4 +386,27 @@ export function createBlockedRolesQs({ bookmark }) {
 
 function escapeLucene(term) {
   return term.replace(/([+&|!(){}[\]^"~*?:\\\/-])/g, '\\$1');
+}
+
+function buildLuceneQueryForTerm(q) {
+  const result = [`name:"${escapeLucene(q)}"`];
+  const words = q.split(/[+|\s]/).filter(Boolean);
+
+  if (words.length > 1) {
+    result.push(`name:"${escapeLucene(q)}"~5`);
+  } else if (words.length === 1) {
+    result.push(`name:${escapeLucene(words[0])}*`);
+  }
+
+  const doiMatched = q.match(doiRegex());
+  if (doiMatched) {
+    result.push(...doiMatched.map(doi => `doi:"${doi}"`));
+  }
+
+  const arXivIds = identifiersArxiv.extract(q);
+  if (arXivIds && arXivIds.length) {
+    result.push(...arXivIds.map(arXivId => `arXivId:"${arXivId}"`));
+  }
+
+  return result;
 }
