@@ -27,6 +27,7 @@ import AddButton from './add-button';
 import Banner from "./banner.js";
 import Button from './button';
 
+import LoginRequiredModal from './login-required-modal';
 import Checkbox from './checkbox';
 import SortOptions from './sort-options';
 import HeaderBar from './header-bar';
@@ -167,6 +168,14 @@ export default function Dashboard() {
           setShowLeftPanel(!showLeftPanel);
         }}
       />
+      {loginModalOpenNext && (
+        <LoginRequiredModal
+          next={loginModalOpenNext}
+          onClose={() => {
+            setLoginModalOpenNext(null);
+          }}
+        />
+      )}
       <article className="toc-page__main">
         <div className="toc-page__body">
           <section className="dashboard home__main">
