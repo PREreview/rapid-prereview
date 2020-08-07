@@ -214,7 +214,8 @@ function StepPreprint({
             if (location.search) {
               const qs = new URLSearchParams(location.search);
               if (qs.get('identifier')) {
-                history.replace('/new');
+                qs.delete('identifier');
+                history.replace({ pathname: location.pathname, search: qs.toString() });
               }
             }
 
