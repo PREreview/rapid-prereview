@@ -50,16 +50,17 @@ export default function Dashboard() {
     location.state && location.state.bookmark
   );
 
+  const covidTerms = ['COVID-19', 'Coronavirus', 'SARS-CoV-2'];
   const params = new URLSearchParams(location.search);
 
   useEffect(() => {
     if (location.search === "") {
-      history.replace({ search: "q=COVID-19" })
+      history.replace({ search: createPreprintQs({ text: covidTerms }, location.search) });
     }
   }, [apiQs]);
 
   const [preprints, fetchResultsProgress] = usePreprintSearchResults(apiQs);
-  
+
   const [hoveredSortOption, setHoveredSortOption] = useState(null);
 
   /**
@@ -198,7 +199,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
-                            text: 'COVID-19',
+                            text: covidTerms,
                             hasOthersRec: e.target.checked || null
                           },
                           location.search
@@ -225,7 +226,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
-                            text: 'COVID-19',
+                            text: covidTerms,
                             hasPeerRec: e.target.checked || null
                           },
                           location.search
@@ -252,7 +253,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
-                            text: 'COVID-19',
+                            text: covidTerms,
                             hasData: e.target.checked || null
                           },
                           location.search
@@ -279,7 +280,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
-                            text: 'COVID-19',
+                            text: covidTerms,
                             hasCode: e.target.checked || null
                           },
                           location.search
@@ -307,7 +308,7 @@ export default function Dashboard() {
                   ) => {
                     const search = createPreprintQs(
                       {
-                        text: 'COVID-19' || 'coronavirus' || 'SARS-CoV2',
+                        text: covidTerms,
                         sort: nextSortOption
                       },
                       location.search
@@ -355,7 +356,7 @@ export default function Dashboard() {
                       onClick={() => {
                         history.push({
                           pathname: location.pathname,
-                          search: createPreprintQs({ text: params.get('q') }, location.search)
+                          search: createPreprintQs({ text: params.getAll('q') }, location.search)
                         });
                       }}
                     >
@@ -372,7 +373,7 @@ export default function Dashboard() {
                         onClick={() => {
                           history.push({
                             pathname: location.pathname,
-                            search: createPreprintQs({ text: params.get('q') }, location.search),
+                            search: createPreprintQs({ text: params.getAll('q') }, location.search),
                             state: { bookmark: preprints.bookmark }
                           });
                         }}
