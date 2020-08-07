@@ -58,7 +58,7 @@ export default function App({ user }) {
                   </ToCPage>
                 </Route>
 
-                <Route exact={true} path="/dashboard">
+                <Route exact={true} path="/dashboard/:new(new)?">
                   <Dashboard />
                 </Route>
 

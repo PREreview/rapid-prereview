@@ -11,12 +11,13 @@ import Org from './org';
 
 // hooks
 import { usePreprintSearchResults } from '../hooks/api-hooks';
+import { useNewPreprints } from '../hooks/ui-hooks';
 
 // utils
 import { checkIfIsModerated } from '../utils/actions';
 import { getUsersRank, isYes } from '../utils/stats';
 import { createPreprintQs, apifyPreprintQs } from '../utils/search';
-import { getId } from '../utils/jsonld'
+import { getId, unprefix } from '../utils/jsonld'
 
 
 // contexts
@@ -36,6 +37,9 @@ import SearchBar from './search-bar';
 import XLink from './xlink';
 import RecentActivity from './recent-activity'
 import ActiveUser from './active-user'
+import PrivateRoute from './private-route';
+import NewPreprint from './new-preprint';
+import Modal from './modal';
 
 
 export default function Dashboard() {
@@ -44,6 +48,7 @@ export default function Dashboard() {
   const [user] = useUser();
 
   const [loginModalOpenNext, setLoginModalOpenNext] = useState(null);
+  const [newPreprints, setNewPreprints] = useNewPreprints();
 
   const apiQs = apifyPreprintQs(
     location.search,
@@ -55,7 +60,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (location.search === "") {
-      history.replace({ search: createPreprintQs({ text: covidTerms }, location.search) });
+      history.replace({ search: createPreprintQs({ text: covidTerms }, location.search), state: location.state });
     }
   }, [apiQs]);
 
@@ -112,15 +117,21 @@ export default function Dashboard() {
   const handleNewRequest = useCallback(
     preprint => {
       if (user) {
-        history.push('/new', {
-          preprint: omit(preprint, ['potentialAction']),
-          tab: 'request',
-          isSingleStep: true
+        history.push({
+          pathname: '/dashboard/new',
+          search: history.location.search,
+          state: {
+            preprint: omit(preprint, ['potentialAction']),
+            tab: 'request',
+            isSingleStep: true
+          }
         });
       } else {
-        setLoginModalOpenNext(
-          `/new?identifier=${preprint.doi || preprint.arXivId}&tab=request`
-        );
+        const search = new URLSearchParams(location.search);
+        search.set('identifier', preprint.doi || preprint.arXivId);
+        search.set('tab', 'request');
+
+        setLoginModalOpenNext(`/dashboard/new?${search}`);
       }
     },
     [user, history]
@@ -129,13 +140,18 @@ export default function Dashboard() {
   const handleNew = useCallback(
     preprint => {
       if (user) {
-        history.push('/new', {
-          preprint: omit(preprint, ['potentialAction'])
+        history.push({
+          pathname: '/dashboard/new',
+          search: history.location.search,
+          state: {
+            preprint: omit(preprint, ['potentialAction'])
+          }
         });
       } else {
-        setLoginModalOpenNext(
-          `/new?identifier=${preprint.doi || preprint.arXivId}`
-        );
+        const search = new URLSearchParams(location.search);
+        search.set('identifier', preprint.doi || preprint.arXivId);
+
+        setLoginModalOpenNext(`/dashboard/new?${search}`);
       }
     },
     [user, history]
@@ -144,15 +160,21 @@ export default function Dashboard() {
   const handleNewReview = useCallback(
     preprint => {
       if (user) {
-        history.push('/new', {
-          preprint: omit(preprint, ['potentialAction']),
-          tab: 'review',
-          isSingleStep: true
+        history.push({
+          pathname: '/dashboard/new',
+          search: history.location.search,
+          state: {
+            preprint: omit(preprint, ['potentialAction']),
+            tab: 'review',
+            isSingleStep: true
+          }
         });
       } else {
-        setLoginModalOpenNext(
-          `/new?identifier=${preprint.doi || preprint.arXivId}&tab=review`
-        );
+        const search = new URLSearchParams(location.search);
+        search.set('identifier', preprint.doi || preprint.arXivId);
+        search.set('tab', 'review');
+
+        setLoginModalOpenNext(`/dashboard/new?${search}`);
       }
     },
     [user, history]
@@ -177,6 +199,45 @@ export default function Dashboard() {
           }}
         />
       )}
+      <PrivateRoute path="/dashboard/new" exact={true}>
+        <Modal
+          showCloseButton={true}
+          title="Add Entry"
+          onClose={() => {
+            history.push({ pathname: '/dashboard', search: location.search });
+          }}
+        >
+          <Helmet>
+            <title>Rapid PREreview • Add entry</title>
+          </Helmet>
+          <NewPreprint
+            user={user}
+            onCancel={() => {
+              history.push({ pathname: '/dashboard', search: location.search });
+            }}
+            onSuccess={(preprint, isNew) => {
+              history.push({ pathname: '/dashboard', search: location.search });
+              if (
+                isNew &&
+                !newPreprints.some(
+                  _preprint => getId(_preprint) === getId(preprint)
+                )
+              ) {
+                setNewPreprints(newPreprints.concat(preprint));
+              }
+            }}
+            onViewInContext={({ preprint, tab }, isNew) => {
+              history.push(
+                `/${unprefix(preprint.doi || preprint.arXivId)}`,
+                {
+                  preprint: omit(preprint, ['potentialAction']),
+                  tab
+                }
+              );
+            }}
+          />
+        </Modal>
+      </PrivateRoute>
       <article className="toc-page__main">
         <div className="toc-page__body">
           <section className="dashboard home__main">
@@ -333,6 +394,23 @@ export default function Dashboard() {
                   <div>No more preprints.</div>
                 ) : (
                   <ul className="dashboard__preprint-list">
+                    {newPreprints.length > 0 && (
+                      newPreprints.map(preprint => (
+                        <li key={getId(preprint)} className="dashboard__preprint-list__item">
+                          <PreprintCard
+                            isNew={true}
+                            isDashboardCard={true}
+                            user={user}
+                            preprint={preprint}
+                            onNewRequest={handleNewRequest}
+                            onNew={handleNew}
+                            onNewReview={handleNewReview}
+                            hoveredSortOption={hoveredSortOption}
+                            sortOption={params.get('sort') || 'score'}
+                          />
+                        </li>
+                      ))
+                    )}
                     {preprints.rows.length ? preprints.rows.map(row => (
                       <li key={row.id} className="dashboard__preprint-list__item">
                         <PreprintCard
@@ -390,12 +468,12 @@ export default function Dashboard() {
                   <AddButton
                     onClick={e => {
                       if (user) {
-                        history.push('/new');
+                        history.push({ pathname: '/dashboard/new', search: location.search });
                       } else {
-                        setLoginModalOpenNext('/new');
+                        setLoginModalOpenNext(`/dashboard/new?${location.search}`);
                       }
                     }}
-                    disabled={location.pathname === '/new'}
+                    disabled={location.pathname === '/dashboard/new'}
                   />
                 </div>
                 <div className="dashboard__activity">

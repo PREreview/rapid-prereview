@@ -39,7 +39,8 @@ export default function PreprintCard({
   onNew,
   sortOption,
   hoveredSortOption,
-  isNew = false
+  isNew = false,
+  isDashboardCard = false,
 }) {
   const [isOpened, setIsOpened] = useState(false);
 
@@ -93,7 +94,7 @@ export default function PreprintCard({
   return (
     <Fragment>
       <div
-        className={classNames('preprint-card', { 'preprint-card--new': isNew })}
+        className={classNames('preprint-card', { 'preprint-card--new': isNew && !isDashboardCard })}
       >
         <div className="preprint-card__contents">
           <div className="preprint-card__header">
