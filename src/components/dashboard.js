@@ -53,7 +53,7 @@ export default function Dashboard() {
   const params = new URLSearchParams(location.search);
 
   useEffect(() => {
-    if (location.search === "") {
+    if (!params.get('q')) {
       history.replace({ search: createPreprintQs({ text: covidTerms }, location.search) });
     }
   }, [apiQs]);
@@ -190,7 +190,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
-                            text: covidTerms,
+                            text: params.getAll('q'),
                             hasOthersRec: e.target.checked || null
                           },
                           location.search
@@ -217,7 +217,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
-                            text: covidTerms,
+                            text: params.getAll('q'),
                             hasPeerRec: e.target.checked || null
                           },
                           location.search
@@ -244,7 +244,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
-                            text: covidTerms,
+                            text: params.getAll('q'),
                             hasData: e.target.checked || null
                           },
                           location.search
@@ -271,7 +271,7 @@ export default function Dashboard() {
                       onChange={e => {
                         const search = createPreprintQs(
                           {
-                            text: covidTerms,
+                            text: params.getAll('q'),
                             hasCode: e.target.checked || null
                           },
                           location.search
@@ -299,7 +299,7 @@ export default function Dashboard() {
                   ) => {
                     const search = createPreprintQs(
                       {
-                        text: covidTerms,
+                        text: params.getAll('q'),
                         sort: nextSortOption
                       },
                       location.search
