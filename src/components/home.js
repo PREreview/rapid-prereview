@@ -42,7 +42,7 @@ export default function Home() {
   const [showLeftPanel, setShowLeftPanel] = useState(!isMobile);
   const [loginModalOpenNext, setLoginModalOpenNext] = useState(null);
   const isNewVisitor = useIsNewVisitor();
-  const [displayExtensionBanner, closeExtensionBanner] = useDisplayExtensionBanner();
+  const [displayExtensionBanner, closeExtensionBanner, checkForExtension] = useDisplayExtensionBanner();
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true);
   const [newPreprints, setNewPreprints] = useNewPreprints();
 
@@ -120,6 +120,7 @@ export default function Home() {
         <WelcomeModal
           onClose={() => {
             setIsWelcomeModalOpen(false);
+            checkForExtension();
           }}
         />
       )}
