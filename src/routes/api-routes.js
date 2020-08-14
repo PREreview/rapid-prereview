@@ -375,16 +375,21 @@ router.get(
  * due to cross origin restriction we need to proxy the PDF
  */
 router.get('/pdf', async (req, res, next) => {
-  let pdfUrl;
-  const preprintId = req.query.preprintId;
-  try {
-    const body = await req.db.get(`preprint:${preprintId}`);
-    pdfUrl = getPdfUrl(body);
-    if (!pdfUrl) {
-      return next(createError(500, `Could not determine PDF from prereview: ${JSON.stringify(body)}`));
+  let { preprintId, pdfUrl } = req.query;
+
+  // If we already have the pdfUrl, there's no need to look in the database.
+  // The pdfUrl is present in the case where the preprint is not in the database yet,
+  // but we were able to resolve it.
+  if (!pdfUrl) {
+    try {
+      const body = await req.db.get(`preprint:${preprintId}`);
+      pdfUrl = getPdfUrl(body);
+      if (!pdfUrl) {
+        return next(createError(500, `Could not determine PDF from prereview: ${JSON.stringify(body)}`));
+      }
+    } catch (err) {
+      return next(createError(500, `Prereview query failed: ${preprintId} ${JSON.stringify(err)}`));
     }
-  } catch (err) {
-    return next(createError(500, `Prereview query failed: ${preprintId} ${JSON.stringify(err)}`));
   }
 
   if (!pdfUrl) {
