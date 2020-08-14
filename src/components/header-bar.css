@@ -43,6 +43,12 @@
     border-top-left-radius: var(--xsgrd);
     border-bottom-left-radius: var(--xsgrd);
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    @media (--narrow-screen) {
+      bottom: calc(var(--xlgrd) + 50px);
+    }
+    @media (--mobile) {
+      bottom: var(--xlgrd);
+    }
     & :any-link {
       color: white;
       text-decoration: none;
