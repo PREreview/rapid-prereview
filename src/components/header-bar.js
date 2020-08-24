@@ -176,16 +176,6 @@ export default function HeaderBar({ onClickMenuButton, closeGap }) {
           )}
         </span>
       </div>
-      {/* TODO link to feedback form */}
-      <div className="header-bar__give-feedback">
-        <a
-          href="https://docs.google.com/forms/d/1ao2f12U96lKlbVJifrWHEhPmCAB3ZHD16s-I7WmJyU4/viewform?edit_requested=true"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Give Feedback
-        </a>
-      </div>
     </div>
   );
 }
