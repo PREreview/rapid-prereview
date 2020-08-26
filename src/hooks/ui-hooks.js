@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import {
+  CSS_SCOPE_ID
+} from '../constants';
 import { useStores } from '../contexts/store-context';
 
 /**
@@ -155,4 +158,28 @@ export function usePrevious(value) {
 
   // Return previous value (happens before update in useEffect above)
   return ref.current;
+}
+
+export function useDisplayExtensionBanner() {
+  const [displayExtensionBanner, setDisplayExtensionBanner] = useState(false);
+  
+  const checkForExtension = () => {
+    setTimeout(() => {
+      const shouldDisplayExtensionBanner = localStorage.getItem('displayExtensionBanner') !== 'false' && !document.getElementById(CSS_SCOPE_ID);
+      setDisplayExtensionBanner(shouldDisplayExtensionBanner);
+    },500);
+  }
+  
+  useEffect(() => {
+    if(document.readyState === 'interactive' || document.readyState === 'complete'){
+      checkForExtension();
+    }
+  }, []);
+
+  const localSet = useCallback(() => {
+    localStorage.setItem('displayExtensionBanner', 'false');
+    setDisplayExtensionBanner(false);
+  }, []);
+
+  return [displayExtensionBanner, localSet, checkForExtension];
 }

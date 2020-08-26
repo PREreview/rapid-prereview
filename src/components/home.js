@@ -8,7 +8,8 @@ import { usePreprintSearchResults } from '../hooks/api-hooks';
 import {
   useIsNewVisitor,
   useIsMobile,
-  useNewPreprints
+  useNewPreprints,
+  useDisplayExtensionBanner
 } from '../hooks/ui-hooks';
 import { useUser } from '../contexts/user-context';
 import { unprefix, getId } from '../utils/jsonld';
@@ -26,6 +27,9 @@ import { createPreprintQs, apifyPreprintQs } from '../utils/search';
 import WelcomeModal from './welcome-modal';
 import XLink from './xlink';
 import AddButton from './add-button';
+import IconButton from './icon-button';
+import VisuallyHidden from '@reach/visually-hidden';
+import { MdClose } from 'react-icons/md';
 import { ORG } from '../constants';
 import Banner from './banner';
 
@@ -38,6 +42,7 @@ export default function Home() {
   const [showLeftPanel, setShowLeftPanel] = useState(!isMobile);
   const [loginModalOpenNext, setLoginModalOpenNext] = useState(null);
   const isNewVisitor = useIsNewVisitor();
+  const [displayExtensionBanner, closeExtensionBanner, checkForExtension] = useDisplayExtensionBanner();
   const [isWelcomeModalOpen, setIsWelcomeModalOpen] = useState(true);
   const [newPreprints, setNewPreprints] = useNewPreprints();
 
@@ -115,6 +120,7 @@ export default function Home() {
         <WelcomeModal
           onClose={() => {
             setIsWelcomeModalOpen(false);
+            checkForExtension();
           }}
         />
       )}
@@ -323,6 +329,25 @@ export default function Home() {
         </div>
 
         <div className="home__main__right"></div>
+        {
+          displayExtensionBanner && (<div className="home__extention-banner">
+            You have not yet installed the Outbreak Science Rapid PREreivew browser extension to enable requesting, adding and/or reading rapid reviews on other websites. Install it&nbsp;
+            <a
+              href="https://outbreaksci.prereview.org/extension"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </a>!
+            <IconButton
+              className="home-extension-banner__close-button"
+              onClick={closeExtensionBanner}
+            >
+              <VisuallyHidden>Close</VisuallyHidden>
+              <MdClose className="home-extension-banner_close-button__icon" />
+            </IconButton>
+          </div>)
+        }
       </div>
     </div>
   );
