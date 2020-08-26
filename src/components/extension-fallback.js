@@ -66,6 +66,7 @@ export default function ExtensionFallback() {
           <Suspense fallback={<SuspenseLoading>Loading PDF</SuspenseLoading>}>
             <PdfViewer
               docId={preprintId}
+              pdfUrl={pdfUrl}
               loading={<SuspenseLoading>Loading PDF</SuspenseLoading>}
             />
           </Suspense>
@@ -80,6 +81,7 @@ export default function ExtensionFallback() {
             <Suspense fallback={<SuspenseLoading>Loading PDF</SuspenseLoading>}>
               <PdfViewer
                 docId={identifier}
+                pdfUrl={pdfUrl}
                 loading={<SuspenseLoading>Loading PDF</SuspenseLoading>}
               />
             </Suspense>
