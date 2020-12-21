@@ -41,7 +41,11 @@ export function rapid(config = {}, redisClient) {
       store: new RedisStore({
         client: app.get('redisClient'),
         prefix: 'sess:'
-      })
+      }),
+      cookie: {
+        secure: true,
+        sameSite: "none"
+      }
     })
   );
   app.use(passport.initialize());

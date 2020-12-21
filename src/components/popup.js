@@ -166,6 +166,14 @@ export default function Popup({ preprint, dispatch }) {
               >
                 Logout
               </a>
+            ) : preprint ? (
+              <a
+                href={`${process.env.API_URL}/login?next=${preprint.url}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Login
+              </a>
             ) : (
               <a
                 href={`${process.env.API_URL}/login`}
