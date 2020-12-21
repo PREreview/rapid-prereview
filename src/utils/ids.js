@@ -41,7 +41,7 @@ export function createPreprintId(
     );
   }
 
-  return `preprint:${vendor}-${unprefix(id).replace('/', '-')}`;
+  return `preprint:${vendor}-${unprefix(id).replace(/\//g, '-')}`;
 }
 
 export function createPreprintIdentifierCurie(
