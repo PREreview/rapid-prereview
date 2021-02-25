@@ -331,7 +331,7 @@ export default function Home() {
         <div className="home__main__right"></div>
         {
           displayExtensionBanner && (<div className="home__extention-banner">
-            You have not yet installed the Outbreak Science Rapid PREreivew browser extension to enable requesting, adding and/or reading rapid reviews on other websites. Install it&nbsp;
+            You have not yet installed the Outbreak Science Rapid PREreview browser extension to enable requesting, adding and/or reading rapid reviews on other websites. Install it&nbsp;
             <a
               href="https://outbreaksci.prereview.org/extension"
               target="_blank"
