@@ -594,6 +594,14 @@ function ShellContentRequest({
   isPosting,
   error
 }) {
+
+  const [subjects, setSubjects] = useLocalState(
+    'subjects',
+    user.defaultRole,
+    createPreprintId(preprint),
+    []
+  );
+
   return (
     <div className="shell-content-request">
       <header className="shell-content-request__title">
@@ -601,6 +609,24 @@ function ShellContentRequest({
       </header>
 
       <PreprintPreview preprint={preprint} />
+
+      <SubjectEditor
+        subjects={subjects}
+        onAdd={subject => {
+          setSubjects(
+            subjects.concat(subject).sort((a, b) => {
+              return (a.alternateName || a.name).localeCompare(
+                b.alternateName || b.name
+              );
+            })
+          );
+        }}
+        onDelete={subject => {
+          setSubjects(
+            subjects.filter(_subject => _subject.name !== subject.name)
+          );
+        }}
+      />
 
       <Controls error={error}>
         <Button
@@ -614,7 +640,14 @@ function ShellContentRequest({
               agent: user.defaultRole,
               object: Object.assign({}, nodeify(preprint), {
                 '@id': createPreprintIdentifierCurie(preprint)
-              })
+              }),
+              resultRequest: cleanup(
+                {
+                  '@type': 'RequestForRapidPREreview',
+                  about: subjects
+                },
+                { removeEmptyArray: true }
+              )
             });
           }}
         >

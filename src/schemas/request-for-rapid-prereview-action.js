@@ -94,10 +94,45 @@ const schema = {
           required: ['@id']
         }
       ]
+    },
+    resultRequest: {
+      type: 'object',
+      properties: {
+        '@id': {
+          type: 'string',
+          pattern: '^node:|^_:'
+        },
+        '@type': {
+          type: 'string',
+          const: 'RequestForRapidPREreview'
+        },
+        dateCreated: {
+          type: 'string',
+          format: 'date-time'
+        },
+        about: {
+          type: 'array',
+          description: 'subjects from list of infectious diseases',
+          items: {
+            type: 'object',
+            properties: {
+              '@type': {
+                type: 'string',
+                const: 'OutbreakScienceEntity'
+              },
+              name: {
+                type: 'string'
+              }
+            }
+          }
+        },
+      },
+      additionalProperties: false,
+      required: ['@type']  
     }
   },
   additionalProperties: false,
-  required: ['@type', 'actionStatus', 'agent', 'object']
+  required: ['@type', 'actionStatus', 'agent', 'object', 'resultRequest']
 };
 
 export default schema;
